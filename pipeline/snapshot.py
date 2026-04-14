@@ -1,0 +1,1337 @@
+#!/usr/bin/env python3
+"""
+RSO Archive - Space-Track GP Catalog Snapshot Pipeline.
+
+The canonical archive is a rolling state machine. A daily snapshot is built from
+the previous archived snapshot plus Space-Track gp_history rows published during
+the closed UTC window before the snapshot cutoff.
+"""
+
+import argparse
+import gzip
+import hashlib
+import http.cookiejar
+import json
+import os
+import sys
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+
+CUTOFF_TIME = "00:00:00"
+OPERATOR_RUN_TIME = "07:15:00"
+PIPELINE_VERSION = "0.3.0"
+
+SPACETRACK_BASE = "https://www.space-track.org"
+SPACETRACK_LOGIN = f"{SPACETRACK_BASE}/ajaxauth/login"
+SPACETRACK_QUERY = f"{SPACETRACK_BASE}/basicspacedata/query"
+
+# Space-Track guideline: max 30 req/min and 300 req/hr. The default leaves
+# plenty of margin for daily runs. For months of replay/backfill, set
+# RSO_REQUEST_DELAY=12.5 to stay below the hourly limit.
+REQUEST_DELAY = float(os.environ.get("RSO_REQUEST_DELAY", "2.5"))
+CATALOG_RANGE_SIZE = int(os.environ.get("RSO_CATALOG_RANGE_SIZE", "10000"))
+MAX_NORAD_CAT_ID = int(os.environ.get("RSO_MAX_NORAD_CAT_ID", "339999"))
+MIN_OBJECT_COUNT = int(os.environ.get("RSO_MIN_OBJECT_COUNT", "40000"))
+
+DATA_DIR = Path(__file__).parent.parent / "data"
+LEDGER_PATH = Path(__file__).parent.parent / "ledger.json"
+REPORTS_DIR = Path(__file__).parent.parent / "reports"
+
+REQUIRED_OMM_FIELDS = frozenset(
+    {
+        "NORAD_CAT_ID",
+        "CREATION_DATE",
+        "EPOCH",
+        "MEAN_MOTION",
+        "ECCENTRICITY",
+        "INCLINATION",
+        "RA_OF_ASC_NODE",
+        "ARG_OF_PERICENTER",
+        "MEAN_ANOMALY",
+    }
+)
+
+
+class SnapshotError(RuntimeError):
+    """Raised when a snapshot would be incomplete or invalid."""
+
+
+class SpaceTrackClient:
+    def __init__(self):
+        cookie_jar = http.cookiejar.CookieJar()
+        self.opener = urllib.request.build_opener(
+            urllib.request.HTTPCookieProcessor(cookie_jar)
+        )
+        self.authenticated = False
+
+    def _request(self, url, data=None):
+        headers = {"User-Agent": f"rso-archive/{PIPELINE_VERSION}"}
+        if data is not None:
+            body = urllib.parse.urlencode(data).encode("utf-8")
+            req = urllib.request.Request(url, data=body, headers=headers)
+        else:
+            req = urllib.request.Request(url, headers=headers)
+        resp = self.opener.open(req, timeout=180)
+        return resp.read()
+
+    def login(self):
+        user = os.environ.get("SPACETRACK_USER")
+        passwd = os.environ.get("SPACETRACK_PASS")
+        if not user or not passwd:
+            raise SnapshotError("Set SPACETRACK_USER and SPACETRACK_PASS env vars")
+
+        raw = self._request(
+            SPACETRACK_LOGIN,
+            {
+                "identity": user,
+                "password": passwd,
+            },
+        )
+
+        try:
+            result = json.loads(raw)
+        except ValueError:
+            result = None
+
+        if isinstance(result, dict) and result.get("Login") == "Failed":
+            raise SnapshotError("Space-Track login failed. Check credentials.")
+
+        self.authenticated = True
+        print("Authenticated with Space-Track.org")
+
+    def query(self, query_path):
+        if not self.authenticated:
+            self.login()
+
+        url = f"{SPACETRACK_QUERY}{query_path}"
+        validate_query_url(url)
+        print(f"  Querying: ...{query_path[:140]}")
+        raw = self._request(url)
+        try:
+            payload = json.loads(raw)
+        except json.JSONDecodeError as exc:
+            snippet = raw[:300].decode("utf-8", errors="replace")
+            raise SnapshotError(f"Space-Track returned non-JSON response: {snippet}") from exc
+
+        if isinstance(payload, dict) and "error" in payload:
+            raise SnapshotError(f"Space-Track error response: {payload['error']}")
+        return payload
+
+    def close(self):
+        try:
+            self._request(f"{SPACETRACK_BASE}/ajaxauth/logout")
+        except Exception:
+            pass
+
+
+def parse_date(date_str):
+    return datetime.strptime(date_str, "%Y-%m-%d")
+
+
+def date_str(date_obj):
+    return date_obj.strftime("%Y-%m-%d")
+
+
+def previous_date_str(current_date_str):
+    return date_str(parse_date(current_date_str) - timedelta(days=1))
+
+
+def get_cutoff_for_date(current_date_str):
+    """Return the canonical midnight UTC cutoff for a given snapshot date."""
+    parse_date(current_date_str)
+    return f"{current_date_str}T{CUTOFF_TIME}"
+
+
+def normalize_utc_for_filter(value):
+    value = str(value)
+    return value[:-1] if value.endswith("Z") else value
+
+
+def now_utc():
+    return datetime.now(timezone.utc)
+
+
+def utc_stamp(dt=None):
+    if dt is None:
+        dt = now_utc()
+    return dt.replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def encode_query_value(value):
+    """Encode a Space-Track path segment value without leaving raw spaces."""
+    return urllib.parse.quote(str(value), safe=",.-_:")
+
+
+def validate_query_url(url):
+    if any(ch.isspace() for ch in url):
+        raise SnapshotError(f"Query URL contains raw whitespace: {url}")
+    urllib.request.Request(url)
+
+
+def build_query_path(api_class, clauses):
+    """
+    Build a Space-Track REST path with encoded path-segment values.
+
+    clauses is an ordered iterable of (field, value) pairs, for example:
+    [("CREATION_DATE", "2026-04-12T00:00:00--2026-04-13T00:00:00")].
+    """
+    segments = ["class", api_class]
+    for field, value in clauses:
+        segments.append(str(field))
+        segments.append(encode_query_value(value))
+    segments.extend(["format", "json"])
+    path = "/" + "/".join(segments)
+    validate_query_url(f"{SPACETRACK_QUERY}{path}")
+    return path
+
+
+def catalog_id_sort_key(record):
+    try:
+        return int(record.get("NORAD_CAT_ID", 0))
+    except (TypeError, ValueError):
+        return 0
+
+
+def iter_catalog_ranges(max_catalog_id=MAX_NORAD_CAT_ID, range_size=CATALOG_RANGE_SIZE):
+    if max_catalog_id < 1:
+        raise SnapshotError("--max-catalog-id must be positive")
+    if range_size < 1:
+        raise SnapshotError("--range-size must be positive")
+
+    start = 0
+    while start <= max_catalog_id:
+        end = min(start + range_size - 1, max_catalog_id)
+        yield start, end
+        start = end + 1
+
+
+def validate_gp_records(records, min_count=MIN_OBJECT_COUNT, context="Space-Track response"):
+    if not isinstance(records, list):
+        raise SnapshotError(
+            f"{context} was {type(records).__name__}, expected list. "
+            "Space-Track may have returned an error payload."
+        )
+
+    if len(records) < min_count:
+        raise SnapshotError(
+            f"{context} has {len(records):,} records, below minimum {min_count:,}; "
+            "refusing to archive a likely incomplete snapshot."
+        )
+
+    for index, record in enumerate(records):
+        if not isinstance(record, dict):
+            raise SnapshotError(f"{context} record {index} is not an object")
+        missing = REQUIRED_OMM_FIELDS.difference(record)
+        if missing:
+            missing_list = ", ".join(sorted(missing))
+            cat_id = record.get("NORAD_CAT_ID", f"index {index}")
+            raise SnapshotError(f"{context} record {cat_id} missing fields: {missing_list}")
+
+
+def creation_time(record):
+    value = str(record.get("CREATION_DATE", ""))
+    return value[:-1] if value.endswith("Z") else value
+
+
+def epoch_time(record):
+    value = str(record.get("EPOCH", ""))
+    return value[:-1] if value.endswith("Z") else value
+
+
+def numeric_record_field(record, field):
+    try:
+        return int(record.get(field, 0))
+    except (TypeError, ValueError):
+        return 0
+
+
+def element_selection_key(record):
+    """
+    Pick the latest published row for the canonical archive.
+
+    CREATION_DATE defines when a row was published and therefore whether it is
+    inside a deterministic daily window. Once a row is inside the window, the
+    archive records the latest public Space-Track publication for the object.
+    EPOCH remains a final stable tie-breaker for rare equal publication times.
+    """
+    return (
+        creation_time(record),
+        numeric_record_field(record, "GP_ID"),
+        epoch_time(record),
+    )
+
+
+def filter_creation_window(records, lower_inclusive=None, upper_exclusive=None):
+    filtered = []
+    for record in records:
+        created = creation_time(record)
+        if lower_inclusive is not None and created < lower_inclusive:
+            continue
+        if upper_exclusive is not None and created >= upper_exclusive:
+            continue
+        filtered.append(record)
+    return filtered
+
+
+def dedupe_latest_per_object(records):
+    """Keep the latest published element row per NORAD_CAT_ID."""
+    selected = {}
+    for record in records:
+        cat_id = record.get("NORAD_CAT_ID")
+        if cat_id is None:
+            continue
+        existing = selected.get(cat_id)
+        if existing is None or element_selection_key(record) > element_selection_key(existing):
+            selected[cat_id] = record
+    return sorted(selected.values(), key=catalog_id_sort_key)
+
+
+def canonicalize(data):
+    """Produce canonical JSON bytes for hashing."""
+    return json.dumps(
+        data,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+    ).encode("utf-8")
+
+
+def compute_hash(canonical_bytes):
+    return hashlib.sha256(canonical_bytes).hexdigest()
+
+
+def record_hash(record):
+    return compute_hash(canonicalize(record))
+
+
+def records_by_cat_id(records):
+    return {record["NORAD_CAT_ID"]: record for record in records}
+
+
+def sorted_records_from_state(state_by_cat_id):
+    return sorted(state_by_cat_id.values(), key=catalog_id_sort_key)
+
+
+def snapshot_dir(current_date_str):
+    date_obj = parse_date(current_date_str)
+    return DATA_DIR / f"{date_obj.year}" / f"{date_obj.month:02d}" / f"{date_obj.day:02d}"
+
+
+def report_dir():
+    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+    return REPORTS_DIR
+
+
+def write_json(path, payload):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(payload, f, indent=2, sort_keys=True)
+        f.write("\n")
+
+
+def query_gp_history_ranges(
+    client,
+    creation_date_filter,
+    max_catalog_id=MAX_NORAD_CAT_ID,
+    range_size=CATALOG_RANGE_SIZE,
+):
+    records = []
+    query_paths = []
+    ranges = list(iter_catalog_ranges(max_catalog_id, range_size))
+
+    for index, (start, end) in enumerate(ranges):
+        path = build_query_path(
+            "gp_history",
+            [
+                ("NORAD_CAT_ID", f"{start}--{end}"),
+                ("CREATION_DATE", creation_date_filter),
+                ("orderby", "NORAD_CAT_ID asc,CREATION_DATE desc"),
+            ],
+        )
+        batch = client.query(path)
+        validate_gp_records(batch, min_count=0, context=f"gp_history {start}--{end}")
+        records.extend(batch)
+        query_paths.append(path)
+
+        if REQUEST_DELAY > 0:
+            time.sleep(REQUEST_DELAY)
+
+    return records, query_paths
+
+
+def query_current_gp(client, min_count=MIN_OBJECT_COUNT):
+    path = build_query_path(
+        "gp",
+        [
+            ("orderby", "NORAD_CAT_ID asc"),
+        ],
+    )
+    records = client.query(path)
+    validate_gp_records(records, min_count=min_count, context="current gp")
+    return sorted(records, key=catalog_id_sort_key), [path]
+
+
+def pull_updates_between_cutoffs(
+    client,
+    previous_cutoff,
+    current_cutoff,
+    max_catalog_id=MAX_NORAD_CAT_ID,
+    range_size=CATALOG_RANGE_SIZE,
+):
+    records, query_paths = query_gp_history_ranges(
+        client,
+        f"{previous_cutoff}--{current_cutoff}",
+        max_catalog_id=max_catalog_id,
+        range_size=range_size,
+    )
+    records = filter_creation_window(
+        records,
+        lower_inclusive=previous_cutoff,
+        upper_exclusive=current_cutoff,
+    )
+    return dedupe_latest_per_object(records), records, query_paths
+
+
+def apply_updates(base_records, updates):
+    state = records_by_cat_id(base_records)
+    new_ids = []
+    changed_ids = []
+    unchanged_update_ids = []
+    ignored_older_update_ids = []
+
+    for record in updates:
+        cat_id = record["NORAD_CAT_ID"]
+        existing = state.get(cat_id)
+        if existing is None:
+            new_ids.append(cat_id)
+            state[cat_id] = record
+        elif element_selection_key(record) > element_selection_key(existing):
+            changed_ids.append(cat_id)
+            state[cat_id] = record
+        elif record_hash(existing) == record_hash(record):
+            unchanged_update_ids.append(cat_id)
+        else:
+            ignored_older_update_ids.append(cat_id)
+
+    return sorted_records_from_state(state), {
+        "new_norad_cat_ids": sorted(new_ids, key=int_string_sort_key),
+        "updated_norad_cat_ids": sorted(changed_ids, key=int_string_sort_key),
+        "unchanged_update_norad_cat_ids": sorted(unchanged_update_ids, key=int_string_sort_key),
+        "ignored_older_update_norad_cat_ids": sorted(
+            ignored_older_update_ids,
+            key=int_string_sort_key,
+        ),
+        "carried_forward_count": (
+            len(base_records)
+            - len(changed_ids)
+            - len(unchanged_update_ids)
+            - len(ignored_older_update_ids)
+        ),
+    }
+
+
+def apply_updates_to_state(state_by_cat_id, updates):
+    """Apply updates in place using the same selection rule as daily snapshots."""
+    applied = 0
+    ignored = 0
+    for record in updates:
+        cat_id = record["NORAD_CAT_ID"]
+        existing = state_by_cat_id.get(cat_id)
+        if existing is None or element_selection_key(record) > element_selection_key(existing):
+            state_by_cat_id[cat_id] = record
+            applied += 1
+        elif record_hash(existing) != record_hash(record):
+            ignored += 1
+    return {
+        "applied_update_count": applied,
+        "ignored_older_update_count": ignored,
+    }
+
+
+def int_string_sort_key(value):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return 0
+
+
+def build_delta(
+    snapshot_date,
+    previous_cutoff,
+    current_cutoff,
+    raw_records,
+    deduped_updates,
+    merge_summary,
+    query_paths,
+):
+    return {
+        "date": snapshot_date,
+        "window_start_utc": f"{previous_cutoff}Z",
+        "window_end_utc": f"{current_cutoff}Z",
+        "source": "space-track.org",
+        "api_class": "gp_history",
+        "raw_row_count": len(raw_records),
+        "deduped_update_count": len(deduped_updates),
+        "new_object_count": len(merge_summary["new_norad_cat_ids"]),
+        "updated_object_count": len(merge_summary["updated_norad_cat_ids"]),
+        "unchanged_update_count": len(merge_summary["unchanged_update_norad_cat_ids"]),
+        "ignored_older_update_count": len(
+            merge_summary["ignored_older_update_norad_cat_ids"]
+        ),
+        "carried_forward_count": merge_summary["carried_forward_count"],
+        "new_norad_cat_ids": merge_summary["new_norad_cat_ids"],
+        "updated_norad_cat_ids": merge_summary["updated_norad_cat_ids"],
+        "unchanged_update_norad_cat_ids": merge_summary["unchanged_update_norad_cat_ids"],
+        "ignored_older_update_norad_cat_ids": merge_summary[
+            "ignored_older_update_norad_cat_ids"
+        ],
+        "api_query_base": SPACETRACK_QUERY,
+        "api_query_paths": query_paths,
+    }
+
+
+def load_snapshot(current_date_str):
+    gz_path = snapshot_dir(current_date_str) / "catalog.json.gz"
+    with gzip.open(gz_path, "rb") as f:
+        raw_bytes = f.read()
+    return json.loads(raw_bytes)
+
+
+def load_manifest(current_date_str):
+    manifest_path = snapshot_dir(current_date_str) / "manifest.json"
+    with open(manifest_path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def load_visibility_state(current_date_str):
+    path = snapshot_dir(current_date_str) / "visibility_state.json"
+    if not path.exists():
+        return {}
+    with open(path, encoding="utf-8") as f:
+        payload = json.load(f)
+    if isinstance(payload, dict) and isinstance(payload.get("missing_objects"), dict):
+        return payload["missing_objects"]
+    if isinstance(payload, dict) and isinstance(payload.get("objects"), dict):
+        return {
+            cat_id: entry
+            for cat_id, entry in payload["objects"].items()
+            if entry.get("currently_missing_from_current_gp")
+        }
+    return {}
+
+
+def save_snapshot(
+    current_date_str,
+    canonical_bytes,
+    data,
+    provenance,
+    query_strategy,
+    query_paths,
+    base_snapshot_date=None,
+    base_snapshot_sha256=None,
+    delta_window_start_utc=None,
+    delta_window_end_utc=None,
+    observed_at_utc=None,
+    state_as_of_utc=None,
+):
+    day_dir = snapshot_dir(current_date_str)
+    day_dir.mkdir(parents=True, exist_ok=True)
+
+    sha256 = compute_hash(canonical_bytes)
+    gz_path = day_dir / "catalog.json.gz"
+    with open(gz_path, "wb") as raw_file:
+        with gzip.GzipFile(
+            filename="",
+            mode="wb",
+            fileobj=raw_file,
+            compresslevel=9,
+            mtime=0,
+        ) as gz_file:
+            gz_file.write(canonical_bytes)
+
+    cutoff_utc = state_as_of_utc or f"{current_date_str}T{CUTOFF_TIME}Z"
+    manifest = {
+        "date": current_date_str,
+        "cutoff_utc": cutoff_utc,
+        "state_as_of_utc": cutoff_utc,
+        "sha256": sha256,
+        "object_count": len(data),
+        "raw_bytes": len(canonical_bytes),
+        "compressed_bytes": gz_path.stat().st_size,
+        "provenance": provenance,
+        "format": "OMM/JSON",
+        "source": "space-track.org",
+        "pipeline_version": PIPELINE_VERSION,
+        "query_strategy": query_strategy,
+        "api_query_base": SPACETRACK_QUERY,
+        "api_query_paths": query_paths,
+        "archived_at": now_utc().isoformat(),
+    }
+
+    optional = {
+        "base_snapshot_date": base_snapshot_date,
+        "base_snapshot_sha256": base_snapshot_sha256,
+        "delta_window_start_utc": delta_window_start_utc,
+        "delta_window_end_utc": delta_window_end_utc,
+        "observed_at_utc": observed_at_utc,
+        "state_as_of_utc": state_as_of_utc,
+    }
+    for key, value in optional.items():
+        if value is not None:
+            manifest[key] = value
+
+    write_json(day_dir / "manifest.json", manifest)
+    return manifest
+
+
+def save_artifacts(current_date_str, delta=None, audit=None, visibility_state=None):
+    day_dir = snapshot_dir(current_date_str)
+    if delta is not None:
+        write_json(day_dir / "delta.json", delta)
+    if audit is not None:
+        write_json(day_dir / "audit.json", audit)
+    if visibility_state is not None:
+        write_json(day_dir / "visibility_state.json", visibility_state)
+
+
+def ledger_entry_from_manifest(manifest):
+    entry = {
+        "date": manifest["date"],
+        "sha256": manifest["sha256"],
+        "object_count": manifest["object_count"],
+        "compressed_bytes": manifest["compressed_bytes"],
+        "provenance": manifest["provenance"],
+        "query_strategy": manifest["query_strategy"],
+        "archived_at": manifest["archived_at"],
+    }
+    for key in (
+        "state_as_of_utc",
+        "base_snapshot_date",
+        "base_snapshot_sha256",
+        "delta_window_start_utc",
+        "delta_window_end_utc",
+    ):
+        if key in manifest:
+            entry[key] = manifest[key]
+    return entry
+
+
+def update_ledger(manifest):
+    ledger = []
+    if LEDGER_PATH.exists():
+        with open(LEDGER_PATH, encoding="utf-8") as f:
+            try:
+                loaded = json.load(f)
+                if isinstance(loaded, list):
+                    ledger = loaded
+            except json.JSONDecodeError:
+                ledger = []
+
+    new_entry = ledger_entry_from_manifest(manifest)
+    replaced = False
+    for index, entry in enumerate(ledger):
+        if entry.get("date") == manifest["date"]:
+            if entry.get("sha256") != new_entry["sha256"]:
+                new_entry["previous_sha256"] = entry.get("sha256")
+                new_entry["regenerated_at"] = now_utc().isoformat()
+            ledger[index] = new_entry
+            replaced = True
+            break
+
+    if not replaced:
+        ledger.append(new_entry)
+
+    ledger.sort(key=lambda entry: entry.get("date", ""))
+    write_json(LEDGER_PATH, ledger)
+
+
+def archive_snapshot(
+    current_date_str,
+    data,
+    provenance,
+    query_strategy,
+    query_paths,
+    force=False,
+    min_count=MIN_OBJECT_COUNT,
+    base_snapshot_date=None,
+    base_snapshot_sha256=None,
+    delta_window_start_utc=None,
+    delta_window_end_utc=None,
+    observed_at_utc=None,
+    state_as_of_utc=None,
+    delta=None,
+    audit=None,
+    visibility_state=None,
+):
+    print(f"\n{'=' * 60}")
+    print(f"  Date: {current_date_str}")
+    print(f"  Cutoff: {CUTOFF_TIME} UTC")
+    print(f"  Provenance: {provenance}")
+    print(f"{'=' * 60}")
+
+    manifest_path = snapshot_dir(current_date_str) / "manifest.json"
+    if manifest_path.exists() and not force:
+        print(f"  SKIP: Already archived ({manifest_path})")
+        return None
+
+    validate_gp_records(data, min_count=min_count, context=f"snapshot {current_date_str}")
+    canonical = canonicalize(data)
+    sha256 = compute_hash(canonical)
+
+    print(f"  Objects: {len(data):,}")
+    print(f"  Raw size: {len(canonical):,} bytes")
+    print(f"  SHA-256: {sha256}")
+
+    manifest = save_snapshot(
+        current_date_str,
+        canonical,
+        data,
+        provenance,
+        query_strategy,
+        query_paths,
+        base_snapshot_date=base_snapshot_date,
+        base_snapshot_sha256=base_snapshot_sha256,
+        delta_window_start_utc=delta_window_start_utc,
+        delta_window_end_utc=delta_window_end_utc,
+        observed_at_utc=observed_at_utc,
+        state_as_of_utc=state_as_of_utc,
+    )
+    save_artifacts(
+        current_date_str,
+        delta=delta,
+        audit=audit,
+        visibility_state=visibility_state,
+    )
+    update_ledger(manifest)
+
+    print(f"  Compressed: {manifest['compressed_bytes']:,} bytes")
+    print(f"  Saved to: {snapshot_dir(current_date_str)}")
+    return manifest
+
+
+def build_visibility_audit(
+    snapshot_date,
+    archived_records,
+    current_gp_records,
+    observed_at_utc,
+    query_paths,
+    previous_visibility=None,
+):
+    previous_visibility = previous_visibility or {}
+    archived = records_by_cat_id(archived_records)
+    current = records_by_cat_id(current_gp_records)
+    archived_ids = set(archived)
+    current_ids = set(current)
+
+    missing_ids = sorted(archived_ids - current_ids, key=int_string_sort_key)
+    reappeared_ids = []
+    missing_state = {}
+
+    for cat_id in sorted(archived_ids, key=int_string_sort_key):
+        record = archived[cat_id]
+        previous = previous_visibility.get(cat_id, {})
+        was_missing = bool(previous)
+        present = cat_id in current_ids
+
+        if present:
+            if was_missing:
+                reappeared_ids.append(cat_id)
+        else:
+            if was_missing:
+                first_missing = previous.get("first_missing_in_current_gp_audit", observed_at_utc)
+                consecutive = int(previous.get("consecutive_missing_audits", 0)) + 1
+                last_seen = previous.get("last_seen_in_current_gp_audit")
+            else:
+                first_missing = observed_at_utc
+                consecutive = 1
+                last_seen = None
+            missing_state[cat_id] = {
+                "norad_cat_id": cat_id,
+                "object_name": record.get("OBJECT_NAME"),
+                "last_gp_creation_date": creation_time(record),
+                "last_seen_in_current_gp_audit": last_seen,
+                "first_missing_in_current_gp_audit": first_missing,
+                "consecutive_missing_audits": consecutive,
+                "satcat_decay": previous.get("satcat_decay"),
+            }
+
+    missing_records = [
+        {
+            "norad_cat_id": cat_id,
+            "object_name": archived[cat_id].get("OBJECT_NAME"),
+            "last_gp_creation_date": creation_time(archived[cat_id]),
+            "first_missing_in_current_gp_audit": missing_state[cat_id][
+                "first_missing_in_current_gp_audit"
+            ],
+            "consecutive_missing_audits": missing_state[cat_id][
+                "consecutive_missing_audits"
+            ],
+            "satcat_decay": missing_state[cat_id]["satcat_decay"],
+        }
+        for cat_id in missing_ids
+    ]
+    reappeared_records = [
+        {
+            "norad_cat_id": cat_id,
+            "object_name": archived[cat_id].get("OBJECT_NAME"),
+            "reappeared_at_utc": observed_at_utc,
+            "previously_missing_since": previous_visibility.get(cat_id, {}).get(
+                "first_missing_in_current_gp_audit"
+            ),
+        }
+        for cat_id in reappeared_ids
+    ]
+
+    current_id_bytes = "\n".join(sorted(current_ids, key=int_string_sort_key)).encode("ascii")
+    audit = {
+        "date": snapshot_date,
+        "observed_at_utc": observed_at_utc,
+        "source": "space-track.org",
+        "api_class": "gp",
+        "api_query_base": SPACETRACK_QUERY,
+        "api_query_paths": query_paths,
+        "archive_object_count": len(archived_records),
+        "current_gp_object_count": len(current_gp_records),
+        "present_ids_sha256": compute_hash(current_id_bytes),
+        "missing_from_current_gp_count": len(missing_records),
+        "present_in_current_gp_not_in_archive_count": len(current_ids - archived_ids),
+        "reappeared_in_current_gp_count": len(reappeared_records),
+        "missing_from_current_gp": missing_records,
+        "present_in_current_gp_not_in_archive": sorted(
+            current_ids - archived_ids,
+            key=int_string_sort_key,
+        ),
+        "reappeared_in_current_gp": reappeared_records,
+    }
+    visibility_state = {
+        "date": snapshot_date,
+        "observed_at_utc": observed_at_utc,
+        "missing_objects": missing_state,
+    }
+    return audit, visibility_state
+
+
+def build_snapshot_from_base(
+    client,
+    current_date_str,
+    base_records,
+    base_state_as_of_utc,
+    max_catalog_id=MAX_NORAD_CAT_ID,
+    range_size=CATALOG_RANGE_SIZE,
+):
+    previous_cutoff = normalize_utc_for_filter(base_state_as_of_utc)
+    current_cutoff = get_cutoff_for_date(current_date_str)
+    if previous_cutoff >= current_cutoff:
+        raise SnapshotError(
+            f"Base state {base_state_as_of_utc} is not before snapshot cutoff {current_cutoff}Z"
+        )
+    updates, raw_records, query_paths = pull_updates_between_cutoffs(
+        client,
+        previous_cutoff,
+        current_cutoff,
+        max_catalog_id=max_catalog_id,
+        range_size=range_size,
+    )
+    data, merge_summary = apply_updates(base_records, updates)
+    delta = build_delta(
+        current_date_str,
+        previous_cutoff,
+        current_cutoff,
+        raw_records,
+        updates,
+        merge_summary,
+        query_paths,
+    )
+    return data, delta, query_paths
+
+
+def process_genesis(args, client):
+    current_date_str = args.date or now_utc().strftime("%Y-%m-%d")
+    observed_at_utc = utc_stamp()
+    data, query_paths = query_current_gp(client, min_count=args.min_objects)
+    audit, visibility_state = build_visibility_audit(
+        current_date_str,
+        data,
+        data,
+        observed_at_utc,
+        query_paths,
+    )
+    manifest = archive_snapshot(
+        current_date_str,
+        data,
+        "genesis_from_gp",
+        "current_gp_genesis",
+        query_paths,
+        force=args.force,
+        min_count=args.min_objects,
+        observed_at_utc=observed_at_utc,
+        state_as_of_utc=observed_at_utc,
+        audit=audit,
+        visibility_state=visibility_state,
+    )
+    if manifest:
+        print(f"\n  DONE. Hash: {manifest['sha256']}")
+
+
+def process_daily(args, client):
+    current_date_str = args.date or now_utc().strftime("%Y-%m-%d")
+    manifest_path = snapshot_dir(current_date_str) / "manifest.json"
+    if manifest_path.exists() and not args.force:
+        print(f"  SKIP: Already archived ({manifest_path})")
+        return
+
+    now = now_utc()
+    operator_hour, operator_minute, operator_second = [
+        int(part) for part in OPERATOR_RUN_TIME.split(":")
+    ]
+    run_time = parse_date(current_date_str).replace(
+        hour=operator_hour,
+        minute=operator_minute,
+        second=operator_second,
+        tzinfo=timezone.utc,
+    )
+    if now < run_time and args.date is None:
+        print(
+            f"WARNING: Current time {now.strftime('%H:%M:%S')} UTC is before "
+            f"operator run time {OPERATOR_RUN_TIME} UTC."
+        )
+        print("The UTC day is closed, but Space-Track may still be settling.")
+
+    previous = previous_date_str(current_date_str)
+    previous_manifest_path = snapshot_dir(previous) / "manifest.json"
+    if not previous_manifest_path.exists():
+        raise SnapshotError(
+            f"Missing prior snapshot {previous}. Run genesis first or backfill from an existing base."
+        )
+
+    base_records = load_snapshot(previous)
+    base_manifest = load_manifest(previous)
+    validate_gp_records(base_records, min_count=args.min_objects, context=f"snapshot {previous}")
+
+    base_state_as_of_utc = base_manifest.get("state_as_of_utc", base_manifest["cutoff_utc"])
+    data, delta, query_paths = build_snapshot_from_base(
+        client,
+        current_date_str,
+        base_records,
+        base_state_as_of_utc,
+        max_catalog_id=args.max_catalog_id,
+        range_size=args.range_size,
+    )
+    observed_at_utc = utc_stamp()
+    audit = None
+    visibility_state = None
+    if not args.no_audit:
+        current_gp, gp_query_paths = query_current_gp(client, min_count=args.min_objects)
+        previous_visibility = load_visibility_state(previous)
+        audit, visibility_state = build_visibility_audit(
+            current_date_str,
+            data,
+            current_gp,
+            observed_at_utc,
+            gp_query_paths,
+            previous_visibility=previous_visibility,
+        )
+
+    manifest = archive_snapshot(
+        current_date_str,
+        data,
+        "rolling_gp_history_delta",
+        "prior_snapshot_plus_bounded_gp_history_delta",
+        query_paths,
+        force=args.force,
+        min_count=args.min_objects,
+        base_snapshot_date=previous,
+        base_snapshot_sha256=base_manifest["sha256"],
+        delta_window_start_utc=delta["window_start_utc"],
+        delta_window_end_utc=delta["window_end_utc"],
+        observed_at_utc=observed_at_utc if audit else None,
+        delta=delta,
+        audit=audit,
+        visibility_state=visibility_state,
+    )
+    if manifest:
+        print(f"\n  DONE. Hash: {manifest['sha256']}")
+
+
+def process_backfill(args, client):
+    start = parse_date(args.start)
+    end = parse_date(args.end)
+    if end < start:
+        raise SnapshotError("--end must be on or after --start")
+
+    total_days = (end - start).days + 1
+    print(f"\nBackfilling {total_days} days: {args.start} to {args.end}")
+    print("Mode: prior snapshot plus bounded gp_history deltas")
+
+    previous = previous_date_str(args.start)
+    previous_manifest_path = snapshot_dir(previous) / "manifest.json"
+    if not previous_manifest_path.exists():
+        raise SnapshotError(
+            f"Missing base snapshot {previous}. Create a genesis snapshot or start at the day after one."
+        )
+
+    state_records = load_snapshot(previous)
+    base_manifest = load_manifest(previous)
+    validate_gp_records(state_records, min_count=args.min_objects, context=f"snapshot {previous}")
+
+    archived = 0
+    skipped = 0
+    current = start
+    last_manifest = base_manifest
+
+    while current <= end:
+        current_date_str = date_str(current)
+        manifest_path = snapshot_dir(current_date_str) / "manifest.json"
+
+        if manifest_path.exists() and not args.force:
+            state_records = load_snapshot(current_date_str)
+            validate_gp_records(
+                state_records,
+                min_count=args.min_objects,
+                context=f"snapshot {current_date_str}",
+            )
+            last_manifest = load_manifest(current_date_str)
+            print(f"\n  SKIP: Already archived ({manifest_path})")
+            skipped += 1
+            current += timedelta(days=1)
+            continue
+
+        base_state_as_of_utc = last_manifest.get("state_as_of_utc", last_manifest["cutoff_utc"])
+        data, delta, query_paths = build_snapshot_from_base(
+            client,
+            current_date_str,
+            state_records,
+            base_state_as_of_utc,
+            max_catalog_id=args.max_catalog_id,
+            range_size=args.range_size,
+        )
+        manifest = archive_snapshot(
+            current_date_str,
+            data,
+            "rolling_gp_history_delta",
+            "prior_snapshot_plus_bounded_gp_history_delta",
+            query_paths,
+            force=args.force,
+            min_count=args.min_objects,
+            base_snapshot_date=previous_date_str(current_date_str),
+            base_snapshot_sha256=last_manifest["sha256"],
+            delta_window_start_utc=delta["window_start_utc"],
+            delta_window_end_utc=delta["window_end_utc"],
+            delta=delta,
+        )
+        if manifest:
+            archived += 1
+            last_manifest = manifest
+        state_records = data
+        current += timedelta(days=1)
+
+    print(f"\nBackfill complete: {archived} days archived, {skipped} skipped")
+
+
+def compare_record_sets(replay_records, current_gp_records, sample_size=25):
+    replay = records_by_cat_id(replay_records)
+    current = records_by_cat_id(current_gp_records)
+    replay_ids = set(replay)
+    current_ids = set(current)
+    shared_ids = replay_ids & current_ids
+
+    missing_from_replay = sorted(current_ids - replay_ids, key=int_string_sort_key)
+    missing_from_current = sorted(replay_ids - current_ids, key=int_string_sort_key)
+    mismatched = []
+    matched = 0
+    for cat_id in sorted(shared_ids, key=int_string_sort_key):
+        if record_hash(replay[cat_id]) == record_hash(current[cat_id]):
+            matched += 1
+        else:
+            mismatched.append(cat_id)
+
+    return {
+        "replay_object_count": len(replay_records),
+        "current_gp_object_count": len(current_gp_records),
+        "shared_object_count": len(shared_ids),
+        "matched_record_count": matched,
+        "mismatched_record_count": len(mismatched),
+        "missing_from_replay_count": len(missing_from_replay),
+        "missing_from_current_gp_count": len(missing_from_current),
+        "missing_from_replay_sample": missing_from_replay[:sample_size],
+        "missing_from_current_gp_sample": missing_from_current[:sample_size],
+        "mismatched_record_sample": mismatched[:sample_size],
+    }
+
+
+def compact_record_summary(record):
+    return {
+        "norad_cat_id": record.get("NORAD_CAT_ID"),
+        "object_name": record.get("OBJECT_NAME"),
+        "epoch": record.get("EPOCH"),
+        "creation_date": record.get("CREATION_DATE"),
+        "gp_id": record.get("GP_ID"),
+    }
+
+
+def mismatch_sample_details(replay_records, current_gp_records, cat_ids):
+    replay = records_by_cat_id(replay_records)
+    current = records_by_cat_id(current_gp_records)
+    details = []
+    for cat_id in cat_ids:
+        replay_record = replay[cat_id]
+        current_record = current[cat_id]
+        differing_fields = sorted(
+            field
+            for field in set(replay_record) | set(current_record)
+            if replay_record.get(field) != current_record.get(field)
+        )
+        details.append(
+            {
+                "norad_cat_id": cat_id,
+                "replay": compact_record_summary(replay_record),
+                "current_gp": compact_record_summary(current_record),
+                "differing_fields": differing_fields[:25],
+                "differing_field_count": len(differing_fields),
+            }
+        )
+    return details
+
+
+def process_replay(args, client):
+    start_cutoff = f"{args.start}T{CUTOFF_TIME}"
+
+    print("\nCapturing current gp reference")
+    current_gp, current_gp_query_paths = query_current_gp(client, min_count=args.min_objects)
+    observed_at_utc = utc_stamp()
+    observed_at_filter = observed_at_utc[:-1]
+    current_gp_by_id = records_by_cat_id(current_gp)
+
+    print(f"\nReplaying bounded gp_history from {start_cutoff} to {observed_at_filter}")
+    state = {}
+    windows = []
+    current_start = parse_date(args.start).replace(tzinfo=timezone.utc)
+    final_end = datetime.strptime(observed_at_filter, "%Y-%m-%dT%H:%M:%S").replace(
+        tzinfo=timezone.utc
+    )
+
+    while current_start < final_end:
+        current_end = min(current_start + timedelta(days=1), final_end)
+        window_start = current_start.strftime("%Y-%m-%dT%H:%M:%S")
+        window_end = current_end.strftime("%Y-%m-%dT%H:%M:%S")
+        updates, raw_records, query_paths = pull_updates_between_cutoffs(
+            client,
+            window_start,
+            window_end,
+            max_catalog_id=args.max_catalog_id,
+            range_size=args.range_size,
+        )
+        before_count = len(state)
+        merge_summary = apply_updates_to_state(state, updates)
+        windows.append(
+            {
+                "window_start_utc": f"{window_start}Z",
+                "window_end_utc": f"{window_end}Z",
+                "raw_row_count": len(raw_records),
+                "deduped_update_count": len(updates),
+                "applied_update_count": merge_summary["applied_update_count"],
+                "ignored_older_update_count": merge_summary["ignored_older_update_count"],
+                "object_count_before": before_count,
+                "object_count_after": len(state),
+                "api_query_paths": query_paths,
+            }
+        )
+        print(
+            "  Window "
+            f"{window_start}Z to {window_end}Z: "
+            f"{len(raw_records):,} rows, {len(updates):,} objects, "
+            f"state {before_count:,}->{len(state):,}"
+        )
+        current_start = current_end
+
+    replay_records = sorted_records_from_state(state)
+    comparison = compare_record_sets(replay_records, current_gp)
+    first_seen_missing = []
+    for cat_id in comparison["missing_from_replay_sample"]:
+        first_seen_missing.append(
+            {
+                "norad_cat_id": cat_id,
+                "current_gp_creation_date": creation_time(current_gp_by_id[cat_id]),
+                "object_name": current_gp_by_id[cat_id].get("OBJECT_NAME"),
+            }
+        )
+
+    report = {
+        "generated_at_utc": utc_stamp(),
+        "mode": "delta_replay_from_empty_state_compared_to_current_gp",
+        "start_cutoff_utc": f"{start_cutoff}Z",
+        "end_observed_at_utc": observed_at_utc,
+        "source": "space-track.org",
+        "current_gp_query_paths": current_gp_query_paths,
+        "comparison": comparison,
+        "missing_from_replay_sample_details": first_seen_missing,
+        "mismatched_record_sample_details": mismatch_sample_details(
+            replay_records,
+            current_gp,
+            comparison["mismatched_record_sample"],
+        ),
+        "window_count": len(windows),
+        "windows": windows,
+    }
+
+    report_path = args.report_path
+    if report_path is None:
+        safe_stamp = observed_at_utc.replace(":", "").replace("-", "")
+        report_path = report_dir() / f"replay_{args.start}_{safe_stamp}.json"
+    else:
+        report_path = Path(report_path)
+    write_json(report_path, report)
+
+    print("\nReplay comparison")
+    for key, value in comparison.items():
+        if not key.endswith("_sample"):
+            print(f"  {key}: {value:,}" if isinstance(value, int) else f"  {key}: {value}")
+    print(f"  Report: {report_path}")
+
+
+def verify_date(current_date_str):
+    day_dir = snapshot_dir(current_date_str)
+    manifest_path = day_dir / "manifest.json"
+    gz_path = day_dir / "catalog.json.gz"
+
+    if not manifest_path.exists():
+        print(f"No manifest found for {current_date_str}")
+        sys.exit(1)
+    if not gz_path.exists():
+        print(
+            f"Archive file missing for {current_date_str} - manifest exists but "
+            "catalog.json.gz not found"
+        )
+        sys.exit(1)
+
+    with open(manifest_path, encoding="utf-8") as f:
+        manifest = json.load(f)
+
+    with gzip.open(gz_path, "rb") as f:
+        raw_bytes = f.read()
+
+    computed_hash = hashlib.sha256(raw_bytes).hexdigest()
+    stored_hash = manifest["sha256"]
+
+    print(f"  Date:     {current_date_str}")
+    print(f"  Stored:   {stored_hash}")
+    print(f"  Computed: {computed_hash}")
+
+    if computed_hash == stored_hash:
+        print("  Status:   VERIFIED")
+    else:
+        print("  Status:   MISMATCH")
+        sys.exit(1)
+
+
+def add_common_snapshot_args(parser):
+    parser.add_argument(
+        "--range-size",
+        type=int,
+        default=CATALOG_RANGE_SIZE,
+        help=f"NORAD_CAT_ID range size per gp_history request (default: {CATALOG_RANGE_SIZE})",
+    )
+    parser.add_argument(
+        "--max-catalog-id",
+        type=int,
+        default=MAX_NORAD_CAT_ID,
+        help=f"Highest NORAD_CAT_ID to query (default: {MAX_NORAD_CAT_ID})",
+    )
+    parser.add_argument(
+        "--min-objects",
+        type=int,
+        default=MIN_OBJECT_COUNT,
+        help=f"Minimum snapshot size required (default: {MIN_OBJECT_COUNT})",
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Overwrite an existing snapshot and upsert the ledger entry",
+    )
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="RSO Archive - Space-Track GP Catalog Snapshot Pipeline"
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    genesis_parser = subparsers.add_parser(
+        "genesis", help="Capture current gp as the first agreed rolling snapshot"
+    )
+    genesis_parser.add_argument(
+        "--date",
+        help="Snapshot date (YYYY-MM-DD), defaults to current UTC date",
+        default=None,
+    )
+    add_common_snapshot_args(genesis_parser)
+
+    daily_parser = subparsers.add_parser("daily", help="Build one rolling daily snapshot")
+    daily_parser.add_argument(
+        "--date",
+        help="Snapshot date (YYYY-MM-DD), defaults to current UTC date",
+        default=None,
+    )
+    daily_parser.add_argument(
+        "--no-audit",
+        action="store_true",
+        help="Skip current-gp visibility audit for this daily snapshot",
+    )
+    add_common_snapshot_args(daily_parser)
+
+    backfill_parser = subparsers.add_parser(
+        "backfill", help="Build rolling snapshots from an existing prior snapshot"
+    )
+    backfill_parser.add_argument("--start", required=True, help="Start date (YYYY-MM-DD)")
+    backfill_parser.add_argument("--end", required=True, help="End date inclusive (YYYY-MM-DD)")
+    add_common_snapshot_args(backfill_parser)
+
+    replay_parser = subparsers.add_parser(
+        "replay",
+        help="Replay bounded gp_history from an empty state and compare to current gp",
+    )
+    replay_parser.add_argument("--start", required=True, help="Replay start date (YYYY-MM-DD)")
+    replay_parser.add_argument(
+        "--report-path",
+        default=None,
+        help="Path for replay report JSON; defaults to reports/replay_*.json",
+    )
+    add_common_snapshot_args(replay_parser)
+    replay_parser.set_defaults(force=False)
+
+    verify_parser = subparsers.add_parser(
+        "verify", help="Verify a stored snapshot's hash"
+    )
+    verify_parser.add_argument("--date", required=True, help="Date (YYYY-MM-DD)")
+
+    args = parser.parse_args()
+
+    if args.command == "verify":
+        verify_date(args.date)
+        return
+
+    client = SpaceTrackClient()
+    try:
+        if args.command == "genesis":
+            process_genesis(args, client)
+        elif args.command == "daily":
+            process_daily(args, client)
+        elif args.command == "backfill":
+            process_backfill(args, client)
+        elif args.command == "replay":
+            process_replay(args, client)
+    finally:
+        client.close()
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (SnapshotError, urllib.error.URLError, OSError, ValueError) as exc:
+        print(f"ERROR: {exc}")
+        sys.exit(1)

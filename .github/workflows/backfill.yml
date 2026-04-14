@@ -1,0 +1,57 @@
+name: Backfill RSO Archive
+
+on:
+  workflow_dispatch:
+    inputs:
+      start:
+        description: "Start date, YYYY-MM-DD"
+        required: true
+        type: string
+      end:
+        description: "End date, YYYY-MM-DD"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      RSO_REQUEST_DELAY: "12.5"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13.3"
+
+      - name: Run tests
+        run: python -m unittest discover -s tests
+
+      - name: Backfill snapshots
+        env:
+          SPACETRACK_USER: ${{ secrets.SPACETRACK_USER }}
+          SPACETRACK_PASS: ${{ secrets.SPACETRACK_PASS }}
+        run: |
+          set -euo pipefail
+          args=(pipeline/snapshot.py backfill --start "${{ inputs.start }}" --end "${{ inputs.end }}")
+          python "${args[@]}"
+
+      - name: Commit archive changes
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data ledger.json
+          if git diff --cached --quiet; then
+            echo "No archive changes to commit."
+            exit 0
+          fi
+          git commit -m "Backfill RSO archive"
+          git push

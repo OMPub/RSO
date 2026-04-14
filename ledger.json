@@ -1,0 +1,26 @@
+[
+  {
+    "archived_at": "2026-04-13T08:37:19.720955+00:00",
+    "compressed_bytes": 11209925,
+    "date": "2026-04-13",
+    "object_count": 67052,
+    "provenance": "genesis_from_gp",
+    "query_strategy": "current_gp_genesis",
+    "sha256": "8db001c11d1161c7c253919fffbe00e0830429446fdb5fd9a1d861cef7229656",
+    "state_as_of_utc": "2026-04-13T08:37:06Z"
+  },
+  {
+    "archived_at": "2026-04-14T06:57:32.614555+00:00",
+    "base_snapshot_date": "2026-04-13",
+    "base_snapshot_sha256": "8db001c11d1161c7c253919fffbe00e0830429446fdb5fd9a1d861cef7229656",
+    "compressed_bytes": 11251632,
+    "date": "2026-04-14",
+    "delta_window_end_utc": "2026-04-14T00:00:00Z",
+    "delta_window_start_utc": "2026-04-13T08:37:06Z",
+    "object_count": 67052,
+    "provenance": "rolling_gp_history_delta",
+    "query_strategy": "prior_snapshot_plus_bounded_gp_history_delta",
+    "sha256": "6d8add7eb501a4f00be5f46d8a7c2665ea87d5c97c2a0e313fd9d14005b7d680",
+    "state_as_of_utc": "2026-04-14T00:00:00Z"
+  }
+]
