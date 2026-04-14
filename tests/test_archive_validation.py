@@ -1,0 +1,97 @@
+import json
+import tempfile
+import unittest
+from pathlib import Path
+
+from pipeline import snapshot
+
+
+def gp_record(cat_id="1"):
+    return {
+        "NORAD_CAT_ID": cat_id,
+        "CREATION_DATE": "2026-04-12T05:00:00",
+        "EPOCH": "2026-04-12T04:00:00",
+        "MEAN_MOTION": "15.0",
+        "ECCENTRICITY": "0.0001",
+        "INCLINATION": "51.6",
+        "RA_OF_ASC_NODE": "10.0",
+        "ARG_OF_PERICENTER": "20.0",
+        "MEAN_ANOMALY": "30.0",
+    }
+
+
+class ArchiveValidationTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.original_data_dir = snapshot.DATA_DIR
+        self.original_ledger_path = snapshot.LEDGER_PATH
+        root = Path(self.tmp.name)
+        snapshot.DATA_DIR = root / "data"
+        snapshot.LEDGER_PATH = root / "ledger.json"
+
+    def tearDown(self):
+        snapshot.DATA_DIR = self.original_data_dir
+        snapshot.LEDGER_PATH = self.original_ledger_path
+        self.tmp.cleanup()
+
+    def archive_genesis(self, date="2026-04-12", records=None):
+        if records is None:
+            records = [gp_record("1"), gp_record("2")]
+        data = sorted(records, key=snapshot.catalog_id_sort_key)
+        manifest = snapshot.save_snapshot(
+            date,
+            snapshot.canonicalize(data),
+            data,
+            "genesis_from_gp",
+            "current_gp_genesis",
+            ["/class/gp/orderby/NORAD_CAT_ID%20asc/format/json"],
+            observed_at_utc=f"{date}T07:15:00Z",
+            state_as_of_utc=f"{date}T07:15:00Z",
+        )
+        snapshot.update_ledger(manifest)
+        return manifest
+
+    def test_validate_archive_accepts_valid_genesis(self):
+        self.archive_genesis()
+
+        snapshot.validate_archive(min_count=1)
+
+    def test_validate_archive_rejects_manifest_hash_mismatch(self):
+        self.archive_genesis()
+        manifest_path = snapshot.snapshot_dir("2026-04-12") / "manifest.json"
+        with open(manifest_path, encoding="utf-8") as f:
+            manifest = json.load(f)
+        manifest["sha256"] = "0" * 64
+        snapshot.write_json(manifest_path, manifest)
+
+        with self.assertRaises(snapshot.SnapshotError) as raised:
+            snapshot.validate_archive(min_count=1)
+
+        self.assertIn("sha256 mismatch", str(raised.exception))
+
+    def test_validate_archive_checks_audit_counts_when_present(self):
+        self.archive_genesis()
+        day_dir = snapshot.snapshot_dir("2026-04-12")
+        snapshot.write_json(
+            day_dir / "audit.json",
+            {
+                "date": "2026-04-12",
+                "observed_at_utc": "2026-04-12T07:15:00Z",
+                "archive_object_count": 2,
+                "missing_from_current_gp_count": 1,
+                "missing_from_current_gp": [],
+                "present_in_current_gp_not_in_archive_count": 0,
+                "present_in_current_gp_not_in_archive": [],
+                "reappeared_in_current_gp_count": 0,
+                "reappeared_in_current_gp": [],
+            },
+        )
+
+        with self.assertRaises(snapshot.SnapshotError) as raised:
+            snapshot.validate_archive(min_count=1)
+
+        self.assertIn("missing_from_current_gp_count", str(raised.exception))
+
+
+if __name__ == "__main__":
+    unittest.main()

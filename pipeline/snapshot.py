@@ -1229,6 +1229,281 @@ def verify_date(current_date_str):
         sys.exit(1)
 
 
+def discover_snapshot_dates():
+    if not DATA_DIR.exists():
+        return []
+
+    dates = []
+    for manifest_path in DATA_DIR.glob("*/*/*/manifest.json"):
+        try:
+            year = manifest_path.parents[2].name
+            month = manifest_path.parents[1].name
+            day = manifest_path.parents[0].name
+            current_date_str = f"{year}-{month}-{day}"
+            parse_date(current_date_str)
+        except ValueError:
+            continue
+        dates.append(current_date_str)
+    return sorted(set(dates))
+
+
+def read_json_file(path):
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def validate_counted_list(payload, count_key, list_key, errors, context):
+    values = payload.get(list_key)
+    if not isinstance(values, list):
+        errors.append(f"{context}: {list_key} is missing or is not a list")
+        return
+    if payload.get(count_key) != len(values):
+        errors.append(
+            f"{context}: {count_key}={payload.get(count_key)} but "
+            f"{list_key} has {len(values)} entries"
+        )
+
+
+def validate_snapshot_artifacts(current_date_str, min_count=MIN_OBJECT_COUNT, require_audit=False):
+    errors = []
+    day_dir = snapshot_dir(current_date_str)
+    manifest_path = day_dir / "manifest.json"
+    gz_path = day_dir / "catalog.json.gz"
+
+    if not manifest_path.exists():
+        return [f"{current_date_str}: missing manifest.json"], None
+    if not gz_path.exists():
+        return [f"{current_date_str}: missing catalog.json.gz"], None
+
+    try:
+        manifest = read_json_file(manifest_path)
+    except (json.JSONDecodeError, OSError) as exc:
+        return [f"{current_date_str}: cannot read manifest.json: {exc}"], None
+
+    try:
+        with gzip.open(gz_path, "rb") as f:
+            raw_bytes = f.read()
+        records = json.loads(raw_bytes)
+    except (json.JSONDecodeError, OSError, gzip.BadGzipFile) as exc:
+        return [f"{current_date_str}: cannot read catalog.json.gz: {exc}"], manifest
+
+    context = f"snapshot {current_date_str}"
+    if manifest.get("date") != current_date_str:
+        errors.append(f"{context}: manifest date is {manifest.get('date')}")
+
+    computed_hash = hashlib.sha256(raw_bytes).hexdigest()
+    if manifest.get("sha256") != computed_hash:
+        errors.append(
+            f"{context}: sha256 mismatch manifest={manifest.get('sha256')} "
+            f"computed={computed_hash}"
+        )
+
+    canonical_bytes = canonicalize(records)
+    if raw_bytes != canonical_bytes:
+        errors.append(f"{context}: catalog.json.gz is not canonical JSON")
+
+    if manifest.get("raw_bytes") != len(raw_bytes):
+        errors.append(
+            f"{context}: raw_bytes={manifest.get('raw_bytes')} actual={len(raw_bytes)}"
+        )
+    compressed_size = gz_path.stat().st_size
+    if manifest.get("compressed_bytes") != compressed_size:
+        errors.append(
+            f"{context}: compressed_bytes={manifest.get('compressed_bytes')} "
+            f"actual={compressed_size}"
+        )
+    if manifest.get("object_count") != len(records):
+        errors.append(
+            f"{context}: object_count={manifest.get('object_count')} actual={len(records)}"
+        )
+
+    try:
+        validate_gp_records(records, min_count=min_count, context=context)
+    except SnapshotError as exc:
+        errors.append(str(exc))
+
+    cat_ids = [record.get("NORAD_CAT_ID") for record in records if isinstance(record, dict)]
+    if len(cat_ids) != len(set(cat_ids)):
+        errors.append(f"{context}: duplicate NORAD_CAT_ID values")
+    if cat_ids != sorted(cat_ids, key=int_string_sort_key):
+        errors.append(f"{context}: records are not sorted by NORAD_CAT_ID")
+
+    provenance = manifest.get("provenance")
+    if provenance == "rolling_gp_history_delta":
+        delta_path = day_dir / "delta.json"
+        if not delta_path.exists():
+            errors.append(f"{context}: rolling snapshot missing delta.json")
+        else:
+            try:
+                delta = read_json_file(delta_path)
+            except (json.JSONDecodeError, OSError) as exc:
+                errors.append(f"{context}: cannot read delta.json: {exc}")
+            else:
+                if delta.get("date") != current_date_str:
+                    errors.append(f"{context}: delta date is {delta.get('date')}")
+                if delta.get("window_start_utc") != manifest.get("delta_window_start_utc"):
+                    errors.append(f"{context}: delta window_start_utc does not match manifest")
+                if delta.get("window_end_utc") != manifest.get("delta_window_end_utc"):
+                    errors.append(f"{context}: delta window_end_utc does not match manifest")
+                for count_key, list_key in (
+                    ("new_object_count", "new_norad_cat_ids"),
+                    ("updated_object_count", "updated_norad_cat_ids"),
+                    ("unchanged_update_count", "unchanged_update_norad_cat_ids"),
+                    ("ignored_older_update_count", "ignored_older_update_norad_cat_ids"),
+                ):
+                    validate_counted_list(delta, count_key, list_key, errors, context)
+                update_total = sum(
+                    int(delta.get(key, 0))
+                    for key in (
+                        "new_object_count",
+                        "updated_object_count",
+                        "unchanged_update_count",
+                        "ignored_older_update_count",
+                    )
+                )
+                if delta.get("deduped_update_count") != update_total:
+                    errors.append(
+                        f"{context}: deduped_update_count={delta.get('deduped_update_count')} "
+                        f"but categorized updates total {update_total}"
+                    )
+    elif provenance != "genesis_from_gp":
+        errors.append(f"{context}: unexpected provenance {provenance}")
+
+    audit_path = day_dir / "audit.json"
+    visibility_path = day_dir / "visibility_state.json"
+    if require_audit and not audit_path.exists():
+        errors.append(f"{context}: missing audit.json")
+    if require_audit and not visibility_path.exists():
+        errors.append(f"{context}: missing visibility_state.json")
+
+    if audit_path.exists():
+        try:
+            audit = read_json_file(audit_path)
+        except (json.JSONDecodeError, OSError) as exc:
+            errors.append(f"{context}: cannot read audit.json: {exc}")
+        else:
+            if audit.get("date") != current_date_str:
+                errors.append(f"{context}: audit date is {audit.get('date')}")
+            if audit.get("archive_object_count") != manifest.get("object_count"):
+                errors.append(f"{context}: audit archive_object_count does not match manifest")
+            for count_key, list_key in (
+                ("missing_from_current_gp_count", "missing_from_current_gp"),
+                ("present_in_current_gp_not_in_archive_count", "present_in_current_gp_not_in_archive"),
+                ("reappeared_in_current_gp_count", "reappeared_in_current_gp"),
+            ):
+                validate_counted_list(audit, count_key, list_key, errors, context)
+
+            if visibility_path.exists():
+                try:
+                    visibility = read_json_file(visibility_path)
+                except (json.JSONDecodeError, OSError) as exc:
+                    errors.append(f"{context}: cannot read visibility_state.json: {exc}")
+                else:
+                    if visibility.get("date") != current_date_str:
+                        errors.append(
+                            f"{context}: visibility_state date is {visibility.get('date')}"
+                        )
+                    if visibility.get("observed_at_utc") != audit.get("observed_at_utc"):
+                        errors.append(
+                            f"{context}: visibility_state observed_at_utc does not match audit"
+                        )
+                    missing_objects = visibility.get("missing_objects")
+                    if not isinstance(missing_objects, dict):
+                        errors.append(f"{context}: visibility_state missing_objects is not a dict")
+                    elif len(missing_objects) != audit.get("missing_from_current_gp_count"):
+                        errors.append(
+                            f"{context}: visibility_state missing_objects count does not "
+                            "match audit"
+                        )
+
+    return errors, manifest
+
+
+def validate_ledger(manifests_by_date):
+    errors = []
+    if not LEDGER_PATH.exists():
+        return ["ledger.json is missing"]
+
+    try:
+        ledger = read_json_file(LEDGER_PATH)
+    except (json.JSONDecodeError, OSError) as exc:
+        return [f"cannot read ledger.json: {exc}"]
+
+    if not isinstance(ledger, list):
+        return ["ledger.json is not a list"]
+
+    ledger_dates = [entry.get("date") for entry in ledger if isinstance(entry, dict)]
+    if len(ledger_dates) != len(set(ledger_dates)):
+        errors.append("ledger.json has duplicate dates")
+    if ledger_dates != sorted(ledger_dates):
+        errors.append("ledger.json is not sorted by date")
+
+    manifest_dates = sorted(manifests_by_date)
+    if sorted(ledger_dates) != manifest_dates:
+        errors.append(
+            "ledger.json dates do not match archived manifests: "
+            f"ledger={sorted(ledger_dates)} manifests={manifest_dates}"
+        )
+
+    for index, entry in enumerate(ledger):
+        if not isinstance(entry, dict):
+            errors.append(f"ledger entry {index} is not an object")
+            continue
+        current_date_str = entry.get("date")
+        manifest = manifests_by_date.get(current_date_str)
+        if manifest is None:
+            continue
+        expected = ledger_entry_from_manifest(manifest)
+        for key, value in expected.items():
+            if entry.get(key) != value:
+                errors.append(
+                    f"ledger {current_date_str}: {key}={entry.get(key)} "
+                    f"but manifest has {value}"
+                )
+
+    for current_date_str, manifest in manifests_by_date.items():
+        if manifest.get("provenance") != "rolling_gp_history_delta":
+            continue
+        base_date = manifest.get("base_snapshot_date")
+        base_sha = manifest.get("base_snapshot_sha256")
+        base_manifest = manifests_by_date.get(base_date)
+        if base_manifest is None:
+            errors.append(f"{current_date_str}: base snapshot {base_date} is not archived")
+        elif base_manifest.get("sha256") != base_sha:
+            errors.append(f"{current_date_str}: base_snapshot_sha256 does not match base manifest")
+
+    return errors
+
+
+def validate_archive(min_count=MIN_OBJECT_COUNT, require_audit=False):
+    dates = discover_snapshot_dates()
+    if not dates:
+        raise SnapshotError("No archived snapshots found under data/")
+
+    manifests_by_date = {}
+    errors = []
+    for current_date_str in dates:
+        date_errors, manifest = validate_snapshot_artifacts(
+            current_date_str,
+            min_count=min_count,
+            require_audit=require_audit,
+        )
+        errors.extend(date_errors)
+        if manifest is not None and manifest.get("date") == current_date_str:
+            manifests_by_date[current_date_str] = manifest
+
+    errors.extend(validate_ledger(manifests_by_date))
+    if errors:
+        formatted = "\n".join(f"  - {error}" for error in errors)
+        raise SnapshotError(f"Archive validation failed:\n{formatted}")
+
+    print("Archive validation")
+    print(f"  Snapshots: {len(dates)}")
+    print(f"  First:     {dates[0]}")
+    print(f"  Latest:    {dates[-1]}")
+    print("  Status:    VALID")
+
+
 def add_common_snapshot_args(parser):
     parser.add_argument(
         "--range-size",
@@ -1309,10 +1584,28 @@ def main():
     )
     verify_parser.add_argument("--date", required=True, help="Date (YYYY-MM-DD)")
 
+    validate_parser = subparsers.add_parser(
+        "validate", help="Validate every committed archive artifact without network access"
+    )
+    validate_parser.add_argument(
+        "--min-objects",
+        type=int,
+        default=MIN_OBJECT_COUNT,
+        help=f"Minimum snapshot size required (default: {MIN_OBJECT_COUNT})",
+    )
+    validate_parser.add_argument(
+        "--require-audit",
+        action="store_true",
+        help="Require audit.json and visibility_state.json for every archived snapshot",
+    )
+
     args = parser.parse_args()
 
     if args.command == "verify":
         verify_date(args.date)
+        return
+    if args.command == "validate":
+        validate_archive(min_count=args.min_objects, require_audit=args.require_audit)
         return
 
     client = SpaceTrackClient()
