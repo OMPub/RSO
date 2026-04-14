@@ -10,6 +10,20 @@ on:
         description: "Snapshot date, YYYY-MM-DD. Defaults to current UTC date."
         required: false
         type: string
+      mode:
+        description: "Snapshot mode. Auto uses genesis only on the official baseline date."
+        required: false
+        default: auto
+        type: choice
+        options:
+          - auto
+          - daily
+          - genesis
+      force:
+        description: "Overwrite an existing snapshot for the selected date."
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -44,11 +58,27 @@ jobs:
           if [ -z "$DATE" ]; then
             DATE="$(date -u +%F)"
           fi
-          if [ "$DATE" = "$OFFICIAL_BASELINE_DATE" ]; then
-            python pipeline/snapshot.py genesis --date "$DATE"
-          else
-            python pipeline/snapshot.py daily --date "$DATE"
+
+          MODE="${{ github.event.inputs.mode }}"
+          if [ -z "$MODE" ]; then
+            MODE="auto"
           fi
+
+          if [ "$MODE" = "auto" ]; then
+            if [ "$DATE" = "$OFFICIAL_BASELINE_DATE" ]; then
+              COMMAND="genesis"
+            else
+              COMMAND="daily"
+            fi
+          else
+            COMMAND="$MODE"
+          fi
+
+          args=(pipeline/snapshot.py "$COMMAND" --date "$DATE")
+          if [ "${{ github.event.inputs.force }}" = "true" ]; then
+            args+=(--force)
+          fi
+          python "${args[@]}"
 
       - name: Commit archive changes
         run: |
