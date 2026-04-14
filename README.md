@@ -209,6 +209,9 @@ python pipeline/snapshot.py replay --start 2026-01-01
 
 # Verify a stored snapshot
 python pipeline/snapshot.py verify --date 2026-04-12
+
+# Validate every archived snapshot, manifest, ledger entry, delta, and audit
+python pipeline/snapshot.py validate
 ```
 
 Useful operational knobs:
@@ -242,14 +245,31 @@ subsequent daily consensus snapshot.
 
 ### GitHub Actions (Automated)
 
-1. Fork this repo
+There are three workflows:
+
+- **Validate RSO Archive** — read-only tests and archive validation. It needs no
+  Space-Track credentials and runs on pushes, pull requests, and manual dispatch.
+- **Daily RSO Snapshot** — scheduled producer workflow. It reads Space-Track,
+  writes `data/`, and updates `ledger.json`.
+- **Backfill RSO Archive** — manual producer workflow for bounded date ranges.
+
+Operator setup:
+
+1. Fork this repo.
 2. Add repository secrets:
    - `SPACETRACK_USER` — your Space-Track email
    - `SPACETRACK_PASS` — your Space-Track password
-3. Enable Actions
-4. Daily snapshots should run automatically at 12:15am Pacific (`07:15 UTC`
+3. Enable Actions.
+4. Make sure the workflow token can write repository contents. The workflow
+   declares `permissions: contents: write`; if your organization blocks that,
+   enable write permissions at the organization level or use a fine-grained
+   repository token.
+5. Daily snapshots should run automatically at 12:15am Pacific (`07:15 UTC`
    during daylight time)
-5. Run backfill manually via Actions → Backfill RSO Archive → Run workflow
+6. On the official baseline day, the daily workflow automatically runs
+   `genesis --date 2026-04-20`. For rehearsal, run **Daily RSO Snapshot**
+   manually with `mode=genesis`, `date=YYYY-MM-DD`, and `force=true`.
+7. Run backfill manually via Actions → Backfill RSO Archive → Run workflow.
 
 ## Data Structure
 

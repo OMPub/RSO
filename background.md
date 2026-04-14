@@ -305,6 +305,7 @@ Nobody is doing:
   - gzip compression, manifest generation, running ledger, `delta.json`, `audit.json`, and `visibility_state.json`
 - [x] `.github/workflows/daily-snapshot.yml` — Runs at 07:15 UTC daily
 - [x] `.github/workflows/backfill.yml` — Manually triggered for date ranges
+- [x] `.github/workflows/validate-archive.yml` — Read-only tests and archive validation
 - [x] `README.md` with architecture overview and setup instructions
 - [x] Zero external dependencies (no pip install, no requirements.txt)
 
@@ -426,7 +427,8 @@ rso-archive/
 ├── .github/
 │   └── workflows/
 │       ├── daily-snapshot.yml    # Cron: 07:15 UTC daily
-│       └── backfill.yml          # Manual trigger
+│       ├── backfill.yml          # Manual trigger
+│       └── validate-archive.yml  # Read-only validation
 ├── pipeline/
 │   └── snapshot.py               # The entire pipeline (zero deps)
 ├── data/
