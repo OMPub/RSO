@@ -1,0 +1,473 @@
+# Background — RSO Archive Project
+
+> Full design context for coding agents. This document captures the complete architectural conversation behind this project. Read this before making any design decisions.
+
+---
+
+## One-Line Summary
+
+A community-operated, permanently archived, cryptographically verified daily snapshot of every tracked artificial object in Earth orbit — funded by an NFT, verified by its holders, stored forever on Arweave, and attested on Ethereum.
+
+---
+
+## Origin & Motivation
+
+This project lives at the intersection of the 6529 Open Metaverse (OM) community and space situational awareness (SSA). The idea: create a meme card on 6529's "The Memes" NFT collection that funds the permanent archival of the public space object catalog. The NFT artwork itself serves as a live verification dashboard — every time someone views the art, it independently verifies the archive's integrity.
+
+### The Problem
+
+The public catalog of every tracked artificial object in Earth orbit originates from a **single source**: the U.S. Space Force's 18th Space Defense Squadron, distributed via Space-Track.org. It is mirrored by **one person** (Dr. T.S. Kelso at CelesTrak.org). There is:
+
+- No redundant historical archive with cryptographic proof of what the catalog said on any given date
+- No public record of daily changes (objects added, removed, orbits altered)
+- No tamper-evident chain of custody
+- No guarantee of continued public access
+
+If data is retroactively altered, reclassified, or withdrawn — which happens for national security reasons — nobody can independently verify what changed. CelesTrak is already struggling with bandwidth (jumped from ~125 GB/day to ~330 GB/day in early 2026) and enforcing aggressive rate limiting.
+
+### Why It Matters
+
+- **Kessler Syndrome forensics**: Reconstructing trajectories after a collision requires the historical record
+- **Accountability**: "What did we know, and when did we know it?" about orbital events
+- **Institutional fragility**: CelesTrak is one person's mission. The MPC runs on 5-year NASA grants. Space-Track could restrict access at any time
+- **The OMM transition**: The legacy TLE format runs out of 5-digit catalog numbers around July 2026 (~69999). Objects after that can only be represented in OMM format. This archive will be one of the few complete OMM-format historical records spanning the transition
+
+---
+
+## Scope
+
+### Season 1 (Current)
+
+**One dataset**: Space-Track GP catalog (artificial objects — satellites, rocket bodies, debris). ~50,000+ tracked Resident Space Objects (RSOs).
+
+### Season 2 (Future, Separate NFT)
+
+NEO (Near-Earth Object) data — CNEOS Sentry risk table, fireball/bolide data, MPC NEA orbital elements. Same architecture, separate contract, separate archive.
+
+### Terminology Note
+
+**Do not call artificial objects "NEOs."** NEO = Near-Earth Object = natural bodies (asteroids, comets). The Space Force catalog tracks RSOs = Resident Space Objects = artificial hardware. The project name avoids this confusion: "RSO Archive" for Season 1, potential "NEO Archive" for Season 2.
+
+---
+
+## Architecture
+
+### Data Pipeline (GitHub Actions, daily)
+
+```
+Space-Track.org API
+    │
+    │  Bounded GP_HISTORY delta query by CREATION_DATE
+    │
+    ▼
+Python script (zero dependencies, stdlib only)
+    │
+    ├── Merge against prior archived snapshot
+    ├── Canonical JSON serialization (sorted keys, no whitespace)
+    ├── SHA-256 hash computation
+    ├── gzip compression
+    ├── Current-GP visibility audit (non-consensus)
+    │
+    ▼
+Git commit (Phase 1) → Arweave upload (Phase 2) → Ethereum event (Phase 3)
+```
+
+### Canonical Cutoff Time: 00:00:00 UTC
+
+The daily snapshot is defined by a **fixed cutoff timestamp**, not by when the query runs. The refined design uses `00:00:00 UTC` as the canonical cutoff. A snapshot dated `2026-04-13` means "the catalog state as of `2026-04-13T00:00:00Z`."
+
+The GitHub Action should run at **12:15am Pacific** (`07:15 UTC` while Pacific daylight time is in effect). The data boundary remains a clean UTC day, and running several hours after midnight gives Space-Track time to publish data for the closed interval.
+
+**Why the change matters**: The original design tried to reconstruct each day with `gp_history CREATION_DATE/<cutoff` over the full catalog. That is mathematically clean but operationally impossible at current scale: without a lower bound, each range can ask Space-Track for decades of historical element sets and hit response limits. The refined design uses a stateful daily merge:
+
+```text
+snapshot[D] = snapshot[D-1] + bounded_gp_history_delta[D]
+```
+
+For example, the `2026-04-13` snapshot uses:
+
+```text
+base:  snapshot at 2026-04-12T00:00:00Z
+delta: gp_history CREATION_DATE/2026-04-12T00:00:00--2026-04-13T00:00:00
+```
+
+The delta query is closed and bounded. Operators running at 07:15, 08:00, 11:00, or 22:00 UTC can get the same result if they start from the same prior consensus snapshot and Space-Track returns the same bounded history rows.
+
+### CREATION_DATE Semantics
+
+In `gp` and `gp_history`, `CREATION_DATE` is the publication timestamp for a GP element set row. It does **not** mean the object was launched, cataloged, or physically created at that time. Existing objects receive new `CREATION_DATE` values whenever Space-Track publishes updated public elements.
+
+This makes `CREATION_DATE` the right field for daily deltas: a bounded window returns the element sets published during that UTC day. It does **not** return every object that was active or visible during that day. If an object does not appear in a one-day `gp_history` window, that is normal; the rolling snapshot carries forward its previous row unchanged.
+
+`gp_history` is best treated as a publication ledger. The rolling archive uses
+`CREATION_DATE` to bound the daily publication window and to decide which public
+row supersedes the previous archived row. `GP_ID` and `EPOCH` are deterministic
+tie-breakers. Current `gp` is valuable as an observation, but testing showed it
+is not exactly reproducible from a simple ordering over `gp_history` for every
+object; it should not be used as a daily consensus input.
+
+### Genesis and Rolling State
+
+The rolling model needs an agreed starting point. The first live day should be captured as a `genesis_from_gp` snapshot from the current `gp` endpoint, with the exact query time and query paths recorded. From that point forward, the canonical archive is a deterministic state machine:
+
+1. Load the prior archived snapshot.
+2. Query `gp_history` for `previous_cutoff <= CREATION_DATE < current_cutoff`.
+3. Deduplicate the delta by `NORAD_CAT_ID`, selecting by `CREATION_DATE`, then `GP_ID`, then `EPOCH`.
+4. Apply a delta row only if it is newer than the stored row by that same publication ordering.
+5. Carry forward objects that did not receive a new public element set.
+6. Sort by `NORAD_CAT_ID`.
+7. Canonicalize and hash.
+
+Historical backfills before genesis can still be useful, but they should be labeled as reconstructed history rather than treated as having the same guarantee as the live rolling archive.
+
+A genesis snapshot is the exception to the midnight boundary: it records
+`state_as_of_utc` as the actual current-`gp` observation time. The first daily
+snapshot after genesis starts its bounded `gp_history` window from that observed
+timestamp, then later snapshots use normal midnight-to-midnight UTC windows.
+
+The official archive baseline date is **2026-04-20**. The 2026-04-20 scheduled
+run should execute `genesis --date 2026-04-20` at 12:15am Pacific, making that
+current-`gp` observation the first consensus state. The 2026-04-13 genesis
+snapshot captured during development is a rehearsal baseline only. It is useful
+for practicing daily roll-forward and audit behavior during the week before
+launch, but it should not be described as the permanent archive baseline.
+
+### Current GP Is Audit Input, Not Consensus Input
+
+The current `gp` endpoint must not be used as part of the canonical daily merge. It is retrieval-time dependent: an object present at midnight might disappear before the operator pulls current `gp`, or an object added after midnight might already be present. Using current `gp` in the hash path would make hashes depend on when the operator ran.
+
+Current `gp` is still valuable as a visibility audit. The pipeline should query current `gp` once at the official run time, and can query bounded `satcat_change` / `satcat` metadata to explain decay or catalog metadata changes. The audit records a time-sampled observation:
+
+```text
+observed_at_utc
+query_path
+current_gp_object_count
+present_ids_sha256
+missing_from_current_gp
+reappeared_in_current_gp
+```
+
+Every presence or absence claim from current `gp` must include `observed_at_utc`, because it is not a closed-window fact. It is an observation made at a specific retrieval time.
+
+### Removals and Visibility State
+
+The canonical catalog should not remove an object merely because it is absent from current `gp`. Absence from current `gp` may indicate decay, classification, catalog policy change, transient API behavior, or something else. Until there is a deterministic removal rule, removing rows based on current absence would let retrieval-time state mutate the consensus hash.
+
+Instead, removals and disappearances are made visible in audit artifacts. The daily audit should compare the canonical archive's `NORAD_CAT_ID` set with the current `gp` set and maintain visibility state for currently missing objects:
+
+```text
+last_gp_creation_date
+last_seen_in_current_gp_audit
+first_missing_in_current_gp_audit
+consecutive_missing_audits
+satcat_decay
+```
+
+If an archived object is absent from current `gp` and has no `satcat` decay date, report it as `missing_from_current_gp`. Continue checking it every day. If it later appears again, report `reappeared_in_current_gp` and preserve the missing interval. This lets users see both the first missing date and the duration of the absence without changing the canonical snapshot rule.
+
+The split is intentional:
+
+| Artifact | Role | Determinism |
+|----------|------|-------------|
+| `catalog.json.gz` | Consensus snapshot | Deterministic from prior snapshot plus bounded delta |
+| `manifest.json` | Hash/provenance metadata | Deterministic fields plus archive timestamp |
+| `delta.json` | Closed-window GP_HISTORY changes | Replayable for the UTC day |
+| `audit.json` | Current-GP visibility observation | Time-sampled; includes observation timestamp |
+| `visibility_state.json` | Derived currently-missing state | Rebuildable from prior audits |
+
+### The Hash IS the Consensus Object
+
+Multiple independent operators pull the same data, serialize it canonically (sorted keys, no whitespace, ASCII-only), and compute SHA-256. If they pulled the same data, their hashes match automatically. The hash — not an Arweave URI, not a transaction ID — is what operators submit to the Ethereum contract.
+
+**Important**: Arweave transaction IDs are NOT content-addressed. Two people uploading identical bytes get different TX IDs (the ID includes the signer's key and a nonce). IPFS CIDs are content-addressed but IPFS doesn't guarantee persistence. So: Arweave for storage, SHA-256 for consensus, Ethereum for attestation.
+
+### Storage Layers
+
+| Layer | Purpose | Cost | Permanence |
+|-------|---------|------|------------|
+| Git repo | Phase 1 working storage, code, ledger | Free (public repo) | As long as GitHub exists |
+| Arweave | Permanent data archive | ~$0.12/day ($44/year) one-time | 200+ years (endowment model) |
+| Ethereum L1 | Hash attestation, weekly Merkle roots | ~$5/week (~$260/year) | Forever |
+| The NFT | Verification dashboard | Hosted on Arweave | Permanent |
+
+### Ethereum Contract Design
+
+The contract is intentionally minimal — an append-only ledger. It does NOT validate data, resolve disputes, or enforce correctness. The verification happens client-side in the NFT artwork.
+
+```solidity
+// Daily: events only (cheap)
+event DayArchived(
+    uint256 indexed dayNum,
+    address indexed submitter,
+    bytes32 dataHash,
+    string arweaveTxId,
+    uint32 objectCount
+);
+
+// Multiple wallets can confirm the same hash
+// Each confirmation is recorded with the submitter's address
+// The NFT aggregates TDH (Total Days Held) to weight submissions
+mapping(uint256 => mapping(bytes32 => address[])) public confirmations;
+
+// Weekly: stored on-chain (more expensive, but queryable forever)
+struct WeekSummary {
+    bytes32 merkleRoot;     // keccak256 of the week's 7 daily hashes
+    bytes32 winningHash;    // highest-TDH-backed hash
+    uint64  totalTDH;       // sum of confirming wallets' TDH
+    uint16  confirmerCount; // number of unique confirming wallets
+    uint16  objectCount;    // tracked objects that day
+}
+mapping(uint256 => WeekSummary) public weeks;
+```
+
+**Why events for daily, storage for weekly**: Reading events (`eth_getLogs`) is free but has practical RPC pagination limits over large block ranges. Reading storage (`eth_call`) is free and instant with no range limits. The NFT reads weekly summaries from storage (fast, full history) and current-week details from events (narrow block range, trivial).
+
+**Why no on-chain validation**: Smart contracts cannot reach the internet. They can't fetch from Arweave, can't hash external data, can't verify anything outside the EVM. An oracle (like Chainlink) would reintroduce centralized trust. The verification belongs in the viewer's browser.
+
+### Sybil Resistance: TDH Weighting
+
+The 6529 ecosystem has **TDH (Total Days Held)** — a reputation metric computed as token holdings × days held. It's already used for governance (SZN11's first meme card was selected by TDH plurality). TDH can't be manufactured quickly because the time dimension is the Sybil defense.
+
+**How it works**:
+1. Anyone can submit `confirmDay(dayNum, dataHash)` to the contract
+2. The contract records the submitter's address alongside their submission
+3. Multiple addresses submitting the same hash pile up
+4. The NFT reads all confirmations, looks up each address's TDH (via seize.io API), sums TDH per unique hash
+5. The highest-TDH-backed hash wins for display purposes
+6. Confirming holders add their TDH weight to an existing submission — even small TDH helps
+
+**Attack resistance**: An attacker submitting a fake hash has low/zero TDH. The legitimate hash from established community members always outweighs it. Even if an attacker buys cards to inflate TDH, the *days held* component means they'd need months before their TDH matters. By then, the community notices.
+
+### The NFT Artwork
+
+**Two components, clean separation**:
+
+1. **The NFT itself** (HTML/JS on Arweave, rendered in iframe on 6529.io/OpenSea): Read-only verification dashboard. No wallet needed. Fetches events from Ethereum via public RPC, fetches data from Arweave, hashes client-side via `crypto.subtle.digest('SHA-256', data)`, renders orbital ring visualization with green/amber/red dots per day. Shows 30-day rolling view plus full weekly history.
+
+2. **The confirmation dApp** (separate HTML page, also on Arweave): Linked from the NFT. This is where holders connect their wallet and submit `confirmDay` transactions. Shows the current day's hash, lets them verify against Arweave data, one-button confirm.
+
+**Why the split**: NFT iframes on platforms like 6529.io and OpenSea are sandboxed — they can't access `window.ethereum` (wallet injection). The art is read-only by design. The dApp page lives at a separate URL (e.g., `om.pub/rso`) where wallet connection works normally.
+
+**Viewing IS verification**: Every time someone opens the NFT, their browser independently fetches the data, hashes it, and checks the chain. No wallet, no account, no trust. The more people view the art, the more verification happens.
+
+### Daily Diff (Future Phase)
+
+Not implemented yet, but architecturally planned. The daily pipeline will compute two related artifacts:
+
+1. A deterministic `delta.json` from the closed `gp_history` window.
+2. A time-sampled `audit.json` from current `gp` and relevant `satcat` metadata.
+
+`delta.json` records objects added or updated during the UTC day. Objects absent from the one-day `gp_history` window are simply carried forward; that absence is not suspicious.
+
+`audit.json` records visibility observations: objects in the archive that are missing from current `gp`, objects that reappeared after being missing, and objects whose disappearance is explained by `satcat` decay metadata. This catches scenarios that hash-only verification misses without letting retrieval-time absence change the canonical catalog.
+
+The NFT artwork would add a "seismograph" visualization: a rolling waveform of daily catalog volatility. Flat = normal. Spike = something unusual. An object disappearing triggers a visual alert.
+
+---
+
+## Prior Art
+
+### Directly Relevant
+
+- **MITRE BESTA / SNARE** (Dailey, Reed, Bryson, 2019–2020): Proposed a permissioned blockchain for international SSA data sharing. Top-down institutional framework — governments as node operators, international governing body. Research papers only, no live deployment found. Our project is bottom-up, permissionless, community-operated.
+
+- **Jonathan McDowell / GCAT** (2020–present): The General Catalog of Artificial Space Objects. One person's decades-long effort to catalog every artificial object ever launched, under CC-BY. Manually maintained, periodically updated. McDowell said his audience is "the historian 1,000 years from now." Closest in spirit to our project. GCAT does curation; we do preservation. Complementary, not competitive.
+
+- **Dr. T.S. Kelso / CelesTrak** (1985–present): Primary public mirror of Space-Track data. Now struggling with bandwidth and implementing aggressive rate limiting. One-person operation. The fragility of CelesTrak is part of our motivation.
+
+### Tangentially Related
+
+- **SpaceChain**: Launched blockchain nodes on actual satellites. Different problem — putting blockchain in space, not putting space data on blockchain.
+- **Academic papers** (2020–2025): Various proposals for blockchain-enabled satellite swarms for debris tracking. All about building new observation networks, not preserving existing public data.
+- **Arch Mission Foundation**: Storing Wikipedia on a satellite. Data preservation in space, not preservation of space data.
+
+### What Doesn't Exist (Our Gap)
+
+Nobody is doing:
+- Daily automated archival of the GP catalog to permanent decentralized storage
+- Computing/publishing the daily diff of the space object catalog
+- Using an NFT as both verification client and community coordination mechanism
+- Using an existing NFT community's reputation (TDH) as Sybil resistance for a scientific data oracle
+
+---
+
+## Implementation Status
+
+### Done (Phase 1 — Git Archive)
+
+- [x] `pipeline/snapshot.py` — Zero-dependency Python script (stdlib only)
+  - `genesis` command: captures the first agreed rolling snapshot from current `gp`
+  - `daily` command: builds a rolling midnight-UTC snapshot from the prior archived snapshot plus bounded `gp_history` deltas
+  - `backfill` command: builds rolling snapshots from an existing prior-day base snapshot
+  - `replay` command: replays bounded `gp_history` from an empty state and compares the result to current `gp`
+  - `verify` command: re-hashes stored snapshot and compares to manifest
+  - Canonical JSON serialization for deterministic hashing
+  - gzip compression, manifest generation, running ledger, `delta.json`, `audit.json`, and `visibility_state.json`
+- [x] `.github/workflows/daily-snapshot.yml` — Runs at 07:15 UTC daily
+- [x] `.github/workflows/backfill.yml` — Manually triggered for date ranges
+- [x] `README.md` with architecture overview and setup instructions
+- [x] Zero external dependencies (no pip install, no requirements.txt)
+
+### Done (Phase 1.1 — Deterministic Rolling Snapshot)
+
+- [x] Change canonical cutoff from `06:52:09 UTC` to `00:00:00 UTC`
+- [x] Change GitHub Action schedule to run at `07:15 UTC`
+- [x] Add explicit `genesis_from_gp` mode for the first agreed live snapshot
+- [x] Change daily snapshots to `prior_snapshot_plus_bounded_gp_history_delta`
+- [x] Write `delta.json` with bounded `gp_history` counts, updated IDs, new IDs, and query paths
+- [x] Add current `gp` visibility audit as non-consensus `audit.json`
+- [x] Add `visibility_state.json` for missing/reappeared tracking across days
+- [x] Record `base_snapshot_date` and `base_snapshot_sha256` in each rolling manifest
+- [x] Update tests for rolling merge, manifest metadata, URL construction, and audit state
+
+### Done (Phase 1.2 — Replay Validation)
+
+- [x] Capture current `gp` as an end-state reference
+- [x] Replay bounded 24-hour `gp_history` windows from `2026-01-01T00:00:00Z` to the current observation time
+- [x] Compare replayed state to current `gp`
+- [x] Quantify objects missing from replay, missing from current `gp`, and record-level mismatches
+- [x] Decide whether a Jan 1 delta-only replay is sufficient for historical baseline analysis
+
+Replay result: bounded 24-hour `gp_history` queries worked without the
+unbounded-query Space-Track failure. The Jan 1-to-current empty-state replay
+processed 8.35M history rows across 103 windows and reconstructed 31,412
+objects, all of which were still present in current `gp`. Of those shared
+objects, 31,310 byte-matched current `gp` and 102 had record-level differences.
+The replay did not reconstruct 35,640 current `gp` objects, because many
+long-lived objects had no public `gp_history` row in the 2026 replay window.
+Therefore a delta-only replay from Jan 1 is useful validation, but it is not a
+complete historical baseline. The live archive needs a `genesis_from_gp`
+snapshot, then deterministic bounded deltas from that point forward.
+
+The replay also showed that current `gp` does not always byte-match a simple
+latest-publication reconstruction from `gp_history`. The canonical archive
+therefore preserves its own deterministic rule: latest public `gp_history`
+publication by `CREATION_DATE`, not retrieval-time current `gp` behavior.
+
+### To Build (Phase 2 — Arweave)
+
+- [ ] Arweave upload step in pipeline (via Irys/Bundlr CLI or arweave-js)
+- [ ] Arweave TX ID recorded in manifest and ledger
+- [ ] Pipeline uploads compressed snapshot to Arweave after git commit
+
+### To Build (Phase 3 — Ethereum)
+
+- [ ] Solidity contract: daily events + weekly summary structs
+- [ ] Contract deployment to Ethereum mainnet
+- [ ] Pipeline step: emit `DayArchived` event after Arweave upload
+- [ ] Weekly Merkle root computation and `finalizeWeek` call
+- [ ] Contract verified on Etherscan, immutable, no owner functions
+
+### To Build (Phase 4 — NFT)
+
+- [ ] NFT artwork (HTML/JS): orbital ring visualization, 30-day rolling view
+- [ ] Reads weekly summaries from contract storage (full history)
+- [ ] Reads current week events from contract (daily detail)
+- [ ] Fetches data from Arweave, re-hashes client-side
+- [ ] Four-source cross-check display per day (Space-Track, CelesTrak, Arweave, Ethereum)
+- [ ] TDH lookup for weighting (via seize.io API)
+- [ ] Verification sequence animation on load
+- [ ] Detail panel on click (hash, Arweave TX, confirmer count, TDH backing)
+
+### To Build (Phase 5 — Confirmation dApp)
+
+- [ ] Standalone HTML page (hosted on Arweave or om.pub/rso)
+- [ ] Wallet connect (MetaMask/Rabby/WalletConnect)
+- [ ] Shows current day's hash computed from Arweave data
+- [ ] One-button `confirmDay` transaction submission
+- [ ] Displays confirmer leaderboard (TDH-weighted)
+
+### To Build (Phase 6 — Daily Diff and Audit Visualization)
+
+- [ ] Diff computation: objects added/updated/carried-forward vs previous day
+- [ ] Audit computation: missing from current `gp`, reappeared in current `gp`, decayed via `satcat`
+- [ ] Diff archived alongside raw snapshot
+- [ ] On-chain event fields: `objectsAdded`, `objectsUpdated`, `auditAnomalyCount`
+- [ ] NFT seismograph visualization layer
+
+---
+
+## Technical Decisions & Rationale
+
+### Why Ethereum mainnet, not an L2
+
+The project's thesis is "no single point of failure." Base L2 is operated by Coinbase — a corporate dependency. Ethereum mainnet has no single operator. Cost is manageable (~$260/year for daily events + weekly storage writes). Philosophical consistency matters for credibility.
+
+### Why not ZK proofs
+
+ZK is for proving things without revealing underlying data. This data is public by design — transparency is the point. A Merkle chain (each day's record includes the previous day's hash) provides tamper evidence more simply and cheaply. ZK adds circuit compilation complexity, proof generation infrastructure, and trusted setup for zero benefit here.
+
+### Why Arweave, not IPFS
+
+IPFS is content-addressed (same data = same CID) but doesn't guarantee persistence — data disappears when no one pins it. Arweave is pay-once-store-forever with an endowment model that funds storage for 200+ years. For a permanent archive, Arweave's persistence guarantee is essential.
+
+### Why the hash is the consensus object, not the Arweave TX ID
+
+Arweave TX IDs include the signer's key and nonce — two people uploading identical data get different IDs. SHA-256 of the canonical JSON is deterministic — everyone who pulls the same data gets the same hash. Operators submit hashes to the contract; the Arweave TX ID is just a pointer to where the data lives.
+
+### Why CelesTrak can't be used for live confirmation
+
+CelesTrak's GP data updates roughly every 2 hours. A confirming holder opening the NFT hours after the operator's pull would get different data from CelesTrak (updated since capture). This breaks hash comparison. Instead, confirmers verify the Arweave copy (immutable, identical bytes every time) against the on-chain hash. Operators verify source-to-archive; confirmers verify archive integrity.
+
+### Why the contract doesn't validate on-chain
+
+Smart contracts can't reach the internet. They can't fetch Arweave data or compute hashes of external content. An oracle would reintroduce centralized trust. The contract is a dumb append-only ledger. The NFT's JavaScript is the smart verification layer — thousands of independent browsers are a better oracle than any single service.
+
+### Why events for daily, storage for weekly
+
+Events are permanent on Ethereum but querying them over large block ranges requires paginated `eth_getLogs` calls with RPC provider limits. Storage mappings are readable instantly via `eth_call` with no range limits. Weekly summaries in storage give the NFT instant access to full project history. Current-week daily detail comes from events (narrow block range, trivial to query).
+
+---
+
+## File Structure
+
+```
+rso-archive/
+├── .github/
+│   └── workflows/
+│       ├── daily-snapshot.yml    # Cron: 07:15 UTC daily
+│       └── backfill.yml          # Manual trigger
+├── pipeline/
+│   └── snapshot.py               # The entire pipeline (zero deps)
+├── data/
+│   └── {YYYY}/{MM}/{DD}/
+│       ├── catalog.json.gz       # Compressed GP catalog snapshot
+│       ├── manifest.json         # Hash, object count, metadata
+│       ├── delta.json            # Closed-window GP_HISTORY changes applied
+│       ├── audit.json            # Current-GP visibility observation
+│       └── visibility_state.json # Missing/reappeared state for this day
+├── ledger.json                   # Running hash ledger (all dates)
+├── README.md
+├── CONTEXT.md                    # This file
+└── .gitignore
+```
+
+---
+
+## Key URLs & Resources
+
+- **Space-Track.org**: https://www.space-track.org (requires free account)
+- **Space-Track API docs**: https://www.space-track.org/documentation
+- **CelesTrak**: https://celestrak.org
+- **6529 The Memes**: https://6529.io/the-memes
+- **6529 FAQ**: https://6529.io/about/faq
+- **6529 Delegation Contract**: https://github.com/6529-Collections/nftdelegation
+- **MITRE BESTA paper**: https://www.mitre.org/sites/default/files/2021-11/prs-20-2645-blockchain-enabled-space-traffic-awareness-BESTA-discovery-of-anomalous-behavior-supporting-automated-space-traffic-management.pdf
+- **GCAT**: https://planet4589.org/space/gcat/
+- **Arweave fees**: https://ar-fees.arweave.net/
+- **OMM format spec**: CCSDS 502.0-B-3
+
+---
+
+## Mantras
+
+- The community is the infrastructure
+- The art is the dashboard
+- The meme is the message
+- Every UTC day, the record is cut at midnight
+- Every day at 12:15am Pacific, the operators make the record visible
+- Ship the pipeline this week — every day not archived is a day lost forever
+
+---
+
+*Last updated: 2026-04-13. Generated from conversation between Brook and Claude (Opus 4.6) designing the RSO Archive project for 6529 The Memes, then refined with Codex for the rolling snapshot and visibility audit model.*
