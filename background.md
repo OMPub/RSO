@@ -136,7 +136,7 @@ launch, but it should not be described as the permanent archive baseline.
 
 The current `gp` endpoint must not be used as part of the canonical daily merge. It is retrieval-time dependent: an object present at midnight might disappear before the operator pulls current `gp`, or an object added after midnight might already be present. Using current `gp` in the hash path would make hashes depend on when the operator ran.
 
-Current `gp` is still valuable as a visibility audit. The pipeline should query current `gp` once at the official run time, and can query bounded `satcat_change` / `satcat` metadata to explain decay or catalog metadata changes. The audit records a time-sampled observation:
+Current `gp` is still valuable as a visibility audit. The pipeline should query current `gp` once at the official run time. The audit records a time-sampled observation:
 
 ```text
 observed_at_utc
@@ -151,7 +151,7 @@ Every presence or absence claim from current `gp` must include `observed_at_utc`
 
 ### Removals and Visibility State
 
-The canonical catalog should not remove an object merely because it is absent from current `gp`. Absence from current `gp` may indicate decay, classification, catalog policy change, transient API behavior, or something else. Until there is a deterministic removal rule, removing rows based on current absence would let retrieval-time state mutate the consensus hash.
+The canonical catalog should not remove an object merely because it is absent from current `gp`. Absence from current `gp` is not proof of orbital decay; it may indicate classification or access changes, catalog publication policy changes, transient API behavior, object identification changes, catalog renumbering or merges, source-side corrections, or something else. Until there is a deterministic removal rule, removing rows based on current absence would let retrieval-time state mutate the consensus hash.
 
 Instead, removals and disappearances are made visible in audit artifacts. The daily audit should compare the canonical archive's `NORAD_CAT_ID` set with the current `gp` set and maintain visibility state for currently missing objects:
 
@@ -160,10 +160,11 @@ last_gp_creation_date
 last_seen_in_current_gp_audit
 first_missing_in_current_gp_audit
 consecutive_missing_audits
-satcat_decay
 ```
 
-If an archived object is absent from current `gp` and has no `satcat` decay date, report it as `missing_from_current_gp`. Continue checking it every day. If it later appears again, report `reappeared_in_current_gp` and preserve the missing interval. This lets users see both the first missing date and the duration of the absence without changing the canonical snapshot rule.
+If an archived object is absent from current `gp`, report it as `missing_from_current_gp`. Continue checking it every day. If the object later appears again, report `reappeared_in_current_gp` and preserve the missing interval. This lets users see both the first missing date and the duration of the absence without changing the canonical snapshot rule.
+
+Orbital decay is not treated as an explanation for disappearance from current `gp`. Space-Track can include objects with `DECAY_DATE` in current `gp`, and `gp_history` can publish `DECAY_DATE` updates as normal element-set rows. Current-`gp` absence is a separate signal. Possible causes include temporary API/catalog behavior, publication policy changes, classification or access changes, object identification changes, catalog renumbering or merges, or source-side data corrections. The archive keeps the last public row and makes the absence visible so operators can investigate it without changing the canonical hash.
 
 The split is intentional:
 
@@ -255,11 +256,11 @@ The 6529 ecosystem has **TDH (Total Days Held)** — a reputation metric compute
 Not implemented yet, but architecturally planned. The daily pipeline will compute two related artifacts:
 
 1. A deterministic `delta.json` from the closed `gp_history` window.
-2. A time-sampled `audit.json` from current `gp` and relevant `satcat` metadata.
+2. A time-sampled `audit.json` from current `gp`.
 
 `delta.json` records objects added or updated during the UTC day. Objects absent from the one-day `gp_history` window are simply carried forward; that absence is not suspicious.
 
-`audit.json` records visibility observations: objects in the archive that are missing from current `gp`, objects that reappeared after being missing, and objects whose disappearance is explained by `satcat` decay metadata. This catches scenarios that hash-only verification misses without letting retrieval-time absence change the canonical catalog.
+`audit.json` records visibility observations: objects in the archive that are missing from current `gp` and objects that reappeared after being missing. This catches scenarios that hash-only verification misses without letting retrieval-time absence change the canonical catalog.
 
 The NFT artwork would add a "seismograph" visualization: a rolling waveform of daily catalog volatility. Flat = normal. Spike = something unusual. An object disappearing triggers a visual alert.
 
@@ -381,7 +382,8 @@ publication by `CREATION_DATE`, not retrieval-time current `gp` behavior.
 ### To Build (Phase 6 — Daily Diff and Audit Visualization)
 
 - [ ] Diff computation: objects added/updated/carried-forward vs previous day
-- [ ] Audit computation: missing from current `gp`, reappeared in current `gp`, decayed via `satcat`
+- [x] Audit computation: missing from current `gp`, reappeared in current `gp`
+- [ ] Diagnostic metadata for unusual missing-object cases, if practice data shows it is needed
 - [ ] Diff archived alongside raw snapshot
 - [ ] On-chain event fields: `objectsAdded`, `objectsUpdated`, `auditAnomalyCount`
 - [ ] NFT seismograph visualization layer
