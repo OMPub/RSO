@@ -27,6 +27,8 @@ operators who start from the same prior consensus snapshot.
 
 The catalog currently tracks **50,000+** resident space objects (RSOs): active satellites, defunct spacecraft, rocket bodies, and debris.
 
+For terminology and field definitions, see [GLOSSARY.md](GLOSSARY.md).
+
 ## Why
 
 The public space object catalog originates from a single source (U.S. Space Force, 18th Space Defense Squadron) and is mirrored by a single individual ([CelesTrak](https://celestrak.org)). There is no redundant historical archive with cryptographic proof of what the catalog said on any given date.
@@ -647,6 +649,7 @@ python -m unittest discover -s tests
 ## Prior Art & Acknowledgments
 
 - **MITRE BESTA** (Dailey, Reed, Bryson, 2019–2020) — Established the conceptual case that blockchain and space situational awareness belong together.
+- **Matt Scobel / [Eyes on Earth](https://foundation.app/mint/eth/0x3B3ee1931Dc30C1957379FAc9aba94D1C48a5405/95439)** — Beautiful cryptoart visualizing true orbits of satellites, of a 24h time period.
 - **Dr. T.S. Kelso / CelesTrak** — Decades of making GP data accessible when nobody else would.
 - **Jonathan McDowell / GCAT** — Proving one person's determination can preserve the space record. "My audience is the historian 1,000 years from now."
 - **18th Space Defense Squadron / Space-Track** — Making the data public in the first place.
