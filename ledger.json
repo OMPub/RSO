@@ -20,5 +20,19 @@
     "regenerated_at": "2026-04-14T07:31:46.397311+00:00",
     "sha256": "9aed7fe45e2d748548fc063e73da3bde7105276b99c6ad511d3c55d0d21c4cd3",
     "state_as_of_utc": "2026-04-14T07:31:34Z"
+  },
+  {
+    "archived_at": "2026-04-15T08:58:02.601847+00:00",
+    "base_snapshot_date": "2026-04-14",
+    "base_snapshot_sha256": "9aed7fe45e2d748548fc063e73da3bde7105276b99c6ad511d3c55d0d21c4cd3",
+    "compressed_bytes": 11216806,
+    "date": "2026-04-15",
+    "delta_window_end_utc": "2026-04-15T00:00:00Z",
+    "delta_window_start_utc": "2026-04-14T07:31:34Z",
+    "object_count": 67061,
+    "provenance": "rolling_gp_history_delta",
+    "query_strategy": "prior_snapshot_plus_bounded_gp_history_delta",
+    "sha256": "81e198cd67d374a646920f5902da2dd0c0932ed75f809b386871c03a50238973",
+    "state_as_of_utc": "2026-04-15T00:00:00Z"
   }
 ]
