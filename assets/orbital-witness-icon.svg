@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">Orbital Witness Icon</title>
+  <desc id="desc">A minimal eye formed by orbital paths with a tracked object dot.</desc>
+  <rect width="1024" height="1024" rx="96" fill="#050708"/>
+  <g fill="none" stroke-linecap="round">
+    <path d="M114 512A398 118 0 0 0 910 512" transform="rotate(-20 512 512)" stroke="#7d858c" stroke-width="9"/>
+    <path d="M114 512A398 118 0 0 1 910 512" transform="rotate(20 512 512)" stroke="#7d858c" stroke-width="9"/>
+    <path d="M114 512A398 118 0 0 0 910 512" transform="rotate(20 512 512)" stroke="#f4f7fb" stroke-width="9"/>
+    <path d="M114 512A398 118 0 0 1 910 512" transform="rotate(-20 512 512)" stroke="#f4f7fb" stroke-width="9"/>
+  </g>
+  <circle cx="512" cy="512" r="66" fill="#050708" stroke="#f4f7fb" stroke-width="14"/>
+  <circle cx="512" cy="512" r="18" fill="#f4f7fb"/>
+</svg>
