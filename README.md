@@ -1,10 +1,18 @@
-# RSO Archive
+# Orbital Witness: RSO Archive
 
-**Permanent, tamper-evident archive of the public space object catalog.**
+**Permanent, decentralized, tamper-evident archive of the public space object catalog.**
 
-Every UTC day, the record is cut at **00:00:00 UTC**. The operator run happens
-at **12:15am Pacific** (`07:15 UTC` while Pacific daylight time is in effect),
-leaving Space-Track several hours to settle.
+Orbital Witness is a pattern for public, independently operated, onchain-ready
+archives of orbital datasets. 
+
+This repository is the first witness: the daily
+Resident Space Object (RSO) catalog. The same shape can later be reused for
+near-Earth objects (NEO), conjunction events, launch records, reentry
+observations, or any other public space dataset where provenance matters.
+
+Every UTC day, the record is cut at **00:00:00 UTC**. The operator runs should
+happen a few minutes or hours after the cutoff, leaving Space-Track several
+hours to settle (and to be nice to the API).
 
 ---
 
@@ -28,7 +36,10 @@ If data is retroactively altered, reclassified, or withdrawn — which happens �
 ## Architecture
 
 ```
-Space-Track.org GP_HISTORY ──→ Daily Pipeline ──→ SHA-256 Hash
+Dataset Source ──────────────→ Witness Pipeline ──→ SHA-256 Hash
+     │                                  │
+     ▼                                  ▼
+Space-Track GP_HISTORY            RSO Archive
                          │                  │
                          ▼                  ▼
                     Arweave (permanent)  Ethereum (attestation)
@@ -43,6 +54,14 @@ Space-Track.org GP_HISTORY ──→ Daily Pipeline ──→ SHA-256 Hash
 **Phase 2:** Arweave permanent storage + Ethereum on-chain attestation.
 
 **Phase 3:** Dynamic NFT artwork on 6529 The Memes that reads from Arweave and Ethereum, verifies data integrity client-side, and displays verification status. TDH-weighted community confirmations.
+
+**Phase 4:** Orbital Witness expansion to other datasets: NEO, conjunction events, fireball observations, etc.
+
+Future Orbital Witness archives should keep the same operator experience:
+bounded source queries, canonical JSON, reproducible hashes, public manifests,
+read-only validation, and eventually permanent storage plus onchain
+attestation. RSO comes first because the catalog is public, important, and
+fragile enough to justify the machinery.
 
 ## Archive Schedule
 
@@ -243,7 +262,87 @@ Operational conclusion: use `genesis` once to create the first agreed full
 catalog from current `gp`, then use bounded `gp_history` deltas for every
 subsequent daily consensus snapshot.
 
-### GitHub Actions (Automated)
+## Join the Operators
+
+An operator is anyone running an independent copy of the archive pipeline. The
+goal is simple: start from the same agreed baseline, run the same code, publish
+the same daily hashes, and make drift visible.
+
+The resilience comes from many independent operators, not from one blessed
+server. If one GitHub account, one workflow, one maintainer, or one future
+storage provider disappears, other operators still have the code, the data, the
+ledger, and the hashes. Matching hashes across independent forks are the signal
+that the public record is being witnessed, not merely hosted.
+
+### 1. Create Your Space-Track Account
+
+Create a free account at [Space-Track.org](https://www.space-track.org/auth/createAccount).
+Use a real email address and read the Space-Track terms of use. The archive
+uses only public GP/OMM data, but Space-Track rate limits still apply.
+
+After the account is approved, keep the username and password ready. They will
+be stored as GitHub Actions secrets, not committed to the repo.
+
+### 2. Fork the Archive
+
+Fork this repository into your own GitHub account or organization using the
+GitHub **Fork** button. Your fork is your independent witness node.
+
+The archive data is intentionally committed to Git during Phase 1. Do not
+ignore `data/` or `ledger.json`; those files are the public record until
+Arweave storage is added.
+
+### 3. Enable GitHub Actions
+
+Open your fork on GitHub, then go to:
+
+```text
+Settings -> Actions -> General
+```
+
+Enable Actions for the repository.
+
+The producer workflows need permission to commit new archive files. Under
+Workflow permissions, choose read/write access if GitHub lets you. If the option
+is greyed out, your organization may be enforcing a stricter policy. The
+workflows already declare:
+
+```yaml
+permissions:
+  contents: write
+```
+
+If the daily workflow fails during `git push`, enable write permissions at the
+organization level or use a fine-grained repository token with `Contents: Read
+and write`.
+
+### 4. Add Space-Track Secrets
+
+Open:
+
+```text
+Settings -> Secrets and variables -> Actions -> Repository secrets
+```
+
+Add:
+
+```text
+SPACETRACK_USER = your Space-Track email
+SPACETRACK_PASS = your Space-Track password
+```
+
+Do not put these values in `.env`, workflow YAML, commits, issues, or logs.
+
+Optional command-line alternative: if you already use the GitHub CLI, these two
+commands do the same secret setup as the web UI above. Skip this block if you
+used the GitHub website.
+
+```bash
+gh secret set SPACETRACK_USER --repo YOUR_OWNER/RSO
+gh secret set SPACETRACK_PASS --repo YOUR_OWNER/RSO
+```
+
+### 5. Know the Workflows
 
 There are three workflows:
 
@@ -253,23 +352,185 @@ There are three workflows:
   writes `data/`, and updates `ledger.json`.
 - **Backfill RSO Archive** — manual producer workflow for bounded date ranges.
 
-Operator setup:
+The validator is the first thing to trust. It proves the committed archive is
+internally consistent without asking Space-Track for anything.
 
-1. Fork this repo.
-2. Add repository secrets:
-   - `SPACETRACK_USER` — your Space-Track email
-   - `SPACETRACK_PASS` — your Space-Track password
-3. Enable Actions.
-4. Make sure the workflow token can write repository contents. The workflow
-   declares `permissions: contents: write`; if your organization blocks that,
-   enable write permissions at the organization level or use a fine-grained
-   repository token.
-5. Daily snapshots should run automatically at 12:15am Pacific (`07:15 UTC`
-   during daylight time)
-6. On the official baseline day, the daily workflow automatically runs
-   `genesis --date 2026-04-20`. For rehearsal, run **Daily RSO Snapshot**
-   manually with `mode=genesis`, `date=YYYY-MM-DD`, and `force=true`.
-7. Run backfill manually via Actions → Backfill RSO Archive → Run workflow.
+### 6. Run the Read-Only Validator
+
+In GitHub:
+
+```text
+Actions -> Validate RSO Archive -> Run workflow
+```
+
+It should pass without secrets.
+
+Optional local alternative: if you are comfortable using a terminal, these
+commands do the same validation on your own machine. Skip this block if you are
+only using GitHub Actions.
+
+```bash
+python3 -m unittest discover -s tests
+python3 -m py_compile pipeline/snapshot.py
+python3 pipeline/snapshot.py validate
+```
+
+The validator checks catalog hashes, canonical JSON, manifest fields, object
+counts, ledger entries, rolling base hashes, delta counts, and audit artifact
+consistency.
+
+### 7. Run a Rehearsal Genesis
+
+Before the official baseline day, test your producer setup with a rehearsal
+baseline.
+
+In GitHub:
+
+```text
+Actions -> Daily RSO Snapshot -> Run workflow
+```
+
+Use:
+
+```text
+date  = today's UTC date
+mode  = genesis
+force = true only if that date already exists in your fork
+```
+
+This captures current `gp`, writes a `genesis_from_gp` snapshot for that date,
+updates `ledger.json`, and commits the result back to your fork.
+
+Confirm the run output includes:
+
+```text
+Provenance: genesis_from_gp
+Objects:    50,000+
+SHA-256:    ...
+DONE
+```
+
+Then confirm the follow-up **Validate RSO Archive** workflow is green.
+
+### 8. Rehearse One Daily Roll-Forward
+
+After a rehearsal genesis exists, run **Daily RSO Snapshot** manually for the
+next date:
+
+```text
+date  = next UTC date after your rehearsal genesis
+mode  = daily
+force = false unless deliberately rebuilding that date
+```
+
+That run should create a `rolling_gp_history_delta` snapshot with:
+
+```text
+catalog.json.gz
+manifest.json
+delta.json
+audit.json
+visibility_state.json
+```
+
+The manifest should point back to the prior snapshot with
+`base_snapshot_date` and `base_snapshot_sha256`. The validator checks that link.
+
+### 9. Let the Schedule Run
+
+The daily producer is scheduled for:
+
+```text
+12:15am Pacific
+07:15 UTC while Pacific daylight time is in effect
+```
+
+GitHub schedules are not exact to the second and may start a few minutes late.
+That is fine. The canonical data cutoff remains midnight UTC.
+
+The official archive baseline date is `2026-04-20`. On that date, the workflow
+automatically runs:
+
+```bash
+python pipeline/snapshot.py genesis --date 2026-04-20
+```
+
+On other dates, it runs:
+
+```bash
+python pipeline/snapshot.py daily --date YYYY-MM-DD
+```
+
+### 10. Check Your Daily Result
+
+Each successful producer run should commit archive changes back to your fork.
+Check:
+
+```text
+Actions -> Daily RSO Snapshot -> latest run -> success
+Actions -> Validate RSO Archive -> latest run -> success
+```
+
+For a daily snapshot, inspect the new manifest:
+
+```text
+data/YYYY/MM/DD/manifest.json
+```
+
+The important fields are:
+
+```text
+date
+sha256
+object_count
+provenance
+base_snapshot_date
+base_snapshot_sha256
+delta_window_start_utc
+delta_window_end_utc
+```
+
+For the audit, inspect:
+
+```text
+data/YYYY/MM/DD/audit.json
+```
+
+The audit is not part of the consensus hash path. It is a time-sampled current
+`gp` observation that makes missing or reappearing objects visible.
+
+### 11. Compare With Other Operators
+
+Decentralization only helps if operators compare results. The expected healthy
+state is boring: independent forks publish the same hash for the same date.
+
+For the same date and same baseline lineage, operators should compare:
+
+```text
+ledger.json date
+ledger.json sha256
+manifest.json sha256
+manifest.json object_count
+```
+
+Matching hashes mean the canonical catalogs match byte-for-byte after
+decompression. If hashes diverge, compare `manifest.json` first, then
+`delta.json`, then the workflow logs. Most disagreements should reduce to a
+different baseline, a rebuild with `--force`, or a Space-Track response
+difference inside the bounded `gp_history` window.
+
+### 12. Be Gentle With the API
+
+The workflows set conservative delays between Space-Track requests:
+
+```text
+Daily:   RSO_REQUEST_DELAY=5
+Backfill: RSO_REQUEST_DELAY=12.5
+```
+
+Avoid repeated forced rebuilds. Do not run large backfills from multiple forks
+at the same time unless there is a clear reason. The archive should be boring,
+repeatable, and polite.
 
 ## Data Structure
 
@@ -361,6 +622,8 @@ python -m unittest discover -s tests
 - [ ] TDH-weighted community confirmations
 - [ ] Dynamic NFT artwork (6529 The Memes)
 - [ ] Weekly Merkle root on-chain checkpoints
+- [ ] Orbital Witness template for additional datasets
+- [ ] NEO witness archive
 
 ## Prior Art & Acknowledgments
 
