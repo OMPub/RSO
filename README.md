@@ -46,14 +46,19 @@ Space-Track GP_HISTORY            RSO Archive
                          │                  │
                          └────────┬─────────┘
                                   ▼
-                         NFT Artwork (verification)
+                         NFT Client (verify + visualize)
 ```
 
 **Phase 1 (current):** Daily snapshots archived to Git with SHA-256 hashes.
 
 **Phase 2:** Arweave permanent storage + Ethereum on-chain attestation.
 
-**Phase 3:** Dynamic NFT artwork on 6529 The Memes that reads from Arweave and Ethereum, verifies data integrity client-side, and displays verification status. TDH-weighted community confirmations.
+**Phase 3:** Dynamic NFT artwork on 6529 The Memes that acts as the
+verification client and visualization layer: it reads archive commitments from
+Arweave and Ethereum, checks integrity in the browser where practical, and
+shows the archive chain, operator agreement, and community witness status.
+TDH-weighted community confirmations make participation measurable without
+turning the NFT iframe into a wallet dApp.
 
 **Phase 4:** Orbital Witness expansion to other datasets: NEO, conjunction events, fireball observations, etc.
 
@@ -62,6 +67,13 @@ bounded source queries, canonical JSON, reproducible hashes, public manifests,
 read-only validation, and eventually permanent storage plus onchain
 attestation. RSO comes first because the catalog is public, important, and
 fragile enough to justify the machinery.
+
+The NFT is not just a badge for the project. It is the public verification
+client and visualization layer: an HTML/JS artwork that can read the permanent
+archive, compare published commitments, and make the health of the witness
+network visible. The heavier wallet-confirmation flow can live in a separate
+page so the NFT stays portable across sandboxed marketplaces and collection
+sites.
 
 ## Archive Schedule
 
@@ -628,7 +640,7 @@ python -m unittest discover -s tests
 - [ ] Daily diff computation (objects added/updated/carried-forward)
 - [ ] TDH-weighted community confirmations
 - [ ] Weekly Merkle root on-chain checkpoints
-- [ ] Dynamic NFT artwork (6529 The Memes): Verification by witness
+- [ ] Dynamic NFT artwork (6529 The Memes): verification client and visualization layer
 - [ ] Orbital Witness template for additional datasets
 - [ ] NEO witness archive
 

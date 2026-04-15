@@ -6,13 +6,13 @@
 
 ## One-Line Summary
 
-A community-operated, permanently archived, cryptographically verified daily snapshot of every tracked artificial object in Earth orbit — funded by an NFT, verified by its holders, stored forever on Arweave, and attested on Ethereum.
+A community-operated, permanently archived, cryptographically verified daily snapshot of every tracked artificial object in Earth orbit — funded by an NFT, visualized and verified through the NFT client, stored forever on Arweave, and attested on Ethereum.
 
 ---
 
 ## Origin & Motivation
 
-This project lives at the intersection of the 6529 Open Metaverse (OM) community and space situational awareness (SSA). The idea: create a meme card on 6529's "The Memes" NFT collection that funds the permanent archival of the public space object catalog. The NFT artwork itself serves as a live verification dashboard — every time someone views the art, it independently verifies the archive's integrity.
+This project lives at the intersection of the 6529 Open Metaverse (OM) community and space situational awareness (SSA). The idea: create a meme card on 6529's "The Memes" NFT collection that funds the permanent archival of the public space object catalog. The NFT artwork itself serves as the live verification client and visualization layer: it reads the archive chain, checks integrity commitments, and makes operator agreement visible.
 
 ### The Problem
 
@@ -239,17 +239,17 @@ The 6529 ecosystem has **TDH (Total Days Held)** — a reputation metric compute
 
 **Attack resistance**: An attacker submitting a fake hash has low/zero TDH. The legitimate hash from established community members always outweighs it. Even if an attacker buys cards to inflate TDH, the *days held* component means they'd need months before their TDH matters. By then, the community notices.
 
-### The NFT Artwork
+### The NFT Verification Client
 
 **Two components, clean separation**:
 
-1. **The NFT itself** (HTML/JS on Arweave, rendered in iframe on 6529.io/OpenSea): Read-only verification dashboard. No wallet needed. Fetches events from Ethereum via public RPC, fetches data from Arweave, hashes client-side via `crypto.subtle.digest('SHA-256', data)`, renders orbital ring visualization with green/amber/red dots per day. Shows 30-day rolling view plus full weekly history.
+1. **The NFT itself** (HTML/JS on Arweave, rendered in iframe on 6529.io/OpenSea): Read-only verification client and visualization layer. No wallet needed. Fetches commitments from Ethereum via public RPC, fetches compact archive metadata from Arweave, verifies lightweight hashes and checkpoints in the browser, and renders the witness chain as an orbital status view. Full catalog hashing can be offered as an on-demand path because the compressed catalog is large enough that every iframe render should not decompress and hash it by default.
 
 2. **The confirmation dApp** (separate HTML page, also on Arweave): Linked from the NFT. This is where holders connect their wallet and submit `confirmDay` transactions. Shows the current day's hash, lets them verify against Arweave data, one-button confirm.
 
 **Why the split**: NFT iframes on platforms like 6529.io and OpenSea are sandboxed — they can't access `window.ethereum` (wallet injection). The art is read-only by design. The dApp page lives at a separate URL (e.g., `om.pub/rso`) where wallet connection works normally.
 
-**Viewing IS verification**: Every time someone opens the NFT, their browser independently fetches the data, hashes it, and checks the chain. No wallet, no account, no trust. The more people view the art, the more verification happens.
+**Viewing IS verification**: Every time someone opens the NFT, their browser independently checks the public commitments it can safely verify in that context. No wallet, no account, no trust. The more people view the art, the more eyes are on the archive chain; deeper full-data verification remains available as an intentional action.
 
 ### Daily Diff (Future Phase)
 
