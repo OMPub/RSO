@@ -92,6 +92,45 @@ class ArchiveValidationTests(unittest.TestCase):
 
         self.assertIn("missing_from_current_gp_count", str(raised.exception))
 
+    def test_validate_archive_rejects_rolling_snapshot_with_wrong_base_hash(self):
+        self.archive_genesis()
+        records = [gp_record("1"), gp_record("2")]
+        manifest = snapshot.save_snapshot(
+            "2026-04-13",
+            snapshot.canonicalize(records),
+            records,
+            "rolling_gp_history_delta",
+            "prior_snapshot_plus_bounded_gp_history_delta",
+            ["/class/gp_history/format/json"],
+            base_snapshot_date="2026-04-12",
+            base_snapshot_sha256="0" * 64,
+            delta_window_start_utc="2026-04-12T00:00:00Z",
+            delta_window_end_utc="2026-04-13T00:00:00Z",
+        )
+        snapshot.update_ledger(manifest)
+        snapshot.write_json(
+            snapshot.snapshot_dir("2026-04-13") / "delta.json",
+            {
+                "date": "2026-04-13",
+                "window_start_utc": "2026-04-12T00:00:00Z",
+                "window_end_utc": "2026-04-13T00:00:00Z",
+                "new_object_count": 0,
+                "new_norad_cat_ids": [],
+                "updated_object_count": 0,
+                "updated_norad_cat_ids": [],
+                "unchanged_update_count": 0,
+                "unchanged_update_norad_cat_ids": [],
+                "ignored_older_update_count": 0,
+                "ignored_older_update_norad_cat_ids": [],
+                "deduped_update_count": 0,
+            },
+        )
+
+        with self.assertRaises(snapshot.SnapshotError) as raised:
+            snapshot.validate_archive(min_count=1)
+
+        self.assertIn("base_snapshot_sha256 does not match", str(raised.exception))
+
 
 if __name__ == "__main__":
     unittest.main()

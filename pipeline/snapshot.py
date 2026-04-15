@@ -757,7 +757,6 @@ def build_visibility_audit(
                 "last_seen_in_current_gp_audit": last_seen,
                 "first_missing_in_current_gp_audit": first_missing,
                 "consecutive_missing_audits": consecutive,
-                "satcat_decay": previous.get("satcat_decay"),
             }
 
     missing_records = [
@@ -771,7 +770,6 @@ def build_visibility_audit(
             "consecutive_missing_audits": missing_state[cat_id][
                 "consecutive_missing_audits"
             ],
-            "satcat_decay": missing_state[cat_id]["satcat_decay"],
         }
         for cat_id in missing_ids
     ]

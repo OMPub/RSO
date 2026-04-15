@@ -152,9 +152,7 @@ canonical catalog unless a deterministic removal rule is later defined. Instead,
 the pipeline stores observation-time audit artifacts beside the consensus
 snapshot.
 
-The daily audit should query current `gp` once at the official run time and can
-also query bounded `satcat_change` / `satcat` metadata to explain decay or
-catalog metadata changes. It records:
+The daily audit queries current `gp` once at the official run time. It records:
 
 ```text
 observed_at_utc
@@ -176,15 +174,23 @@ last_gp_creation_date
 last_seen_in_current_gp_audit
 first_missing_in_current_gp_audit
 consecutive_missing_audits
-satcat_decay
 ```
 
-If an archived object is absent from current `gp` but has no `satcat` decay
-date, the audit reports it as `missing_from_current_gp`. The object remains in
-the canonical snapshot, making the disappearance visible without making the
-hash depend on retrieval-time absence. If it later appears in current `gp`
-again, the audit records a `reappeared_in_current_gp` event and preserves the
-missing interval.
+If an archived object is absent from current `gp`, the audit reports it as
+`missing_from_current_gp`. The object remains in the canonical snapshot, making
+the disappearance visible without making the hash depend on retrieval-time
+absence. If the object later appears in current `gp` again, the audit records a
+`reappeared_in_current_gp` event and preserves the missing interval.
+
+Orbital decay is not treated as an explanation for disappearance from current
+`gp`. Space-Track can and does include objects with `DECAY_DATE` in current
+`gp`, and `gp_history` can publish `DECAY_DATE` updates as normal element-set
+rows. A missing current-`gp` row is therefore a separate signal. Possible
+causes include temporary API/catalog behavior, publication policy changes,
+classification or access changes, object identification changes, catalog
+renumbering or merges, or source-side data corrections. The archive keeps the
+last public row and makes the absence visible so operators can investigate it
+without changing the canonical hash.
 
 ## Quick Start
 
@@ -196,7 +202,7 @@ missing interval.
 ### Local Usage
 
 ```bash
-# Set credentials
+# Set credentials in your CLI, or source from .env
 export SPACETRACK_USER="your@email.com"
 export SPACETRACK_PASS="your-password"
 
@@ -238,6 +244,7 @@ Useful operational knobs:
 ```bash
 # Defaults: range size 10000, max catalog id 339999, minimum objects 40000.
 # For long replay/backfill runs, use a larger delay to stay well below API caps.
+# Satcat metadata for missing objects is queried in batches of 500 by default.
 RSO_REQUEST_DELAY=12.5 python pipeline/snapshot.py replay --start 2026-01-01
 ```
 
@@ -620,8 +627,8 @@ python -m unittest discover -s tests
 - [ ] Ethereum contract for hash attestation
 - [ ] Daily diff computation (objects added/updated/carried-forward)
 - [ ] TDH-weighted community confirmations
-- [ ] Dynamic NFT artwork (6529 The Memes)
 - [ ] Weekly Merkle root on-chain checkpoints
+- [ ] Dynamic NFT artwork (6529 The Memes): Verification by witness
 - [ ] Orbital Witness template for additional datasets
 - [ ] NEO witness archive
 
