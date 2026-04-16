@@ -76,7 +76,10 @@ Git commit (Phase 1) → Arweave upload (Phase 2) → Ethereum event (Phase 3)
 
 The daily snapshot is defined by a **fixed cutoff timestamp**, not by when the query runs. The refined design uses `00:00:00 UTC` as the canonical cutoff. A snapshot dated `2026-04-13` means "the catalog state as of `2026-04-13T00:00:00Z`."
 
-The GitHub Action should run at **12:15am Pacific** (`07:15 UTC` while Pacific daylight time is in effect). The data boundary remains a clean UTC day, and running several hours after midnight gives Space-Track time to publish data for the closed interval.
+The GitHub Action should be scheduled for **00:15 UTC**. The data boundary
+remains a clean UTC day. GitHub cron can start late, but a near-midnight target
+keeps the archive closer to the cutoff while preserving the fixed
+`00:00:00 UTC` consensus boundary.
 
 **Why the change matters**: The original design tried to reconstruct each day with `gp_history CREATION_DATE/<cutoff` over the full catalog. That is mathematically clean but operationally impossible at current scale: without a lower bound, each range can ask Space-Track for decades of historical element sets and hit response limits. The refined design uses a stateful daily merge:
 
@@ -91,7 +94,9 @@ base:  snapshot at 2026-04-12T00:00:00Z
 delta: gp_history CREATION_DATE/2026-04-12T00:00:00--2026-04-13T00:00:00
 ```
 
-The delta query is closed and bounded. Operators running at 07:15, 08:00, 11:00, or 22:00 UTC can get the same result if they start from the same prior consensus snapshot and Space-Track returns the same bounded history rows.
+The delta query is closed and bounded. Operators running at 00:15, 01:00,
+08:00, 11:00, or 22:00 UTC can get the same result if they start from the same
+prior consensus snapshot and Space-Track returns the same bounded history rows.
 
 ### CREATION_DATE Semantics
 
@@ -126,10 +131,11 @@ snapshot after genesis starts its bounded `gp_history` window from that observed
 timestamp, then later snapshots use normal midnight-to-midnight UTC windows.
 
 The official archive baseline date is **2026-04-20**. The 2026-04-20 scheduled
-run should execute `genesis --date 2026-04-20` at 12:15am Pacific, making that
-current-`gp` observation the first consensus state. The 2026-04-13 genesis
-snapshot captured during development is a rehearsal baseline only. It is useful
-for practicing daily roll-forward and audit behavior during the week before
+run should execute `genesis --date 2026-04-20` at 00:15 UTC, subject to normal
+GitHub cron delay, making that current-`gp` observation the first consensus
+state. The 2026-04-13 genesis snapshot captured during development is a
+rehearsal baseline only. It is useful for practicing daily roll-forward and
+audit behavior during the week before
 launch, but it should not be described as the permanent archive baseline.
 
 ### Current GP Is Audit Input, Not Consensus Input
@@ -304,7 +310,7 @@ Nobody is doing:
   - `verify` command: re-hashes stored snapshot and compares to manifest
   - Canonical JSON serialization for deterministic hashing
   - gzip compression, manifest generation, running ledger, `delta.json`, `audit.json`, and `visibility_state.json`
-- [x] `.github/workflows/daily-snapshot.yml` — Runs at 07:15 UTC daily
+- [x] `.github/workflows/daily-snapshot.yml` — Runs at 00:15 UTC daily
 - [x] `.github/workflows/backfill.yml` — Manually triggered for date ranges
 - [x] `.github/workflows/validate-archive.yml` — Read-only tests and archive validation
 - [x] `README.md` with architecture overview and setup instructions
@@ -313,7 +319,7 @@ Nobody is doing:
 ### Done (Phase 1.1 — Deterministic Rolling Snapshot)
 
 - [x] Change canonical cutoff from `06:52:09 UTC` to `00:00:00 UTC`
-- [x] Change GitHub Action schedule to run at `07:15 UTC`
+- [x] Change GitHub Action schedule to run at `00:15 UTC`
 - [x] Add explicit `genesis_from_gp` mode for the first agreed live snapshot
 - [x] Change daily snapshots to `prior_snapshot_plus_bounded_gp_history_delta`
 - [x] Write `delta.json` with bounded `gp_history` counts, updated IDs, new IDs, and query paths
@@ -428,7 +434,7 @@ Events are permanent on Ethereum but querying them over large block ranges requi
 rso-archive/
 ├── .github/
 │   └── workflows/
-│       ├── daily-snapshot.yml    # Cron: 07:15 UTC daily
+│       ├── daily-snapshot.yml    # Cron: 00:15 UTC daily
 │       ├── backfill.yml          # Manual trigger
 │       └── validate-archive.yml  # Read-only validation
 ├── pipeline/
@@ -469,7 +475,7 @@ rso-archive/
 - The art is the dashboard
 - The meme is the message
 - Every UTC day, the record is cut at midnight
-- Every day at 12:15am Pacific, the operators make the record visible
+- Every day after midnight UTC, the operators make the record visible
 - Ship the pipeline this week — every day not archived is a day lost forever
 
 ---

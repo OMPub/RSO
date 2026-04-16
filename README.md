@@ -10,9 +10,10 @@ Resident Space Object (RSO) catalog. The same shape can later be reused for
 near-Earth objects (NEO), conjunction events, launch records, reentry
 observations, or any other public space dataset where provenance matters.
 
-Every UTC day, the record is cut at **00:00:00 UTC**. The operator runs should
-happen a few minutes or hours after the cutoff, leaving Space-Track several
-hours to settle (and to be nice to the API).
+Every UTC day, the record is cut at **00:00:00 UTC**. The GitHub Action is
+scheduled for **00:15 UTC** so the run stays close to the data boundary. GitHub
+cron can start late; that is acceptable because the canonical cutoff remains
+midnight UTC.
 
 ---
 
@@ -80,9 +81,10 @@ sites.
 ## Archive Schedule
 
 The official archive baseline is **2026-04-20**. On that day, the scheduled
-workflow runs `genesis --date 2026-04-20` at 12:15am Pacific and records current
-`gp` as the first agreed full catalog state. Daily consensus snapshots after
-that are built from bounded `gp_history` deltas.
+workflow runs `genesis --date 2026-04-20` at 00:15 UTC, subject to normal GitHub
+cron delay, and records current `gp` as the first agreed full catalog state.
+Daily consensus snapshots after that are built from bounded `gp_history`
+deltas.
 
 The existing `2026-04-13` genesis snapshot is a rehearsal baseline. It lets us
 exercise daily roll-forward, audits, backfill behavior, and reporting during
@@ -96,7 +98,7 @@ point.
 | Source | Space-Track.org GP_HISTORY class |
 | Format | OMM/JSON |
 | Snapshot cutoff | 00:00:00 UTC daily |
-| Operator run time | 12:15am Pacific (`07:15 UTC` during daylight time) |
+| Operator run time | Scheduled for 00:15 UTC; GitHub may start later |
 | Canonical source | Prior archived snapshot plus bounded `gp_history` delta |
 | Sort | NORAD_CAT_ID ascending after merge |
 | Hash | SHA-256 of canonical JSON (sorted keys, no whitespace) |
@@ -462,12 +464,11 @@ The manifest should point back to the prior snapshot with
 The daily producer is scheduled for:
 
 ```text
-12:15am Pacific
-07:15 UTC while Pacific daylight time is in effect
+00:15 UTC
 ```
 
-GitHub schedules are not exact to the second and may start a few minutes late.
-That is fine. The canonical data cutoff remains midnight UTC.
+GitHub schedules are not exact to the second and may start late. That is fine.
+The canonical data cutoff remains midnight UTC.
 
 The official archive baseline date is `2026-04-20`. On that date, the workflow
 automatically runs:
@@ -597,7 +598,7 @@ data/
   "api_query_paths": [
     "/class/gp_history/CREATION_DATE/2026-04-11T00:00:00--2026-04-12T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json"
   ],
-  "archived_at": "2026-04-12T07:15:12.456789+00:00"
+  "archived_at": "2026-04-12T00:15:12.456789+00:00"
 }
 ```
 
