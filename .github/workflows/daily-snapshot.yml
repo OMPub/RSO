@@ -2,8 +2,9 @@ name: Daily RSO Snapshot
 
 on:
   schedule:
-    # Temporary rehearsal schedule. GitHub schedules are UTC and may start late.
-    - cron: "47 6 * * *"
+    # GitHub schedules are UTC and may start late. Keep the target close to
+    # the midnight UTC cutoff while leaving a small buffer after the boundary.
+    - cron: "15 0 * * *"
   workflow_dispatch:
     inputs:
       date:
