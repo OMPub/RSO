@@ -104,6 +104,20 @@ Simplified General Perturbations 4. The standard propagation model used with GP
 element sets. This archive stores the published elements and hashes them; it
 does not propagate or predict object positions.
 
+### Conjunction
+
+A close approach between two space objects. A conjunction can be predicted or
+observed, and it does not necessarily mean the objects touch. Conjunctions are
+risk events: they tell operators that two trajectories may pass near enough to
+evaluate collision probability or consider a maneuver.
+
+### Collision
+
+Actual physical contact between two space objects. A collision is the realized
+impact event; it can damage or destroy objects and create debris. Every orbital
+collision is preceded by a conjunction, but most conjunctions do not become
+collisions.
+
 ### `gp`
 
 Space-Track class containing the current latest public GP element set for each
