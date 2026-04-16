@@ -2,8 +2,8 @@ name: Daily RSO Snapshot
 
 on:
   schedule:
-    # GitHub schedules are UTC. This is 12:15am Pacific during daylight time.
-    - cron: "15 7 * * *"
+    # Temporary rehearsal schedule. GitHub schedules are UTC and may start late.
+    - cron: "47 6 * * *"
   workflow_dispatch:
     inputs:
       date:
