@@ -253,6 +253,10 @@ python pipeline/snapshot.py verify --date 2026-04-12
 
 # Validate every archived snapshot, manifest, ledger entry, delta, and audit
 python pipeline/snapshot.py validate
+
+# Build and publish deterministic release bundles for archived days
+python pipeline/snapshot.py publish --date 2026-04-18
+python pipeline/snapshot.py publish --start 2026-04-13 --end 2026-04-18
 ```
 
 Useful operational knobs:
@@ -378,7 +382,52 @@ There are three workflows:
 The validator is the first thing to trust. It proves the committed archive is
 internally consistent without asking Space-Track for anything.
 
-### 6. Run the Read-Only Validator
+### 6. Choose Archive Publishing Settings
+
+By default, producer workflows also build a deterministic `tar.gz` bundle for
+each archived day and publish it as a GitHub Release asset. This keeps the
+clone-and-run setup simple while avoiding long-term growth inside normal Git
+history.
+
+The supported v1 settings are:
+
+```text
+STORAGE_BACKEND=none | github_release | arweave | ipfs_pinata
+UPLOAD_POLICY=never | if_missing | always_mirror
+```
+
+The current defaults are:
+
+```text
+STORAGE_BACKEND=github_release
+UPLOAD_POLICY=if_missing
+```
+
+What they mean:
+
+- `github_release` publishes `rso-archive-YYYY-MM-DD.tar.gz` to a release named
+  `rso-archive-YYYY-MM-DD`.
+- `none` builds no external storage dependency into your operator path. You can
+  still compute hashes and validate the archive.
+- `arweave` and `ipfs_pinata` are planned storage backends. They are named now
+  so operator configuration has a stable shape, but only `github_release` is
+  implemented today.
+- `if_missing` uploads only when the release asset is missing.
+- `never` disables upload.
+- `always_mirror` is for operators who deliberately want to publish another
+  copy. For GitHub Releases in the same repo, an existing identical asset is
+  still skipped unless you force replacement.
+
+Optional web UI setup: open your fork's repository variables:
+
+```text
+Settings -> Secrets and variables -> Actions -> Variables
+```
+
+Add `STORAGE_BACKEND` and `UPLOAD_POLICY` only if you want to override the
+defaults.
+
+### 7. Run the Read-Only Validator
 
 In GitHub:
 
@@ -402,7 +451,7 @@ The validator checks catalog hashes, canonical JSON, manifest fields, object
 counts, ledger entries, rolling base hashes, delta counts, and audit artifact
 consistency.
 
-### 7. Run a Rehearsal Genesis
+### 8. Run a Rehearsal Genesis
 
 Before the official baseline day, test your producer setup with a rehearsal
 baseline.
@@ -435,7 +484,7 @@ DONE
 
 Then confirm the follow-up **Validate RSO Archive** workflow is green.
 
-### 8. Rehearse One Daily Roll-Forward
+### 9. Rehearse One Daily Roll-Forward
 
 After a rehearsal genesis exists, run **Daily RSO Snapshot** manually for the
 next date:
@@ -459,7 +508,7 @@ visibility_state.json
 The manifest should point back to the prior snapshot with
 `base_snapshot_date` and `base_snapshot_sha256`. The validator checks that link.
 
-### 9. Let the Schedule Run
+### 10. Let the Schedule Run
 
 The daily producer is scheduled for:
 
@@ -483,7 +532,7 @@ On other dates, it runs:
 python pipeline/snapshot.py daily --date YYYY-MM-DD
 ```
 
-### 10. Check Your Daily Result
+### 11. Check Your Daily Result
 
 Each successful producer run should commit archive changes back to your fork.
 Check:
@@ -521,7 +570,22 @@ data/YYYY/MM/DD/audit.json
 The audit is not part of the consensus hash path. It is a time-sampled current
 `gp` observation that makes missing or reappearing objects visible.
 
-### 11. Compare With Other Operators
+For the release bundle, inspect:
+
+```text
+Releases -> rso-archive-YYYY-MM-DD
+```
+
+The asset should be:
+
+```text
+rso-archive-YYYY-MM-DD.tar.gz
+```
+
+The release notes include the catalog hash, manifest hash, bundle hash, object
+count, and state timestamp.
+
+### 12. Compare With Other Operators
 
 Decentralization only helps if operators compare results. The expected healthy
 state is boring: independent forks publish the same hash for the same date.
@@ -541,7 +605,7 @@ decompression. If hashes diverge, compare `manifest.json` first, then
 different baseline, a rebuild with `--force`, or a Space-Track response
 difference inside the bounded `gp_history` window.
 
-### 12. Be Gentle With the API
+### 13. Be Gentle With the API
 
 The workflows set conservative delays between Space-Track requests:
 

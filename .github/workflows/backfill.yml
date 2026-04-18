@@ -21,6 +21,8 @@ jobs:
     timeout-minutes: 360
     env:
       RSO_REQUEST_DELAY: "12.5"
+      STORAGE_BACKEND: ${{ vars.STORAGE_BACKEND || 'github_release' }}
+      UPLOAD_POLICY: ${{ vars.UPLOAD_POLICY || 'if_missing' }}
 
     steps:
       - name: Checkout
@@ -55,3 +57,10 @@ jobs:
           fi
           git commit -m "Backfill RSO archive"
           git push
+
+      - name: Publish release archives
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python pipeline/snapshot.py publish --start "${{ inputs.start }}" --end "${{ inputs.end }}"

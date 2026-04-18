@@ -36,6 +36,8 @@ jobs:
     env:
       OFFICIAL_BASELINE_DATE: "2026-04-20"
       RSO_REQUEST_DELAY: "5"
+      STORAGE_BACKEND: ${{ vars.STORAGE_BACKEND || 'github_release' }}
+      UPLOAD_POLICY: ${{ vars.UPLOAD_POLICY || 'if_missing' }}
 
     steps:
       - name: Checkout
@@ -59,6 +61,7 @@ jobs:
           if [ -z "$DATE" ]; then
             DATE="$(date -u +%F)"
           fi
+          echo "RSO_SNAPSHOT_DATE=$DATE" >> "$GITHUB_ENV"
 
           MODE="${{ github.event.inputs.mode }}"
           if [ -z "$MODE" ]; then
@@ -93,3 +96,14 @@ jobs:
           fi
           git commit -m "Archive RSO snapshot"
           git push
+
+      - name: Publish release archive
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          args=(pipeline/snapshot.py publish --date "$RSO_SNAPSHOT_DATE")
+          if [ "${{ github.event.inputs.force }}" = "true" ]; then
+            args+=(--force)
+          fi
+          python "${args[@]}"
