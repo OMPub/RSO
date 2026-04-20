@@ -1,0 +1,450 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 1500" width="2400" height="1500" role="img" aria-labelledby="title desc">
+<title id="title">2026-04-18 RSO Daily Roll-Forward</title>
+<desc id="desc">A dark infographic explaining how the 2026-04-18 RSO archive is produced from the previous day plus a bounded gp_history delta, with current GP audit data shown outside the consensus path.</desc>
+<defs>
+<radialGradient id="bg" cx="46%" cy="42%" r="78%"><stop offset="0%" stop-color="#132231"/><stop offset="56%" stop-color="#071019"/><stop offset="100%" stop-color="#020407"/></radialGradient>
+<filter id="glow" x="-35%" y="-35%" width="170%" height="170%"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<style><![CDATA[text{letter-spacing:0}.mono{font-family:Menlo,Consolas,monospace}.muted{fill:#8fa3ae}.cyan{fill:#4fd8ff}.gold{fill:#ffd166}.pink{fill:#ff5ea8}.green{fill:#8ff0a4}]]></style>
+</defs>
+<rect x="0.00" y="0.00" width="2400.00" height="1500.00" rx="0" fill="url(#bg)" opacity="1"/>
+<circle cx="1697.76" cy="117.45" r="0.69" fill="#dcecff" opacity="0.218"/>
+<circle cx="1431.84" cy="432.15" r="0.51" fill="#dcecff" opacity="0.244"/>
+<circle cx="2224.80" cy="965.40" r="0.69" fill="#dcecff" opacity="0.20800000000000002"/>
+<circle cx="1925.76" cy="1092.45" r="0.98" fill="#dcecff" opacity="0.136"/>
+<circle cx="2350.56" cy="109.80" r="0.91" fill="#dcecff" opacity="0.1"/>
+<circle cx="1921.44" cy="633.15" r="0.71" fill="#dcecff" opacity="0.29200000000000004"/>
+<circle cx="1004.16" cy="345.15" r="0.71" fill="#dcecff" opacity="0.112"/>
+<circle cx="1606.56" cy="377.70" r="0.55" fill="#dcecff" opacity="0.192"/>
+<circle cx="1086.48" cy="810.00" r="1.07" fill="#dcecff" opacity="0.164"/>
+<circle cx="341.52" cy="926.85" r="0.48" fill="#dcecff" opacity="0.268"/>
+<circle cx="1849.92" cy="209.25" r="0.59" fill="#dcecff" opacity="0.198"/>
+<circle cx="1415.04" cy="685.50" r="0.66" fill="#dcecff" opacity="0.244"/>
+<circle cx="1081.68" cy="66.60" r="0.95" fill="#dcecff" opacity="0.25"/>
+<circle cx="1428.48" cy="1042.80" r="0.71" fill="#dcecff" opacity="0.218"/>
+<circle cx="1806.48" cy="220.50" r="0.85" fill="#dcecff" opacity="0.10600000000000001"/>
+<circle cx="1300.32" cy="448.35" r="0.59" fill="#dcecff" opacity="0.244"/>
+<circle cx="39.12" cy="66.75" r="0.64" fill="#dcecff" opacity="0.122"/>
+<circle cx="2365.68" cy="377.70" r="0.86" fill="#dcecff" opacity="0.174"/>
+<circle cx="246.24" cy="1421.40" r="0.48" fill="#dcecff" opacity="0.224"/>
+<circle cx="1412.40" cy="283.20" r="0.66" fill="#dcecff" opacity="0.194"/>
+<circle cx="76.80" cy="840.15" r="1.02" fill="#dcecff" opacity="0.126"/>
+<circle cx="861.36" cy="1208.70" r="0.92" fill="#dcecff" opacity="0.29800000000000004"/>
+<circle cx="1189.20" cy="880.20" r="0.52" fill="#dcecff" opacity="0.124"/>
+<circle cx="919.44" cy="1263.15" r="1.01" fill="#dcecff" opacity="0.20400000000000001"/>
+<circle cx="74.64" cy="843.15" r="0.86" fill="#dcecff" opacity="0.186"/>
+<circle cx="63.36" cy="1249.50" r="0.49" fill="#dcecff" opacity="0.182"/>
+<circle cx="1644.24" cy="701.40" r="0.59" fill="#dcecff" opacity="0.168"/>
+<circle cx="1758.72" cy="540.75" r="0.60" fill="#dcecff" opacity="0.228"/>
+<circle cx="2279.04" cy="1460.25" r="0.90" fill="#dcecff" opacity="0.10800000000000001"/>
+<circle cx="1822.80" cy="213.30" r="0.64" fill="#dcecff" opacity="0.188"/>
+<circle cx="2376.48" cy="1122.60" r="0.66" fill="#dcecff" opacity="0.20600000000000002"/>
+<circle cx="2019.60" cy="799.65" r="0.57" fill="#dcecff" opacity="0.152"/>
+<circle cx="1206.24" cy="468.00" r="0.83" fill="#dcecff" opacity="0.28600000000000003"/>
+<circle cx="1449.60" cy="289.05" r="0.99" fill="#dcecff" opacity="0.174"/>
+<circle cx="1365.60" cy="1437.60" r="0.70" fill="#dcecff" opacity="0.14200000000000002"/>
+<circle cx="2383.92" cy="165.15" r="0.51" fill="#dcecff" opacity="0.29200000000000004"/>
+<circle cx="1112.64" cy="691.65" r="0.70" fill="#dcecff" opacity="0.166"/>
+<circle cx="1021.92" cy="483.45" r="0.59" fill="#dcecff" opacity="0.198"/>
+<circle cx="837.60" cy="286.20" r="0.52" fill="#dcecff" opacity="0.29600000000000004"/>
+<circle cx="1815.36" cy="887.40" r="0.46" fill="#dcecff" opacity="0.2"/>
+<circle cx="1182.48" cy="417.30" r="0.69" fill="#dcecff" opacity="0.20400000000000001"/>
+<circle cx="2184.48" cy="738.15" r="0.84" fill="#dcecff" opacity="0.23800000000000002"/>
+<circle cx="2093.28" cy="622.80" r="1.06" fill="#dcecff" opacity="0.24000000000000002"/>
+<circle cx="368.64" cy="68.40" r="0.59" fill="#dcecff" opacity="0.172"/>
+<circle cx="15.12" cy="1474.95" r="0.79" fill="#dcecff" opacity="0.21200000000000002"/>
+<circle cx="1891.44" cy="139.50" r="0.45" fill="#dcecff" opacity="0.20800000000000002"/>
+<circle cx="526.80" cy="1072.05" r="0.56" fill="#dcecff" opacity="0.28800000000000003"/>
+<circle cx="1772.40" cy="1438.80" r="0.97" fill="#dcecff" opacity="0.202"/>
+<circle cx="2298.96" cy="630.00" r="0.96" fill="#dcecff" opacity="0.28600000000000003"/>
+<circle cx="1814.16" cy="165.30" r="0.45" fill="#dcecff" opacity="0.126"/>
+<circle cx="1286.16" cy="13.05" r="1.07" fill="#dcecff" opacity="0.10800000000000001"/>
+<circle cx="1275.36" cy="1074.90" r="0.82" fill="#dcecff" opacity="0.154"/>
+<circle cx="1120.08" cy="229.65" r="0.86" fill="#dcecff" opacity="0.13"/>
+<circle cx="564.72" cy="1334.85" r="0.47" fill="#dcecff" opacity="0.29400000000000004"/>
+<circle cx="673.44" cy="1078.65" r="0.52" fill="#dcecff" opacity="0.26"/>
+<circle cx="2110.80" cy="545.70" r="0.61" fill="#dcecff" opacity="0.126"/>
+<circle cx="312.00" cy="440.40" r="0.67" fill="#dcecff" opacity="0.172"/>
+<circle cx="49.68" cy="958.50" r="1.06" fill="#dcecff" opacity="0.14400000000000002"/>
+<circle cx="1988.88" cy="351.45" r="0.66" fill="#dcecff" opacity="0.29400000000000004"/>
+<circle cx="2082.72" cy="789.30" r="1.02" fill="#dcecff" opacity="0.29000000000000004"/>
+<circle cx="31.68" cy="1117.35" r="0.96" fill="#dcecff" opacity="0.244"/>
+<circle cx="847.44" cy="707.55" r="0.84" fill="#dcecff" opacity="0.29800000000000004"/>
+<circle cx="605.04" cy="1223.40" r="0.96" fill="#dcecff" opacity="0.11"/>
+<circle cx="2086.56" cy="1269.30" r="0.53" fill="#dcecff" opacity="0.25"/>
+<circle cx="472.56" cy="1268.25" r="0.59" fill="#dcecff" opacity="0.178"/>
+<circle cx="114.72" cy="1041.75" r="0.53" fill="#dcecff" opacity="0.28800000000000003"/>
+<circle cx="2252.40" cy="834.60" r="0.81" fill="#dcecff" opacity="0.232"/>
+<circle cx="2093.04" cy="628.50" r="0.57" fill="#dcecff" opacity="0.11800000000000001"/>
+<circle cx="2161.20" cy="1011.15" r="0.60" fill="#dcecff" opacity="0.268"/>
+<circle cx="2004.48" cy="391.20" r="0.96" fill="#dcecff" opacity="0.188"/>
+<circle cx="1904.16" cy="657.60" r="0.66" fill="#dcecff" opacity="0.12000000000000001"/>
+<circle cx="1610.40" cy="484.20" r="0.64" fill="#dcecff" opacity="0.242"/>
+<circle cx="1392.00" cy="15.60" r="1.00" fill="#dcecff" opacity="0.21200000000000002"/>
+<circle cx="1926.48" cy="683.25" r="0.52" fill="#dcecff" opacity="0.262"/>
+<circle cx="2137.20" cy="566.85" r="0.62" fill="#dcecff" opacity="0.156"/>
+<circle cx="565.44" cy="762.15" r="0.53" fill="#dcecff" opacity="0.226"/>
+<circle cx="513.84" cy="714.90" r="0.91" fill="#dcecff" opacity="0.114"/>
+<circle cx="845.76" cy="306.15" r="0.79" fill="#dcecff" opacity="0.10800000000000001"/>
+<circle cx="2286.72" cy="384.30" r="0.94" fill="#dcecff" opacity="0.272"/>
+<circle cx="345.12" cy="1278.90" r="1.03" fill="#dcecff" opacity="0.29800000000000004"/>
+<circle cx="1998.48" cy="919.95" r="1.05" fill="#dcecff" opacity="0.228"/>
+<circle cx="1038.96" cy="1496.40" r="0.70" fill="#dcecff" opacity="0.28"/>
+<circle cx="698.40" cy="406.95" r="0.59" fill="#dcecff" opacity="0.198"/>
+<circle cx="1460.16" cy="350.10" r="0.93" fill="#dcecff" opacity="0.14200000000000002"/>
+<circle cx="1188.48" cy="41.85" r="1.01" fill="#dcecff" opacity="0.21400000000000002"/>
+<circle cx="2024.64" cy="814.65" r="0.74" fill="#dcecff" opacity="0.244"/>
+<circle cx="1281.84" cy="28.80" r="0.68" fill="#dcecff" opacity="0.14200000000000002"/>
+<circle cx="773.52" cy="693.00" r="0.91" fill="#dcecff" opacity="0.17"/>
+<circle cx="988.08" cy="1065.00" r="0.97" fill="#dcecff" opacity="0.14400000000000002"/>
+<circle cx="505.68" cy="460.95" r="0.60" fill="#dcecff" opacity="0.176"/>
+<circle cx="8.88" cy="1205.10" r="0.46" fill="#dcecff" opacity="0.266"/>
+<circle cx="637.68" cy="1373.85" r="0.84" fill="#dcecff" opacity="0.20400000000000001"/>
+<circle cx="344.16" cy="491.70" r="0.81" fill="#dcecff" opacity="0.274"/>
+<circle cx="1396.08" cy="332.40" r="0.48" fill="#dcecff" opacity="0.11"/>
+<circle cx="382.56" cy="1275.00" r="0.92" fill="#dcecff" opacity="0.24000000000000002"/>
+<circle cx="438.00" cy="990.15" r="0.92" fill="#dcecff" opacity="0.21000000000000002"/>
+<circle cx="1146.72" cy="1464.30" r="0.85" fill="#dcecff" opacity="0.228"/>
+<circle cx="2389.92" cy="198.60" r="0.64" fill="#dcecff" opacity="0.29600000000000004"/>
+<circle cx="815.76" cy="1436.40" r="0.98" fill="#dcecff" opacity="0.264"/>
+<circle cx="652.32" cy="893.85" r="0.79" fill="#dcecff" opacity="0.28800000000000003"/>
+<circle cx="1780.08" cy="39.30" r="0.86" fill="#dcecff" opacity="0.18"/>
+<circle cx="851.52" cy="1306.05" r="0.58" fill="#dcecff" opacity="0.14"/>
+<circle cx="530.40" cy="957.45" r="0.98" fill="#dcecff" opacity="0.126"/>
+<circle cx="421.44" cy="492.15" r="0.94" fill="#dcecff" opacity="0.188"/>
+<circle cx="1873.20" cy="831.90" r="0.61" fill="#dcecff" opacity="0.166"/>
+<circle cx="397.44" cy="441.00" r="0.80" fill="#dcecff" opacity="0.126"/>
+<circle cx="45.60" cy="365.10" r="0.51" fill="#dcecff" opacity="0.112"/>
+<circle cx="587.28" cy="727.95" r="0.94" fill="#dcecff" opacity="0.21600000000000003"/>
+<circle cx="866.16" cy="426.00" r="0.63" fill="#dcecff" opacity="0.10800000000000001"/>
+<circle cx="2105.04" cy="1341.60" r="0.51" fill="#dcecff" opacity="0.138"/>
+<circle cx="1625.04" cy="576.15" r="0.86" fill="#dcecff" opacity="0.252"/>
+<circle cx="1702.56" cy="387.00" r="0.73" fill="#dcecff" opacity="0.188"/>
+<circle cx="91.20" cy="945.60" r="0.86" fill="#dcecff" opacity="0.152"/>
+<circle cx="1810.08" cy="45.90" r="0.60" fill="#dcecff" opacity="0.29200000000000004"/>
+<circle cx="986.40" cy="336.75" r="0.58" fill="#dcecff" opacity="0.252"/>
+<circle cx="1894.32" cy="1397.10" r="0.59" fill="#dcecff" opacity="0.154"/>
+<circle cx="163.44" cy="1068.75" r="0.82" fill="#dcecff" opacity="0.226"/>
+<circle cx="2167.44" cy="348.30" r="0.62" fill="#dcecff" opacity="0.28"/>
+<circle cx="1470.72" cy="366.00" r="0.47" fill="#dcecff" opacity="0.202"/>
+<circle cx="1966.08" cy="119.40" r="1.00" fill="#dcecff" opacity="0.198"/>
+<circle cx="245.76" cy="1439.85" r="0.70" fill="#dcecff" opacity="0.232"/>
+<circle cx="1197.12" cy="18.90" r="0.85" fill="#dcecff" opacity="0.182"/>
+<circle cx="183.84" cy="329.10" r="1.04" fill="#dcecff" opacity="0.188"/>
+<circle cx="2377.44" cy="998.70" r="0.97" fill="#dcecff" opacity="0.242"/>
+<circle cx="1128.00" cy="227.10" r="0.78" fill="#dcecff" opacity="0.114"/>
+<circle cx="384.48" cy="999.60" r="0.76" fill="#dcecff" opacity="0.164"/>
+<circle cx="2181.12" cy="340.05" r="0.78" fill="#dcecff" opacity="0.232"/>
+<circle cx="181.68" cy="358.95" r="1.02" fill="#dcecff" opacity="0.136"/>
+<circle cx="1940.88" cy="998.40" r="0.73" fill="#dcecff" opacity="0.186"/>
+<circle cx="294.24" cy="1050.00" r="0.78" fill="#dcecff" opacity="0.21000000000000002"/>
+<circle cx="859.20" cy="792.00" r="0.83" fill="#dcecff" opacity="0.27"/>
+<circle cx="479.04" cy="1261.35" r="0.74" fill="#dcecff" opacity="0.172"/>
+<circle cx="1230.96" cy="104.40" r="0.63" fill="#dcecff" opacity="0.13"/>
+<circle cx="1017.12" cy="44.85" r="0.48" fill="#dcecff" opacity="0.154"/>
+<circle cx="421.68" cy="1188.75" r="0.88" fill="#dcecff" opacity="0.256"/>
+<circle cx="533.52" cy="827.55" r="0.86" fill="#dcecff" opacity="0.10600000000000001"/>
+<circle cx="1416.00" cy="958.80" r="0.94" fill="#dcecff" opacity="0.138"/>
+<circle cx="1807.44" cy="449.70" r="1.03" fill="#dcecff" opacity="0.166"/>
+<circle cx="471.36" cy="901.05" r="1.04" fill="#dcecff" opacity="0.20800000000000002"/>
+<circle cx="2189.04" cy="491.70" r="0.58" fill="#dcecff" opacity="0.222"/>
+<circle cx="288.00" cy="660.75" r="1.02" fill="#dcecff" opacity="0.12000000000000001"/>
+<circle cx="1617.12" cy="565.50" r="0.68" fill="#dcecff" opacity="0.222"/>
+<circle cx="1295.28" cy="840.30" r="0.71" fill="#dcecff" opacity="0.122"/>
+<circle cx="129.12" cy="939.90" r="0.45" fill="#dcecff" opacity="0.14200000000000002"/>
+<circle cx="461.28" cy="387.75" r="0.99" fill="#dcecff" opacity="0.226"/>
+<circle cx="1942.56" cy="1310.10" r="0.87" fill="#dcecff" opacity="0.16"/>
+<circle cx="769.92" cy="1387.05" r="0.57" fill="#dcecff" opacity="0.21400000000000002"/>
+<circle cx="0.00" cy="1151.10" r="0.53" fill="#dcecff" opacity="0.224"/>
+<circle cx="1526.40" cy="1082.40" r="0.78" fill="#dcecff" opacity="0.17"/>
+<circle cx="1510.08" cy="589.95" r="0.56" fill="#dcecff" opacity="0.11800000000000001"/>
+<circle cx="1215.36" cy="162.90" r="0.56" fill="#dcecff" opacity="0.23"/>
+<circle cx="143.04" cy="1045.05" r="0.49" fill="#dcecff" opacity="0.14400000000000002"/>
+<circle cx="1607.76" cy="1222.95" r="1.04" fill="#dcecff" opacity="0.126"/>
+<circle cx="1166.64" cy="847.95" r="0.57" fill="#dcecff" opacity="0.23800000000000002"/>
+<circle cx="2175.84" cy="831.00" r="0.70" fill="#dcecff" opacity="0.134"/>
+<circle cx="1919.04" cy="766.80" r="0.59" fill="#dcecff" opacity="0.172"/>
+<circle cx="2055.12" cy="755.40" r="0.78" fill="#dcecff" opacity="0.1"/>
+<circle cx="1352.16" cy="1063.20" r="0.61" fill="#dcecff" opacity="0.21400000000000002"/>
+<circle cx="2200.32" cy="1010.40" r="0.74" fill="#dcecff" opacity="0.224"/>
+<circle cx="1389.12" cy="146.40" r="0.76" fill="#dcecff" opacity="0.23600000000000002"/>
+<circle cx="1783.68" cy="1342.50" r="0.49" fill="#dcecff" opacity="0.252"/>
+<circle cx="901.44" cy="932.40" r="0.74" fill="#dcecff" opacity="0.124"/>
+<circle cx="542.40" cy="1011.90" r="0.67" fill="#dcecff" opacity="0.21200000000000002"/>
+<circle cx="2003.52" cy="1483.95" r="0.84" fill="#dcecff" opacity="0.184"/>
+<circle cx="1822.56" cy="612.30" r="0.84" fill="#dcecff" opacity="0.264"/>
+<circle cx="20.88" cy="243.15" r="0.46" fill="#dcecff" opacity="0.13"/>
+<circle cx="446.64" cy="81.60" r="0.86" fill="#dcecff" opacity="0.166"/>
+<circle cx="1681.20" cy="1037.70" r="0.64" fill="#dcecff" opacity="0.14600000000000002"/>
+<circle cx="1067.28" cy="243.45" r="1.06" fill="#dcecff" opacity="0.23"/>
+<circle cx="913.44" cy="1098.00" r="0.71" fill="#dcecff" opacity="0.274"/>
+<circle cx="1229.28" cy="1337.25" r="1.06" fill="#dcecff" opacity="0.174"/>
+<circle cx="1684.56" cy="1282.95" r="0.96" fill="#dcecff" opacity="0.26"/>
+<circle cx="735.84" cy="1137.30" r="0.94" fill="#dcecff" opacity="0.2"/>
+<circle cx="918.24" cy="664.80" r="0.91" fill="#dcecff" opacity="0.278"/>
+<circle cx="2371.20" cy="648.90" r="0.60" fill="#dcecff" opacity="0.122"/>
+<circle cx="1049.52" cy="450.90" r="0.60" fill="#dcecff" opacity="0.18"/>
+<circle cx="1541.52" cy="922.05" r="0.69" fill="#dcecff" opacity="0.29400000000000004"/>
+<circle cx="564.48" cy="931.35" r="0.88" fill="#dcecff" opacity="0.222"/>
+<circle cx="272.88" cy="359.70" r="0.51" fill="#dcecff" opacity="0.278"/>
+<circle cx="643.68" cy="879.00" r="0.95" fill="#dcecff" opacity="0.14"/>
+<circle cx="739.92" cy="11.70" r="0.91" fill="#dcecff" opacity="0.186"/>
+<circle cx="706.56" cy="1368.15" r="0.55" fill="#dcecff" opacity="0.192"/>
+<circle cx="1508.64" cy="1043.25" r="0.88" fill="#dcecff" opacity="0.14400000000000002"/>
+<circle cx="296.40" cy="20.70" r="1.06" fill="#dcecff" opacity="0.14600000000000002"/>
+<circle cx="822.00" cy="349.65" r="0.46" fill="#dcecff" opacity="0.126"/>
+<circle cx="2159.04" cy="67.50" r="0.99" fill="#dcecff" opacity="0.178"/>
+<circle cx="467.76" cy="1448.55" r="0.73" fill="#dcecff" opacity="0.11800000000000001"/>
+<circle cx="954.00" cy="1483.80" r="0.93" fill="#dcecff" opacity="0.25"/>
+<circle cx="383.04" cy="1288.95" r="0.66" fill="#dcecff" opacity="0.178"/>
+<circle cx="1768.80" cy="756.75" r="0.90" fill="#dcecff" opacity="0.174"/>
+<circle cx="990.24" cy="1153.65" r="0.66" fill="#dcecff" opacity="0.188"/>
+<circle cx="657.60" cy="1203.15" r="0.89" fill="#dcecff" opacity="0.186"/>
+<circle cx="209.52" cy="1237.35" r="0.53" fill="#dcecff" opacity="0.21600000000000003"/>
+<circle cx="367.20" cy="1092.15" r="0.91" fill="#dcecff" opacity="0.272"/>
+<circle cx="159.60" cy="6.90" r="0.99" fill="#dcecff" opacity="0.19"/>
+<circle cx="2004.72" cy="1153.05" r="0.98" fill="#dcecff" opacity="0.19"/>
+<circle cx="864.96" cy="902.10" r="0.59" fill="#dcecff" opacity="0.186"/>
+<circle cx="1903.92" cy="678.90" r="0.49" fill="#dcecff" opacity="0.14200000000000002"/>
+<circle cx="48.96" cy="1420.65" r="1.01" fill="#dcecff" opacity="0.29800000000000004"/>
+<circle cx="456.96" cy="749.55" r="1.05" fill="#dcecff" opacity="0.262"/>
+<circle cx="582.00" cy="827.40" r="0.79" fill="#dcecff" opacity="0.21600000000000003"/>
+<circle cx="1736.64" cy="1347.45" r="0.71" fill="#dcecff" opacity="0.186"/>
+<circle cx="1878.48" cy="1087.65" r="0.70" fill="#dcecff" opacity="0.152"/>
+<circle cx="2299.20" cy="303.60" r="0.62" fill="#dcecff" opacity="0.28400000000000003"/>
+<circle cx="2091.36" cy="1040.70" r="0.84" fill="#dcecff" opacity="0.14"/>
+<circle cx="1008.00" cy="324.45" r="0.88" fill="#dcecff" opacity="0.192"/>
+<circle cx="2029.20" cy="844.05" r="0.62" fill="#dcecff" opacity="0.246"/>
+<circle cx="646.08" cy="638.10" r="0.91" fill="#dcecff" opacity="0.29400000000000004"/>
+<circle cx="1958.64" cy="513.00" r="0.77" fill="#dcecff" opacity="0.21000000000000002"/>
+<circle cx="193.92" cy="235.95" r="0.56" fill="#dcecff" opacity="0.10800000000000001"/>
+<circle cx="410.88" cy="340.20" r="0.87" fill="#dcecff" opacity="0.20400000000000001"/>
+<circle cx="695.28" cy="285.15" r="0.76" fill="#dcecff" opacity="0.244"/>
+<circle cx="2149.44" cy="1059.60" r="1.01" fill="#dcecff" opacity="0.158"/>
+<circle cx="390.48" cy="1200.30" r="0.87" fill="#dcecff" opacity="0.188"/>
+<circle cx="992.40" cy="782.70" r="0.68" fill="#dcecff" opacity="0.11800000000000001"/>
+<circle cx="1610.40" cy="1294.20" r="0.53" fill="#dcecff" opacity="0.234"/>
+<circle cx="2141.28" cy="384.30" r="0.66" fill="#dcecff" opacity="0.198"/>
+<circle cx="2369.52" cy="1041.90" r="0.46" fill="#dcecff" opacity="0.20400000000000001"/>
+<circle cx="660.72" cy="1157.40" r="1.06" fill="#dcecff" opacity="0.134"/>
+<circle cx="969.36" cy="288.30" r="0.52" fill="#dcecff" opacity="0.28200000000000003"/>
+<circle cx="251.52" cy="1101.30" r="0.58" fill="#dcecff" opacity="0.122"/>
+<circle cx="426.00" cy="1356.60" r="0.56" fill="#dcecff" opacity="0.29800000000000004"/>
+<circle cx="48.96" cy="1284.30" r="0.61" fill="#dcecff" opacity="0.20800000000000002"/>
+<circle cx="435.36" cy="1111.65" r="0.48" fill="#dcecff" opacity="0.256"/>
+<circle cx="941.28" cy="451.95" r="0.82" fill="#dcecff" opacity="0.112"/>
+<circle cx="1354.56" cy="671.85" r="0.66" fill="#dcecff" opacity="0.186"/>
+<circle cx="1600.32" cy="521.40" r="0.69" fill="#dcecff" opacity="0.26"/>
+<circle cx="30.72" cy="151.95" r="0.95" fill="#dcecff" opacity="0.136"/>
+<circle cx="1682.16" cy="742.35" r="0.85" fill="#dcecff" opacity="0.10600000000000001"/>
+<circle cx="774.24" cy="288.75" r="0.54" fill="#dcecff" opacity="0.20600000000000002"/>
+<circle cx="1271.76" cy="1205.70" r="0.51" fill="#dcecff" opacity="0.28"/>
+<circle cx="2375.28" cy="662.70" r="0.49" fill="#dcecff" opacity="0.11800000000000001"/>
+<circle cx="243.60" cy="1218.15" r="0.59" fill="#dcecff" opacity="0.224"/>
+<circle cx="1897.44" cy="640.95" r="0.69" fill="#dcecff" opacity="0.23800000000000002"/>
+<circle cx="2387.52" cy="76.65" r="0.91" fill="#dcecff" opacity="0.29000000000000004"/>
+<circle cx="1594.56" cy="187.50" r="0.73" fill="#dcecff" opacity="0.18"/>
+<circle cx="1546.80" cy="809.85" r="0.92" fill="#dcecff" opacity="0.28"/>
+<circle cx="1320.72" cy="1008.75" r="0.47" fill="#dcecff" opacity="0.266"/>
+<circle cx="396.24" cy="1081.35" r="0.58" fill="#dcecff" opacity="0.29200000000000004"/>
+<circle cx="1700.64" cy="344.70" r="0.51" fill="#dcecff" opacity="0.15000000000000002"/>
+<circle cx="1816.80" cy="309.15" r="0.63" fill="#dcecff" opacity="0.218"/>
+<circle cx="536.64" cy="162.90" r="0.68" fill="#dcecff" opacity="0.196"/>
+<circle cx="1908.48" cy="29.70" r="0.52" fill="#dcecff" opacity="0.25"/>
+<circle cx="1435.20" cy="513.75" r="0.76" fill="#dcecff" opacity="0.114"/>
+<circle cx="1562.64" cy="1036.20" r="0.69" fill="#dcecff" opacity="0.136"/>
+<circle cx="1224.72" cy="1082.55" r="0.87" fill="#dcecff" opacity="0.26"/>
+<circle cx="172.80" cy="1223.70" r="0.60" fill="#dcecff" opacity="0.20800000000000002"/>
+<circle cx="1703.76" cy="876.60" r="0.93" fill="#dcecff" opacity="0.21200000000000002"/>
+<circle cx="436.80" cy="973.80" r="0.69" fill="#dcecff" opacity="0.28800000000000003"/>
+<circle cx="1524.00" cy="659.25" r="0.80" fill="#dcecff" opacity="0.11"/>
+<circle cx="1457.76" cy="48.15" r="0.69" fill="#dcecff" opacity="0.256"/>
+<circle cx="2338.56" cy="932.25" r="0.73" fill="#dcecff" opacity="0.188"/>
+<circle cx="22.08" cy="330.75" r="0.49" fill="#dcecff" opacity="0.248"/>
+<circle cx="2099.04" cy="1303.80" r="1.05" fill="#dcecff" opacity="0.192"/>
+<circle cx="2267.04" cy="1324.05" r="0.54" fill="#dcecff" opacity="0.178"/>
+<circle cx="671.04" cy="1027.50" r="1.05" fill="#dcecff" opacity="0.29200000000000004"/>
+<circle cx="1663.68" cy="460.35" r="1.06" fill="#dcecff" opacity="0.126"/>
+<circle cx="2079.84" cy="339.45" r="0.47" fill="#dcecff" opacity="0.26"/>
+<circle cx="1513.20" cy="454.20" r="0.69" fill="#dcecff" opacity="0.22"/>
+<circle cx="1982.16" cy="1157.25" r="0.77" fill="#dcecff" opacity="0.16"/>
+<text x="90" y="98" font-family="Menlo,Consolas,monospace" font-size="42" font-weight="900" fill="#f4fbff" text-anchor="start" opacity="1">DAILY ROLL-FORWARD</text>
+<text x="90" y="140" font-family="Inter,Arial,sans-serif" font-size="22" font-weight="500" fill="#9fb4bf" text-anchor="start" opacity="1">How the 2026-04-18 archive becomes a reproducible midnight state</text>
+<text x="90" y="178" font-family="Inter,Arial,sans-serif" font-size="22" font-weight="700" fill="#d5e6ee" text-anchor="start" opacity="1">Consensus path uses yesterday&#x27;s archive plus a bounded gp_history window. The later current-GP pull is audit evidence, not an input.</text>
+<text x="90" y="222" font-family="Menlo,Consolas,monospace" font-size="18" font-weight="800" fill="#8fa3ae" text-anchor="start" opacity="1">ROLLING HASH CHAIN</text>
+<rect x="90.00" y="250.00" width="190.00" height="72.00" rx="7" fill="#0c1620" opacity="1" stroke="#415767" stroke-width="1"/>
+<text x="185" y="280" font-family="Menlo,Consolas,monospace" font-size="17" font-weight="800" fill="#9dafb8" text-anchor="middle" opacity="1">2026-04-13</text>
+<text x="185" y="306" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="700" fill="#6d8290" text-anchor="middle" opacity="1">8db001c1</text>
+<line x1="283.00" y1="286.00" x2="322.00" y2="286.00" stroke="#314859" stroke-width="2" opacity="0.95" stroke-linecap="round"/>
+<polygon points="322.00,286.00 307.59,292.96 307.59,279.04" fill="#314859" opacity="0.95"/>
+<rect x="335.00" y="250.00" width="190.00" height="72.00" rx="7" fill="#0c1620" opacity="1" stroke="#415767" stroke-width="1"/>
+<text x="430" y="280" font-family="Menlo,Consolas,monospace" font-size="17" font-weight="800" fill="#9dafb8" text-anchor="middle" opacity="1">2026-04-14</text>
+<text x="430" y="306" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="700" fill="#6d8290" text-anchor="middle" opacity="1">9aed7fe4</text>
+<line x1="528.00" y1="286.00" x2="567.00" y2="286.00" stroke="#314859" stroke-width="2" opacity="0.95" stroke-linecap="round"/>
+<polygon points="567.00,286.00 552.59,292.96 552.59,279.04" fill="#314859" opacity="0.95"/>
+<rect x="580.00" y="250.00" width="190.00" height="72.00" rx="7" fill="#0c1620" opacity="1" stroke="#415767" stroke-width="1"/>
+<text x="675" y="280" font-family="Menlo,Consolas,monospace" font-size="17" font-weight="800" fill="#9dafb8" text-anchor="middle" opacity="1">2026-04-15</text>
+<text x="675" y="306" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="700" fill="#6d8290" text-anchor="middle" opacity="1">81e198cd</text>
+<line x1="773.00" y1="286.00" x2="812.00" y2="286.00" stroke="#314859" stroke-width="2" opacity="0.95" stroke-linecap="round"/>
+<polygon points="812.00,286.00 797.59,292.96 797.59,279.04" fill="#314859" opacity="0.95"/>
+<rect x="825.00" y="250.00" width="190.00" height="72.00" rx="7" fill="#0c1620" opacity="1" stroke="#415767" stroke-width="1"/>
+<text x="920" y="280" font-family="Menlo,Consolas,monospace" font-size="17" font-weight="800" fill="#9dafb8" text-anchor="middle" opacity="1">2026-04-16</text>
+<text x="920" y="306" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="700" fill="#6d8290" text-anchor="middle" opacity="1">d4a120d2</text>
+<line x1="1018.00" y1="286.00" x2="1057.00" y2="286.00" stroke="#314859" stroke-width="2" opacity="0.95" stroke-linecap="round"/>
+<polygon points="1057.00,286.00 1042.59,292.96 1042.59,279.04" fill="#314859" opacity="0.95"/>
+<rect x="1070.00" y="250.00" width="190.00" height="72.00" rx="7" fill="#0c1620" opacity="1" stroke="#415767" stroke-width="1"/>
+<text x="1165" y="280" font-family="Menlo,Consolas,monospace" font-size="17" font-weight="800" fill="#9dafb8" text-anchor="middle" opacity="1">2026-04-17</text>
+<text x="1165" y="306" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="700" fill="#6d8290" text-anchor="middle" opacity="1">f90ca4ec</text>
+<line x1="1263.00" y1="286.00" x2="1302.00" y2="286.00" stroke="#314859" stroke-width="2" opacity="0.95" stroke-linecap="round"/>
+<polygon points="1302.00,286.00 1287.59,292.96 1287.59,279.04" fill="#314859" opacity="0.95"/>
+<rect x="1315.00" y="250.00" width="190.00" height="72.00" rx="7" fill="#102536" opacity="1" stroke="#4fd8ff" stroke-width="2"/>
+<text x="1410" y="280" font-family="Menlo,Consolas,monospace" font-size="17" font-weight="800" fill="#f1f8fc" text-anchor="middle" opacity="1">2026-04-18</text>
+<text x="1410" y="306" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="700" fill="#4fd8ff" text-anchor="middle" opacity="1">7d39feab</text>
+<rect x="90.00" y="405.00" width="470.00" height="410.00" rx="8" fill="#0d1721" opacity="0.92" stroke="#30414e" stroke-width="2"/>
+<rect x="90.00" y="405.00" width="470.00" height="5.00" rx="3" fill="#4fd8ff" opacity="0.75"/>
+<text x="118" y="447" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="700" fill="#83a1af" text-anchor="start" opacity="1">BASE STATE</text>
+<text x="118" y="487" font-family="Menlo,Consolas,monospace" font-size="28" font-weight="800" fill="#f2f8ff" text-anchor="start" opacity="1">PREVIOUS ARCHIVE</text>
+<text x="118" y="547" font-family="Menlo,Consolas,monospace" font-size="17" font-weight="700" fill="#8fa3ae" text-anchor="start" opacity="1">date</text>
+<text x="118" y="581" font-family="Menlo,Consolas,monospace" font-size="28" font-weight="800" fill="#dce8ef" text-anchor="start" opacity="1">2026-04-17</text>
+<text x="338" y="547" font-family="Menlo,Consolas,monospace" font-size="17" font-weight="700" fill="#8fa3ae" text-anchor="start" opacity="1">objects</text>
+<text x="338" y="581" font-family="Menlo,Consolas,monospace" font-size="28" font-weight="800" fill="#4fd8ff" text-anchor="start" opacity="1">67,171</text>
+<text x="118" y="651" font-family="Menlo,Consolas,monospace" font-size="16" font-weight="700" fill="#8fa3ae" text-anchor="start" opacity="1">catalog hash</text>
+<text x="118" y="683" font-family="Menlo,Consolas,monospace" font-size="20" font-weight="800" fill="#dce8ef" text-anchor="start" opacity="1">f90ca4ec6d...56118af0</text>
+<text x="118" y="740" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="600" fill="#a9bbc4" text-anchor="start" opacity="1">Carried forward intact from the prior day.</text>
+<rect x="640.00" y="405.00" width="470.00" height="410.00" rx="8" fill="#0d1721" opacity="0.92" stroke="#30414e" stroke-width="2"/>
+<rect x="640.00" y="405.00" width="470.00" height="5.00" rx="3" fill="#4fd8ff" opacity="0.75"/>
+<text x="668" y="447" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="700" fill="#83a1af" text-anchor="start" opacity="1">SOURCE CHANGES</text>
+<text x="668" y="487" font-family="Menlo,Consolas,monospace" font-size="28" font-weight="800" fill="#f2f8ff" text-anchor="start" opacity="1">24H DELTA WINDOW</text>
+<text x="668" y="547" font-family="Menlo,Consolas,monospace" font-size="17" font-weight="700" fill="#8fa3ae" text-anchor="start" opacity="1">gp_history rows</text>
+<text x="668" y="581" font-family="Menlo,Consolas,monospace" font-size="28" font-weight="800" fill="#ffd166" text-anchor="start" opacity="1">43,167</text>
+<text x="908" y="547" font-family="Menlo,Consolas,monospace" font-size="17" font-weight="700" fill="#8fa3ae" text-anchor="start" opacity="1">deduped objects</text>
+<text x="908" y="581" font-family="Menlo,Consolas,monospace" font-size="28" font-weight="800" fill="#4fd8ff" text-anchor="start" opacity="1">26,742</text>
+<rect x="675.00" y="632.00" width="390.00" height="30.00" rx="5" fill="#1b2d3a" opacity="1"/>
+<rect x="675.00" y="632.00" width="390.00" height="30.00" rx="5" fill="#ffd166" opacity="0.5"/>
+<text x="870" y="654" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#091018" text-anchor="middle" opacity="1">raw rows</text>
+<polygon points="710.00,704.00 1030.00,704.00 982.00,756.00 758.00,756.00" fill="#102536" opacity="1" stroke="#4fd8ff" stroke-width="2"/>
+<text x="870" y="738" font-family="Menlo,Consolas,monospace" font-size="18" font-weight="800" fill="#dce8ef" text-anchor="middle" opacity="1">26,739 updates + 3 new</text>
+<text x="692" y="792" font-family="Menlo,Consolas,monospace" font-size="16" font-weight="600" fill="#a9bbc4" text-anchor="start" opacity="1">Window: 04-17T00:00 to 04-18T00:00 UTC</text>
+<rect x="1190.00" y="405.00" width="470.00" height="410.00" rx="8" fill="#0d1721" opacity="0.92" stroke="#4fd8ff" stroke-width="2"/>
+<rect x="1190.00" y="405.00" width="470.00" height="5.00" rx="3" fill="#4fd8ff" opacity="0.75"/>
+<text x="1218" y="447" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="700" fill="#83a1af" text-anchor="start" opacity="1">CONSENSUS OUTPUT</text>
+<text x="1218" y="487" font-family="Menlo,Consolas,monospace" font-size="28" font-weight="800" fill="#f2f8ff" text-anchor="start" opacity="1">MIDNIGHT ARCHIVE</text>
+<text x="1218" y="547" font-family="Menlo,Consolas,monospace" font-size="17" font-weight="700" fill="#8fa3ae" text-anchor="start" opacity="1">state date</text>
+<text x="1218" y="581" font-family="Menlo,Consolas,monospace" font-size="28" font-weight="800" fill="#dce8ef" text-anchor="start" opacity="1">2026-04-18</text>
+<text x="1438" y="547" font-family="Menlo,Consolas,monospace" font-size="17" font-weight="700" fill="#8fa3ae" text-anchor="start" opacity="1">objects</text>
+<text x="1438" y="581" font-family="Menlo,Consolas,monospace" font-size="28" font-weight="800" fill="#4fd8ff" text-anchor="start" opacity="1">67,174</text>
+<text x="1218" y="651" font-family="Menlo,Consolas,monospace" font-size="16" font-weight="700" fill="#8fa3ae" text-anchor="start" opacity="1">catalog hash</text>
+<text x="1218" y="683" font-family="Menlo,Consolas,monospace" font-size="20" font-weight="800" fill="#8ff0a4" text-anchor="start" opacity="1">7d39feabed...4535d804</text>
+<rect x="1218.00" y="723.00" width="410.00" height="58.00" rx="5" fill="#071018" opacity="1" stroke="#27495c" stroke-width="1"/>
+<text x="1232" y="747" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#8fa3ae" text-anchor="start" opacity="1">previous hash matches 2026-04-17</text>
+<text x="1232" y="770" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="700" fill="#4fd8ff" text-anchor="start" opacity="1">f90ca4ec6d...56118af0</text>
+<rect x="1740.00" y="405.00" width="470.00" height="410.00" rx="8" fill="#0d1721" opacity="0.92" stroke="#5d334e" stroke-width="2"/>
+<rect x="1740.00" y="405.00" width="470.00" height="5.00" rx="3" fill="#4fd8ff" opacity="0.75"/>
+<text x="1768" y="447" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="700" fill="#83a1af" text-anchor="start" opacity="1">OBSERVED LATER</text>
+<text x="1768" y="487" font-family="Menlo,Consolas,monospace" font-size="28" font-weight="800" fill="#f2f8ff" text-anchor="start" opacity="1">CURRENT GP AUDIT</text>
+<text x="1768" y="547" font-family="Menlo,Consolas,monospace" font-size="17" font-weight="700" fill="#8fa3ae" text-anchor="start" opacity="1">observed</text>
+<text x="1768" y="581" font-family="Menlo,Consolas,monospace" font-size="28" font-weight="800" fill="#dce8ef" text-anchor="start" opacity="1">03:33:23 UTC</text>
+<text x="2008" y="547" font-family="Menlo,Consolas,monospace" font-size="17" font-weight="700" fill="#8fa3ae" text-anchor="start" opacity="1">current gp</text>
+<text x="2008" y="581" font-family="Menlo,Consolas,monospace" font-size="28" font-weight="800" fill="#ff5ea8" text-anchor="start" opacity="1">67,202</text>
+<text x="1768" y="641" font-family="Menlo,Consolas,monospace" font-size="17" font-weight="700" fill="#8fa3ae" text-anchor="start" opacity="1">after cutoff</text>
+<text x="1768" y="675" font-family="Menlo,Consolas,monospace" font-size="28" font-weight="800" fill="#ff5ea8" text-anchor="start" opacity="1">28</text>
+<text x="2008" y="641" font-family="Menlo,Consolas,monospace" font-size="17" font-weight="700" fill="#8fa3ae" text-anchor="start" opacity="1">missing</text>
+<text x="2008" y="675" font-family="Menlo,Consolas,monospace" font-size="28" font-weight="800" fill="#8ff0a4" text-anchor="start" opacity="1">0</text>
+<text x="1768" y="735" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="700" fill="#d7b5c9" text-anchor="start" opacity="1">Later GP changes are visible here.</text>
+<text x="1768" y="765" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="700" fill="#d7b5c9" text-anchor="start" opacity="1">They do not alter the hash.</text>
+<line x1="582.00" y1="610.00" x2="612.00" y2="610.00" stroke="#4fd8ff" stroke-width="5" opacity="0.95" stroke-linecap="round"/>
+<polygon points="612.00,610.00 597.59,616.96 597.59,603.04" fill="#4fd8ff" opacity="0.95"/>
+<line x1="1132.00" y1="610.00" x2="1162.00" y2="610.00" stroke="#4fd8ff" stroke-width="5" opacity="0.95" stroke-linecap="round"/>
+<polygon points="1162.00,610.00 1147.59,616.96 1147.59,603.04" fill="#4fd8ff" opacity="0.95"/>
+<line x1="1682.00" y1="610.00" x2="1712.00" y2="610.00" stroke="#ff5ea8" stroke-width="3" opacity="0.75" stroke-linecap="round" stroke-dasharray="10 12"/>
+<polygon points="1712.00,610.00 1697.59,616.96 1697.59,603.04" fill="#ff5ea8" opacity="0.75"/>
+<text x="90" y="930" font-family="Menlo,Consolas,monospace" font-size="26" font-weight="900" fill="#f4fbff" text-anchor="start" opacity="1">WHAT IS INSIDE THE 2026-04-18 ARCHIVE</text>
+<rect x="90.00" y="970.00" width="376.40" height="44.00" rx="2" fill="#4fd8ff" opacity="0.82"/>
+<rect x="466.40" y="970.00" width="537.24" height="44.00" rx="2" fill="#8b98a1" opacity="0.82"/>
+<rect x="1003.63" y="970.00" width="101.95" height="44.00" rx="2" fill="#ffd166" opacity="0.82"/>
+<rect x="1105.58" y="970.00" width="31.26" height="44.00" rx="2" fill="#ff5ea8" opacity="0.82"/>
+<rect x="1136.84" y="970.00" width="3.16" height="44.00" rx="2" fill="#8ff0a4" opacity="0.82"/>
+<rect x="90.00" y="970.00" width="1050.00" height="44.00" rx="4" fill="none" opacity="1" stroke="#355062" stroke-width="2"/>
+<rect x="90.00" y="1039.00" width="22.00" height="14.00" rx="2" fill="#4fd8ff" opacity="0.9"/>
+<text x="122" y="1056" font-family="Menlo,Consolas,monospace" font-size="16" font-weight="800" fill="#dce8ef" text-anchor="start" opacity="1">PAYLOAD</text>
+<text x="122" y="1080" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="700" fill="#8fa3ae" text-anchor="start" opacity="1">24,080</text>
+<rect x="300.00" y="1039.00" width="22.00" height="14.00" rx="2" fill="#8b98a1" opacity="0.9"/>
+<text x="332" y="1056" font-family="Menlo,Consolas,monospace" font-size="16" font-weight="800" fill="#dce8ef" text-anchor="start" opacity="1">DEBRIS</text>
+<text x="332" y="1080" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="700" fill="#8fa3ae" text-anchor="start" opacity="1">34,370</text>
+<rect x="510.00" y="1039.00" width="22.00" height="14.00" rx="2" fill="#ffd166" opacity="0.9"/>
+<text x="542" y="1056" font-family="Menlo,Consolas,monospace" font-size="16" font-weight="800" fill="#dce8ef" text-anchor="start" opacity="1">ROCKET BODY</text>
+<text x="542" y="1080" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="700" fill="#8fa3ae" text-anchor="start" opacity="1">6,522</text>
+<rect x="780.00" y="1039.00" width="22.00" height="14.00" rx="2" fill="#ff5ea8" opacity="0.9"/>
+<text x="812" y="1056" font-family="Menlo,Consolas,monospace" font-size="16" font-weight="800" fill="#dce8ef" text-anchor="start" opacity="1">UNKNOWN</text>
+<text x="812" y="1080" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="700" fill="#8fa3ae" text-anchor="start" opacity="1">2,000</text>
+<rect x="990.00" y="1039.00" width="22.00" height="14.00" rx="2" fill="#8ff0a4" opacity="0.9"/>
+<text x="1022" y="1056" font-family="Menlo,Consolas,monospace" font-size="16" font-weight="800" fill="#dce8ef" text-anchor="start" opacity="1">TBA</text>
+<text x="1022" y="1080" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="700" fill="#8fa3ae" text-anchor="start" opacity="1">202</text>
+<text x="90" y="1150" font-family="Menlo,Consolas,monospace" font-size="20" font-weight="900" fill="#8fa3ae" text-anchor="start" opacity="1">STATE</text>
+<rect x="170.00" y="1130.00" width="580.00" height="26.00" rx="4" fill="#26313a" opacity="1"/>
+<rect x="170.00" y="1130.00" width="290.95" height="26.00" rx="4" fill="#4fd8ff" opacity="0.8"/>
+<text x="170" y="1192" font-family="Menlo,Consolas,monospace" font-size="18" font-weight="800" fill="#4fd8ff" text-anchor="start" opacity="1">live-ish/no DECAY_DATE: 33,697</text>
+<text x="520" y="1192" font-family="Menlo,Consolas,monospace" font-size="18" font-weight="800" fill="#8fa3ae" text-anchor="start" opacity="1">DECAY_DATE present: 33,477</text>
+<text x="1290" y="930" font-family="Menlo,Consolas,monospace" font-size="26" font-weight="900" fill="#f4fbff" text-anchor="start" opacity="1">AFTER-CUTOFF OBJECTS WAIT OUTSIDE THE HASH</text>
+<text x="1290" y="968" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="700" fill="#d7b5c9" text-anchor="start" opacity="1">28 NORAD IDs were present in current GP at audit time but not in the midnight archive.</text>
+<text x="1290" y="1002" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="700" fill="#d7b5c9" text-anchor="start" opacity="1">They become candidates for the next bounded daily window.</text>
+<rect x="1290.00" y="1044.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="1346" y="1065" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68602</text>
+<rect x="1432.00" y="1044.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="1488" y="1065" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68603</text>
+<rect x="1574.00" y="1044.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="1630" y="1065" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68604</text>
+<rect x="1716.00" y="1044.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="1772" y="1065" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68605</text>
+<rect x="1858.00" y="1044.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="1914" y="1065" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68606</text>
+<rect x="2000.00" y="1044.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="2056" y="1065" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68607</text>
+<rect x="2142.00" y="1044.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="2198" y="1065" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68608</text>
+<rect x="1290.00" y="1092.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="1346" y="1113" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68609</text>
+<rect x="1432.00" y="1092.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="1488" y="1113" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68610</text>
+<rect x="1574.00" y="1092.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="1630" y="1113" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68611</text>
+<rect x="1716.00" y="1092.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="1772" y="1113" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68612</text>
+<rect x="1858.00" y="1092.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="1914" y="1113" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68613</text>
+<rect x="2000.00" y="1092.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="2056" y="1113" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68614</text>
+<rect x="2142.00" y="1092.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="2198" y="1113" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68615</text>
+<rect x="1290.00" y="1140.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="1346" y="1161" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68616</text>
+<rect x="1432.00" y="1140.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="1488" y="1161" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68617</text>
+<rect x="1574.00" y="1140.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="1630" y="1161" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68618</text>
+<rect x="1716.00" y="1140.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="1772" y="1161" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68619</text>
+<rect x="1858.00" y="1140.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="1914" y="1161" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68620</text>
+<rect x="2000.00" y="1140.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="2056" y="1161" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68621</text>
+<rect x="2142.00" y="1140.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="2198" y="1161" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68622</text>
+<rect x="1290.00" y="1188.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="1346" y="1209" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68623</text>
+<rect x="1432.00" y="1188.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="1488" y="1209" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68624</text>
+<rect x="1574.00" y="1188.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="1630" y="1209" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68625</text>
+<rect x="1716.00" y="1188.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="1772" y="1209" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68626</text>
+<rect x="1858.00" y="1188.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="1914" y="1209" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68754</text>
+<rect x="2000.00" y="1188.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="2056" y="1209" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68755</text>
+<rect x="2142.00" y="1188.00" width="112.00" height="30.00" rx="5" fill="#1b1020" opacity="1" stroke="#7c3359" stroke-width="1"/>
+<text x="2198" y="1209" font-family="Menlo,Consolas,monospace" font-size="15" font-weight="800" fill="#ff7fba" text-anchor="middle" opacity="1">68760</text>
+<rect x="90.00" y="1298.00" width="2220.00" height="86.00" rx="8" fill="#071018" opacity="0.92" stroke="#263846" stroke-width="2"/>
+<text x="120" y="1332" font-family="Menlo,Consolas,monospace" font-size="17" font-weight="900" fill="#ffd166" text-anchor="start" opacity="1">ESSENTIAL IDEA</text>
+<text x="120" y="1364" font-family="Inter,Arial,sans-serif" font-size="24" font-weight="800" fill="#f2f8ff" text-anchor="start" opacity="1">Every operator should get the same midnight catalog hash from the same prior hash and the same 24-hour source window. Later observations are visible, but cannot move the hash.</text>
+<text x="90" y="1438" font-family="Menlo,Consolas,monospace" font-size="16" font-weight="700" fill="#708898" text-anchor="start" opacity="1">Release bundle hash target: catalog 7d39feabed709e03...4535d804 | generated from manifest, delta, audit, and catalog files</text>
+</svg>
