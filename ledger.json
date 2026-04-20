@@ -90,5 +90,15 @@
     "query_strategy": "prior_snapshot_plus_bounded_gp_history_delta",
     "sha256": "ffcc54a7a95e6f65be83c50ff427ef63570fd8c0df3795d232cf022957db8bd3",
     "state_as_of_utc": "2026-04-19T00:00:00Z"
+  },
+  {
+    "archived_at": "2026-04-20T00:01:01.390416+00:00",
+    "compressed_bytes": 11301379,
+    "date": "2026-04-20",
+    "object_count": 67208,
+    "provenance": "genesis_from_gp",
+    "query_strategy": "current_gp_genesis",
+    "sha256": "5cd6af76f043b0335ced62c887703585560bdff0b5daf272fa4c76636e5ec1ab",
+    "state_as_of_utc": "2026-04-20T00:00:00Z"
   }
 ]
