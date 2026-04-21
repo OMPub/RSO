@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 1500" width="2400" height="1500" role="img" aria-labelledby="title desc">
+  <title id="title">What We Track: RSO Genesis Capture</title>
+  <desc id="desc">Minimal radar chart of object types in the 2026-04-20 RSO archive, comparing total objects with objects that have no decay date.</desc>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="82%">
+      <stop offset="0%" stop-color="#132634"/>
+      <stop offset="58%" stop-color="#08131c"/>
+      <stop offset="100%" stop-color="#020407"/>
+    </radialGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="7" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <style>
+      text{letter-spacing:0}
+      .ring{fill:none;stroke:#43515a;stroke-width:2;opacity:.48}
+      .axis{stroke:#5f737f;stroke-width:2;opacity:.42}
+      .ringLabel{font-family:Menlo,Consolas,monospace;font-size:20px;font-weight:800;fill:#788a94}
+      .axisLabel{font-family:Menlo,Consolas,monospace;font-size:33px;font-weight:900;fill:#f4fbff}
+      .axisCount{font-family:Menlo,Consolas,monospace;font-size:24px;font-weight:900;fill:#ffd166}
+      .axisSub{font-family:Menlo,Consolas,monospace;font-size:17px;font-weight:800;fill:#a9bac4}
+      .title{font-family:Menlo,Consolas,monospace;font-size:72px;font-weight:900;fill:#f4fbff}
+      .kicker{font-family:Menlo,Consolas,monospace;font-size:27px;font-weight:900;fill:#4fd8ff}
+      .subtitle{font-family:Inter,Arial,sans-serif;font-size:26px;font-weight:800;fill:#c9d9e2}
+      .note{font-family:Menlo,Consolas,monospace;font-size:22px;font-weight:800;fill:#a9bac4}
+      .stat{font-family:Menlo,Consolas,monospace;font-size:27px;font-weight:900;fill:#f4fbff}
+      .statLabel{font-family:Menlo,Consolas,monospace;font-size:17px;font-weight:900;fill:#8fa3ae}
+    </style>
+  </defs>
+  <rect width="2400" height="1500" fill="url(#bg)"/>
+  <rect width="2400" height="1500" fill="#000" opacity=".16"/>
+
+  <text x="92" y="112" class="kicker">ORBITAL WITNESS / GENESIS CAPTURE</text>
+  <text x="92" y="194" class="title">WHAT WE TRACK</text>
+  <text x="96" y="244" class="subtitle">Object-type radar for the deterministic 2026-04-20 RSO archive</text>
+
+  <g transform="translate(1760 112)">
+    <text class="statLabel" x="0" y="0">CATALOG HASH</text>
+    <text class="stat" x="0" y="40">5cd6af76f043b033</text>
+    <text class="stat" x="0" y="76">5ced62c887703585</text>
+    <text class="statLabel" x="0" y="132">STATE AS OF UTC</text>
+    <text class="stat" x="0" y="172">2026-04-20 00:00:00</text>
+    <text class="statLabel" x="0" y="228">OBJECTS</text>
+    <text class="stat" x="0" y="268">67,208</text>
+  </g>
+
+  <g id="radar">
+    <polygon points="1180.0,586.2 1292.9,668.3 1249.8,801.1 1110.2,801.1 1067.1,668.3" class="ring"/><text x="1192.0" y="594.2" class="ringLabel">2,148</text><polygon points="1180.0,467.5 1405.9,631.6 1319.6,897.1 1040.4,897.1 954.1,631.6" class="ring"/><text x="1192.0" y="475.5" class="ringLabel">8,592</text><polygon points="1180.0,348.8 1518.8,594.9 1389.4,993.2 970.6,993.2 841.2,594.9" class="ring"/><text x="1192.0" y="356.8" class="ringLabel">19,333</text><polygon points="1180.0,230.0 1631.8,558.2 1459.2,1089.3 900.8,1089.3 728.2,558.2" class="ring"/><text x="1192.0" y="238.0" class="ringLabel">34,370</text>
+    <line x1="1180" y1="705" x2="1180.0" y2="208.0" class="axis"/><line x1="1180" y1="705" x2="1652.7" y2="551.4" class="axis"/><line x1="1180" y1="705" x2="1472.1" y2="1107.1" class="axis"/><line x1="1180" y1="705" x2="887.9" y2="1107.1" class="axis"/><line x1="1180" y1="705" x2="707.3" y2="551.4" class="axis"/>
+    <polygon points="1180.0,307.2 1376.8,641.1 1247.5,797.8 1158.6,734.5 728.2,558.2" fill="#8898a1" opacity=".28" stroke="#d9e3e8" stroke-width="4"/>
+    <polygon points="1180.0,367.1 1295.0,667.6 1240.2,787.8 1159.6,733.0 909.5,617.1" fill="#4fd8ff" opacity=".54" stroke="#4fd8ff" stroke-width="5" filter="url(#glow)"/>
+    <circle cx="1180" cy="705" r="6" fill="#ffd166"/>
+    <circle cx="1180.0" cy="307.2" r="10" fill="#22b8d6" stroke="#f4fbff" stroke-width="3"/><circle cx="1180.0" cy="367.1" r="7" fill="#4fd8ff" stroke="#071019" stroke-width="3"/><circle cx="1376.8" cy="641.1" r="10" fill="#d5b545" stroke="#f4fbff" stroke-width="3"/><circle cx="1295.0" cy="667.6" r="7" fill="#4fd8ff" stroke="#071019" stroke-width="3"/><circle cx="1247.5" cy="797.8" r="10" fill="#d6458f" stroke="#f4fbff" stroke-width="3"/><circle cx="1240.2" cy="787.8" r="7" fill="#4fd8ff" stroke="#071019" stroke-width="3"/><circle cx="1158.6" cy="734.5" r="10" fill="#56c77b" stroke="#f4fbff" stroke-width="3"/><circle cx="1159.6" cy="733.0" r="7" fill="#4fd8ff" stroke="#071019" stroke-width="3"/><circle cx="728.2" cy="558.2" r="10" fill="#a6b2b9" stroke="#f4fbff" stroke-width="3"/><circle cx="909.5" cy="617.1" r="7" fill="#4fd8ff" stroke="#071019" stroke-width="3"/>
+    
+      <g transform="translate(1180.0 118.0)">
+        <text class="axisLabel" text-anchor="middle" y="0">Payloads</text>
+        <text class="axisCount" text-anchor="middle" y="36">24,108 total</text>
+        <text class="axisSub" text-anchor="middle" y="66">17,390 no DECAY_DATE</text>
+        <text class="axisSub" text-anchor="middle" y="94">6,718 DECAY_DATE present</text>
+      </g>
+      <g transform="translate(1738.3 523.6)">
+        <text class="axisLabel" text-anchor="start" y="0">Rocket bodies</text>
+        <text class="axisCount" text-anchor="start" y="36">6,522 total</text>
+        <text class="axisSub" text-anchor="start" y="66">2,226 no DECAY_DATE</text>
+        <text class="axisSub" text-anchor="start" y="94">4,296 DECAY_DATE present</text>
+      </g>
+      <g transform="translate(1525.0 1179.9)">
+        <text class="axisLabel" text-anchor="start" y="0">Unknown</text>
+        <text class="axisCount" text-anchor="start" y="36">2,006 total</text>
+        <text class="axisSub" text-anchor="start" y="66">1,596 no DECAY_DATE</text>
+        <text class="axisSub" text-anchor="start" y="94">410 DECAY_DATE present</text>
+      </g>
+      <g transform="translate(835.0 1179.9)">
+        <text class="axisLabel" text-anchor="end" y="0">TBA</text>
+        <text class="axisCount" text-anchor="end" y="36">202 total</text>
+        <text class="axisSub" text-anchor="end" y="66">183 no DECAY_DATE</text>
+        <text class="axisSub" text-anchor="end" y="94">19 DECAY_DATE present</text>
+      </g>
+      <g transform="translate(621.7 523.6)">
+        <text class="axisLabel" text-anchor="end" y="0">Debris</text>
+        <text class="axisCount" text-anchor="end" y="36">34,370 total</text>
+        <text class="axisSub" text-anchor="end" y="66">12,320 no DECAY_DATE</text>
+        <text class="axisSub" text-anchor="end" y="94">22,050 DECAY_DATE present</text>
+      </g>
+  </g>
+
+  <g transform="translate(92 1310)">
+    <text class="kicker" x="0" y="0">HOW TO READ</text>
+    <text class="note" x="0" y="48">Outer ghost shape: all rows in the archive. Inner cyan shape: rows with no DECAY_DATE.</text>
+    <text class="note" x="0" y="92">A DECAY_DATE means the catalog records reentry or end-of-orbit. No DECAY_DATE does not mean operational.</text>
+    <text class="note" x="0" y="136">Radar radius uses sqrt(count), so smaller categories remain visible.</text>
+  </g>
+</svg>
