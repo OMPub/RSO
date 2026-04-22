@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 1500" width="2400" height="1500" role="img" aria-labelledby="title desc">
+  <title id="title">Why The Doc Chain Matters</title>
+  <desc id="desc">A visual explanation of the Orbital Witness RSO document chain as an immutable public history from the 2026-04-20 genesis capture through 2026-04-22.</desc>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="82%">
+      <stop offset="0%" stop-color="#132634"/>
+      <stop offset="58%" stop-color="#08131c"/>
+      <stop offset="100%" stop-color="#020407"/>
+    </radialGradient>
+    <filter id="glow" x="-35%" y="-35%" width="170%" height="170%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <marker id="arrow" markerWidth="16" markerHeight="16" refX="13" refY="8" orient="auto" markerUnits="strokeWidth">
+      <path d="M 1 1 L 15 8 L 1 15 Z" fill="#4fd8ff"/>
+    </marker>
+    <style>
+      text{letter-spacing:0}
+      .kicker{font-family:Menlo,Consolas,monospace;font-size:28px;font-weight:900;fill:#4fd8ff}
+      .title{font-family:Menlo,Consolas,monospace;font-size:74px;font-weight:900;fill:#f4fbff}
+      .subtitle{font-family:Inter,Arial,sans-serif;font-size:27px;font-weight:800;fill:#c9d9e2}
+      .small{font-family:Menlo,Consolas,monospace;font-size:18px;font-weight:800;fill:#a9bac4}
+      .label{font-family:Menlo,Consolas,monospace;font-size:22px;font-weight:900;fill:#f4fbff}
+      .date{font-family:Menlo,Consolas,monospace;font-size:34px;font-weight:900;fill:#f4fbff}
+      .hash{font-family:Menlo,Consolas,monospace;font-size:24px;font-weight:900;fill:#ffd166}
+      .good{font-family:Menlo,Consolas,monospace;font-size:24px;font-weight:900;fill:#56c77b}
+      .muted{font-family:Menlo,Consolas,monospace;font-size:20px;font-weight:800;fill:#8fa3ae}
+      .rule{stroke:#354853;stroke-width:2;opacity:.7}
+      .chain{stroke:#4fd8ff;stroke-width:5;fill:none;marker-end:url(#arrow)}
+      .card{fill:#0b1822;stroke:#3a5261;stroke-width:2}
+      .cardGenesis{fill:#0d1d27;stroke:#ffd166;stroke-width:3}
+      .paper{fill:#152938;stroke:#5f737f;stroke-width:2}
+      .paperHot{fill:#123443;stroke:#4fd8ff;stroke-width:2}
+      .check{fill:none;stroke:#56c77b;stroke-width:8;stroke-linecap:round;stroke-linejoin:round}
+    </style>
+  </defs>
+
+  <rect width="2400" height="1500" fill="url(#bg)"/>
+  <rect width="2400" height="1500" fill="#000" opacity=".16"/>
+
+  <g opacity=".22">
+    <circle cx="140" cy="118" r="2.2" fill="#dcecff"/>
+    <circle cx="610" cy="1286" r="1.8" fill="#dcecff"/>
+    <circle cx="1176" cy="160" r="2.1" fill="#dcecff"/>
+    <circle cx="2070" cy="214" r="2.2" fill="#dcecff"/>
+    <circle cx="2252" cy="1260" r="1.8" fill="#dcecff"/>
+  </g>
+
+  <text x="92" y="112" class="kicker">ORBITAL WITNESS / DOCUMENT CHAIN</text>
+  <text x="92" y="194" class="title">WHY THE DOC CHAIN MATTERS</text>
+  <text x="96" y="244" class="subtitle">Daily validated content, linked to its place in history. No one gets to rewrite what the archive said.</text>
+
+  <g transform="translate(94 330)">
+    <text class="muted" x="0" y="0">STATE OF THE CHAIN</text>
+    <text class="hash" x="0" y="42">3 links</text>
+    <text class="small" x="0" y="78">genesis plus two rolling days</text>
+  </g>
+
+  <g transform="translate(620 330)">
+    <text class="muted" x="0" y="0">CHAIN RULE</text>
+    <text class="hash" x="0" y="42">previousCatalogHash</text>
+    <text class="small" x="0" y="78">must equal the prior day's catalog hash</text>
+  </g>
+
+  <g transform="translate(1390 330)">
+    <text class="muted" x="0" y="0">HOW IT'S GOING</text>
+    <text class="good" x="0" y="42">LOCKED IN</text>
+    <text class="small" x="0" y="78">2026-04-22 validates against its exact predecessor</text>
+  </g>
+
+  <line x1="92" y1="458" x2="2308" y2="458" class="rule"/>
+
+  <g id="block-0420" transform="translate(144 540)">
+    <rect x="0" y="0" width="500" height="340" rx="8" class="cardGenesis"/>
+    <text class="date" x="40" y="64">2026-04-20</text>
+    <text class="hash" x="40" y="116">GENESIS CAPTURE</text>
+    <text class="small" x="40" y="164">catalog hash</text>
+    <text class="hash" x="40" y="204">5cd6af76f043b033</text>
+    <text class="small" x="40" y="252">67,208 objects</text>
+    <text class="small" x="40" y="286">state as of 00:00:00 UTC</text>
+    <g transform="translate(372 214)">
+      <rect x="0" y="0" width="58" height="74" rx="5" class="paperHot"/>
+      <rect x="-18" y="18" width="58" height="74" rx="5" class="paper" opacity=".75"/>
+      <rect x="18" y="34" width="58" height="74" rx="5" class="paper" opacity=".75"/>
+    </g>
+  </g>
+
+  <text class="small" x="776" y="626" text-anchor="middle">4/21 links back</text>
+  <text class="good" x="776" y="662" text-anchor="middle">HASH MATCH</text>
+  <path d="M 644 738 C 738 738, 806 738, 900 738" class="chain"/>
+
+  <g id="block-0421" transform="translate(910 540)">
+    <rect x="0" y="0" width="500" height="340" rx="8" class="card"/>
+    <text class="date" x="40" y="64">2026-04-21</text>
+    <text class="hash" x="40" y="116">ROLLING DELTA</text>
+    <text class="small" x="40" y="164">catalog hash</text>
+    <text class="hash" x="40" y="204">e2a06299f4829891</text>
+    <text class="small" x="40" y="252">67,208 objects</text>
+    <text class="small" x="40" y="286">26,767 updated rows</text>
+    <g transform="translate(392 238)">
+      <path d="M 0 34 L 18 52 L 58 0" class="check"/>
+    </g>
+  </g>
+
+  <text class="small" x="1542" y="626" text-anchor="middle">4/22 links back</text>
+  <text class="good" x="1542" y="662" text-anchor="middle">HASH MATCH</text>
+  <path d="M 1410 738 C 1504 738, 1572 738, 1666 738" class="chain"/>
+
+  <g id="block-0422" transform="translate(1676 540)">
+    <rect x="0" y="0" width="500" height="340" rx="8" class="card"/>
+    <text class="date" x="40" y="64">2026-04-22</text>
+    <text class="hash" x="40" y="116">ROLLING DELTA</text>
+    <text class="small" x="40" y="164">catalog hash</text>
+    <text class="hash" x="40" y="204">b649c86ea8ef3e62</text>
+    <text class="small" x="40" y="252">67,211 objects</text>
+    <text class="small" x="40" y="286">3 new objects, no audit gaps</text>
+    <g transform="translate(392 238)">
+      <path d="M 0 34 L 18 52 L 58 0" class="check"/>
+    </g>
+  </g>
+
+  <g transform="translate(144 980)">
+    <text class="kicker" x="0" y="0">HOW HISTORY GETS LOCKED</text>
+    <g transform="translate(0 70)">
+      <circle cx="24" cy="-10" r="24" fill="#4fd8ff"/>
+      <text x="15" y="0" class="label" fill="#071019">1</text>
+      <text class="label" x="68" y="0">Hash the daily archive.</text>
+      <text class="small" x="68" y="38">The content gets an exact SHA-256 fingerprint.</text>
+    </g>
+    <g transform="translate(0 166)">
+      <circle cx="24" cy="-10" r="24" fill="#4fd8ff"/>
+      <text x="15" y="0" class="label" fill="#071019">2</text>
+      <text class="label" x="68" y="0">Link it to yesterday.</text>
+      <text class="small" x="68" y="38">The manifest names the prior catalog hash.</text>
+    </g>
+    <g transform="translate(0 262)">
+      <circle cx="24" cy="-10" r="24" fill="#4fd8ff"/>
+      <text x="15" y="0" class="label" fill="#071019">3</text>
+      <text class="label" x="68" y="0">Validate the chain publicly.</text>
+      <text class="small" x="68" y="38">Each day confirms its own content and its place in time.</text>
+    </g>
+  </g>
+
+  <g transform="translate(1220 1040)">
+    <rect x="0" y="0" width="1018" height="260" rx="8" fill="#0b1822" stroke="#314653" stroke-width="2"/>
+    <text class="kicker" x="40" y="58">THE VALUE</text>
+    <text class="label" x="40" y="112">No one can claim the data said something else.</text>
+    <text class="small" x="40" y="160">Each archive is validated, timestamped by its date, and linked to the archive before it.</text>
+    <text class="small" x="40" y="204">The result is a public, validated record whose history cannot be quietly rewritten.</text>
+  </g>
+</svg>
