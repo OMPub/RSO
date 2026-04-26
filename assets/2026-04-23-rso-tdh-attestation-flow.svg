@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 1500" width="2400" height="1500" role="img" aria-labelledby="title desc">
+  <title id="title">TDH Holder Attestation Loop</title>
+  <desc id="desc">A circular explanation of how TDH holders can validate and attest to the 2026-04-23 RSO archive as a repeatable daily process.</desc>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="44%" r="82%">
+      <stop offset="0%" stop-color="#132634"/>
+      <stop offset="58%" stop-color="#08131c"/>
+      <stop offset="100%" stop-color="#020407"/>
+    </radialGradient>
+    <filter id="glow" x="-35%" y="-35%" width="170%" height="170%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <marker id="arrow" markerWidth="18" markerHeight="18" refX="14" refY="9" orient="auto" markerUnits="strokeWidth">
+      <path d="M 1 1 L 17 9 L 1 17 Z" fill="#4fd8ff"/>
+    </marker>
+    <style>
+      text{letter-spacing:0}
+      .kicker{font-family:Menlo,Consolas,monospace;font-size:28px;font-weight:900;fill:#4fd8ff}
+      .title{font-family:Menlo,Consolas,monospace;font-size:72px;font-weight:900;fill:#f4fbff}
+      .subtitle{font-family:Inter,Arial,sans-serif;font-size:27px;font-weight:800;fill:#c9d9e2}
+      .muted{font-family:Menlo,Consolas,monospace;font-size:20px;font-weight:800;fill:#8fa3ae}
+      .small{font-family:Menlo,Consolas,monospace;font-size:18px;font-weight:800;fill:#a9bac4}
+      .label{font-family:Menlo,Consolas,monospace;font-size:22px;font-weight:900;fill:#f4fbff}
+      .good{font-family:Menlo,Consolas,monospace;font-size:24px;font-weight:900;fill:#56c77b}
+      .hash{font-family:Menlo,Consolas,monospace;font-size:24px;font-weight:900;fill:#ffd166}
+      .ring{fill:none;stroke:#2f4450;stroke-width:3;opacity:.55}
+      .flow{fill:none;stroke:#4fd8ff;stroke-width:6;marker-end:url(#arrow)}
+      .node{fill:#0b1822;stroke:#3a5261;stroke-width:2}
+      .nodeHot{fill:#0d1d27;stroke:#4fd8ff;stroke-width:3}
+      .haloBlue{fill:#4fd8ff;opacity:.14}
+      .haloGreen{fill:#56c77b;opacity:.12}
+      .haloGold{fill:#ffd166;opacity:.12}
+      .rule{stroke:#354853;stroke-width:2;opacity:.7}
+      .dot{fill:#4fd8ff}
+    </style>
+  </defs>
+
+  <rect width="2400" height="1500" fill="url(#bg)"/>
+  <rect width="2400" height="1500" fill="#000" opacity=".16"/>
+
+  <text x="92" y="112" class="kicker">ORBITAL WITNESS / TDH ATTESTATION LOOP</text>
+  <text x="92" y="194" class="title">HOW HOLDERS ADD WEIGHT</text>
+  <text x="96" y="244" class="subtitle">The same validation-and-attestation loop can happen every day for every archive in the doc chain.</text>
+
+  <g transform="translate(1200 760)">
+    <circle cx="0" cy="0" r="380" class="ring"/>
+
+    <path d="M 102 -300 A 316 316 0 0 1 300 -102" class="flow"/>
+    <path d="M 300 102 A 316 316 0 0 1 102 300" class="flow"/>
+    <path d="M -102 300 A 316 316 0 0 1 -300 102" class="flow"/>
+    <path d="M -300 -102 A 316 316 0 0 1 -102 -300" class="flow"/>
+
+    <g transform="translate(-6 -334)">
+      <circle cx="0" cy="0" r="136" class="nodeHot"/>
+      <circle cx="0" cy="0" r="108" class="haloBlue"/>
+      <text class="label" text-anchor="middle" x="0" y="-16">1. PICK AN</text>
+      <text class="label" text-anchor="middle" x="0" y="16">ARCHIVE</text>
+      <text class="small" text-anchor="middle" x="0" y="56">from the doc chain</text>
+    </g>
+
+    <g transform="translate(350 -6)">
+      <circle cx="0" cy="0" r="144" class="node"/>
+      <circle cx="0" cy="0" r="114" class="haloBlue"/>
+      <text class="label" text-anchor="middle" x="0" y="-26">2. VALIDATE</text>
+      <text class="small" text-anchor="middle" x="0" y="12">hash the archive</text>
+      <text class="small" text-anchor="middle" x="0" y="42">compare to the</text>
+      <text class="small" text-anchor="middle" x="0" y="72">published daily hash</text>
+    </g>
+
+    <g transform="translate(0 354)">
+      <circle cx="0" cy="0" r="150" class="node"/>
+      <circle cx="0" cy="0" r="120" class="haloGreen"/>
+      <text class="label" text-anchor="middle" x="0" y="-34">3. SIGN THE</text>
+      <text class="label" text-anchor="middle" x="0" y="-2">ATTESTATION</text>
+      <text class="small" text-anchor="middle" x="0" y="40">address + signature</text>
+      <text class="small" text-anchor="middle" x="0" y="70">date + archive hash</text>
+    </g>
+
+    <g transform="translate(-352 6)">
+      <circle cx="0" cy="0" r="146" class="node"/>
+      <circle cx="0" cy="0" r="116" class="haloGold"/>
+      <text class="label" text-anchor="middle" x="0" y="-24">4. TDH ADDS</text>
+      <text class="label" text-anchor="middle" x="0" y="8">WEIGHT</text>
+      <text class="small" text-anchor="middle" x="0" y="48">sybil-resistant</text>
+      <text class="small" text-anchor="middle" x="0" y="78">community signal</text>
+    </g>
+
+    <circle cx="0" cy="0" r="18" class="dot"/>
+  </g>
+
+</svg>
