@@ -164,7 +164,7 @@ class RollingSnapshotTests(unittest.TestCase):
         previous_visibility = {
             "2": {
                 "currently_missing_from_current_gp": True,
-                "first_missing_in_current_gp_audit": "2026-04-12T06:52:09Z",
+                "first_missing_in_current_gp_audit": "2026-04-12T00:15:00Z",
                 "consecutive_missing_audits": 1,
             }
         }
@@ -173,7 +173,7 @@ class RollingSnapshotTests(unittest.TestCase):
             "2026-04-13",
             archived,
             [archived[1]],
-            "2026-04-13T06:52:09Z",
+            "2026-04-13T00:15:00Z",
             ["/class/gp/format/json"],
             previous_visibility=previous_visibility,
         )
@@ -195,7 +195,7 @@ class RollingSnapshotTests(unittest.TestCase):
             "2026-04-13",
             [decayed],
             [decayed],
-            "2026-04-13T07:15:00Z",
+            "2026-04-13T00:15:00Z",
             ["/class/gp/format/json"],
         )
 
@@ -213,7 +213,7 @@ class RollingSnapshotTests(unittest.TestCase):
             "2026-04-13",
             [decayed],
             [],
-            "2026-04-13T07:15:00Z",
+            "2026-04-13T00:15:00Z",
             ["/class/gp/format/json"],
         )
 

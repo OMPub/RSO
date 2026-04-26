@@ -42,7 +42,7 @@ class ReleaseBundleTests(unittest.TestCase):
             "genesis_from_gp",
             "current_gp_genesis",
             ["/class/gp/orderby/NORAD_CAT_ID%20asc/format/json"],
-            observed_at_utc=f"{current_date_str}T07:15:00Z",
+            observed_at_utc=f"{current_date_str}T00:15:00Z",
             state_as_of_utc=f"{current_date_str}T00:00:00Z",
         )
 
@@ -85,13 +85,24 @@ class ReleaseBundleTests(unittest.TestCase):
 
     def test_github_release_publish_skips_existing_asset_without_force(self):
         calls = []
-        original_assets = snapshot.github_release_assets
-        original_run_gh = snapshot.run_gh
+        original_release_payload = snapshot.github_release_payload
+        original_resolve_repo = snapshot.resolve_github_repo
+        original_upload = snapshot.github_upload_release_asset
         try:
-            snapshot.github_release_assets = lambda tag, repo=None: [
-                "rso-archive-2026-04-18.tar.gz"
-            ]
-            snapshot.run_gh = lambda args, allow_failure=False: calls.append(args)
+            snapshot.resolve_github_repo = lambda repo=None: "OMPub/RSO"
+            snapshot.github_release_payload = lambda tag, repo=None, allow_missing=False: {
+                "id": 1,
+                "upload_url": "https://uploads.github.com/repos/OMPub/RSO/releases/1/assets{?name,label}",
+                "assets": [
+                    {
+                        "id": 2,
+                        "name": "rso-archive-2026-04-18.tar.gz",
+                    }
+                ],
+            }
+            snapshot.github_upload_release_asset = lambda release, bundle: calls.append(
+                ("upload", release, bundle)
+            )
             bundle = {
                 "tag": "rso-archive-2026-04-18",
                 "asset_name": "rso-archive-2026-04-18.tar.gz",
@@ -107,8 +118,9 @@ class ReleaseBundleTests(unittest.TestCase):
             self.assertEqual(result["reason"], "asset_exists")
             self.assertEqual(calls, [])
         finally:
-            snapshot.github_release_assets = original_assets
-            snapshot.run_gh = original_run_gh
+            snapshot.github_release_payload = original_release_payload
+            snapshot.resolve_github_repo = original_resolve_repo
+            snapshot.github_upload_release_asset = original_upload
 
 
 if __name__ == "__main__":

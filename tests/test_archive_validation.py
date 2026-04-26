@@ -45,8 +45,8 @@ class ArchiveValidationTests(unittest.TestCase):
             "genesis_from_gp",
             "current_gp_genesis",
             ["/class/gp/orderby/NORAD_CAT_ID%20asc/format/json"],
-            observed_at_utc=f"{date}T07:15:00Z",
-            state_as_of_utc=f"{date}T07:15:00Z",
+            observed_at_utc=f"{date}T00:15:00Z",
+            state_as_of_utc=f"{date}T00:15:00Z",
         )
         snapshot.update_ledger(manifest)
         return manifest
@@ -76,7 +76,7 @@ class ArchiveValidationTests(unittest.TestCase):
             day_dir / "audit.json",
             {
                 "date": "2026-04-12",
-                "observed_at_utc": "2026-04-12T07:15:00Z",
+                "observed_at_utc": "2026-04-12T00:15:00Z",
                 "archive_object_count": 2,
                 "missing_from_current_gp_count": 1,
                 "missing_from_current_gp": [],
@@ -91,6 +91,33 @@ class ArchiveValidationTests(unittest.TestCase):
             snapshot.validate_archive(min_count=1)
 
         self.assertIn("missing_from_current_gp_count", str(raised.exception))
+
+    def test_validate_archive_rejects_genesis_with_stale_delta(self):
+        self.archive_genesis()
+        snapshot.write_json(
+            snapshot.snapshot_dir("2026-04-12") / "delta.json",
+            {"date": "2026-04-12"},
+        )
+
+        with self.assertRaises(snapshot.SnapshotError) as raised:
+            snapshot.validate_archive(min_count=1)
+
+        self.assertIn("genesis snapshot must not include delta.json", str(raised.exception))
+
+    def test_validate_archive_allows_missing_catalog_by_default(self):
+        self.archive_genesis()
+        (snapshot.snapshot_dir("2026-04-12") / "catalog.json.gz").unlink()
+
+        snapshot.validate_archive(min_count=1)
+
+    def test_validate_archive_can_require_local_catalog(self):
+        self.archive_genesis()
+        (snapshot.snapshot_dir("2026-04-12") / "catalog.json.gz").unlink()
+
+        with self.assertRaises(snapshot.SnapshotError) as raised:
+            snapshot.validate_archive(min_count=1, require_catalog=True)
+
+        self.assertIn("missing catalog.json.gz", str(raised.exception))
 
     def test_validate_archive_rejects_rolling_snapshot_with_wrong_base_hash(self):
         self.archive_genesis()

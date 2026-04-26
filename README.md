@@ -52,7 +52,9 @@ Space-Track GP_HISTORY            RSO Archive
                          NFT Client (verify + visualize)
 ```
 
-**Phase 1 (current):** Daily snapshots archived to Git with SHA-256 hashes.
+**Phase 1 (current):** Daily metadata is archived to Git with SHA-256 hashes.
+Full catalog bytes are published as deterministic GitHub Release bundles so
+normal Git history stays small until Arweave storage is added.
 
 **Phase 2:** Arweave permanent storage + Ethereum on-chain attestation.
 
@@ -86,10 +88,9 @@ cron delay, and records current `gp` as the first agreed full catalog state.
 Daily consensus snapshots after that are built from bounded `gp_history`
 deltas.
 
-The existing `2026-04-13` genesis snapshot is a rehearsal baseline. It lets us
-exercise daily roll-forward, audits, backfill behavior, and reporting during
-the practice week without treating those artifacts as the permanent launch
-point.
+The `2026-04-13` through `2026-04-19` snapshots were rehearsal artifacts. They
+live under `reports/rehearsal/` so `data/` and `ledger.json` represent only the
+official archive lineage.
 
 ## Snapshot Specification
 
@@ -315,9 +316,10 @@ be stored as GitHub Actions secrets, not committed to the repo.
 Fork this repository into your own GitHub account or organization using the
 GitHub **Fork** button. Your fork is your independent witness node.
 
-The archive data is intentionally committed to Git during Phase 1. Do not
-ignore `data/` or `ledger.json`; those files are the public record until
-Arweave storage is added.
+The canonical Git record is `data/` plus `ledger.json`. Full
+`catalog.json.gz` files are intentionally pruned from Git after their
+deterministic release bundles are built and uploaded. Do not ignore `data/` or
+`ledger.json`; those files carry the public metadata and hash chain.
 
 ### 3. Enable GitHub Actions
 
@@ -376,11 +378,14 @@ There are three workflows:
 - **Validate RSO Archive** — read-only tests and archive validation. It needs no
   Space-Track credentials and runs on pushes, pull requests, and manual dispatch.
 - **Daily RSO Snapshot** — scheduled producer workflow. It reads Space-Track,
-  writes `data/`, and updates `ledger.json`.
+  writes `data/`, updates `ledger.json`, publishes the full catalog bundle,
+  then prunes the local catalog from Git.
 - **Backfill RSO Archive** — manual producer workflow for bounded date ranges.
 
 The validator is the first thing to trust. It proves the committed archive is
-internally consistent without asking Space-Track for anything.
+internally consistent without asking Space-Track for anything. By default it is
+metadata-only for pruned catalogs; use `--require-catalog` immediately after a
+producer run when the local `catalog.json.gz` still exists.
 
 ### 6. Choose Archive Publishing Settings
 
@@ -447,9 +452,10 @@ python3 -m py_compile pipeline/snapshot.py
 python3 pipeline/snapshot.py validate
 ```
 
-The validator checks catalog hashes, canonical JSON, manifest fields, object
-counts, ledger entries, rolling base hashes, delta counts, and audit artifact
-consistency.
+The default validator checks manifest fields, object counts, ledger entries,
+rolling base hashes, delta counts, and audit artifact consistency. When local
+catalogs are present, add `--require-catalog` to also require
+`catalog.json.gz`, check canonical JSON, and recompute the catalog hash.
 
 ### 8. Run a Rehearsal Genesis
 
@@ -471,7 +477,8 @@ force = true only if that date already exists in your fork
 ```
 
 This captures current `gp`, writes a `genesis_from_gp` snapshot for that date,
-updates `ledger.json`, and commits the result back to your fork.
+updates `ledger.json`, publishes a release bundle, prunes the local catalog,
+and commits the metadata back to your fork.
 
 Confirm the run output includes:
 
@@ -498,12 +505,14 @@ force = false unless deliberately rebuilding that date
 That run should create a `rolling_gp_history_delta` snapshot with:
 
 ```text
-catalog.json.gz
 manifest.json
 delta.json
 audit.json
 visibility_state.json
 ```
+
+The full `catalog.json.gz` should be in the matching release bundle, not in the
+committed `data/` tree.
 
 The manifest should point back to the prior snapshot with
 `base_snapshot_date` and `base_snapshot_sha256`. The validator checks that link.
@@ -625,17 +634,27 @@ data/
 ├── 2026/
 │   ├── 01/
 │   │   ├── 01/
-│   │   │   ├── catalog.json.gz    # Compressed GP catalog snapshot
 │   │   │   ├── manifest.json      # Hash, object count, metadata
 │   │   │   ├── delta.json         # Bounded gp_history changes applied
 │   │   │   ├── audit.json         # Time-sampled current-gp visibility audit
 │   │   │   └── visibility_state.json
 │   │   ├── 02/
-│   │   │   ├── catalog.json.gz
 │   │   │   └── manifest.json
 │   │   └── ...
 │   └── ...
 └── ledger.json                     # Running hash ledger (all dates)
+```
+
+Full catalog bytes live in release assets named
+`rso-archive-YYYY-MM-DD.tar.gz`. Each bundle contains `catalog.json.gz`,
+`manifest.json`, any daily audit/delta artifacts, and a deterministic
+`release-manifest.json`.
+
+Pre-baseline rehearsal releases can be marked as GitHub prereleases without
+changing the archive data:
+
+```bash
+GH_TOKEN=... python pipeline/snapshot.py mark-prerelease --start 2026-04-13 --end 2026-04-19
 ```
 
 ### Manifest Example
@@ -670,20 +689,21 @@ data/
 
 Anyone can verify a snapshot independently:
 
-1. Download `catalog.json.gz` for a given date
-2. Decompress it
+1. Download the release bundle for a given date
+2. Extract and decompress `catalog.json.gz`
 3. Compute SHA-256 of the raw bytes
-4. Compare against `manifest.json` or `ledger.json`
+4. Compare against `manifest.json`, `release-manifest.json`, or `ledger.json`
 
 ```bash
-# Quick verify
-python pipeline/snapshot.py verify --date 2026-04-12
+# Quick verify. If catalog.json.gz is not local, this fetches the release bundle.
+python pipeline/snapshot.py verify --date 2026-04-23
 ```
 
 ```bash
 # Manual verify
-gunzip -k data/2026/04/12/catalog.json.gz
-sha256sum data/2026/04/12/catalog.json
+tar -xzf rso-archive-2026-04-23.tar.gz catalog.json.gz
+gunzip -k catalog.json.gz
+sha256sum catalog.json
 ```
 
 ## Tests
@@ -702,6 +722,7 @@ python -m unittest discover -s tests
 - [x] Refactor daily snapshots to midnight UTC rolling `gp_history` deltas
 - [x] Add current `gp` visibility audit and missing/reappeared state
 - [x] Analyze Jan 1-to-current replay results against current `gp`
+- [x] Publish deterministic GitHub Release bundles and prune full catalogs from Git
 - [ ] Arweave permanent upload (via Irys)
 - [ ] Ethereum contract for hash attestation
 - [ ] Daily diff computation (objects added/updated/carried-forward)

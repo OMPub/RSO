@@ -300,7 +300,7 @@ Nobody is doing:
 
 ## Implementation Status
 
-### Done (Phase 1 — Git Archive)
+### Done (Phase 1 — Git Metadata + Release Bundles)
 
 - [x] `pipeline/snapshot.py` — Zero-dependency Python script (stdlib only)
   - `genesis` command: captures the first agreed rolling snapshot from current `gp`
@@ -308,13 +308,20 @@ Nobody is doing:
   - `backfill` command: builds rolling snapshots from an existing prior-day base snapshot
   - `replay` command: replays bounded `gp_history` from an empty state and compares the result to current `gp`
   - `verify` command: re-hashes stored snapshot and compares to manifest
+  - `publish` command: builds deterministic release bundles and uploads them through the GitHub API with stdlib only
+  - `prune-catalogs` command: removes local full catalog bytes after a matching release bundle exists
   - Canonical JSON serialization for deterministic hashing
   - gzip compression, manifest generation, running ledger, `delta.json`, `audit.json`, and `visibility_state.json`
 - [x] `.github/workflows/daily-snapshot.yml` — Runs at 00:15 UTC daily
 - [x] `.github/workflows/backfill.yml` — Manually triggered for date ranges
 - [x] `.github/workflows/validate-archive.yml` — Read-only tests and archive validation
 - [x] `README.md` with architecture overview and setup instructions
-- [x] Zero external dependencies (no pip install, no requirements.txt)
+- [x] Zero external dependencies (no pip install, no requirements.txt, no required GitHub CLI)
+
+Full catalog bytes are no longer kept in normal Git history after publication.
+The canonical Git tree keeps manifests, deltas, audits, visibility state, and
+`ledger.json`; deterministic `rso-archive-YYYY-MM-DD.tar.gz` release bundles
+carry `catalog.json.gz` until Arweave is added.
 
 ### Done (Phase 1.1 — Deterministic Rolling Snapshot)
 
@@ -441,16 +448,20 @@ rso-archive/
 │   └── snapshot.py               # The entire pipeline (zero deps)
 ├── data/
 │   └── {YYYY}/{MM}/{DD}/
-│       ├── catalog.json.gz       # Compressed GP catalog snapshot
 │       ├── manifest.json         # Hash, object count, metadata
 │       ├── delta.json            # Closed-window GP_HISTORY changes applied
 │       ├── audit.json            # Current-GP visibility observation
 │       └── visibility_state.json # Missing/reappeared state for this day
 ├── ledger.json                   # Running hash ledger (all dates)
+├── reports/
+│   └── rehearsal/                # Pre-baseline rehearsal artifacts
 ├── README.md
 ├── CONTEXT.md                    # This file
 └── .gitignore
 ```
+
+Full daily catalogs are published in GitHub Release bundles and later move to
+Arweave permanent storage.
 
 ---
 
