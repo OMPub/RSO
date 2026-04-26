@@ -84,6 +84,23 @@ jobs:
           fi
           python "${args[@]}"
 
+      - name: Validate captured archive
+        run: |
+          set -euo pipefail
+          python pipeline/snapshot.py verify --date "$RSO_SNAPSHOT_DATE"
+          python pipeline/snapshot.py validate
+
+      - name: Build release bundle
+        run: |
+          set -euo pipefail
+          python pipeline/snapshot.py publish --date "$RSO_SNAPSHOT_DATE" --storage-backend none
+
+      - name: Prune catalog from git archive
+        run: |
+          set -euo pipefail
+          python pipeline/snapshot.py prune-catalogs --date "$RSO_SNAPSHOT_DATE" --require-bundle
+          python pipeline/snapshot.py validate
+
       - name: Commit archive changes
         run: |
           set -euo pipefail
@@ -102,7 +119,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          args=(pipeline/snapshot.py publish --date "$RSO_SNAPSHOT_DATE")
+          args=(pipeline/snapshot.py publish --date "$RSO_SNAPSHOT_DATE" --use-existing-bundle)
           if [ "${{ github.event.inputs.force }}" = "true" ]; then
             args+=(--force)
           fi

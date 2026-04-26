@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1500" viewBox="0 0 2400 1500">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#04070a"/>
+      <stop offset="0.55" stop-color="#07151b"/>
+      <stop offset="1" stop-color="#020304"/>
+    </linearGradient>
+    <linearGradient id="tleHead" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#4b1724"/>
+      <stop offset="1" stop-color="#e95e75"/>
+    </linearGradient>
+    <linearGradient id="ommHead" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#083541"/>
+      <stop offset="1" stop-color="#4ae4f8"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="2400" height="1500" fill="url(#bg)"/>
+  <g opacity="0.13" stroke="#1f3f48" stroke-width="1">
+    <line x1="120" y1="120" x2="2280" y2="120"/>
+    <line x1="120" y1="240" x2="2280" y2="240"/>
+    <line x1="120" y1="360" x2="2280" y2="360"/>
+    <line x1="120" y1="480" x2="2280" y2="480"/>
+    <line x1="120" y1="600" x2="2280" y2="600"/>
+    <line x1="120" y1="720" x2="2280" y2="720"/>
+    <line x1="120" y1="840" x2="2280" y2="840"/>
+    <line x1="120" y1="960" x2="2280" y2="960"/>
+    <line x1="120" y1="1080" x2="2280" y2="1080"/>
+    <line x1="120" y1="1200" x2="2280" y2="1200"/>
+    <line x1="120" y1="1320" x2="2280" y2="1320"/>
+    <line x1="120" y1="110" x2="120" y2="1390"/>
+    <line x1="480" y1="110" x2="480" y2="1390"/>
+    <line x1="840" y1="110" x2="840" y2="1390"/>
+    <line x1="1200" y1="110" x2="1200" y2="1390"/>
+    <line x1="1560" y1="110" x2="1560" y2="1390"/>
+    <line x1="1920" y1="110" x2="1920" y2="1390"/>
+    <line x1="2280" y1="110" x2="2280" y2="1390"/>
+  </g>
+
+  <text x="120" y="128" font-family="Courier New" font-size="25" font-weight="800" fill="#68e9ff">ORBITAL WITNESS / FORMAT TRANSITION</text>
+  <text x="120" y="222" font-family="Arial" font-size="72" font-weight="900" fill="#f8fbff">A Tale of 2 Formats:</text>
+  <text x="880" y="222" font-family="Courier New" font-size="72" font-weight="900" fill="#f8fbff">TLE vs OMM</text>
+  <text x="120" y="292" font-family="Arial" font-size="38" font-weight="600" fill="#c5dce2">How orbital records are stored is changing.</text>
+
+  <rect x="120" y="348" width="2160" height="122" rx="8" fill="#07141a" stroke="#315863" stroke-width="2"/>
+  <text x="170" y="405" font-family="Arial" font-size="36" font-weight="800" fill="#f2fbff">Same orbit facts, different containers: TLE is fixed-width text; OMM is structured data.</text>
+  <text x="170" y="445" font-family="Arial" font-size="27" font-weight="700" fill="#c7dce2">Systems that only parse TLE need to adapt now, because the old catalog-number slot is nearly full.</text>
+
+  <rect x="120" y="530" width="1015" height="740" rx="8" fill="#07141a" stroke="#284d58" stroke-width="2"/>
+  <rect x="120" y="530" width="1015" height="96" rx="8" fill="url(#tleHead)"/>
+  <text x="162" y="592" font-family="Arial" font-size="39" font-weight="900" fill="#ffffff">TLE: LEGACY FIXED TEXT</text>
+
+  <rect x="1265" y="530" width="1015" height="740" rx="8" fill="#07141a" stroke="#284d58" stroke-width="2"/>
+  <rect x="1265" y="530" width="1015" height="96" rx="8" fill="url(#ommHead)"/>
+  <text x="1307" y="592" font-family="Arial" font-size="39" font-weight="900" fill="#ffffff">OMM: MODERN RECORD</text>
+
+  <g stroke="#1c3b44" stroke-width="1.5">
+    <line x1="162" y1="735" x2="1090" y2="735"/>
+    <line x1="162" y1="900" x2="1090" y2="900"/>
+    <line x1="162" y1="1035" x2="1090" y2="1035"/>
+    <line x1="162" y1="1168" x2="1090" y2="1168"/>
+    <line x1="1307" y1="735" x2="2235" y2="735"/>
+    <line x1="1307" y1="900" x2="2235" y2="900"/>
+    <line x1="1307" y1="1035" x2="2235" y2="1035"/>
+    <line x1="1307" y1="1168" x2="2235" y2="1168"/>
+  </g>
+
+  <text x="162" y="680" font-family="Courier New" font-size="18" font-weight="800" fill="#8eb2ba">HOW IT IS STORED</text>
+  <text x="162" y="720" font-family="Arial" font-size="31" font-weight="760" fill="#fff0f4">Characters in exact positions.</text>
+  <text x="1307" y="680" font-family="Courier New" font-size="18" font-weight="800" fill="#8eb2ba">HOW IT IS STORED</text>
+  <text x="1307" y="720" font-family="Arial" font-size="31" font-weight="760" fill="#e7fcff">Named fields in a structured record.</text>
+
+  <text x="162" y="785" font-family="Courier New" font-size="18" font-weight="800" fill="#8eb2ba">HOW MANY SLOTS ARE LEFT?</text>
+  <text x="162" y="850" font-family="Arial" font-size="72" font-weight="900" fill="#ffd4dc">69,999</text>
+  <text x="475" y="816" font-family="Arial" font-size="28" font-weight="800" fill="#fff0f4">last legacy slot</text>
+  <text x="475" y="855" font-family="Arial" font-size="30" font-weight="800" fill="#fff0f4">1,198 slots remain</text>
+  <text x="1307" y="785" font-family="Courier New" font-size="18" font-weight="800" fill="#8eb2ba">HOW MANY SLOTS ARE LEFT?</text>
+  <text x="1307" y="840" font-family="Arial" font-size="46" font-weight="900" fill="#e7fcff">No fixed 5-digit ceiling</text>
+  <text x="1307" y="878" font-family="Arial" font-size="27" font-weight="760" fill="#c7eef5">Archive already includes catalog ID 270,446.</text>
+
+  <text x="162" y="955" font-family="Courier New" font-size="18" font-weight="800" fill="#8eb2ba">WHAT BREAKS</text>
+  <text x="162" y="997" font-family="Arial" font-size="31" font-weight="760" fill="#fff0f4">TLE-only tools will misread values</text>
+  <text x="162" y="1030" font-family="Arial" font-size="31" font-weight="760" fill="#fff0f4">out of range.</text>
+  <text x="1307" y="955" font-family="Courier New" font-size="18" font-weight="800" fill="#8eb2ba">WHAT KEEPS WORKING</text>
+  <text x="1307" y="997" font-family="Arial" font-size="31" font-weight="760" fill="#e7fcff">OMM-aware tools read the named</text>
+  <text x="1307" y="1030" font-family="Arial" font-size="31" font-weight="760" fill="#e7fcff">catalog-number field.</text>
+
+  <text x="162" y="1090" font-family="Courier New" font-size="18" font-weight="800" fill="#8eb2ba">WHAT TO NOTICE</text>
+  <text x="162" y="1132" font-family="Arial" font-size="31" font-weight="760" fill="#fff0f4">TLE is a compact legacy view.</text>
+  <text x="1307" y="1090" font-family="Courier New" font-size="18" font-weight="800" fill="#8eb2ba">WHAT TO NOTICE</text>
+  <text x="1307" y="1132" font-family="Arial" font-size="31" font-weight="760" fill="#e7fcff">OMM can travel as JSON, XML, KVN, or CSV.</text>
+
+  <text x="162" y="1220" font-family="Courier New" font-size="18" font-weight="800" fill="#8eb2ba">ARCHIVE ROLE</text>
+  <text x="162" y="1260" font-family="Arial" font-size="30" font-weight="760" fill="#fff0f4">TLE lines stay as compatibility output.</text>
+  <text x="1307" y="1220" font-family="Courier New" font-size="18" font-weight="800" fill="#8eb2ba">ARCHIVE ROLE</text>
+  <text x="1307" y="1260" font-family="Arial" font-size="30" font-weight="760" fill="#e7fcff">This archive uses OMM/JSON.</text>
+
+  <rect x="120" y="1315" width="2160" height="137" rx="8" fill="#07141a" stroke="#1e3d46" stroke-width="1.5"/>
+  <circle cx="165" cy="1362" r="10" fill="#71e9ff"/>
+  <text x="195" y="1374" font-family="Arial" font-size="32" font-weight="900" fill="#e8fbff">Orbital Witness is OMM/JSON-first, with TLE compatibility lines included today.</text>
+  <text x="195" y="1412" font-family="Arial" font-size="27" font-weight="700" fill="#c4d9df">Projected last 5-digit TLE ID: around 2026-07-20. Current marker: 68,801, leaving 1,198 slots.</text>
+  <text x="195" y="1440" font-family="Courier New" font-size="19" font-weight="750" fill="#9bdbe5">2026-04-24 | source: archive marker + CelesTrak estimate</text>
+</svg>

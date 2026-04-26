@@ -14,7 +14,6 @@ import hashlib
 import http.cookiejar
 import json
 import os
-import subprocess
 import sys
 import tarfile
 import time
@@ -26,7 +25,7 @@ from pathlib import Path
 
 
 CUTOFF_TIME = "00:00:00"
-OPERATOR_RUN_TIME = "07:15:00"
+OPERATOR_RUN_TIME = "00:15:00"
 PIPELINE_VERSION = "0.3.0"
 
 SPACETRACK_BASE = "https://www.space-track.org"
@@ -336,6 +335,10 @@ def snapshot_dir(current_date_str):
     return DATA_DIR / f"{date_obj.year}" / f"{date_obj.month:02d}" / f"{date_obj.day:02d}"
 
 
+def catalog_gz_path(current_date_str):
+    return snapshot_dir(current_date_str) / "catalog.json.gz"
+
+
 def report_dir():
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     return REPORTS_DIR
@@ -510,9 +513,7 @@ def build_delta(
 
 
 def load_snapshot(current_date_str):
-    gz_path = snapshot_dir(current_date_str) / "catalog.json.gz"
-    with gzip.open(gz_path, "rb") as f:
-        raw_bytes = f.read()
+    raw_bytes = read_catalog_bytes(current_date_str)
     return json.loads(raw_bytes)
 
 
@@ -611,6 +612,20 @@ def save_artifacts(current_date_str, delta=None, audit=None, visibility_state=No
         write_json(day_dir / "audit.json", audit)
     if visibility_state is not None:
         write_json(day_dir / "visibility_state.json", visibility_state)
+
+
+def cleanup_stale_artifacts(current_date_str, delta=None, audit=None, visibility_state=None):
+    """Remove optional day artifacts that are not produced by the current run."""
+    day_dir = snapshot_dir(current_date_str)
+    optional_artifacts = {
+        "delta.json": delta,
+        "audit.json": audit,
+        "visibility_state.json": visibility_state,
+    }
+    for filename, payload in optional_artifacts.items():
+        path = day_dir / filename
+        if payload is None and path.exists():
+            path.unlink()
 
 
 def ledger_entry_from_manifest(manifest):
@@ -714,6 +729,12 @@ def archive_snapshot(
         delta_window_end_utc=delta_window_end_utc,
         observed_at_utc=observed_at_utc,
         state_as_of_utc=state_as_of_utc,
+    )
+    cleanup_stale_artifacts(
+        current_date_str,
+        delta=delta,
+        audit=audit,
+        visibility_state=visibility_state,
     )
     save_artifacts(
         current_date_str,
@@ -1209,23 +1230,15 @@ def process_replay(args, client):
 def verify_date(current_date_str):
     day_dir = snapshot_dir(current_date_str)
     manifest_path = day_dir / "manifest.json"
-    gz_path = day_dir / "catalog.json.gz"
 
     if not manifest_path.exists():
         print(f"No manifest found for {current_date_str}")
-        sys.exit(1)
-    if not gz_path.exists():
-        print(
-            f"Archive file missing for {current_date_str} - manifest exists but "
-            "catalog.json.gz not found"
-        )
         sys.exit(1)
 
     with open(manifest_path, encoding="utf-8") as f:
         manifest = json.load(f)
 
-    with gzip.open(gz_path, "rb") as f:
-        raw_bytes = f.read()
+    raw_bytes = read_catalog_bytes(current_date_str)
 
     computed_hash = hashlib.sha256(raw_bytes).hexdigest()
     stored_hash = manifest["sha256"]
@@ -1262,6 +1275,167 @@ def release_asset_name(current_date_str):
 def release_title(current_date_str):
     parse_date(current_date_str)
     return f"RSO Archive {current_date_str}"
+
+
+def github_token():
+    return os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
+
+
+def parse_github_remote_url(url):
+    url = url.strip()
+    if url.endswith(".git"):
+        url = url[:-4]
+    if url.startswith("git@github.com:"):
+        return url.split(":", 1)[1]
+    marker = "github.com/"
+    if marker in url:
+        return url.split(marker, 1)[1]
+    return None
+
+
+def github_repo_from_git_config():
+    config_path = Path(__file__).parent.parent / ".git" / "config"
+    if not config_path.exists():
+        return None
+
+    current_section = None
+    with open(config_path, encoding="utf-8") as f:
+        for raw_line in f:
+            line = raw_line.strip()
+            if line.startswith("[") and line.endswith("]"):
+                current_section = line[1:-1]
+                continue
+            if current_section != 'remote "origin"' or not line.startswith("url ="):
+                continue
+            return parse_github_remote_url(line.split("=", 1)[1])
+    return None
+
+
+def resolve_github_repo(repo=None):
+    resolved = repo or os.environ.get("GITHUB_REPOSITORY") or github_repo_from_git_config()
+    if not resolved:
+        raise SnapshotError(
+            "GitHub repository is required. Pass --repo OWNER/REPO or set GITHUB_REPOSITORY."
+        )
+    if "/" not in resolved:
+        raise SnapshotError(f"Invalid GitHub repository: {resolved}")
+    return resolved
+
+
+def github_api_url(repo, path):
+    return f"https://api.github.com/repos/{repo}{path}"
+
+
+def github_request(
+    method,
+    url,
+    payload=None,
+    headers=None,
+    token_required=False,
+    allow_not_found=False,
+):
+    token = github_token()
+    if token_required and not token:
+        raise SnapshotError("Set GH_TOKEN or GITHUB_TOKEN to publish GitHub releases")
+
+    request_headers = {
+        "Accept": "application/vnd.github+json",
+        "User-Agent": f"rso-archive/{PIPELINE_VERSION}",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+    if token:
+        request_headers["Authorization"] = f"Bearer {token}"
+    if headers:
+        request_headers.update(headers)
+
+    data = None
+    if payload is not None:
+        if isinstance(payload, (bytes, bytearray)):
+            data = bytes(payload)
+        else:
+            data = json.dumps(payload).encode("utf-8")
+            request_headers["Content-Type"] = "application/json"
+
+    req = urllib.request.Request(url, data=data, headers=request_headers, method=method)
+    try:
+        with urllib.request.urlopen(req, timeout=180) as resp:
+            body = resp.read()
+            content_type = resp.headers.get("Content-Type", "")
+    except urllib.error.HTTPError as exc:
+        if allow_not_found and exc.code == 404:
+            return None
+        detail = exc.read().decode("utf-8", errors="replace")
+        raise SnapshotError(f"GitHub API {method} {url} failed ({exc.code}): {detail}") from exc
+
+    if not body:
+        return None
+    if "application/json" in content_type or body[:1] in (b"{", b"["):
+        return json.loads(body)
+    return body
+
+
+def github_release_payload(tag, repo=None, allow_missing=False):
+    resolved_repo = resolve_github_repo(repo)
+    return github_request(
+        "GET",
+        github_api_url(resolved_repo, f"/releases/tags/{tag}"),
+        allow_not_found=allow_missing,
+    )
+
+
+def find_release_asset(release, asset_name):
+    if not release:
+        return None
+    for asset in release.get("assets", []):
+        if asset.get("name") == asset_name:
+            return asset
+    return None
+
+
+def github_download_bytes(url):
+    token = github_token()
+    headers = {"User-Agent": f"rso-archive/{PIPELINE_VERSION}"}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    req = urllib.request.Request(url, headers=headers)
+    with urllib.request.urlopen(req, timeout=180) as resp:
+        return resp.read()
+
+
+def release_bundle_from_github(current_date_str, repo=None):
+    release = github_release_payload(release_tag(current_date_str), repo=repo)
+    asset = find_release_asset(release, release_asset_name(current_date_str))
+    if asset is None:
+        raise SnapshotError(
+            f"{release_tag(current_date_str)} has no {release_asset_name(current_date_str)} asset"
+        )
+    return github_download_bytes(asset["browser_download_url"])
+
+
+def download_release_bundle_to_file(current_date_str, output_dir=None, repo=None):
+    output_dir = Path(output_dir or RELEASE_OUTPUT_DIR)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    bundle_path = output_dir / release_asset_name(current_date_str)
+    bundle_path.write_bytes(release_bundle_from_github(current_date_str, repo=repo))
+    return release_bundle_from_existing(current_date_str, output_dir=output_dir)
+
+
+def catalog_bytes_from_release_bundle(current_date_str, repo=None):
+    bundle_bytes = release_bundle_from_github(current_date_str, repo=repo)
+    with tarfile.open(fileobj=io.BytesIO(bundle_bytes), mode="r:gz") as tar:
+        member = tar.extractfile("catalog.json.gz")
+        if member is None:
+            raise SnapshotError(f"{release_asset_name(current_date_str)} missing catalog.json.gz")
+        catalog_gz_bytes = member.read()
+    return gzip.decompress(catalog_gz_bytes)
+
+
+def read_catalog_bytes(current_date_str, repo=None):
+    gz_path = catalog_gz_path(current_date_str)
+    if gz_path.exists():
+        with gzip.open(gz_path, "rb") as f:
+            return f.read()
+    return catalog_bytes_from_release_bundle(current_date_str, repo=repo)
 
 
 def date_range(start_date_str, end_date_str):
@@ -1325,7 +1499,10 @@ def add_tar_bytes(tar, arcname, data):
 def build_release_bundle(current_date_str, output_dir=None, min_count=MIN_OBJECT_COUNT):
     parse_date(current_date_str)
     errors, manifest = validate_snapshot_artifacts(
-        current_date_str, min_count=min_count, require_audit=False
+        current_date_str,
+        min_count=min_count,
+        require_audit=False,
+        require_catalog=True,
     )
     if errors:
         raise SnapshotError("\n".join(errors))
@@ -1376,43 +1553,64 @@ def build_release_bundle(current_date_str, output_dir=None, min_count=MIN_OBJECT
     }
 
 
-def github_repo_arg(repo):
-    return ["--repo", repo] if repo else []
+def release_bundle_from_existing(current_date_str, output_dir=None):
+    parse_date(current_date_str)
+    output_dir = Path(output_dir or RELEASE_OUTPUT_DIR)
+    bundle_path = output_dir / release_asset_name(current_date_str)
+    if not bundle_path.exists():
+        raise SnapshotError(f"{current_date_str}: missing existing bundle {bundle_path}")
+
+    manifest = load_manifest(current_date_str)
+    with tarfile.open(bundle_path, mode="r:gz") as tar:
+        member = tar.extractfile("release-manifest.json")
+        if member is None:
+            raise SnapshotError(f"{bundle_path}: missing release-manifest.json")
+        bundle_manifest = json.load(member)
+
+    if bundle_manifest.get("catalog_sha256") != manifest.get("sha256"):
+        raise SnapshotError(
+            f"{current_date_str}: existing bundle catalog hash does not match manifest"
+        )
+    if bundle_manifest.get("object_count") != manifest.get("object_count"):
+        raise SnapshotError(
+            f"{current_date_str}: existing bundle object count does not match manifest"
+        )
+
+    return {
+        "date": current_date_str,
+        "path": str(bundle_path),
+        "asset_name": bundle_path.name,
+        "tag": release_tag(current_date_str),
+        "title": release_title(current_date_str),
+        "bundle_sha256": sha256_path(bundle_path),
+        "bytes": bundle_path.stat().st_size,
+        "catalog_sha256": manifest["sha256"],
+        "manifest_sha256": bundle_manifest["manifest_sha256"],
+        "object_count": manifest["object_count"],
+        "state_as_of_utc": manifest.get("state_as_of_utc"),
+        "files": bundle_manifest["files"],
+    }
 
 
-def run_gh(args, allow_failure=False):
-    result = subprocess.run(
-        ["gh", *args],
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        check=False,
-    )
-    if result.returncode and not allow_failure:
-        detail = result.stderr.strip() or result.stdout.strip()
-        raise SnapshotError(f"gh {' '.join(args)} failed: {detail}")
-    return result
+def build_or_fetch_release_bundle(current_date_str, output_dir=None, min_count=MIN_OBJECT_COUNT, repo=None):
+    try:
+        return build_release_bundle(
+            current_date_str,
+            output_dir=output_dir,
+            min_count=min_count,
+        )
+    except SnapshotError as exc:
+        if "missing catalog.json.gz" not in str(exc):
+            raise
+        print(f"  Local catalog missing; fetching existing release bundle for {current_date_str}")
+        return download_release_bundle_to_file(current_date_str, output_dir=output_dir, repo=repo)
 
 
 def github_release_assets(tag, repo=None):
-    result = run_gh(
-        [
-            "release",
-            "view",
-            tag,
-            *github_repo_arg(repo),
-            "--json",
-            "assets",
-        ],
-        allow_failure=True,
-    )
-    if result.returncode:
+    release = github_release_payload(tag, repo=repo, allow_missing=True)
+    if release is None:
         return None
-    try:
-        payload = json.loads(result.stdout)
-    except json.JSONDecodeError as exc:
-        raise SnapshotError(f"Cannot parse gh release view output for {tag}") from exc
-    return sorted(asset.get("name") for asset in payload.get("assets", []) if asset.get("name"))
+    return sorted(asset.get("name") for asset in release.get("assets", []) if asset.get("name"))
 
 
 def release_notes(bundle):
@@ -1431,57 +1629,82 @@ def release_notes(bundle):
     return "\n".join(lines) + "\n"
 
 
-def publish_github_release(bundle, repo=None, upload_policy="if_missing", force=False):
-    assets = github_release_assets(bundle["tag"], repo=repo)
-    asset_exists = assets is not None and bundle["asset_name"] in assets
+def github_create_release(bundle, repo, notes):
+    return github_request(
+        "POST",
+        github_api_url(repo, "/releases"),
+        payload={
+            "tag_name": bundle["tag"],
+            "name": bundle["title"],
+            "body": notes,
+            "prerelease": bool(bundle.get("prerelease")),
+        },
+        token_required=True,
+    )
 
-    if asset_exists and not force:
+
+def github_update_release(release, bundle, repo, notes):
+    return github_request(
+        "PATCH",
+        github_api_url(repo, f"/releases/{release['id']}"),
+        payload={
+            "name": bundle["title"],
+            "body": notes,
+            "prerelease": bool(bundle.get("prerelease", release.get("prerelease", False))),
+        },
+        token_required=True,
+    )
+
+
+def github_delete_release_asset(asset, repo):
+    github_request(
+        "DELETE",
+        github_api_url(repo, f"/releases/assets/{asset['id']}"),
+        token_required=True,
+    )
+
+
+def github_upload_release_asset(release, bundle):
+    upload_url = release["upload_url"].split("{", 1)[0]
+    upload_url = f"{upload_url}?name={urllib.parse.quote(bundle['asset_name'])}"
+    with open(bundle["path"], "rb") as f:
+        payload = f.read()
+    return github_request(
+        "POST",
+        upload_url,
+        payload=payload,
+        headers={"Content-Type": "application/gzip"},
+        token_required=True,
+    )
+
+
+def publish_github_release(bundle, repo=None, upload_policy="if_missing", force=False):
+    resolved_repo = resolve_github_repo(repo)
+    release = github_release_payload(bundle["tag"], repo=resolved_repo, allow_missing=True)
+    asset = find_release_asset(release, bundle["asset_name"])
+    asset_exists = asset is not None
+
+    if asset_exists and not force and not bundle.get("prerelease"):
         print(f"  SKIP: {bundle['tag']} already has {bundle['asset_name']}")
         return {"status": "skipped", "reason": "asset_exists", **bundle}
 
     notes = release_notes(bundle)
-    notes_path = Path(bundle["path"]).with_suffix(".notes.md")
-    notes_path.write_text(notes, encoding="utf-8")
 
-    if assets is None:
-        run_gh(
-            [
-                "release",
-                "create",
-                bundle["tag"],
-                bundle["path"],
-                *github_repo_arg(repo),
-                "--title",
-                bundle["title"],
-                "--notes-file",
-                str(notes_path),
-            ]
-        )
+    if release is None:
+        release = github_create_release(bundle, resolved_repo, notes)
+        github_upload_release_asset(release, bundle)
         print(f"  CREATED: {bundle['tag']} with {bundle['asset_name']}")
         return {"status": "created", **bundle}
 
-    upload_args = [
-        "release",
-        "upload",
-        bundle["tag"],
-        bundle["path"],
-        *github_repo_arg(repo),
-    ]
-    if force or asset_exists:
-        upload_args.append("--clobber")
-    run_gh(upload_args)
-    run_gh(
-        [
-            "release",
-            "edit",
-            bundle["tag"],
-            *github_repo_arg(repo),
-            "--title",
-            bundle["title"],
-            "--notes-file",
-            str(notes_path),
-        ]
-    )
+    if asset_exists and not force and bundle.get("prerelease"):
+        github_update_release(release, bundle, resolved_repo, notes)
+        print(f"  UPDATED: {bundle['tag']} release metadata")
+        return {"status": "metadata_updated", **bundle}
+
+    if asset_exists:
+        github_delete_release_asset(asset, resolved_repo)
+    github_upload_release_asset(release, bundle)
+    github_update_release(release, bundle, resolved_repo, notes)
     print(f"  UPLOADED: {bundle['asset_name']} to {bundle['tag']}")
     return {"status": "uploaded", **bundle}
 
@@ -1519,11 +1742,20 @@ def process_publish(args):
     results = []
     for current_date_str in dates:
         print(f"\n  Date: {current_date_str}")
-        bundle = build_release_bundle(
-            current_date_str,
-            output_dir=args.output_dir,
-            min_count=args.min_objects,
-        )
+        if args.use_existing_bundle:
+            bundle = release_bundle_from_existing(
+                current_date_str,
+                output_dir=args.output_dir,
+            )
+        else:
+            bundle = build_or_fetch_release_bundle(
+                current_date_str,
+                output_dir=args.output_dir,
+                min_count=args.min_objects,
+                repo=args.repo,
+            )
+        if args.prerelease:
+            bundle["prerelease"] = True
         print(f"  Bundle: {bundle['path']}")
         print(f"  Bundle SHA-256: {bundle['bundle_sha256']}")
 
@@ -1550,6 +1782,54 @@ def process_publish(args):
     print("\nPublish complete")
     for key in sorted(summary):
         print(f"  {key}: {summary[key]}")
+
+
+def resolve_prune_dates(args):
+    if args.all:
+        if args.date or args.start or args.end:
+            raise SnapshotError("Use --all by itself, or use --date/--start/--end")
+        return discover_snapshot_dates()
+    return resolve_publish_dates(args)
+
+
+def process_prune_catalogs(args):
+    dates = resolve_prune_dates(args)
+    if not dates:
+        raise SnapshotError("No snapshot dates selected for pruning")
+
+    pruned = 0
+    skipped = 0
+    for current_date_str in dates:
+        path = catalog_gz_path(current_date_str)
+        if not path.exists():
+            skipped += 1
+            continue
+        if args.require_bundle:
+            release_bundle_from_existing(current_date_str, output_dir=args.output_dir)
+        path.unlink()
+        pruned += 1
+        print(f"  PRUNED: {path}")
+
+    print("\nCatalog prune complete")
+    print(f"  pruned:  {pruned}")
+    print(f"  skipped: {skipped}")
+
+
+def process_mark_prerelease(args):
+    dates = resolve_publish_dates(args)
+    resolved_repo = resolve_github_repo(args.repo)
+    prerelease = not args.undo
+    for current_date_str in dates:
+        tag = release_tag(current_date_str)
+        release = github_release_payload(tag, repo=resolved_repo)
+        github_request(
+            "PATCH",
+            github_api_url(resolved_repo, f"/releases/{release['id']}"),
+            payload={"prerelease": prerelease},
+            token_required=True,
+        )
+        state = "prerelease" if prerelease else "normal release"
+        print(f"  UPDATED: {tag} -> {state}")
 
 
 def discover_snapshot_dates():
@@ -1587,69 +1867,80 @@ def validate_counted_list(payload, count_key, list_key, errors, context):
         )
 
 
-def validate_snapshot_artifacts(current_date_str, min_count=MIN_OBJECT_COUNT, require_audit=False):
+def validate_snapshot_artifacts(
+    current_date_str,
+    min_count=MIN_OBJECT_COUNT,
+    require_audit=False,
+    require_catalog=False,
+):
     errors = []
     day_dir = snapshot_dir(current_date_str)
     manifest_path = day_dir / "manifest.json"
-    gz_path = day_dir / "catalog.json.gz"
+    gz_path = catalog_gz_path(current_date_str)
 
     if not manifest_path.exists():
         return [f"{current_date_str}: missing manifest.json"], None
-    if not gz_path.exists():
-        return [f"{current_date_str}: missing catalog.json.gz"], None
 
     try:
         manifest = read_json_file(manifest_path)
     except (json.JSONDecodeError, OSError) as exc:
         return [f"{current_date_str}: cannot read manifest.json: {exc}"], None
 
-    try:
-        with gzip.open(gz_path, "rb") as f:
-            raw_bytes = f.read()
-        records = json.loads(raw_bytes)
-    except (json.JSONDecodeError, OSError, gzip.BadGzipFile) as exc:
-        return [f"{current_date_str}: cannot read catalog.json.gz: {exc}"], manifest
-
     context = f"snapshot {current_date_str}"
     if manifest.get("date") != current_date_str:
         errors.append(f"{context}: manifest date is {manifest.get('date')}")
 
-    computed_hash = hashlib.sha256(raw_bytes).hexdigest()
-    if manifest.get("sha256") != computed_hash:
-        errors.append(
-            f"{context}: sha256 mismatch manifest={manifest.get('sha256')} "
-            f"computed={computed_hash}"
-        )
+    records = None
+    if gz_path.exists():
+        try:
+            with gzip.open(gz_path, "rb") as f:
+                raw_bytes = f.read()
+            records = json.loads(raw_bytes)
+        except (json.JSONDecodeError, OSError, gzip.BadGzipFile) as exc:
+            return [f"{current_date_str}: cannot read catalog.json.gz: {exc}"], manifest
 
-    canonical_bytes = canonicalize(records)
-    if raw_bytes != canonical_bytes:
-        errors.append(f"{context}: catalog.json.gz is not canonical JSON")
+        computed_hash = hashlib.sha256(raw_bytes).hexdigest()
+        if manifest.get("sha256") != computed_hash:
+            errors.append(
+                f"{context}: sha256 mismatch manifest={manifest.get('sha256')} "
+                f"computed={computed_hash}"
+            )
 
-    if manifest.get("raw_bytes") != len(raw_bytes):
-        errors.append(
-            f"{context}: raw_bytes={manifest.get('raw_bytes')} actual={len(raw_bytes)}"
-        )
-    compressed_size = gz_path.stat().st_size
-    if manifest.get("compressed_bytes") != compressed_size:
-        errors.append(
-            f"{context}: compressed_bytes={manifest.get('compressed_bytes')} "
-            f"actual={compressed_size}"
-        )
-    if manifest.get("object_count") != len(records):
-        errors.append(
-            f"{context}: object_count={manifest.get('object_count')} actual={len(records)}"
-        )
+        canonical_bytes = canonicalize(records)
+        if raw_bytes != canonical_bytes:
+            errors.append(f"{context}: catalog.json.gz is not canonical JSON")
 
-    try:
-        validate_gp_records(records, min_count=min_count, context=context)
-    except SnapshotError as exc:
-        errors.append(str(exc))
+        if manifest.get("raw_bytes") != len(raw_bytes):
+            errors.append(
+                f"{context}: raw_bytes={manifest.get('raw_bytes')} actual={len(raw_bytes)}"
+            )
+        compressed_size = gz_path.stat().st_size
+        if manifest.get("compressed_bytes") != compressed_size:
+            errors.append(
+                f"{context}: compressed_bytes={manifest.get('compressed_bytes')} "
+                f"actual={compressed_size}"
+            )
+        if manifest.get("object_count") != len(records):
+            errors.append(
+                f"{context}: object_count={manifest.get('object_count')} actual={len(records)}"
+            )
 
-    cat_ids = [record.get("NORAD_CAT_ID") for record in records if isinstance(record, dict)]
-    if len(cat_ids) != len(set(cat_ids)):
-        errors.append(f"{context}: duplicate NORAD_CAT_ID values")
-    if cat_ids != sorted(cat_ids, key=int_string_sort_key):
-        errors.append(f"{context}: records are not sorted by NORAD_CAT_ID")
+        try:
+            validate_gp_records(records, min_count=min_count, context=context)
+        except SnapshotError as exc:
+            errors.append(str(exc))
+
+        cat_ids = [record.get("NORAD_CAT_ID") for record in records if isinstance(record, dict)]
+        if len(cat_ids) != len(set(cat_ids)):
+            errors.append(f"{context}: duplicate NORAD_CAT_ID values")
+        if cat_ids != sorted(cat_ids, key=int_string_sort_key):
+            errors.append(f"{context}: records are not sorted by NORAD_CAT_ID")
+    elif require_catalog:
+        errors.append(f"{context}: missing catalog.json.gz")
+    elif int(manifest.get("object_count", 0)) < min_count:
+        errors.append(
+            f"{context}: object_count={manifest.get('object_count')} below minimum {min_count}"
+        )
 
     provenance = manifest.get("provenance")
     if provenance == "rolling_gp_history_delta":
@@ -1689,7 +1980,10 @@ def validate_snapshot_artifacts(current_date_str, min_count=MIN_OBJECT_COUNT, re
                         f"{context}: deduped_update_count={delta.get('deduped_update_count')} "
                         f"but categorized updates total {update_total}"
                     )
-    elif provenance != "genesis_from_gp":
+    elif provenance == "genesis_from_gp":
+        if (day_dir / "delta.json").exists():
+            errors.append(f"{context}: genesis snapshot must not include delta.json")
+    else:
         errors.append(f"{context}: unexpected provenance {provenance}")
 
     audit_path = day_dir / "audit.json"
@@ -1798,7 +2092,7 @@ def validate_ledger(manifests_by_date):
     return errors
 
 
-def validate_archive(min_count=MIN_OBJECT_COUNT, require_audit=False):
+def validate_archive(min_count=MIN_OBJECT_COUNT, require_audit=False, require_catalog=False):
     dates = discover_snapshot_dates()
     if not dates:
         raise SnapshotError("No archived snapshots found under data/")
@@ -1810,6 +2104,7 @@ def validate_archive(min_count=MIN_OBJECT_COUNT, require_audit=False):
             current_date_str,
             min_count=min_count,
             require_audit=require_audit,
+            require_catalog=require_catalog,
         )
         errors.extend(date_errors)
         if manifest is not None and manifest.get("date") == current_date_str:
@@ -1921,6 +2216,11 @@ def main():
         action="store_true",
         help="Require audit.json and visibility_state.json for every archived snapshot",
     )
+    validate_parser.add_argument(
+        "--require-catalog",
+        action="store_true",
+        help="Require local catalog.json.gz files and verify their hashes",
+    )
 
     publish_parser = subparsers.add_parser(
         "publish",
@@ -1962,6 +2262,57 @@ def main():
         action="store_true",
         help="Replace an existing GitHub release asset with the same name",
     )
+    publish_parser.add_argument(
+        "--use-existing-bundle",
+        action="store_true",
+        help="Upload a bundle already present in --output-dir instead of rebuilding it",
+    )
+    publish_parser.add_argument(
+        "--prerelease",
+        action="store_true",
+        help="Create or update GitHub releases as prereleases",
+    )
+
+    prune_parser = subparsers.add_parser(
+        "prune-catalogs",
+        help="Remove local catalog.json.gz files after release bundles are built",
+    )
+    prune_parser.add_argument("--date", help="Single archive date (YYYY-MM-DD)")
+    prune_parser.add_argument("--start", help="Start date for pruning (YYYY-MM-DD)")
+    prune_parser.add_argument("--end", help="End date for pruning (YYYY-MM-DD)")
+    prune_parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Prune catalogs for all dates discovered under data/",
+    )
+    prune_parser.add_argument(
+        "--require-bundle",
+        action="store_true",
+        help="Require a matching release bundle in --output-dir before pruning",
+    )
+    prune_parser.add_argument(
+        "--output-dir",
+        default=RELEASE_OUTPUT_DIR,
+        help=f"Directory containing release bundles (default: {RELEASE_OUTPUT_DIR})",
+    )
+
+    mark_prerelease_parser = subparsers.add_parser(
+        "mark-prerelease",
+        help="Mark existing GitHub archive releases as prereleases",
+    )
+    mark_prerelease_parser.add_argument("--date", help="Single archive date (YYYY-MM-DD)")
+    mark_prerelease_parser.add_argument("--start", help="Start date (YYYY-MM-DD)")
+    mark_prerelease_parser.add_argument("--end", help="End date inclusive (YYYY-MM-DD)")
+    mark_prerelease_parser.add_argument(
+        "--repo",
+        default=os.environ.get("GITHUB_REPOSITORY"),
+        help="GitHub repo, OWNER/REPO. Defaults to GITHUB_REPOSITORY or origin.",
+    )
+    mark_prerelease_parser.add_argument(
+        "--undo",
+        action="store_true",
+        help="Clear the prerelease flag instead of setting it",
+    )
 
     args = parser.parse_args()
 
@@ -1969,10 +2320,20 @@ def main():
         verify_date(args.date)
         return
     if args.command == "validate":
-        validate_archive(min_count=args.min_objects, require_audit=args.require_audit)
+        validate_archive(
+            min_count=args.min_objects,
+            require_audit=args.require_audit,
+            require_catalog=args.require_catalog,
+        )
         return
     if args.command == "publish":
         process_publish(args)
+        return
+    if args.command == "prune-catalogs":
+        process_prune_catalogs(args)
+        return
+    if args.command == "mark-prerelease":
+        process_mark_prerelease(args)
         return
 
     client = SpaceTrackClient()

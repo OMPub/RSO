@@ -45,6 +45,22 @@ jobs:
           args=(pipeline/snapshot.py backfill --start "${{ inputs.start }}" --end "${{ inputs.end }}")
           python "${args[@]}"
 
+      - name: Validate captured archive
+        run: |
+          set -euo pipefail
+          python pipeline/snapshot.py validate
+
+      - name: Build release archives
+        run: |
+          set -euo pipefail
+          python pipeline/snapshot.py publish --start "${{ inputs.start }}" --end "${{ inputs.end }}" --storage-backend none
+
+      - name: Prune catalogs from git archive
+        run: |
+          set -euo pipefail
+          python pipeline/snapshot.py prune-catalogs --start "${{ inputs.start }}" --end "${{ inputs.end }}" --require-bundle
+          python pipeline/snapshot.py validate
+
       - name: Commit archive changes
         run: |
           set -euo pipefail
@@ -63,4 +79,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          python pipeline/snapshot.py publish --start "${{ inputs.start }}" --end "${{ inputs.end }}"
+          python pipeline/snapshot.py publish --start "${{ inputs.start }}" --end "${{ inputs.end }}" --use-existing-bundle
