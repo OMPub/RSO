@@ -2,6 +2,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 
 from pipeline import snapshot
 
@@ -118,6 +119,47 @@ class ArchiveValidationTests(unittest.TestCase):
             snapshot.validate_archive(min_count=1, require_catalog=True)
 
         self.assertIn("missing catalog.json.gz", str(raised.exception))
+
+    def test_validate_archive_can_require_latest_local_catalogs(self):
+        self.archive_genesis("2026-04-12")
+        self.archive_genesis("2026-04-13")
+        (snapshot.snapshot_dir("2026-04-13") / "catalog.json.gz").unlink()
+
+        with self.assertRaises(snapshot.SnapshotError) as raised:
+            snapshot.validate_archive(min_count=1, require_latest_catalogs=2)
+
+        self.assertIn("missing catalog.json.gz", str(raised.exception))
+
+    def test_prune_catalogs_keeps_latest_selected_dates(self):
+        self.archive_genesis("2026-04-12")
+        self.archive_genesis("2026-04-13")
+        self.archive_genesis("2026-04-14")
+
+        snapshot.process_prune_catalogs(
+            SimpleNamespace(
+                all=True,
+                date=None,
+                start=None,
+                end=None,
+                require_bundle=False,
+                output_dir=Path(self.tmp.name) / ".release",
+                keep_latest=2,
+            )
+        )
+
+        self.assertFalse((snapshot.snapshot_dir("2026-04-12") / "catalog.json.gz").exists())
+        self.assertTrue((snapshot.snapshot_dir("2026-04-13") / "catalog.json.gz").exists())
+        self.assertTrue((snapshot.snapshot_dir("2026-04-14") / "catalog.json.gz").exists())
+
+    def test_next_unarchived_date_returns_day_after_latest(self):
+        self.archive_genesis("2026-04-12")
+
+        self.assertEqual(snapshot.next_unarchived_date("2026-04-14"), "2026-04-13")
+
+    def test_next_unarchived_date_is_capped_at_end(self):
+        self.archive_genesis("2026-04-12")
+
+        self.assertEqual(snapshot.next_unarchived_date("2026-04-12"), "2026-04-12")
 
     def test_validate_archive_rejects_rolling_snapshot_with_wrong_base_hash(self):
         self.archive_genesis()
