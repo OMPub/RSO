@@ -30,6 +30,10 @@ The catalog currently tracks **50,000+** resident space objects (RSOs): active s
 
 For terminology and field definitions, see [GLOSSARY.md](GLOSSARY.md).
 
+If you want to operate an independent witness node and are new to GitHub, start with
+[OPERATOR.md](OPERATOR.md). It explains why to operate, what you need, and what
+a first successful run should look like.
+
 ## Why
 
 The public space object catalog originates from a single source (U.S. Space Force, 18th Space Defense Squadron) and is mirrored by a single individual ([CelesTrak](https://celestrak.org)). There is no redundant historical archive with cryptographic proof of what the catalog said on any given date.
@@ -53,8 +57,10 @@ Space-Track GP_HISTORY            RSO Archive
 ```
 
 **Phase 1 (current):** Daily metadata is archived to Git with SHA-256 hashes.
-Full catalog bytes are published as deterministic GitHub Release bundles so
-normal Git history stays small until Arweave storage is added.
+The two most recent full catalogs are also kept in Git so new forks can start
+operating immediately. Older full catalog bytes are published as deterministic
+GitHub Release bundles so normal Git history stays small until Arweave storage
+is added.
 
 **Phase 2:** Arweave permanent storage + Ethereum on-chain attestation.
 
@@ -209,7 +215,7 @@ renumbering or merges, or source-side data corrections. The archive keeps the
 last public row and makes the absence visible so operators can investigate it
 without changing the canonical hash.
 
-## Quick Start
+## Local Developer Quick Start
 
 ### Prerequisites
 
@@ -229,20 +235,12 @@ python pipeline/snapshot.py genesis
 # Official baseline day, scheduled for 2026-04-20
 python pipeline/snapshot.py genesis --date 2026-04-20
 
-# Rehearsal baseline currently used during practice week
-python pipeline/snapshot.py genesis --date 2026-04-13
-
 # Build today's rolling snapshot from yesterday's archived snapshot
 python pipeline/snapshot.py daily
 
 # Build or rebuild a specific date
 python pipeline/snapshot.py daily --date 2026-04-13
 python pipeline/snapshot.py daily --date 2026-04-12 --force
-
-# Rehearsal daily snapshots from the 2026-04-13 stand-in baseline.
-# Stop rehearsal before the 2026-04-20 official genesis day.
-python pipeline/snapshot.py daily --date 2026-04-14
-python pipeline/snapshot.py backfill --start 2026-04-15 --end 2026-04-19
 
 # Validation experiment: replay bounded gp_history from Jan 1 to now
 # from an empty state, then compare the replayed state to current gp.
@@ -255,9 +253,18 @@ python pipeline/snapshot.py verify --date 2026-04-12
 # Validate every archived snapshot, manifest, ledger entry, delta, and audit
 python pipeline/snapshot.py validate
 
+# Show the next date this checkout should archive
+python pipeline/snapshot.py next-date
+
 # Build and publish deterministic release bundles for archived days
 python pipeline/snapshot.py publish --date 2026-04-18
 python pipeline/snapshot.py publish --start 2026-04-13 --end 2026-04-18
+
+# Keep only the newest two full catalogs in Git after bundles exist
+python pipeline/snapshot.py prune-catalogs --all --keep-latest 2 --require-bundle
+
+# Repair a checkout by restoring the newest two catalogs from release bundles
+python pipeline/snapshot.py hydrate-catalogs --latest 2 --repo OMPub/RSO
 ```
 
 Useful operational knobs:
@@ -292,9 +299,10 @@ subsequent daily consensus snapshot.
 
 ## Join the Operators
 
-An operator is anyone running an independent copy of the archive pipeline. The
-goal is simple: start from the same agreed baseline, run the same code, publish
-the same daily hashes, and make drift visible.
+An operator is the person or group running an independent witness node. The
+fork plus workflows are the node itself. The goal is simple: start from the
+same agreed baseline, run the same code, publish the same daily hashes, and
+make drift visible.
 
 The resilience comes from many independent operators, not from one blessed
 server. If one GitHub account, one workflow, one maintainer, or one future
@@ -302,330 +310,60 @@ storage provider disappears, other operators still have the code, the data, the
 ledger, and the hashes. Matching hashes across independent forks are the signal
 that the public record is being witnessed, not merely hosted.
 
-### 1. Create Your Space-Track Account
+For a detailed beginner-friendly setup path, read [OPERATOR.md](OPERATOR.md).
 
-Create a free account at [Space-Track.org](https://www.space-track.org/auth/createAccount).
-Use a real email address and read the Space-Track terms of use. The archive
-uses only public GP/OMM data, but Space-Track rate limits still apply.
+The short version:
 
-After the account is approved, keep the username and password ready. They will
-be stored as GitHub Actions secrets, not committed to the repo.
+- Create a free [Space-Track.org](https://www.space-track.org/auth/createAccount) account.
+- Fork this repo into your own GitHub account or organization.
+- Enable GitHub Actions and workflow write access on your fork.
+- Add `SPACETRACK_USER` and `SPACETRACK_PASS` as repository secrets.
+- Run **Validate RSO Archive** first. The scheduled **Daily RSO Snapshot**
+  workflow can then continue the chain automatically. If the fork is behind, it
+  backfills missing dates before the current daily snapshot; manual dispatch is
+  only needed if you want the first run immediately.
 
-### 2. Fork the Archive
-
-Fork this repository into your own GitHub account or organization using the
-GitHub **Fork** button. Your fork is your independent witness node.
-
-The canonical Git record is `data/` plus `ledger.json`. Full
-`catalog.json.gz` files are intentionally pruned from Git after their
-deterministic release bundles are built and uploaded. Do not ignore `data/` or
-`ledger.json`; those files carry the public metadata and hash chain.
-
-### 3. Enable GitHub Actions
-
-Open your fork on GitHub, then go to:
+The live archive already has an agreed genesis day:
 
 ```text
-Settings -> Actions -> General
+2026-04-20
 ```
 
-Enable Actions for the repository.
-
-The producer workflows need permission to commit new archive files. Under
-Workflow permissions, choose read/write access if GitHub lets you. If the option
-is greyed out, your organization may be enforcing a stricter policy. The
-workflows already declare:
-
-```yaml
-permissions:
-  contents: write
-```
-
-If the daily workflow fails during `git push`, enable write permissions at the
-organization level or use a fine-grained repository token with `Contents: Read
-and write`.
-
-### 4. Add Space-Track Secrets
-
-Open:
-
-```text
-Settings -> Secrets and variables -> Actions -> Repository secrets
-```
-
-Add:
-
-```text
-SPACETRACK_USER = your Space-Track email
-SPACETRACK_PASS = your Space-Track password
-```
-
-Do not put these values in `.env`, workflow YAML, commits, issues, or logs.
-
-Optional command-line alternative: if you already use the GitHub CLI, these two
-commands do the same secret setup as the web UI above. Skip this block if you
-used the GitHub website.
-
-```bash
-gh secret set SPACETRACK_USER --repo YOUR_OWNER/RSO
-gh secret set SPACETRACK_PASS --repo YOUR_OWNER/RSO
-```
-
-### 5. Know the Workflows
+New operators normally do not create a fresh genesis snapshot. They validate
+the existing lineage and then continue it.
 
 There are three workflows:
 
-- **Validate RSO Archive** — read-only tests and archive validation. It needs no
-  Space-Track credentials and runs on pushes, pull requests, and manual dispatch.
-- **Daily RSO Snapshot** — scheduled producer workflow. It reads Space-Track,
-  writes `data/`, updates `ledger.json`, publishes the full catalog bundle,
-  then prunes the local catalog from Git.
-- **Backfill RSO Archive** — manual producer workflow for bounded date ranges.
+- **Validate RSO Archive** — read-only tests and archive validation
+- **Daily RSO Snapshot** — scheduled producer workflow with automatic catch-up
+- **Backfill RSO Archive** — manual producer workflow for bounded date ranges
 
-The validator is the first thing to trust. It proves the committed archive is
-internally consistent without asking Space-Track for anything. By default it is
-metadata-only for pruned catalogs; use `--require-catalog` immediately after a
-producer run when the local `catalog.json.gz` still exists.
+Each successful producer run writes to two places:
 
-### 6. Choose Archive Publishing Settings
+- Git metadata: `data/YYYY/MM/DD/` plus `ledger.json`
+- Git bootstrap cache: `catalog.json.gz` for the two newest archived days
+- Release bundle: `rso-archive-YYYY-MM-DD.tar.gz`
 
-By default, producer workflows also build a deterministic `tar.gz` bundle for
-each archived day and publish it as a GitHub Release asset. This keeps the
-clone-and-run setup simple while avoiding long-term growth inside normal Git
-history.
+The daily `sha256` is computed from the canonical snapshot bytes, not from a
+release URL, storage URI, or upload location. Different operators can publish
+the same snapshot bytes at different locations and still agree on the same
+daily hash.
 
-The supported v1 settings are:
-
-```text
-STORAGE_BACKEND=none | github_release | arweave | ipfs_pinata
-UPLOAD_POLICY=never | if_missing | always_mirror
-```
-
-The current defaults are:
+The default producer settings are:
 
 ```text
 STORAGE_BACKEND=github_release
 UPLOAD_POLICY=if_missing
 ```
 
-What they mean:
-
-- `github_release` publishes `rso-archive-YYYY-MM-DD.tar.gz` to a release named
-  `rso-archive-YYYY-MM-DD`.
-- `none` builds no external storage dependency into your operator path. You can
-  still compute hashes and validate the archive.
-- `arweave` and `ipfs_pinata` are planned storage backends. They are named now
-  so operator configuration has a stable shape, but only `github_release` is
-  implemented today.
-- `if_missing` uploads only when the release asset is missing.
-- `never` disables upload.
-- `always_mirror` is for operators who deliberately want to publish another
-  copy. For GitHub Releases in the same repo, an existing identical asset is
-  still skipped unless you force replacement.
-
-Optional web UI setup: open your fork's repository variables:
-
-```text
-Settings -> Secrets and variables -> Actions -> Variables
-```
-
-Add `STORAGE_BACKEND` and `UPLOAD_POLICY` only if you want to override the
-defaults.
-
-### 7. Run the Read-Only Validator
-
-In GitHub:
-
-```text
-Actions -> Validate RSO Archive -> Run workflow
-```
-
-It should pass without secrets.
-
-Optional local alternative: if you are comfortable using a terminal, these
-commands do the same validation on your own machine. Skip this block if you are
-only using GitHub Actions.
-
-```bash
-python3 -m unittest discover -s tests
-python3 -m py_compile pipeline/snapshot.py
-python3 pipeline/snapshot.py validate
-```
-
-The default validator checks manifest fields, object counts, ledger entries,
-rolling base hashes, delta counts, and audit artifact consistency. When local
-catalogs are present, add `--require-catalog` to also require
-`catalog.json.gz`, check canonical JSON, and recompute the catalog hash.
-
-### 8. Run a Rehearsal Genesis
-
-Before the official baseline day, test your producer setup with a rehearsal
-baseline.
-
-In GitHub:
-
-```text
-Actions -> Daily RSO Snapshot -> Run workflow
-```
-
-Use:
-
-```text
-date  = today's UTC date
-mode  = genesis
-force = true only if that date already exists in your fork
-```
-
-This captures current `gp`, writes a `genesis_from_gp` snapshot for that date,
-updates `ledger.json`, publishes a release bundle, prunes the local catalog,
-and commits the metadata back to your fork.
-
-Confirm the run output includes:
-
-```text
-Provenance: genesis_from_gp
-Objects:    50,000+
-SHA-256:    ...
-DONE
-```
-
-Then confirm the follow-up **Validate RSO Archive** workflow is green.
-
-### 9. Rehearse One Daily Roll-Forward
-
-After a rehearsal genesis exists, run **Daily RSO Snapshot** manually for the
-next date:
-
-```text
-date  = next UTC date after your rehearsal genesis
-mode  = daily
-force = false unless deliberately rebuilding that date
-```
-
-That run should create a `rolling_gp_history_delta` snapshot with:
-
-```text
-manifest.json
-delta.json
-audit.json
-visibility_state.json
-```
-
-The full `catalog.json.gz` should be in the matching release bundle, not in the
-committed `data/` tree.
-
-The manifest should point back to the prior snapshot with
-`base_snapshot_date` and `base_snapshot_sha256`. The validator checks that link.
-
-### 10. Let the Schedule Run
-
-The daily producer is scheduled for:
+The workflow schedule target is:
 
 ```text
 00:15 UTC
 ```
 
-GitHub schedules are not exact to the second and may start late. That is fine.
-The canonical data cutoff remains midnight UTC.
-
-The official archive baseline date is `2026-04-20`. On that date, the workflow
-automatically runs:
-
-```bash
-python pipeline/snapshot.py genesis --date 2026-04-20
-```
-
-On other dates, it runs:
-
-```bash
-python pipeline/snapshot.py daily --date YYYY-MM-DD
-```
-
-### 11. Check Your Daily Result
-
-Each successful producer run should commit archive changes back to your fork.
-Check:
-
-```text
-Actions -> Daily RSO Snapshot -> latest run -> success
-Actions -> Validate RSO Archive -> latest run -> success
-```
-
-For a daily snapshot, inspect the new manifest:
-
-```text
-data/YYYY/MM/DD/manifest.json
-```
-
-The important fields are:
-
-```text
-date
-sha256
-object_count
-provenance
-base_snapshot_date
-base_snapshot_sha256
-delta_window_start_utc
-delta_window_end_utc
-```
-
-For the audit, inspect:
-
-```text
-data/YYYY/MM/DD/audit.json
-```
-
-The audit is not part of the consensus hash path. It is a time-sampled current
-`gp` observation that makes missing or reappearing objects visible.
-
-For the release bundle, inspect:
-
-```text
-Releases -> rso-archive-YYYY-MM-DD
-```
-
-The asset should be:
-
-```text
-rso-archive-YYYY-MM-DD.tar.gz
-```
-
-The release notes include the catalog hash, manifest hash, bundle hash, object
-count, and state timestamp.
-
-### 12. Compare With Other Operators
-
-Decentralization only helps if operators compare results. The expected healthy
-state is boring: independent forks publish the same hash for the same date.
-
-For the same date and same baseline lineage, operators should compare:
-
-```text
-ledger.json date
-ledger.json sha256
-manifest.json sha256
-manifest.json object_count
-```
-
-Matching hashes mean the canonical catalogs match byte-for-byte after
-decompression. If hashes diverge, compare `manifest.json` first, then
-`delta.json`, then the workflow logs. Most disagreements should reduce to a
-different baseline, a rebuild with `--force`, or a Space-Track response
-difference inside the bounded `gp_history` window.
-
-### 13. Be Gentle With the API
-
-The workflows set conservative delays between Space-Track requests:
-
-```text
-Daily:   RSO_REQUEST_DELAY=5
-Backfill: RSO_REQUEST_DELAY=12.5
-```
-
-Avoid repeated forced rebuilds. Do not run large backfills from multiple forks
-at the same time unless there is a clear reason. The archive should be boring,
-repeatable, and polite.
+GitHub schedules may start late. The canonical data cutoff remains midnight
+UTC.
 
 ## Data Structure
 
@@ -635,6 +373,7 @@ data/
 │   ├── 01/
 │   │   ├── 01/
 │   │   │   ├── manifest.json      # Hash, object count, metadata
+│   │   │   ├── catalog.json.gz    # Kept only for the newest two archive days
 │   │   │   ├── delta.json         # Bounded gp_history changes applied
 │   │   │   ├── audit.json         # Time-sampled current-gp visibility audit
 │   │   │   └── visibility_state.json
@@ -645,10 +384,11 @@ data/
 └── ledger.json                     # Running hash ledger (all dates)
 ```
 
-Full catalog bytes live in release assets named
-`rso-archive-YYYY-MM-DD.tar.gz`. Each bundle contains `catalog.json.gz`,
-`manifest.json`, any daily audit/delta artifacts, and a deterministic
-`release-manifest.json`.
+The two newest full catalogs live directly in `data/` so a fresh fork can read
+the previous snapshot without first owning any release assets. Older full
+catalog bytes live in release assets named `rso-archive-YYYY-MM-DD.tar.gz`.
+Each bundle contains `catalog.json.gz`, `manifest.json`, any daily audit/delta
+artifacts, and a deterministic `release-manifest.json`.
 
 Pre-baseline rehearsal releases can be marked as GitHub prereleases without
 changing the archive data:
@@ -694,6 +434,13 @@ Anyone can verify a snapshot independently:
 3. Compute SHA-256 of the raw bytes
 4. Compare against `manifest.json`, `release-manifest.json`, or `ledger.json`
 
+For the newest retained days, step 1 is optional because `catalog.json.gz` is
+already present in Git.
+
+The storage location is not part of the consensus hash. The point of the bundle
+or later Arweave URI is to retrieve the bytes; the bytes themselves are what
+hash to the daily `sha256`.
+
 ```bash
 # Quick verify. If catalog.json.gz is not local, this fetches the release bundle.
 python pipeline/snapshot.py verify --date 2026-04-23
@@ -722,12 +469,11 @@ python -m unittest discover -s tests
 - [x] Refactor daily snapshots to midnight UTC rolling `gp_history` deltas
 - [x] Add current `gp` visibility audit and missing/reappeared state
 - [x] Analyze Jan 1-to-current replay results against current `gp`
-- [x] Publish deterministic GitHub Release bundles and prune full catalogs from Git
+- [x] Publish deterministic GitHub Release bundles and retain a two-day Git bootstrap cache
 - [ ] Arweave permanent upload (via Irys)
 - [ ] Ethereum contract for hash attestation
 - [ ] Daily diff computation (objects added/updated/carried-forward)
 - [ ] TDH-weighted community confirmations
-- [ ] Weekly Merkle root on-chain checkpoints
 - [ ] Dynamic NFT artwork (6529 The Memes): verification client and visualization layer
 - [ ] Orbital Witness template for additional datasets
 - [ ] NEO witness archive

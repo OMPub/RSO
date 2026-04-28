@@ -4,9 +4,9 @@ This glossary defines the terms and snapshot fields used by the RSO archive. It
 is written for operators, reviewers, artists, and future maintainers who need to
 understand what the data means before trusting a hash.
 
-The field profile below is based on the current rehearsal baseline:
+The field profile below is based on the rehearsal baseline release bundle:
 
-- Snapshot: `data/2026/04/14/catalog.json.gz`
+- Snapshot: `rso-archive-2026-04-14.tar.gz` / `catalog.json.gz`
 - Manifest date: `2026-04-14`
 - Rows: `67,052`
 - Fields per row: `40`
@@ -192,7 +192,8 @@ All rows in the current baseline have the same 40 fields. Space-Track returns
 JSON values as strings or nulls; the `Type` column below is from Space-Track's
 `gp` model definition.
 
-`Snapshot profile` summarizes what we observed in `data/2026/04/14/catalog.json.gz`.
+`Snapshot profile` summarizes what we observed in that bundled
+`catalog.json.gz`.
 
 | Field | Type | Meaning | Snapshot profile |
 |---|---:|---|---|

@@ -300,7 +300,7 @@ Nobody is doing:
 
 ## Implementation Status
 
-### Done (Phase 1 — Git Metadata + Release Bundles)
+### Done (Phase 1 — Git Metadata + Bootstrap Catalogs + Release Bundles)
 
 - [x] `pipeline/snapshot.py` — Zero-dependency Python script (stdlib only)
   - `genesis` command: captures the first agreed rolling snapshot from current `gp`
@@ -308,20 +308,23 @@ Nobody is doing:
   - `backfill` command: builds rolling snapshots from an existing prior-day base snapshot
   - `replay` command: replays bounded `gp_history` from an empty state and compares the result to current `gp`
   - `verify` command: re-hashes stored snapshot and compares to manifest
+  - `next-date` command: reports the next missing archive date for automated catch-up
   - `publish` command: builds deterministic release bundles and uploads them through the GitHub API with stdlib only
-  - `prune-catalogs` command: removes local full catalog bytes after a matching release bundle exists
+  - `prune-catalogs` command: keeps the newest local full catalogs and removes older ones after matching release bundles exist
+  - `hydrate-catalogs` command: restores local full catalogs from release bundles when repairing or migrating a checkout
   - Canonical JSON serialization for deterministic hashing
   - gzip compression, manifest generation, running ledger, `delta.json`, `audit.json`, and `visibility_state.json`
-- [x] `.github/workflows/daily-snapshot.yml` — Runs at 00:15 UTC daily
+- [x] `.github/workflows/daily-snapshot.yml` — Runs at 00:15 UTC daily and catches up missing dates
 - [x] `.github/workflows/backfill.yml` — Manually triggered for date ranges
 - [x] `.github/workflows/validate-archive.yml` — Read-only tests and archive validation
 - [x] `README.md` with architecture overview and setup instructions
 - [x] Zero external dependencies (no pip install, no requirements.txt, no required GitHub CLI)
 
-Full catalog bytes are no longer kept in normal Git history after publication.
-The canonical Git tree keeps manifests, deltas, audits, visibility state, and
-`ledger.json`; deterministic `rso-archive-YYYY-MM-DD.tar.gz` release bundles
-carry `catalog.json.gz` until Arweave is added.
+The canonical Git tree keeps manifests, deltas, audits, visibility state,
+`ledger.json`, and a rolling two-day cache of `catalog.json.gz`. Older full
+catalog bytes are pruned from Git after deterministic
+`rso-archive-YYYY-MM-DD.tar.gz` release bundles are built. This keeps normal
+Git history small while making a fresh fork self-starting.
 
 ### Done (Phase 1.1 — Deterministic Rolling Snapshot)
 
@@ -449,6 +452,7 @@ rso-archive/
 ├── data/
 │   └── {YYYY}/{MM}/{DD}/
 │       ├── manifest.json         # Hash, object count, metadata
+│       ├── catalog.json.gz       # Retained only for the newest two archive days
 │       ├── delta.json            # Closed-window GP_HISTORY changes applied
 │       ├── audit.json            # Current-GP visibility observation
 │       └── visibility_state.json # Missing/reappeared state for this day
@@ -461,7 +465,26 @@ rso-archive/
 ```
 
 Full daily catalogs are published in GitHub Release bundles and later move to
-Arweave permanent storage.
+Arweave permanent storage. The newest two full catalogs are also retained in
+Git as a bootstrap cache.
+
+### Design Lesson: Self-Starting Forks
+
+A rolling archive needs the prior full catalog bytes, not only the prior hash.
+If all full catalogs are pruned from Git, a new fork inherits the metadata
+chain but may need an external release bundle before its first daily run.
+
+The current design keeps the newest two `catalog.json.gz` files in the repo:
+
+- `ledger.json` and `manifest.json` provide the public hash chain.
+- The newest retained catalog lets the next daily run start from local state.
+- The second retained catalog gives one extra day of cushion for delayed or
+  retried runs.
+- Older full catalogs move to release bundles and later permanent storage.
+
+This makes the normal operator path self-starting: fork the repo, enable
+Actions, add Space-Track secrets, and the scheduled workflow can catch up and
+continue the chain without manual bootstrapping.
 
 ---
 

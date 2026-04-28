@@ -39,6 +39,7 @@ REQUEST_DELAY = float(os.environ.get("RSO_REQUEST_DELAY", "2.5"))
 CATALOG_RANGE_SIZE = int(os.environ.get("RSO_CATALOG_RANGE_SIZE", "10000"))
 MAX_NORAD_CAT_ID = int(os.environ.get("RSO_MAX_NORAD_CAT_ID", "339999"))
 MIN_OBJECT_COUNT = int(os.environ.get("RSO_MIN_OBJECT_COUNT", "40000"))
+DEFAULT_RETAINED_CATALOG_COUNT = int(os.environ.get("RSO_RETAINED_CATALOG_COUNT", "2"))
 
 DATA_DIR = Path(__file__).parent.parent / "data"
 LEDGER_PATH = Path(__file__).parent.parent / "ledger.json"
@@ -1412,6 +1413,15 @@ def release_bundle_from_github(current_date_str, repo=None):
     return github_download_bytes(asset["browser_download_url"])
 
 
+def catalog_gz_bytes_from_release_bundle(current_date_str, repo=None):
+    bundle_bytes = release_bundle_from_github(current_date_str, repo=repo)
+    with tarfile.open(fileobj=io.BytesIO(bundle_bytes), mode="r:gz") as tar:
+        member = tar.extractfile("catalog.json.gz")
+        if member is None:
+            raise SnapshotError(f"{release_asset_name(current_date_str)} missing catalog.json.gz")
+        return member.read()
+
+
 def download_release_bundle_to_file(current_date_str, output_dir=None, repo=None):
     output_dir = Path(output_dir or RELEASE_OUTPUT_DIR)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -1421,13 +1431,7 @@ def download_release_bundle_to_file(current_date_str, output_dir=None, repo=None
 
 
 def catalog_bytes_from_release_bundle(current_date_str, repo=None):
-    bundle_bytes = release_bundle_from_github(current_date_str, repo=repo)
-    with tarfile.open(fileobj=io.BytesIO(bundle_bytes), mode="r:gz") as tar:
-        member = tar.extractfile("catalog.json.gz")
-        if member is None:
-            raise SnapshotError(f"{release_asset_name(current_date_str)} missing catalog.json.gz")
-        catalog_gz_bytes = member.read()
-    return gzip.decompress(catalog_gz_bytes)
+    return gzip.decompress(catalog_gz_bytes_from_release_bundle(current_date_str, repo=repo))
 
 
 def read_catalog_bytes(current_date_str, repo=None):
@@ -1784,6 +1788,24 @@ def process_publish(args):
         print(f"  {key}: {summary[key]}")
 
 
+def latest_dates(dates, count):
+    if count <= 0:
+        return []
+    return sorted(dates)[-count:]
+
+
+def next_unarchived_date(end_date_str=None):
+    end = parse_date(end_date_str) if end_date_str else parse_date(now_utc().strftime("%Y-%m-%d"))
+    dates = discover_snapshot_dates()
+    if not dates:
+        return date_str(end)
+
+    candidate = parse_date(dates[-1]) + timedelta(days=1)
+    if candidate <= end:
+        return date_str(candidate)
+    return date_str(end)
+
+
 def resolve_prune_dates(args):
     if args.all:
         if args.date or args.start or args.end:
@@ -1792,27 +1814,117 @@ def resolve_prune_dates(args):
     return resolve_publish_dates(args)
 
 
+def ensure_release_bundle_before_prune(current_date_str, output_dir=None):
+    try:
+        return release_bundle_from_existing(current_date_str, output_dir=output_dir)
+    except SnapshotError:
+        return build_release_bundle(current_date_str, output_dir=output_dir)
+
+
 def process_prune_catalogs(args):
     dates = resolve_prune_dates(args)
     if not dates:
         raise SnapshotError("No snapshot dates selected for pruning")
 
+    keep_latest = int(args.keep_latest or 0)
+    retained_dates = set(latest_dates(discover_snapshot_dates(), keep_latest))
     pruned = 0
+    retained = 0
     skipped = 0
     for current_date_str in dates:
+        if current_date_str in retained_dates:
+            retained += 1
+            print(f"  RETAINED: {catalog_gz_path(current_date_str)}")
+            continue
         path = catalog_gz_path(current_date_str)
         if not path.exists():
             skipped += 1
             continue
         if args.require_bundle:
-            release_bundle_from_existing(current_date_str, output_dir=args.output_dir)
+            ensure_release_bundle_before_prune(current_date_str, output_dir=args.output_dir)
         path.unlink()
         pruned += 1
         print(f"  PRUNED: {path}")
 
     print("\nCatalog prune complete")
     print(f"  pruned:  {pruned}")
+    print(f"  retained:{retained}")
     print(f"  skipped: {skipped}")
+
+
+def validate_catalog_payload(current_date_str, catalog_gz_bytes, manifest):
+    try:
+        raw_bytes = gzip.decompress(catalog_gz_bytes)
+        records = json.loads(raw_bytes)
+    except (json.JSONDecodeError, OSError, gzip.BadGzipFile) as exc:
+        raise SnapshotError(f"{current_date_str}: cannot read catalog payload: {exc}") from exc
+
+    computed_hash = compute_hash(raw_bytes)
+    if manifest.get("sha256") != computed_hash:
+        raise SnapshotError(
+            f"{current_date_str}: catalog hash mismatch "
+            f"manifest={manifest.get('sha256')} computed={computed_hash}"
+        )
+    if manifest.get("raw_bytes") != len(raw_bytes):
+        raise SnapshotError(
+            f"{current_date_str}: raw_bytes={manifest.get('raw_bytes')} "
+            f"actual={len(raw_bytes)}"
+        )
+    if manifest.get("compressed_bytes") != len(catalog_gz_bytes):
+        raise SnapshotError(
+            f"{current_date_str}: compressed_bytes={manifest.get('compressed_bytes')} "
+            f"actual={len(catalog_gz_bytes)}"
+        )
+    if manifest.get("object_count") != len(records):
+        raise SnapshotError(
+            f"{current_date_str}: object_count={manifest.get('object_count')} "
+            f"actual={len(records)}"
+        )
+    if raw_bytes != canonicalize(records):
+        raise SnapshotError(f"{current_date_str}: catalog payload is not canonical JSON")
+
+
+def hydrate_catalog(current_date_str, repo=None, force=False):
+    manifest = load_manifest(current_date_str)
+    path = catalog_gz_path(current_date_str)
+    if path.exists() and not force:
+        print(f"  SKIP: {path} already exists")
+        return {"status": "skipped", "date": current_date_str, "path": str(path)}
+
+    catalog_gz_bytes = catalog_gz_bytes_from_release_bundle(current_date_str, repo=repo)
+    validate_catalog_payload(current_date_str, catalog_gz_bytes, manifest)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(catalog_gz_bytes)
+    print(f"  HYDRATED: {path}")
+    return {"status": "hydrated", "date": current_date_str, "path": str(path)}
+
+
+def resolve_hydrate_dates(args):
+    if args.latest is not None:
+        if args.date or args.start or args.end:
+            raise SnapshotError("Use --latest by itself, or use --date/--start/--end")
+        if args.latest < 0:
+            raise SnapshotError("--latest must be zero or greater")
+        return latest_dates(discover_snapshot_dates(), args.latest)
+    return resolve_publish_dates(args)
+
+
+def process_hydrate_catalogs(args):
+    dates = resolve_hydrate_dates(args)
+    if not dates:
+        raise SnapshotError("No snapshot dates selected for hydration")
+
+    print(f"\nHydrating local catalogs: {dates[0]} to {dates[-1]}")
+    results = []
+    for current_date_str in dates:
+        results.append(hydrate_catalog(current_date_str, repo=args.repo, force=args.force))
+
+    summary = {}
+    for result in results:
+        summary[result["status"]] = summary.get(result["status"], 0) + 1
+    print("\nCatalog hydration complete")
+    for key in sorted(summary):
+        print(f"  {key}: {summary[key]}")
 
 
 def process_mark_prerelease(args):
@@ -2092,11 +2204,17 @@ def validate_ledger(manifests_by_date):
     return errors
 
 
-def validate_archive(min_count=MIN_OBJECT_COUNT, require_audit=False, require_catalog=False):
+def validate_archive(
+    min_count=MIN_OBJECT_COUNT,
+    require_audit=False,
+    require_catalog=False,
+    require_latest_catalogs=0,
+):
     dates = discover_snapshot_dates()
     if not dates:
         raise SnapshotError("No archived snapshots found under data/")
 
+    required_catalog_dates = set(latest_dates(dates, int(require_latest_catalogs or 0)))
     manifests_by_date = {}
     errors = []
     for current_date_str in dates:
@@ -2104,7 +2222,7 @@ def validate_archive(min_count=MIN_OBJECT_COUNT, require_audit=False, require_ca
             current_date_str,
             min_count=min_count,
             require_audit=require_audit,
-            require_catalog=require_catalog,
+            require_catalog=require_catalog or current_date_str in required_catalog_dates,
         )
         errors.extend(date_errors)
         if manifest is not None and manifest.get("date") == current_date_str:
@@ -2119,6 +2237,8 @@ def validate_archive(min_count=MIN_OBJECT_COUNT, require_audit=False, require_ca
     print(f"  Snapshots: {len(dates)}")
     print(f"  First:     {dates[0]}")
     print(f"  Latest:    {dates[-1]}")
+    if required_catalog_dates:
+        print(f"  Local catalogs required: {len(required_catalog_dates)}")
     print("  Status:    VALID")
 
 
@@ -2221,6 +2341,31 @@ def main():
         action="store_true",
         help="Require local catalog.json.gz files and verify their hashes",
     )
+    validate_parser.add_argument(
+        "--require-latest-catalogs",
+        type=int,
+        default=DEFAULT_RETAINED_CATALOG_COUNT,
+        help=(
+            "Require local catalog.json.gz files for the N most recent snapshots "
+            f"(default: {DEFAULT_RETAINED_CATALOG_COUNT}; use 0 to disable)"
+        ),
+    )
+
+    next_date_parser = subparsers.add_parser(
+        "next-date",
+        help="Print the next unarchived snapshot date, capped at the current UTC date",
+    )
+    next_date_parser.add_argument(
+        "--end",
+        default=None,
+        help="Maximum date to return (YYYY-MM-DD), defaults to current UTC date",
+    )
+
+    previous_date_parser = subparsers.add_parser(
+        "previous-date",
+        help="Print the UTC date before the given snapshot date",
+    )
+    previous_date_parser.add_argument("--date", required=True, help="Date (YYYY-MM-DD)")
 
     publish_parser = subparsers.add_parser(
         "publish",
@@ -2275,7 +2420,7 @@ def main():
 
     prune_parser = subparsers.add_parser(
         "prune-catalogs",
-        help="Remove local catalog.json.gz files after release bundles are built",
+        help="Prune local catalog.json.gz files while retaining a recent bootstrap cache",
     )
     prune_parser.add_argument("--date", help="Single archive date (YYYY-MM-DD)")
     prune_parser.add_argument("--start", help="Start date for pruning (YYYY-MM-DD)")
@@ -2294,6 +2439,36 @@ def main():
         "--output-dir",
         default=RELEASE_OUTPUT_DIR,
         help=f"Directory containing release bundles (default: {RELEASE_OUTPUT_DIR})",
+    )
+    prune_parser.add_argument(
+        "--keep-latest",
+        type=int,
+        default=0,
+        help="Keep local catalog.json.gz files for the N most recent archived snapshots",
+    )
+
+    hydrate_parser = subparsers.add_parser(
+        "hydrate-catalogs",
+        help="Restore local catalog.json.gz files from GitHub release bundles",
+    )
+    hydrate_parser.add_argument("--date", help="Single archive date (YYYY-MM-DD)")
+    hydrate_parser.add_argument("--start", help="Start date for hydration (YYYY-MM-DD)")
+    hydrate_parser.add_argument("--end", help="End date for hydration (YYYY-MM-DD)")
+    hydrate_parser.add_argument(
+        "--latest",
+        type=int,
+        default=None,
+        help="Hydrate the N most recent archived snapshots",
+    )
+    hydrate_parser.add_argument(
+        "--repo",
+        default=os.environ.get("GITHUB_REPOSITORY"),
+        help="GitHub repo, OWNER/REPO. Defaults to GITHUB_REPOSITORY or origin.",
+    )
+    hydrate_parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Replace an existing local catalog.json.gz",
     )
 
     mark_prerelease_parser = subparsers.add_parser(
@@ -2324,13 +2499,23 @@ def main():
             min_count=args.min_objects,
             require_audit=args.require_audit,
             require_catalog=args.require_catalog,
+            require_latest_catalogs=args.require_latest_catalogs,
         )
+        return
+    if args.command == "next-date":
+        print(next_unarchived_date(args.end))
+        return
+    if args.command == "previous-date":
+        print(previous_date_str(args.date))
         return
     if args.command == "publish":
         process_publish(args)
         return
     if args.command == "prune-catalogs":
         process_prune_catalogs(args)
+        return
+    if args.command == "hydrate-catalogs":
+        process_hydrate_catalogs(args)
         return
     if args.command == "mark-prerelease":
         process_mark_prerelease(args)

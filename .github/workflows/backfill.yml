@@ -23,6 +23,7 @@ jobs:
       RSO_REQUEST_DELAY: "12.5"
       STORAGE_BACKEND: ${{ vars.STORAGE_BACKEND || 'github_release' }}
       UPLOAD_POLICY: ${{ vars.UPLOAD_POLICY || 'if_missing' }}
+      RSO_RETAINED_CATALOG_COUNT: "2"
 
     steps:
       - name: Checkout
@@ -55,10 +56,10 @@ jobs:
           set -euo pipefail
           python pipeline/snapshot.py publish --start "${{ inputs.start }}" --end "${{ inputs.end }}" --storage-backend none
 
-      - name: Prune catalogs from git archive
+      - name: Prune old catalogs from git archive
         run: |
           set -euo pipefail
-          python pipeline/snapshot.py prune-catalogs --start "${{ inputs.start }}" --end "${{ inputs.end }}" --require-bundle
+          python pipeline/snapshot.py prune-catalogs --all --keep-latest "$RSO_RETAINED_CATALOG_COUNT" --require-bundle
           python pipeline/snapshot.py validate
 
       - name: Commit archive changes

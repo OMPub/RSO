@@ -38,6 +38,7 @@ jobs:
       RSO_REQUEST_DELAY: "5"
       STORAGE_BACKEND: ${{ vars.STORAGE_BACKEND || 'github_release' }}
       UPLOAD_POLICY: ${{ vars.UPLOAD_POLICY || 'if_missing' }}
+      RSO_RETAINED_CATALOG_COUNT: "2"
 
     steps:
       - name: Checkout
@@ -57,32 +58,57 @@ jobs:
           SPACETRACK_PASS: ${{ secrets.SPACETRACK_PASS }}
         run: |
           set -euo pipefail
-          DATE="${{ github.event.inputs.date }}"
-          if [ -z "$DATE" ]; then
-            DATE="$(date -u +%F)"
-          fi
-          echo "RSO_SNAPSHOT_DATE=$DATE" >> "$GITHUB_ENV"
-
           MODE="${{ github.event.inputs.mode }}"
           if [ -z "$MODE" ]; then
             MODE="auto"
           fi
 
-          if [ "$MODE" = "auto" ]; then
-            if [ "$DATE" = "$OFFICIAL_BASELINE_DATE" ]; then
-              COMMAND="genesis"
-            else
-              COMMAND="daily"
-            fi
+          INPUT_DATE="${{ github.event.inputs.date }}"
+          END_DATE="$(date -u +%F)"
+          if [ -n "$INPUT_DATE" ]; then
+            START_DATE="$INPUT_DATE"
+            END_DATE="$INPUT_DATE"
+          elif [ "$MODE" = "auto" ]; then
+            START_DATE="$(python pipeline/snapshot.py next-date --end "$END_DATE")"
           else
-            COMMAND="$MODE"
+            START_DATE="$END_DATE"
           fi
 
-          args=(pipeline/snapshot.py "$COMMAND" --date "$DATE")
-          if [ "${{ github.event.inputs.force }}" = "true" ]; then
-            args+=(--force)
+          echo "RSO_SNAPSHOT_START_DATE=$START_DATE" >> "$GITHUB_ENV"
+          echo "RSO_SNAPSHOT_END_DATE=$END_DATE" >> "$GITHUB_ENV"
+          echo "RSO_SNAPSHOT_DATE=$END_DATE" >> "$GITHUB_ENV"
+
+          run_one_snapshot() {
+            local snapshot_date="$1"
+            local command
+            if [ "$MODE" = "auto" ]; then
+              if [ "$snapshot_date" = "$OFFICIAL_BASELINE_DATE" ]; then
+                command="genesis"
+              else
+                command="daily"
+              fi
+            else
+              command="$MODE"
+            fi
+
+            args=(pipeline/snapshot.py "$command" --date "$snapshot_date")
+            if [ "${{ github.event.inputs.force }}" = "true" ]; then
+              args+=(--force)
+            fi
+            python "${args[@]}"
+          }
+
+          if [ "$START_DATE" != "$END_DATE" ]; then
+            if [ "$MODE" != "auto" ]; then
+              echo "Date catch-up only supports mode=auto."
+              exit 1
+            fi
+            BACKFILL_END="$(python pipeline/snapshot.py previous-date --date "$END_DATE")"
+            python pipeline/snapshot.py backfill --start "$START_DATE" --end "$BACKFILL_END"
+            run_one_snapshot "$END_DATE"
+          else
+            run_one_snapshot "$END_DATE"
           fi
-          python "${args[@]}"
 
       - name: Validate captured archive
         run: |
@@ -90,15 +116,15 @@ jobs:
           python pipeline/snapshot.py verify --date "$RSO_SNAPSHOT_DATE"
           python pipeline/snapshot.py validate
 
-      - name: Build release bundle
+      - name: Build release bundles
         run: |
           set -euo pipefail
-          python pipeline/snapshot.py publish --date "$RSO_SNAPSHOT_DATE" --storage-backend none
+          python pipeline/snapshot.py publish --start "$RSO_SNAPSHOT_START_DATE" --end "$RSO_SNAPSHOT_END_DATE" --storage-backend none
 
-      - name: Prune catalog from git archive
+      - name: Prune old catalogs from git archive
         run: |
           set -euo pipefail
-          python pipeline/snapshot.py prune-catalogs --date "$RSO_SNAPSHOT_DATE" --require-bundle
+          python pipeline/snapshot.py prune-catalogs --all --keep-latest "$RSO_RETAINED_CATALOG_COUNT" --require-bundle
           python pipeline/snapshot.py validate
 
       - name: Commit archive changes
@@ -114,12 +140,12 @@ jobs:
           git commit -m "Archive RSO snapshot"
           git push
 
-      - name: Publish release archive
+      - name: Publish release archives
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          args=(pipeline/snapshot.py publish --date "$RSO_SNAPSHOT_DATE" --use-existing-bundle)
+          args=(pipeline/snapshot.py publish --start "$RSO_SNAPSHOT_START_DATE" --end "$RSO_SNAPSHOT_END_DATE" --use-existing-bundle)
           if [ "${{ github.event.inputs.force }}" = "true" ]; then
             args+=(--force)
           fi
