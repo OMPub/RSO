@@ -162,6 +162,32 @@ class ReleaseBundleTests(unittest.TestCase):
         self.assertEqual(receipt["destinations"]["github_release"]["status"], "created")
         self.assertEqual(receipt["destinations"]["arweave"]["transaction_id"], "tx123")
 
+    def test_github_create_release_targets_node_commit(self):
+        calls = []
+        original_request = snapshot.github_request
+        try:
+            snapshot.github_request = lambda method, url, payload=None, token_required=False, **kwargs: calls.append(
+                {
+                    "method": method,
+                    "url": url,
+                    "payload": payload,
+                    "token_required": token_required,
+                }
+            ) or {"id": 1}
+            snapshot.github_create_release(
+                {
+                    "tag": "rso-archive-2026-04-18",
+                    "title": "RSO Archive 2026-04-18",
+                },
+                "OMPub/RSO",
+                "notes",
+                target_commitish="abc123",
+            )
+
+            self.assertEqual(calls[0]["payload"]["target_commitish"], "abc123")
+        finally:
+            snapshot.github_request = original_request
+
     def test_publish_arweave_skips_existing_receipt_without_force(self):
         bundle = {
             "date": "2026-04-18",
@@ -418,6 +444,33 @@ class ReleaseBundleTests(unittest.TestCase):
         finally:
             snapshot.arweave_request = original_request
             snapshot.ARWEAVE_CHUNK_UPLOAD_RETRY_DELAY = original_delay
+
+    def test_arweave_nonfatal_failure_records_failed_receipt(self):
+        bundle = {
+            "date": "2026-04-18",
+            "asset_name": "rso-archive-2026-04-18.tar.gz",
+            "bytes": 123,
+            "bundle_sha256": "a" * 64,
+            "catalog_sha256": "b" * 64,
+            "manifest_sha256": "c" * 64,
+            "path": str(self.root / "bundle.tar.gz"),
+        }
+        original_publish = snapshot.publish_arweave_bundle
+        try:
+            snapshot.publish_arweave_bundle = lambda *args, **kwargs: (_ for _ in ()).throw(
+                snapshot.SnapshotError("Arweave wallet addr has 0 winston")
+            )
+            result = snapshot.publish_arweave_bundle_nonfatal(bundle)
+
+            self.assertEqual(result["status"], "failed")
+            self.assertEqual(result["reason"], "arweave_upload_failed")
+            receipt = json.loads(
+                snapshot.storage_receipt_path("2026-04-18").read_text(encoding="utf-8")
+            )
+            self.assertEqual(receipt["destinations"]["arweave"]["status"], "failed")
+            self.assertIn("0 winston", receipt["destinations"]["arweave"]["error"])
+        finally:
+            snapshot.publish_arweave_bundle = original_publish
 
 
 if __name__ == "__main__":

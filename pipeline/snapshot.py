@@ -2124,16 +2124,19 @@ def release_notes(bundle):
     return "\n".join(lines) + "\n"
 
 
-def github_create_release(bundle, repo, notes):
+def github_create_release(bundle, repo, notes, target_commitish=None):
+    payload = {
+        "tag_name": bundle["tag"],
+        "name": bundle["title"],
+        "body": notes,
+        "prerelease": bool(bundle.get("prerelease")),
+    }
+    if target_commitish:
+        payload["target_commitish"] = target_commitish
     return github_request(
         "POST",
         github_api_url(repo, "/releases"),
-        payload={
-            "tag_name": bundle["tag"],
-            "name": bundle["title"],
-            "body": notes,
-            "prerelease": bool(bundle.get("prerelease")),
-        },
+        payload=payload,
         token_required=True,
     )
 
@@ -2173,7 +2176,13 @@ def github_upload_release_asset(release, bundle):
     )
 
 
-def publish_github_release(bundle, repo=None, upload_policy="if_missing", force=False):
+def publish_github_release(
+    bundle,
+    repo=None,
+    upload_policy="if_missing",
+    force=False,
+    target_commitish=None,
+):
     resolved_repo = resolve_github_repo(repo)
     release = github_release_payload(bundle["tag"], repo=resolved_repo, allow_missing=True)
     asset = find_release_asset(release, bundle["asset_name"])
@@ -2207,7 +2216,12 @@ def publish_github_release(bundle, repo=None, upload_policy="if_missing", force=
     notes = release_notes(bundle)
 
     if release is None:
-        release = github_create_release(bundle, resolved_repo, notes)
+        release = github_create_release(
+            bundle,
+            resolved_repo,
+            notes,
+            target_commitish=target_commitish,
+        )
         uploaded_asset = github_upload_release_asset(release, bundle)
         print(f"  CREATED: {bundle['tag']} with {bundle['asset_name']}")
         result = {
@@ -2340,6 +2354,29 @@ def publish_arweave_bundle(bundle, upload_policy="if_missing", force=False):
     return {"status": "submitted", "transaction_id": transaction["id"], "transaction_url": tx_url, **bundle}
 
 
+def publish_arweave_bundle_nonfatal(bundle, upload_policy="if_missing", force=False):
+    try:
+        return publish_arweave_bundle(
+            bundle,
+            upload_policy=upload_policy,
+            force=force,
+        )
+    except SnapshotError as exc:
+        error = str(exc)
+        print(f"  WARNING: Arweave upload failed; continuing with GitHub Release: {error}")
+        record_storage_destination(
+            bundle,
+            "arweave",
+            {
+                "status": "failed",
+                "bundle_sha256": bundle["bundle_sha256"],
+                "failed_at": utc_stamp(),
+                "error": error,
+            },
+        )
+        return {"status": "failed", "reason": "arweave_upload_failed", "error": error, **bundle}
+
+
 def resolve_publish_dates(args):
     if args.date:
         if args.start or args.end:
@@ -2353,6 +2390,7 @@ def resolve_publish_dates(args):
 def process_publish(args):
     storage_backend = args.storage_backend or os.environ.get("STORAGE_BACKEND", "github_release")
     upload_policy = args.upload_policy or os.environ.get("UPLOAD_POLICY", "if_missing")
+    target_commitish = args.target_commitish or os.environ.get("RSO_RELEASE_TARGET_COMMITISH")
 
     if storage_backend not in STORAGE_BACKENDS:
         raise SnapshotError(
@@ -2399,9 +2437,10 @@ def process_publish(args):
                 repo=args.repo,
                 upload_policy=upload_policy,
                 force=args.force,
+                target_commitish=target_commitish,
             )
             results.append({"destination": "github_release", **github_result})
-            arweave_result = publish_arweave_bundle(
+            arweave_result = publish_arweave_bundle_nonfatal(
                 bundle,
                 upload_policy=upload_policy,
                 force=args.force,
@@ -3060,6 +3099,14 @@ def main():
         "--prerelease",
         action="store_true",
         help="Create or update GitHub releases as prereleases",
+    )
+    publish_parser.add_argument(
+        "--target-commitish",
+        default=None,
+        help=(
+            "Commit SHA or branch for new GitHub release tags; defaults to "
+            "RSO_RELEASE_TARGET_COMMITISH when set."
+        ),
     )
 
     prune_parser = subparsers.add_parser(
