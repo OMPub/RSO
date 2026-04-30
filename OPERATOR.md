@@ -79,14 +79,21 @@ variable `RSO_AUTO_UPDATE_CODE=false`.
 
 ### 1. Fork the repository
 
-On GitHub, open this repo and press **Fork**. You can accept the default fork
-settings.
+On GitHub, open this repo and press **Fork**. On the fork form, make sure the
+fork includes all branches. In GitHub's UI, that means leaving "Copy the main
+branch only" **UNchecked**.
 
 That creates your operator copy at:
 
 ```text
 https://github.com/YOUR_USERNAME/RSO
 ```
+
+Including all branches copies the upstream `node` branch into your fork, so
+your first run already has the latest bootstrap catalog state. If you
+accidentally fork only `main`, the daily workflow can still create `node` and
+import the upstream archive state on its first run, but copying all branches is
+the simpler and more transparent setup.
 
 ### 2. Enable GitHub Actions
 
