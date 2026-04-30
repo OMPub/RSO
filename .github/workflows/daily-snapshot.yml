@@ -25,9 +25,18 @@ on:
         required: false
         default: false
         type: boolean
+      auto_update_code:
+        description: "Update main from upstream and merge code into the node branch before running."
+        required: false
+        default: true
+        type: boolean
 
 permissions:
   contents: write
+
+concurrency:
+  group: rso-node-${{ github.repository }}
+  cancel-in-progress: false
 
 jobs:
   snapshot:
@@ -39,15 +48,99 @@ jobs:
       STORAGE_BACKEND: ${{ vars.STORAGE_BACKEND || 'github_release' }}
       UPLOAD_POLICY: ${{ vars.UPLOAD_POLICY || 'if_missing' }}
       RSO_RETAINED_CATALOG_COUNT: "2"
+      RSO_NODE_BRANCH: ${{ vars.RSO_NODE_BRANCH || 'node' }}
+      RSO_UPSTREAM_REPO: ${{ vars.RSO_UPSTREAM_REPO || 'OMPub/RSO' }}
+      RSO_AUTO_UPDATE_CODE: ${{ vars.RSO_AUTO_UPDATE_CODE || 'true' }}
 
     steps:
-      - name: Checkout
+      - name: Checkout controller branch
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0
+          token: ${{ secrets.RSO_WORKFLOW_UPDATE_TOKEN || github.token }}
 
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: "3.13.3"
+
+      - name: Sync main from upstream
+        run: |
+          set -euo pipefail
+          AUTO_UPDATE="${{ github.event.inputs.auto_update_code }}"
+          if [ -z "$AUTO_UPDATE" ]; then
+            AUTO_UPDATE="$RSO_AUTO_UPDATE_CODE"
+          fi
+          if [ "$AUTO_UPDATE" != "true" ]; then
+            echo "Automatic code update disabled."
+            exit 0
+          fi
+
+          DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote remove upstream 2>/dev/null || true
+          git remote add upstream "https://github.com/$RSO_UPSTREAM_REPO.git"
+          git fetch --prune upstream main
+          git checkout "$DEFAULT_BRANCH"
+
+          BEFORE="$(git rev-parse HEAD)"
+          git merge --ff-only upstream/main
+          AFTER="$(git rev-parse HEAD)"
+
+          if [ "$BEFORE" = "$AFTER" ]; then
+            echo "$DEFAULT_BRANCH already matches upstream/main."
+            exit 0
+          fi
+
+          if ! git push origin "HEAD:$DEFAULT_BRANCH"; then
+            echo "::warning::Could not push updated $DEFAULT_BRANCH. If upstream changed .github/workflows, add a fine-grained RSO_WORKFLOW_UPDATE_TOKEN with Contents write and Workflows write, or sync the fork manually. Continuing with the locally fetched code for this run."
+          fi
+
+      - name: Prepare node branch
+        run: |
+          set -euo pipefail
+          DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+          NODE_BRANCH="$RSO_NODE_BRANCH"
+
+          if ! git remote get-url upstream >/dev/null 2>&1; then
+            git remote add upstream "https://github.com/$RSO_UPSTREAM_REPO.git"
+          fi
+          git fetch --prune origin "+refs/heads/$NODE_BRANCH:refs/remotes/origin/$NODE_BRANCH" || true
+          git fetch --prune upstream "+refs/heads/$NODE_BRANCH:refs/remotes/upstream/$NODE_BRANCH" || true
+
+          if git show-ref --verify --quiet "refs/remotes/origin/$NODE_BRANCH"; then
+            git checkout -B "$NODE_BRANCH" "origin/$NODE_BRANCH"
+          elif git show-ref --verify --quiet "refs/remotes/upstream/$NODE_BRANCH"; then
+            git checkout -B "$NODE_BRANCH" "upstream/$NODE_BRANCH"
+            git push -u origin "$NODE_BRANCH"
+          else
+            git checkout -B "$NODE_BRANCH" "$DEFAULT_BRANCH"
+            git push -u origin "$NODE_BRANCH"
+          fi
+
+          MERGE_STATUS=0
+          git merge --no-ff --no-commit "$DEFAULT_BRANCH" || MERGE_STATUS=$?
+
+          for path in data ledger.json reports .github/workflows; do
+            if git cat-file -e "HEAD:$path" 2>/dev/null; then
+              git restore --source=HEAD --staged --worktree -- "$path"
+            fi
+          done
+
+          if git diff --name-only --diff-filter=U | grep .; then
+            echo "::error::Code merge into $NODE_BRANCH has unresolved conflicts outside generated node state."
+            exit "$MERGE_STATUS"
+          fi
+
+          if git diff --cached --quiet; then
+            git merge --abort 2>/dev/null || true
+            echo "$NODE_BRANCH already has current code."
+          else
+            git commit -m "Update node code from main"
+            git push origin "HEAD:$NODE_BRANCH"
+          fi
 
       - name: Run tests
         run: python -m unittest discover -s tests
@@ -138,7 +231,7 @@ jobs:
             exit 0
           fi
           git commit -m "Archive RSO snapshot"
-          git push
+          git push origin "HEAD:$RSO_NODE_BRANCH"
 
       - name: Publish release archives
         env:
@@ -147,7 +240,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          args=(pipeline/snapshot.py publish --start "$RSO_SNAPSHOT_START_DATE" --end "$RSO_SNAPSHOT_END_DATE" --use-existing-bundle)
+          TARGET_COMMIT="$(git rev-parse HEAD)"
+          args=(pipeline/snapshot.py publish --start "$RSO_SNAPSHOT_START_DATE" --end "$RSO_SNAPSHOT_END_DATE" --use-existing-bundle --target-commitish "$TARGET_COMMIT")
           if [ "${{ github.event.inputs.overwrite }}" = "true" ]; then
             args+=(--force)
           fi
@@ -164,4 +258,4 @@ jobs:
             exit 0
           fi
           git commit -m "Record archive publish destinations"
-          git push
+          git push origin "HEAD:$RSO_NODE_BRANCH"

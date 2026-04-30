@@ -69,11 +69,12 @@ Space-Track GP_HISTORY            RSO Archive
                          NFT Client (verify + visualize)
 ```
 
-**Phase 1 (current):** Daily metadata is archived to Git with SHA-256 hashes.
-The two most recent full catalogs are also kept in Git so new forks can start
-operating immediately. Older full catalog bytes are published as deterministic
-GitHub Release bundles so normal Git history stays small until Arweave storage
-is added.
+**Phase 1 (current):** Daily metadata is archived to Git with SHA-256 hashes on
+each operator's `node` branch. The default `main` branch stays focused on code,
+docs, and workflow controllers so forks can keep pulling upstream code without
+overwriting their own generated archive state. The two most recent full
+catalogs are kept on `node`; older full catalog bytes are published as
+deterministic GitHub Release bundles.
 
 **Phase 2:** Optional Arweave permanent storage during publish, with Ethereum
 on-chain attestation next.
@@ -107,6 +108,16 @@ to strengthen the decentralization of the network. The fork plus workflows are
 the node itself. The goal is simple: start from the same agreed baseline, run
 the same code, publish the same daily hashes, and make drift visible.
 
+The branch layout keeps code sync separate from generated archive output:
+
+- `main`: upstream-tracking code, docs, workflows, and controller logic
+- `node`: the running node state, including `data/`, `ledger.json`, generated
+  reports, release receipts, and retained bootstrap catalogs
+
+The daily workflow runs from `main`, updates `main` from upstream by default,
+merges current code into `node` while preserving generated node state, and then
+processes the daily catalog on `node`.
+
 The resilience comes from many independent operators, not from one blessed
 server. If one GitHub account, one workflow, one maintainer, or one future
 storage provider disappears, other operators still have the code, the data, the
@@ -138,8 +149,9 @@ the existing lineage and then continue it.
 
 There are two GitHub workflows:
 
-- **Validate RSO Archive** — read-only tests and archive validation
-- **Daily RSO Snapshot** — scheduled producer workflow with automatic catch-up
+- **Validate RSO Archive** — tests on `main`; full archive validation on `node`
+- **Daily RSO Snapshot** — scheduled producer workflow with code sync, node
+  branch preparation, and automatic catch-up
 
 Roll-forward remains available as a repository script for maintainers who need
 to catch up a node from an existing prior snapshot. See
@@ -151,10 +163,10 @@ python pipeline/snapshot.py roll-forward --start 2026-04-21 --end 2026-04-23
 
 Each successful producer run writes to four places:
 
-- Git metadata: `data/YYYY/MM/DD/` plus `ledger.json`
-- Git bootstrap cache: `catalog.json.gz` for the two newest archived days
-- Release bundle: `rso-archive-YYYY-MM-DD.tar.gz`
-- Publish receipt: `data/YYYY/MM/DD/storage.json`
+- Git metadata on `node`: `data/YYYY/MM/DD/` plus `ledger.json`
+- Git bootstrap cache on `node`: `catalog.json.gz` for the two newest archived days
+- Release bundle in that fork: `rso-archive-YYYY-MM-DD.tar.gz`
+- Publish receipt on `node`: `data/YYYY/MM/DD/storage.json`
 
 The daily `sha256` is computed from the canonical snapshot bytes, not from a
 release URL, storage URI, or upload location. Different operators can publish
@@ -166,7 +178,18 @@ The default producer settings are:
 ```text
 STORAGE_BACKEND=github_release
 UPLOAD_POLICY=if_missing
+RSO_NODE_BRANCH=node
+RSO_UPSTREAM_REPO=OMPub/RSO
+RSO_AUTO_UPDATE_CODE=true
 ```
+
+Standalone operators can set `RSO_AUTO_UPDATE_CODE=false` as a repository
+variable if they want their node to run only the code they maintain locally.
+Operators who want workflow-controller files to self-update can add a
+fine-grained `RSO_WORKFLOW_UPDATE_TOKEN` secret with Contents write and
+Workflows write. Without that token, normal pipeline code updates still work,
+but upstream changes under `.github/workflows/` may produce a warning and
+require clicking GitHub's **Sync fork** button on `main`.
 
 If `ARWEAVE_JWK` is present in the environment, the publish step also submits
 the same deterministic bundle to Arweave and records the resulting transaction
@@ -191,9 +214,9 @@ was run at exactly `2026-04-20T00:00:00Z` and recorded current `gp` as the
 first agreed full catalog state. Daily consensus snapshots after that are built
 from bounded `gp_history` deltas.
 
-The `2026-04-13` through `2026-04-19` snapshots were rehearsal artifacts. They
-live under `reports/rehearsal/` so `data/` and `ledger.json` represent only the
-official archive lineage.
+The `2026-04-13` through `2026-04-19` snapshots were rehearsal artifacts. On a
+node branch, they live under `reports/rehearsal/` so `data/` and `ledger.json`
+represent only the official archive lineage.
 
 ## Snapshot Specification
 
@@ -346,7 +369,8 @@ python pipeline/snapshot.py replay --start 2026-01-01
 # Verify a stored snapshot
 python pipeline/snapshot.py verify --date 2026-04-12
 
-# Validate every archived snapshot, manifest, ledger entry, delta, and audit
+# On a node branch, validate every archived snapshot, manifest, ledger entry,
+# delta, and audit.
 python pipeline/snapshot.py validate
 
 # Show the next date this checkout should archive
@@ -374,6 +398,9 @@ RSO_REQUEST_DELAY=12.5 python pipeline/snapshot.py replay --start 2026-01-01
 
 ## Data Structure
 
+The archive tree below lives on a node branch, not on the code-only `main`
+branch.
+
 ```
 data/
 ├── 2026/
@@ -391,9 +418,9 @@ data/
 └── ledger.json                     # Running hash ledger (all dates)
 ```
 
-The two newest full catalogs live directly in `data/` so a fresh fork can read
-the previous snapshot without first owning any release assets. Older full
-catalog bytes live in release assets named `rso-archive-YYYY-MM-DD.tar.gz`.
+The two newest full catalogs live directly in `data/` on `node` so a fresh fork
+can read the previous snapshot without first owning any release assets. Older
+full catalog bytes live in release assets named `rso-archive-YYYY-MM-DD.tar.gz`.
 Each bundle contains `catalog.json.gz`, `manifest.json`, any daily audit/delta
 artifacts, and a deterministic `release-manifest.json`.
 
