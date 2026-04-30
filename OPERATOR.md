@@ -44,6 +44,10 @@ A healthy operator run produces four visible things:
 3. An updated `ledger.json`
 4. A release asset named `rso-archive-YYYY-MM-DD.tar.gz`
 
+If you also add an Arweave wallet secret, the same publish step records an
+extra `storage.json` receipt showing the GitHub Release location and Arweave
+transaction ID for that day.
+
 For a normal daily snapshot, the committed day folder should contain:
 
 - `manifest.json`
@@ -111,6 +115,22 @@ SPACETRACK_PASS
 Use the email address you signed up with as `SPACETRACK_USER`. Use the password
 you created during Space-Track signup as `SPACETRACK_PASS`. These are the only
 required secrets for the current GitHub-release operator path.
+
+Optional:
+
+```text
+ARWEAVE_JWK
+ARWEAVE_FORCE_CHUNK_UPLOAD
+```
+
+If you want your fork to publish to Arweave automatically during the normal
+daily workflow, add `ARWEAVE_JWK` as a repository secret containing the full
+Arweave wallet JSON. If that secret is present, the node uploads to Arweave
+alongside the GitHub Release bundle. No separate workflow is needed. Small
+bundles go in one inline Arweave transaction; larger bundles automatically use
+Arweave chunk upload. If you want to force chunk upload for testing before the
+bundle naturally exceeds the inline limit, set `ARWEAVE_FORCE_CHUNK_UPLOAD` to
+`true`.
 
 ### 4. Run the validator first
 
@@ -219,11 +239,12 @@ Matching hashes across forks are the real success condition.
 
 ## The outputs to remember
 
-Every successful producer run writes to three places:
+Every successful producer run writes to four places:
 
 - Git metadata: `data/` and `ledger.json`
 - Git bootstrap cache: `catalog.json.gz` for the two newest archived days
 - Release bundle: `rso-archive-YYYY-MM-DD.tar.gz`
+- Publish receipt: `data/YYYY/MM/DD/storage.json`
 
 Older full catalogs are pruned from Git after their deterministic release
 bundles are built. That split keeps the repo small while making new forks able

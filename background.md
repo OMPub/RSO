@@ -256,9 +256,8 @@ event ArchiveAttested(
 );
 ```
 
-There is intentionally no `WeekSummary`, `finalizeWeek`, contract-level winning
-hash, or weekly Merkle-root storage in v1. The contract is the raw witness log;
-clients and indexers group attestations by date and hash.
+The contract is intentionally just the raw witness log. Clients and indexers
+group attestations by date and hash.
 
 **Why no on-chain validation**: Smart contracts cannot reach the internet. They can't fetch from Arweave, can't hash external data, can't verify anything outside the EVM. An oracle (like Chainlink) would reintroduce centralized trust. The verification belongs in the viewer's browser.
 
@@ -395,9 +394,9 @@ publication by `CREATION_DATE`, not retrieval-time current `gp` behavior.
 
 ### To Build (Phase 2 — Arweave)
 
-- [ ] Arweave upload step in pipeline (via Irys/Bundlr CLI or arweave-js)
-- [ ] Arweave TX ID recorded in manifest and ledger
-- [ ] Pipeline uploads compressed snapshot to Arweave after git commit
+- [x] Optional Arweave upload step in the publish pipeline
+- [x] Per-day `storage.json` receipt records Arweave TX ID and publish destinations
+- [x] Pipeline can upload the deterministic release bundle to Arweave after git commit
 
 ### To Build (Phase 3 — Ethereum)
 
