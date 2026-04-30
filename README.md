@@ -75,7 +75,8 @@ operating immediately. Older full catalog bytes are published as deterministic
 GitHub Release bundles so normal Git history stays small until Arweave storage
 is added.
 
-**Phase 2:** Arweave permanent storage + Ethereum on-chain attestation.
+**Phase 2:** Optional Arweave permanent storage during publish, with Ethereum
+on-chain attestation next.
 
 **Phase 3:** Dynamic NFT artwork on 6529 The Memes that acts as the
 verification client and visualization layer: it reads archive commitments from
@@ -148,11 +149,12 @@ to catch up a node from an existing prior snapshot. See
 python pipeline/snapshot.py roll-forward --start 2026-04-21 --end 2026-04-23
 ```
 
-Each successful producer run writes to three places:
+Each successful producer run writes to four places:
 
 - Git metadata: `data/YYYY/MM/DD/` plus `ledger.json`
 - Git bootstrap cache: `catalog.json.gz` for the two newest archived days
 - Release bundle: `rso-archive-YYYY-MM-DD.tar.gz`
+- Publish receipt: `data/YYYY/MM/DD/storage.json`
 
 The daily `sha256` is computed from the canonical snapshot bytes, not from a
 release URL, storage URI, or upload location. Different operators can publish
@@ -165,6 +167,13 @@ The default producer settings are:
 STORAGE_BACKEND=github_release
 UPLOAD_POLICY=if_missing
 ```
+
+If `ARWEAVE_JWK` is present in the environment, the publish step also submits
+the same deterministic bundle to Arweave and records the resulting transaction
+ID in `storage.json`. The canonical daily hash remains the snapshot `sha256`,
+not the Arweave transaction ID. Bundles at or below `12 MiB` go as one inline
+transaction; larger bundles automatically switch to Arweave chunk upload. Set
+`ARWEAVE_FORCE_CHUNK_UPLOAD=true` to force chunk mode for testing.
 
 The workflow schedule target is:
 
@@ -461,7 +470,7 @@ python -m unittest discover -s tests
 - [x] Add current `gp` visibility audit and missing/reappeared state
 - [x] Analyze Jan 1-to-current replay results against current `gp`
 - [x] Publish deterministic GitHub Release bundles and retain a two-day Git bootstrap cache
-- [ ] Arweave permanent upload (via Irys)
+- [x] Optional Arweave upload during publish, with per-day storage receipts
 - [ ] Ethereum contract for hash attestation
 - [ ] Daily diff computation (objects added/updated/carried-forward)
 - [ ] TDH-weighted community confirmations
