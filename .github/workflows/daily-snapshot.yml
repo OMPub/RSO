@@ -113,7 +113,14 @@ jobs:
           if git show-ref --verify --quiet "refs/remotes/origin/$NODE_BRANCH"; then
             git checkout -B "$NODE_BRANCH" "origin/$NODE_BRANCH"
           elif git show-ref --verify --quiet "refs/remotes/upstream/$NODE_BRANCH"; then
-            git checkout -B "$NODE_BRANCH" "upstream/$NODE_BRANCH"
+            git checkout -B "$NODE_BRANCH" "$DEFAULT_BRANCH"
+            for path in data ledger.json reports; do
+              if git cat-file -e "upstream/$NODE_BRANCH:$path" 2>/dev/null; then
+                git checkout "upstream/$NODE_BRANCH" -- "$path"
+              fi
+            done
+            git add data ledger.json reports
+            git commit -m "Initialize node archive state from upstream"
             git push -u origin "$NODE_BRANCH"
           else
             git checkout -B "$NODE_BRANCH" "$DEFAULT_BRANCH"
