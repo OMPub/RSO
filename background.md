@@ -518,9 +518,12 @@ branch:
   retried runs.
 - Older full catalogs move to release bundles and later permanent storage.
 
-This makes the normal operator path self-starting: fork the repo, enable
-Actions, add Space-Track secrets, and the scheduled workflow can create or
-update `node`, catch up, and continue the chain without manual bootstrapping.
+This makes the normal operator path self-starting: fork the repo with all
+branches so the upstream `node` branch is copied, enable Actions, add
+Space-Track secrets, and the scheduled workflow can update `node`, catch up,
+and continue the chain without manual bootstrapping. If a fork copies only
+`main`, the workflow can still create `node` and import archive state from the
+upstream `node` branch on its first run.
 
 ---
 

@@ -131,7 +131,9 @@ The short version:
 - Create a free [Space-Track.org](https://www.space-track.org/auth/createAccount)
   account. You'll be emailed a link to confirm your account and set your
   password.
-- Fork this repo into your own GitHub account or organization.
+- Fork this repo into your own GitHub account or organization, including all
+  branches. In GitHub's fork form, leave **Copy the main branch only**
+  unchecked so your fork receives the `node` bootstrap branch.
 - Enable GitHub Actions and workflow write access on your fork.
 - Add `SPACETRACK_USER` and `SPACETRACK_PASS` as repository secrets.
 - Run **Validate RSO Archive** first. Then enable and run **Daily RSO Snapshot**
