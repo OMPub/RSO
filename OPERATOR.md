@@ -95,6 +95,13 @@ accidentally fork only `main`, the daily workflow can still create `node` and
 import the upstream archive state on its first run, but copying all branches is
 the simpler and more transparent setup.
 
+After creating the fork, do **NOT** use GitHub's "**Sync fork**" button as a
+normal maintenance habit. The daily workflow already updates your fork's `main`
+from upstream code and then applies that code to your `node` branch without
+overwriting node-generated archive state. Manual fork syncs can be useful for
+rare workflow-controller updates, but do them deliberately and only on `main`;
+never use a sync or reset operation that overwrites your `node` branch.
+
 ### 2. Enable GitHub Actions
 
 In your fork:
