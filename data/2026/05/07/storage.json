@@ -1,0 +1,25 @@
+{
+  "asset_name": "rso-archive-2026-05-07.tar.gz",
+  "bundle_bytes": 11200447,
+  "bundle_sha256": "a4f7b0b74f82295ef5ed6ae08c15f8174e9f95ebf99beae6e55cbe3ad0c10722",
+  "catalog_sha256": "9442399aa3ceabc380ce4b2e559e36e5cfbdb3c194a97d0a9690f910efbf1a6f",
+  "date": "2026-05-07",
+  "destinations": {
+    "arweave": {
+      "bundle_sha256": "a4f7b0b74f82295ef5ed6ae08c15f8174e9f95ebf99beae6e55cbe3ad0c10722",
+      "error": "Arweave API POST https://arweave.net/tx failed (413): <html>\r\n<head><title>413 Request Entity Too Large</title></head>\r\n<body>\r\n<center><h1>413 Request Entity Too Large</h1></center>\r\n<hr><center>nginx/1.28.1</center>\r\n</body>\r\n</html>\r\n",
+      "failed_at": "2026-05-07T04:09:10Z",
+      "status": "failed"
+    },
+    "github_release": {
+      "asset_name": "rso-archive-2026-05-07.tar.gz",
+      "asset_url": "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-07/rso-archive-2026-05-07.tar.gz",
+      "release_url": "https://github.com/OMPub/RSO/releases/tag/rso-archive-2026-05-07",
+      "repo": "OMPub/RSO",
+      "status": "created",
+      "tag": "rso-archive-2026-05-07"
+    }
+  },
+  "manifest_sha256": "570396f209bc169bfc56430bb3b9a933f0cab5f771f866059bd7ea699fd055a1",
+  "updated_at": "2026-05-07T04:09:10Z"
+}
