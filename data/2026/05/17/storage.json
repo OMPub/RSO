@@ -1,0 +1,34 @@
+{
+  "asset_name": "rso-archive-2026-05-17.tar.gz",
+  "bundle_bytes": 11165333,
+  "bundle_sha256": "18f0e4f67d446a0ba864fca799506faebf1c340790d37589260d529aaec05100",
+  "catalog_sha256": "95807b05631aa7353af4ab9bffda3a7b84dbea1441377d77ac88422e79799f08",
+  "date": "2026-05-17",
+  "destinations": {
+    "arweave": {
+      "anchor": "S4a91e_AKgFPu8j0wKEqLjP7XYaZaT61pmRpbhyCtJpESai48HxsaroacaB-scDS",
+      "bundle_sha256": "18f0e4f67d446a0ba864fca799506faebf1c340790d37589260d529aaec05100",
+      "chunk_count": 43,
+      "gateway": "https://arweave.net",
+      "reward_winston": "74248744138",
+      "status": "submitted",
+      "status_code": 202,
+      "status_response": "Accepted",
+      "submitted_at": "2026-05-17T04:35:54Z",
+      "transaction_id": "fVHTqwPBfDudKucukqWeoRonzd3nnfAdJv9leOwgDYM",
+      "transaction_url": "https://arweave.net/fVHTqwPBfDudKucukqWeoRonzd3nnfAdJv9leOwgDYM",
+      "upload_mode": "chunked",
+      "wallet_address": "0M5DwTnTNoSMjNY-iphmO5Se-8acobq_hD4pRazNPms"
+    },
+    "github_release": {
+      "asset_name": "rso-archive-2026-05-17.tar.gz",
+      "asset_url": "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-17/rso-archive-2026-05-17.tar.gz",
+      "release_url": "https://github.com/OMPub/RSO/releases/tag/rso-archive-2026-05-17",
+      "repo": "OMPub/RSO",
+      "status": "created",
+      "tag": "rso-archive-2026-05-17"
+    }
+  },
+  "manifest_sha256": "af850370342e428f803cad4a9dc11e6d7ea18a30eab5ccb93d1e874525490eba",
+  "updated_at": "2026-05-17T04:35:54Z"
+}
