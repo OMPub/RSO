@@ -1,0 +1,25 @@
+{
+  "asset_name": "rso-archive-2026-05-20.tar.gz",
+  "bundle_bytes": 11164049,
+  "bundle_sha256": "4c1a8c5db04b29b38fb9c7dcbc7258fdb5a9639aeae8dfb53f19bb02259cb6e6",
+  "catalog_sha256": "b6fe18ca536a5d971b86d28c1079c89f493633f2090521a467c7fb08cb8ddab7",
+  "date": "2026-05-20",
+  "destinations": {
+    "arweave": {
+      "bundle_sha256": "4c1a8c5db04b29b38fb9c7dcbc7258fdb5a9639aeae8dfb53f19bb02259cb6e6",
+      "error": "Arweave chunk upload failed for 3ZpN3Ac7ZNxzWkc857BbbO5Dn5xX_4Zj5wQaGWRE0Fc chunk 1/43: <!DOCTYPE html>\n<head>\n    <base href=\"//error.c.cdn77.org/\" target=\"_blank\">\n    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n    <meta name=\"author\" content=\"(c) 2023 CDN77\">\n    <meta name=\"description\" content=\"\">\n    <meta name=\"keywords\" content=\"\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <meta name=\"robots\" content=\"nofollow\" />\n    <link rel=\"stylesheet\" href=\"css/main.css\">\n    <link rel=\"shortcut icon\" href=\"img/favicon.ico\" />\n\n    <title>Website is offline \u2013 Bad Gateway</title>\n</head>\n<body>\n    <header class=\"Header\">\n        <div class=\"Header-wrap\">\n            <span class=\"Header-errorNumber\">Error 502</span>\n                        <h1 class=\"Header-title\">Bad Gateway</h1>\n            <div class=\"Header-description\">CDN77 server is unable to reach website's origin server.</div>\n            <img src=\"img/error-scheme.png\" alt=\"Bad Gateway\" class=\"Header-scheme\">\n        \n        </div>\n    </header>\n    <section class=\"Section Section--errorBottom\">\n        <div class=\"Section-wrap\">\n                        <div class=\"WhatToDo\">\n                <div class=\"WhatToDo-column\">\n                    <h3 class=\"WhatToDo-title\">If you're a <strong>Visitor...</strong></h3>\n                    <div class=\"WhatToDo-description\">\n                        <p>Please try again in a few minutes. If the problem persists for more than 30 minutes, try contacting website owner via a different channel.</p>\n                    </div>\n                </div>\n                <div class=\"WhatToDo-column\">\n                    <h3 class=\"WhatToDo-title\">As the <strong>Website administrator...</strong></h3>\n                    <div class=\"WhatToDo-description\">\n                        <p>Please make sure the firewall on your origin server is disabled. It might be blocking the requests from the CDN77 servers.</p>\n                        <p>If that is not the case, take a look at the article on <a href=\"https://client.cdn77.com/support/knowledgebase/cdn-resource/troubleshooting-error-messages\" class=\"common-link\">troubleshooting error messages</a> in our knowledgebase.</p>\n                    </div>\n                </div>\n            </div>\n        \n        </div>\n    </section>\n</body>\n",
+      "failed_at": "2026-05-20T04:39:58Z",
+      "status": "failed"
+    },
+    "github_release": {
+      "asset_name": "rso-archive-2026-05-20.tar.gz",
+      "asset_url": "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-20/rso-archive-2026-05-20.tar.gz",
+      "release_url": "https://github.com/OMPub/RSO/releases/tag/rso-archive-2026-05-20",
+      "repo": "OMPub/RSO",
+      "status": "created",
+      "tag": "rso-archive-2026-05-20"
+    }
+  },
+  "manifest_sha256": "6313831588a66203f1ee90ecee25c885823c55d229a86afc8aab7434d396f2f6",
+  "updated_at": "2026-05-20T04:39:58Z"
+}
