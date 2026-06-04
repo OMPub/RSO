@@ -6,20 +6,29 @@
   "date": "2026-05-03",
   "destinations": {
     "arweave": {
+      "anchor": "6HYJc1pbgBxgVJjk_MMjtOmdQpLfEA5oMh0Wo6wTI9_oAou-_vqLrRefnxBNBd9Y",
       "bundle_sha256": "99f28639e71ed69760f1d7a371a83d78b345073792d6f1bd527f8bac150f3249",
-      "error": "Arweave wallet 0M5DwTnTNoSMjNY-iphmO5Se-8acobq_hD4pRazNPms has 0 winston, below required reward 59334250220",
-      "failed_at": "2026-05-03T04:14:58Z",
-      "status": "failed"
+      "chunk_count": 43,
+      "gateway": "https://arweave.net",
+      "reward_winston": "101372312146",
+      "status": "submitted",
+      "status_code": 202,
+      "status_response": "Accepted",
+      "submitted_at": "2026-06-04T08:21:42Z",
+      "transaction_id": "fy-TB5OYsjWSHiK_uKbXC7FGIgEF9l98wBFBLK1qk1w",
+      "transaction_url": "https://arweave.net/fy-TB5OYsjWSHiK_uKbXC7FGIgEF9l98wBFBLK1qk1w",
+      "upload_mode": "chunked",
+      "wallet_address": "0M5DwTnTNoSMjNY-iphmO5Se-8acobq_hD4pRazNPms"
     },
     "github_release": {
       "asset_name": "rso-archive-2026-05-03.tar.gz",
       "asset_url": "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-03/rso-archive-2026-05-03.tar.gz",
       "release_url": "https://github.com/OMPub/RSO/releases/tag/rso-archive-2026-05-03",
       "repo": "OMPub/RSO",
-      "status": "created",
+      "status": "skipped",
       "tag": "rso-archive-2026-05-03"
     }
   },
   "manifest_sha256": "a8b9460be7739e2673791b26196a5df4b79e962a56eaf3361dfc46184f8c8517",
-  "updated_at": "2026-05-03T04:14:58Z"
+  "updated_at": "2026-06-04T08:21:42Z"
 }
