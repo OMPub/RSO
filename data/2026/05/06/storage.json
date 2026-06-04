@@ -6,20 +6,29 @@
   "date": "2026-05-06",
   "destinations": {
     "arweave": {
+      "anchor": "P9Zuj60n-eMiAx2d17YimCW_gu7pcHBsLwlPy_fRHkGujTbqolmKHe-MWgFYhjlr",
       "bundle_sha256": "9f55d7823c803efdeb6f8c0e5fff8962defcea7d804cfe712fa89ee382002f1e",
-      "error": "Arweave API POST https://arweave.net/tx failed (413): <html>\r\n<head><title>413 Request Entity Too Large</title></head>\r\n<body>\r\n<center><h1>413 Request Entity Too Large</h1></center>\r\n<hr><center>nginx/1.28.1</center>\r\n</body>\r\n</html>\r\n",
-      "failed_at": "2026-05-06T04:08:31Z",
-      "status": "failed"
+      "chunk_count": 43,
+      "gateway": "https://arweave.net",
+      "reward_winston": "101372312146",
+      "status": "submitted",
+      "status_code": 202,
+      "status_response": "Accepted",
+      "submitted_at": "2026-06-04T08:25:52Z",
+      "transaction_id": "hH5r5ueCBKWWn30TSg3Y6askknPUibJYPX28O6COCIg",
+      "transaction_url": "https://arweave.net/hH5r5ueCBKWWn30TSg3Y6askknPUibJYPX28O6COCIg",
+      "upload_mode": "chunked",
+      "wallet_address": "0M5DwTnTNoSMjNY-iphmO5Se-8acobq_hD4pRazNPms"
     },
     "github_release": {
       "asset_name": "rso-archive-2026-05-06.tar.gz",
       "asset_url": "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-06/rso-archive-2026-05-06.tar.gz",
       "release_url": "https://github.com/OMPub/RSO/releases/tag/rso-archive-2026-05-06",
       "repo": "OMPub/RSO",
-      "status": "created",
+      "status": "skipped",
       "tag": "rso-archive-2026-05-06"
     }
   },
   "manifest_sha256": "e9848a0a99dcc07d0a315b8d069ad31d47a16a1827489636cb14b013428f17ae",
-  "updated_at": "2026-05-06T04:08:31Z"
+  "updated_at": "2026-06-04T08:25:52Z"
 }
