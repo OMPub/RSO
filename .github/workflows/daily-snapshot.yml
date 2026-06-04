@@ -51,6 +51,14 @@ jobs:
       RSO_NODE_BRANCH: ${{ vars.RSO_NODE_BRANCH || 'node' }}
       RSO_UPSTREAM_REPO: ${{ vars.RSO_UPSTREAM_REPO || 'OMPub/RSO' }}
       RSO_AUTO_UPDATE_CODE: ${{ vars.RSO_AUTO_UPDATE_CODE || 'true' }}
+      RSO_DOCCHAIN_NETWORK: ${{ vars.RSO_DOCCHAIN_NETWORK || 'custom' }}
+      RSO_DOCCHAIN_CHAIN_ID: ${{ vars.RSO_DOCCHAIN_CHAIN_ID || '1' }}
+      RSO_DOCCHAIN_ADDRESS: ${{ vars.RSO_DOCCHAIN_ADDRESS }}
+      RSO_DOCCHAIN_DEPLOYMENT_BLOCK: ${{ vars.RSO_DOCCHAIN_DEPLOYMENT_BLOCK }}
+      RSO_ATTESTER_ADDRESS: ${{ vars.RSO_ATTESTER_ADDRESS }}
+      RSO_ON_BEHALF_OF_ADDRESS: ${{ vars.RSO_ON_BEHALF_OF_ADDRESS }}
+      RSO_ATTESTATION_URI_MODE: ${{ vars.RSO_ATTESTATION_URI_MODE || 'auto' }}
+      RSO_ATTESTATION_BOOTSTRAP_PARENT_HASH: ${{ vars.RSO_ATTESTATION_BOOTSTRAP_PARENT_HASH }}
 
     steps:
       - name: Checkout controller branch
@@ -264,4 +272,75 @@ jobs:
             exit 0
           fi
           git commit -m "Record archive publish destinations"
+          git push origin "HEAD:$RSO_NODE_BRANCH"
+
+      - name: Check attestation configuration
+        env:
+          DISPOSABLE_NO_FUNDS_ETH_PRIVATE_KEY: ${{ secrets.DISPOSABLE_NO_FUNDS_ETH_PRIVATE_KEY }}
+          RSO_ATTESTER_ADDRESS: ${{ secrets.RSO_ATTESTER_ADDRESS || vars.RSO_ATTESTER_ADDRESS }}
+        run: |
+          set -euo pipefail
+          if [ -n "${DISPOSABLE_NO_FUNDS_ETH_PRIVATE_KEY:-}" ] && [ -n "${RSO_ATTESTER_ADDRESS:-}" ] && [ -n "${RSO_DOCCHAIN_ADDRESS:-}" ]; then
+            echo "RSO_ATTESTATION_ENABLED=true" >> "$GITHUB_ENV"
+          else
+            echo "RSO_ATTESTATION_ENABLED=false" >> "$GITHUB_ENV"
+          fi
+
+      - name: Set up Foundry for attestation signing
+        if: env.RSO_ATTESTATION_ENABLED == 'true'
+        uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Sign DocChain attestations for sweepers
+        if: env.RSO_ATTESTATION_ENABLED == 'true'
+        env:
+          DISPOSABLE_NO_FUNDS_ETH_PRIVATE_KEY: ${{ secrets.DISPOSABLE_NO_FUNDS_ETH_PRIVATE_KEY }}
+          RSO_ATTESTER_ADDRESS: ${{ secrets.RSO_ATTESTER_ADDRESS || vars.RSO_ATTESTER_ADDRESS }}
+          RSO_ON_BEHALF_OF_ADDRESS: ${{ secrets.RSO_ON_BEHALF_OF_ADDRESS || vars.RSO_ON_BEHALF_OF_ADDRESS }}
+        run: |
+          set -euo pipefail
+          python attestation/node_attest.py \
+            --start "$RSO_SNAPSHOT_START_DATE" \
+            --end "$RSO_SNAPSHOT_END_DATE"
+
+      - name: Commit attestation state
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ ! -d data/attestations ]; then
+            echo "No attestation state directory."
+            exit 0
+          fi
+          git add data/attestations
+          if git diff --cached --quiet; then
+            echo "No attestation state changes to commit."
+            exit 0
+          fi
+          git commit -m "Record signed DocChain attestations"
+          git push origin "HEAD:$RSO_NODE_BRANCH"
+
+      - name: Refresh DocChain attestation index
+        env:
+          DOCCHAIN_RPC_URL: ${{ secrets.DOCCHAIN_RPC_URL || secrets.RSO_DOCCHAIN_RPC_URL }}
+        run: |
+          set -euo pipefail
+          if [ -z "${DOCCHAIN_RPC_URL:-}" ] || [ -z "${RSO_DOCCHAIN_ADDRESS:-}" ] || [ -z "${RSO_DOCCHAIN_DEPLOYMENT_BLOCK:-}" ]; then
+            echo "Attestation index skipped: RPC URL, DocChain address, or deployment block is not configured."
+            exit 0
+          fi
+          python indexer/index_rso_attestations.py \
+            --network "$RSO_DOCCHAIN_NETWORK" \
+            --chunk-size 10
+
+      - name: Commit attestation index
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add indexer/cache indexer/generated
+          if git diff --cached --quiet; then
+            echo "No attestation index changes to commit."
+            exit 0
+          fi
+          git commit -m "Update DocChain attestation index"
           git push origin "HEAD:$RSO_NODE_BRANCH"

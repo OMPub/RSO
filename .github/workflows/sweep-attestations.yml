@@ -1,0 +1,80 @@
+name: Sweep RSO Attestations
+
+on:
+  schedule:
+    # Run daily after the TDH/backing snapshot boundary. Adjust this cron if
+    # the production 6529 TDH calculation settles at a different UTC time.
+    - cron: "15 1 * * *"
+  workflow_dispatch:
+    inputs:
+      start:
+        description: "First archive date, YYYY-MM-DD. Defaults to yesterday UTC."
+        required: false
+        type: string
+      end:
+        description: "Last archive date, YYYY-MM-DD. Defaults to yesterday UTC."
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rso-sweeper-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      RSO_DOCCHAIN_ADDRESS: ${{ vars.RSO_DOCCHAIN_ADDRESS }}
+      RSO_SWEEPER_RPC_URL: ${{ secrets.RSO_SWEEPER_RPC_URL || secrets.DOCCHAIN_RPC_URL }}
+      RSO_SWEEPER_PRIVATE_KEY: ${{ secrets.RSO_SWEEPER_PRIVATE_KEY }}
+      RSO_SWEEPER_OPERATORS: ${{ vars.RSO_SWEEPER_OPERATORS || 'sweeper/operators.json' }}
+      RSO_OPERATOR_BACKING_SNAPSHOT: ${{ vars.RSO_OPERATOR_BACKING_SNAPSHOT || 'data/backing/{date}.json' }}
+      RSO_SWEEPER_TOP_OPERATORS: ${{ vars.RSO_SWEEPER_TOP_OPERATORS || '5' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13.3"
+
+      - name: Set up Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Check sweeper configuration
+        run: |
+          set -euo pipefail
+          if [ ! -f "$RSO_SWEEPER_OPERATORS" ]; then
+            echo "Sweeper skipped: $RSO_SWEEPER_OPERATORS does not exist."
+            exit 0
+          fi
+          if [ -z "${RSO_SWEEPER_RPC_URL:-}" ] || [ -z "${RSO_SWEEPER_PRIVATE_KEY:-}" ] || [ -z "${RSO_DOCCHAIN_ADDRESS:-}" ] || [ -z "${RSO_OPERATOR_BACKING_SNAPSHOT:-}" ]; then
+            echo "Sweeper skipped: RPC URL, private key, DocChain address, or backing snapshot is not configured."
+            exit 0
+          fi
+          echo "RSO_SWEEPER_ENABLED=true" >> "$GITHUB_ENV"
+
+      - name: Sweep signed attestations
+        if: env.RSO_SWEEPER_ENABLED == 'true'
+        run: |
+          set -euo pipefail
+          START="${{ github.event.inputs.start }}"
+          END="${{ github.event.inputs.end }}"
+          if [ -z "$END" ]; then
+            END="$(date -u -d 'yesterday' +%F)"
+          fi
+          if [ -z "$START" ]; then
+            START="$END"
+          fi
+          python3 sweeper/rso_sweeper.py \
+            --start "$START" \
+            --end "$END" \
+            --operators "$RSO_SWEEPER_OPERATORS" \
+            --backing "$RSO_OPERATOR_BACKING_SNAPSHOT" \
+            --limit "$RSO_SWEEPER_TOP_OPERATORS"
