@@ -314,8 +314,19 @@ class RsoIndexerTest(unittest.TestCase):
             deployment_block=None,
         )
 
-        with self.assertRaisesRegex(ValueError, "chain-id"):
-            cli.network_config(args)
+        with patch.dict(
+            "os.environ",
+            {
+                "RSO_DOCCHAIN_CHAIN_ID": "",
+                "DOCCHAIN_CHAIN_ID": "",
+                "RSO_DOCCHAIN_ADDRESS": "",
+                "DOCCHAIN_ADDRESS": "",
+                "RSO_DOCCHAIN_DEPLOYMENT_BLOCK": "",
+            },
+            clear=False,
+        ):
+            with self.assertRaisesRegex(ValueError, "chain-id"):
+                cli.network_config(args)
 
     def test_cli_progress_callback_respects_interval(self):
         args = SimpleNamespace(quiet=False, progress_every_chunks=2)
