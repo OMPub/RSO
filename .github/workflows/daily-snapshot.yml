@@ -219,17 +219,23 @@ jobs:
           fi
 
       - name: Validate captured archive
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           python pipeline/snapshot.py verify --date "$RSO_SNAPSHOT_DATE"
           python pipeline/snapshot.py validate
 
       - name: Build release bundles
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           python pipeline/snapshot.py publish --start "$RSO_SNAPSHOT_START_DATE" --end "$RSO_SNAPSHOT_END_DATE" --storage-backend none
 
       - name: Prune old catalogs from git archive
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           python pipeline/snapshot.py prune-catalogs --all --keep-latest "$RSO_RETAINED_CATALOG_COUNT" --require-bundle
