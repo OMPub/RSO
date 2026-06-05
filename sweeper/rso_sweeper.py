@@ -748,6 +748,8 @@ def load_stream_json(stream, name: str, limit: int) -> dict[str, object]:
 
 
 def read_limited(stream, limit: int, *, label: str = "download") -> bytes:
+    if limit < 1:
+        raise SweeperError(f"{label} size limit must be positive")
     chunks = []
     total = 0
     while True:

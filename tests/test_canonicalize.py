@@ -1,4 +1,5 @@
 import hashlib
+import io
 import math
 import unittest
 
@@ -54,6 +55,10 @@ class CanonicalizeTests(unittest.TestCase):
 
         with self.assertRaisesRegex(snapshot.SnapshotError, "duplicate NORAD_CAT_ID"):
             snapshot.records_by_cat_id([left, right])
+
+    def test_read_limited_rejects_non_positive_limit(self):
+        with self.assertRaisesRegex(snapshot.SnapshotError, "positive"):
+            snapshot.read_limited(io.BytesIO(b"x"), 0)
 
 
 if __name__ == "__main__":

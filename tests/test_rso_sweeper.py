@@ -25,6 +25,7 @@ from sweeper.rso_sweeper import (
     validate_fetch_url,
     validate_uri,
     validate_release_bundle,
+    read_limited,
     write_date_reports,
 )
 from indexer.rso_profile import encode_publication_locator_uri
@@ -130,6 +131,10 @@ class RsoSweeperTest(unittest.TestCase):
 
         with self.assertRaisesRegex(SweeperError, "release-manifest.json exceeds"):
             validate_release_bundle(bundle, content_hash, config)
+
+    def test_read_limited_rejects_non_positive_limit(self):
+        with self.assertRaisesRegex(SweeperError, "positive"):
+            read_limited(io.BytesIO(b"x"), 0)
 
     def test_validate_bundle_sha256_checks_exact_bundle_bytes(self):
         bundle = b"bundle"

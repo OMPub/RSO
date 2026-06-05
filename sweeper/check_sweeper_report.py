@@ -158,6 +158,8 @@ def reject_private_host(host: str, *, context: str) -> None:
 
 
 def read_limited(stream, limit: int, *, label: str) -> bytes:
+    if limit < 1:
+        raise ReportCheckError(f"{label} size limit must be positive")
     chunks = []
     total = 0
     while True:

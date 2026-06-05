@@ -1,4 +1,5 @@
 import unittest
+import io
 from unittest.mock import patch
 
 from sweeper.check_sweeper_report import (
@@ -7,6 +8,7 @@ from sweeper.check_sweeper_report import (
     issue_body,
     node_records,
     normalize_node_id,
+    read_limited,
     report_url_for,
     validate_report_url,
 )
@@ -157,6 +159,10 @@ class SweeperReportCheckTest(unittest.TestCase):
 
         self.assertIn("````json", body)
         self.assertIn("bad ``` fence", body)
+
+    def test_read_limited_rejects_non_positive_limit(self):
+        with self.assertRaisesRegex(ReportCheckError, "positive"):
+            read_limited(io.BytesIO(b"x"), 0, label="report")
 
 
 if __name__ == "__main__":

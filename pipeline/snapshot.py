@@ -1328,6 +1328,8 @@ def sha256_path(path):
 
 
 def read_limited(stream, limit, *, label="payload"):
+    if limit < 1:
+        raise SnapshotError(f"{label} size limit must be positive")
     chunks = []
     total = 0
     while True:
@@ -1478,7 +1480,9 @@ def github_request(
     except urllib.error.HTTPError as exc:
         if allow_not_found and exc.code == 404:
             return None
-        detail = exc.read().decode("utf-8", errors="replace")
+        detail = read_limited(exc, MAX_JSON_BYTES, label="GitHub API error response").decode(
+            "utf-8", errors="replace"
+        )
         raise SnapshotError(f"GitHub API {method} {url} failed ({exc.code}): {detail}") from exc
 
     if not body:
@@ -1888,7 +1892,9 @@ def arweave_request(
     except urllib.error.HTTPError as exc:
         if allow_not_found and exc.code == 404:
             return 404, None
-        detail = exc.read().decode("utf-8", errors="replace")
+        detail = read_limited(exc, MAX_JSON_BYTES, label="Arweave API error response").decode(
+            "utf-8", errors="replace"
+        )
         if allow_http_errors:
             try:
                 return exc.code, json.loads(detail)
