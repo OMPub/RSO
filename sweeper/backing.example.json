@@ -7,7 +7,7 @@
   },
   "cardTokenId": null,
   "operators": {
-    "0x0000000000000000000000000000000000000000": {
+    "github:owner/rso": {
       "cardSpecificTdh": 0,
       "backerCount": 0,
       "rank": 0

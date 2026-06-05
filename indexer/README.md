@@ -69,12 +69,20 @@ Supported shape:
   "schema": "rso-operator-backing-snapshot-v1",
   "date": "2026-06-01",
   "operators": {
-    "0xoperatorAttester": { "cardSpecificTdh": 12345, "backerCount": 17, "rank": 1 }
+    "github:owner/repo": { "cardSpecificTdh": 12345, "backerCount": 17, "rank": 1 }
   }
 }
 ```
 
-The indexer groups events by daily fingerprint and sums backing across the
-operator attesters in each agreement group. `onBehalfOf` remains visible as
-DocChain metadata, but RSO V1 does not use it for TDH weighting. The indexer
-does not treat raw repository count as consensus.
+The indexer groups events by daily fingerprint and sums backing across the node
+ids in each agreement group. For GitHub-hosted nodes, the node id is derived
+from signed publication locations such as GitHub release URLs. `onBehalfOf`
+remains visible as DocChain metadata, but RSO V1 does not use it for TDH
+weighting. The indexer does not treat raw repository count as consensus.
+
+Raw DocChain events are permissionless claims. An event can name any
+`docChainId`, publish any URI string, or point at a repository-like location.
+RSO consumers should treat agreement groups and node IDs as profile-indexed
+claims until the corresponding publication bundle, DocBlock linkage, and daily
+operator-backing snapshot have been checked. Backing, not event volume, is the
+weighting source.

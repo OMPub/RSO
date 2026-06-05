@@ -1,4 +1,5 @@
 import hashlib
+import math
 import unittest
 
 from pipeline import snapshot
@@ -22,6 +23,37 @@ class CanonicalizeTests(unittest.TestCase):
 
         self.assertEqual(snapshot.canonicalize(left), snapshot.canonicalize(right))
         self.assertNotIn(b" ", snapshot.canonicalize(left))
+
+    def test_canonical_json_rejects_non_finite_numbers(self):
+        with self.assertRaises(ValueError):
+            snapshot.canonicalize([{"value": math.nan}])
+
+    def test_gp_records_require_string_values(self):
+        record = {
+            "NORAD_CAT_ID": "1",
+            "CREATION_DATE": "2026-04-18T05:00:00",
+            "EPOCH": "2026-04-18T04:00:00",
+            "MEAN_MOTION": 15.0,
+            "ECCENTRICITY": "0.0001",
+            "INCLINATION": "51.6",
+            "RA_OF_ASC_NODE": "10.0",
+            "ARG_OF_PERICENTER": "20.0",
+            "MEAN_ANOMALY": "30.0",
+        }
+
+        with self.assertRaisesRegex(snapshot.SnapshotError, "expected string"):
+            snapshot.validate_gp_records([record], min_count=0, context="test")
+
+    def test_records_by_cat_id_rejects_duplicate_ids(self):
+        left = {
+            "NORAD_CAT_ID": "1",
+        }
+        right = {
+            "NORAD_CAT_ID": "1",
+        }
+
+        with self.assertRaisesRegex(snapshot.SnapshotError, "duplicate NORAD_CAT_ID"):
+            snapshot.records_by_cat_id([left, right])
 
 
 if __name__ == "__main__":

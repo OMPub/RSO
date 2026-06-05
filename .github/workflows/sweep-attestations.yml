@@ -17,7 +17,7 @@ on:
         type: string
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: rso-sweeper-${{ github.repository }}
@@ -30,10 +30,16 @@ jobs:
     env:
       RSO_DOCCHAIN_ADDRESS: ${{ vars.RSO_DOCCHAIN_ADDRESS }}
       RSO_SWEEPER_RPC_URL: ${{ secrets.RSO_SWEEPER_RPC_URL || secrets.DOCCHAIN_RPC_URL }}
-      RSO_SWEEPER_PRIVATE_KEY: ${{ secrets.RSO_SWEEPER_PRIVATE_KEY }}
-      RSO_SWEEPER_OPERATORS: ${{ vars.RSO_SWEEPER_OPERATORS || 'sweeper/operators.json' }}
+      RSO_SWEEPER_OPERATORS: ${{ vars.RSO_SWEEPER_OPERATORS || format('github-forks:{0}', vars.RSO_SWEEPER_OPERATOR_DISCOVERY_REPO || github.repository) }}
       RSO_OPERATOR_BACKING_SNAPSHOT: ${{ vars.RSO_OPERATOR_BACKING_SNAPSHOT || 'data/backing/{date}.json' }}
       RSO_SWEEPER_TOP_OPERATORS: ${{ vars.RSO_SWEEPER_TOP_OPERATORS || '5' }}
+      RSO_SWEEPER_KEYSTORE_JSON: ${{ secrets.RSO_SWEEPER_KEYSTORE_JSON }}
+      RSO_SWEEPER_KEYSTORE_PASSWORD: ${{ secrets.RSO_SWEEPER_KEYSTORE_PASSWORD }}
+      RSO_SWEEPER_KEYSTORE: ${{ vars.RSO_SWEEPER_KEYSTORE }}
+      RSO_SWEEPER_ACCOUNT: ${{ vars.RSO_SWEEPER_ACCOUNT }}
+      RSO_SWEEP_INPUT_START: ${{ inputs.start || '' }}
+      RSO_SWEEP_INPUT_END: ${{ inputs.end || '' }}
+      GH_TOKEN: ${{ github.token }}
 
     steps:
       - name: Checkout
@@ -50,12 +56,17 @@ jobs:
       - name: Check sweeper configuration
         run: |
           set -euo pipefail
-          if [ ! -f "$RSO_SWEEPER_OPERATORS" ]; then
+          if [[ "$RSO_SWEEPER_OPERATORS" != github-forks:* && ! -f "$RSO_SWEEPER_OPERATORS" ]]; then
             echo "Sweeper skipped: $RSO_SWEEPER_OPERATORS does not exist."
             exit 0
           fi
-          if [ -z "${RSO_SWEEPER_RPC_URL:-}" ] || [ -z "${RSO_SWEEPER_PRIVATE_KEY:-}" ] || [ -z "${RSO_DOCCHAIN_ADDRESS:-}" ] || [ -z "${RSO_OPERATOR_BACKING_SNAPSHOT:-}" ]; then
-            echo "Sweeper skipped: RPC URL, private key, DocChain address, or backing snapshot is not configured."
+          if [ -n "${RSO_SWEEPER_KEYSTORE_JSON:-}" ] || [ -n "${RSO_SWEEPER_KEYSTORE:-}" ] || [ -n "${RSO_SWEEPER_ACCOUNT:-}" ]; then
+            RSO_SWEEPER_HAS_WALLET=true
+          else
+            RSO_SWEEPER_HAS_WALLET=false
+          fi
+          if [ -z "${RSO_SWEEPER_RPC_URL:-}" ] || [ "$RSO_SWEEPER_HAS_WALLET" != "true" ] || [ -z "${RSO_DOCCHAIN_ADDRESS:-}" ] || [ -z "${RSO_OPERATOR_BACKING_SNAPSHOT:-}" ]; then
+            echo "Sweeper skipped: RPC URL, wallet, DocChain address, or backing snapshot is not configured."
             exit 0
           fi
           echo "RSO_SWEEPER_ENABLED=true" >> "$GITHUB_ENV"
@@ -64,8 +75,8 @@ jobs:
         if: env.RSO_SWEEPER_ENABLED == 'true'
         run: |
           set -euo pipefail
-          START="${{ github.event.inputs.start }}"
-          END="${{ github.event.inputs.end }}"
+          START="$RSO_SWEEP_INPUT_START"
+          END="$RSO_SWEEP_INPUT_END"
           if [ -z "$END" ]; then
             END="$(date -u -d 'yesterday' +%F)"
           fi
@@ -77,4 +88,28 @@ jobs:
             --end "$END" \
             --operators "$RSO_SWEEPER_OPERATORS" \
             --backing "$RSO_OPERATOR_BACKING_SNAPSHOT" \
-            --limit "$RSO_SWEEPER_TOP_OPERATORS"
+            --limit "$RSO_SWEEPER_TOP_OPERATORS" \
+            --report "build/sweeper/sweep-$START-$END.json" \
+            --report-dir "reports/sweeper"
+
+      - name: Publish public sweeper report
+        if: env.RSO_SWEEPER_ENABLED == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/sweeper
+          if git diff --cached --quiet; then
+            echo "No sweeper report changes to commit."
+            exit 0
+          fi
+          git commit -m "Publish RSO sweeper report"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Upload sweeper report
+        if: env.RSO_SWEEPER_ENABLED == 'true' && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rso-sweeper-report
+          path: build/sweeper/*.json
+          if-no-files-found: ignore

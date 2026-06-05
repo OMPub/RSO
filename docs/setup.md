@@ -105,6 +105,8 @@ Optional:
 ARWEAVE_JWK
 RSO_WORKFLOW_UPDATE_TOKEN
 DISPOSABLE_NO_FUNDS_ETH_PRIVATE_KEY
+DISPOSABLE_NO_FUNDS_ETH_KEYSTORE_JSON
+DISPOSABLE_NO_FUNDS_ETH_KEYSTORE_PASSWORD
 ```
 
 If you want your fork to publish to Arweave automatically during the
@@ -136,6 +138,13 @@ repository secret:
 DISPOSABLE_NO_FUNDS_ETH_PRIVATE_KEY
 ```
 
+That raw private-key secret is the simplest disposable-node setup. For a more
+hardened setup, store an encrypted Foundry-compatible keystore JSON as
+`DISPOSABLE_NO_FUNDS_ETH_KEYSTORE_JSON` and its password as
+`DISPOSABLE_NO_FUNDS_ETH_KEYSTORE_PASSWORD`. The workflow writes those secrets
+to temporary files and passes only file paths to `cast`, so the private key does
+not appear in the process command line.
+
 Store the matching public address as a repository variable or secret:
 
 ```text
@@ -145,9 +154,9 @@ RSO_ATTESTER_ADDRESS
 For RSO V1, leave `RSO_ON_BEHALF_OF_ADDRESS` unset unless you are testing a
 future DocChain profile that needs delegated identity metadata. Card holders
 back your `RSO_ATTESTER_ADDRESS` directly through the RSO backing process. If
-you rotate the disposable key, update `DISPOSABLE_NO_FUNDS_ETH_PRIVATE_KEY`,
-update `RSO_ATTESTER_ADDRESS`, and ask backers to move support to the new
-operator address. No contract change is needed.
+you rotate the disposable key, update the raw key or keystore secret, update
+`RSO_ATTESTER_ADDRESS`, and ask backers to move support to the new operator
+address. No contract change is needed.
 
 Finally, configure the DocChain deployment:
 
@@ -273,8 +282,11 @@ sweeper only if you understand that the sweeper key pays gas and must be
 treated as a limited treasury allowance.
 
 1. Clone this repo on the machine or workflow that will submit transactions.
-2. Copy `sweeper/operators.example.json` to `sweeper/operators.json` and list
-   the operator repositories to sweep.
+2. Choose an operator source. By default, the sweeper can discover candidate
+   repositories from the upstream GitHub fork graph with
+   `github-forks:OMPub/RSO`. You can still copy
+   `sweeper/operators.example.json` to `sweeper/operators.json` for a manual
+   registry.
 3. Configure mainnet RPC, DocChain, and the daily operator-backing snapshot.
 4. Generate and fund a hot wallet within the ceiling described in
    [`operator.md`](operator.md).
@@ -289,26 +301,50 @@ python3 sweeper/rso_sweeper.py \
 
 The repository also includes a daily **Sweep RSO Attestations** GitHub Actions
 workflow. It is scheduled for one hour after the expected TDH/backing snapshot
-boundary, and it runs only when `sweeper/operators.json` exists and the
-required sweeper secrets/variables are configured. If a backing snapshot is not
-available yet, that date is skipped.
+boundary. By default, it uses GitHub fork discovery as the operator source and
+runs when the required sweeper secrets/variables are configured. If a backing
+snapshot is not available yet, that date is skipped.
+
+The sweeper publishes public date reports to:
+
+```text
+reports/sweeper/YYYY-MM-DD.json
+```
+
+Every node also has a default **Check RSO Sweeper Report** workflow. It runs
+after the sweeper window, reads the public report for its own `nodeId`, and
+opens or updates one local issue if the sweeper reports that the node was
+missing, deferred, or not found. If a later report shows the node is healthy, the
+workflow closes the issue.
 
 Minimum sweeper environment:
 
 ```text
 RSO_SWEEPER_RPC_URL
 RSO_DOCCHAIN_ADDRESS
-RSO_SWEEPER_PRIVATE_KEY
+RSO_SWEEPER_KEYSTORE_JSON
+RSO_SWEEPER_KEYSTORE_PASSWORD
 RSO_OPERATOR_BACKING_SNAPSHOT
 ```
+
+The sweeper key is funded, so the workflow intentionally does not use a raw
+private-key argv path. Configure `RSO_SWEEPER_KEYSTORE_JSON` and
+`RSO_SWEEPER_KEYSTORE_PASSWORD`, or configure an existing runner keystore with
+`RSO_SWEEPER_KEYSTORE` or `RSO_SWEEPER_ACCOUNT`.
 
 Important optional settings:
 
 ```text
 RSO_SWEEPER_DRY_RUN
 RSO_SWEEPER_OPERATORS
+RSO_SWEEPER_MAX_FORKS
 RSO_SWEEPER_TOP_OPERATORS
 RSO_SWEEPER_MIN_CARD_SPECIFIC_TDH
+RSO_SWEEPER_MAX_PUBLICATION_LOCATIONS
+RSO_SWEEPER_FETCH_RETRIES
+RSO_SWEEPER_REPORT_REPO
+RSO_SWEEPER_REPORT_BRANCH
+RSO_NODE_ID
 ```
 
 The default backing snapshot location is:

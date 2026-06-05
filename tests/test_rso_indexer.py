@@ -22,6 +22,7 @@ from indexer.rso_profile import (
     filter_rso_events,
     normalize_address,
     normalize_hex,
+    normalize_node_id,
     normalize_operator_backing,
 )
 from vendor.docchain.model import DocAttested
@@ -117,7 +118,8 @@ class RsoIndexerTest(unittest.TestCase):
         self.assertTrue(indexed_event["hasIdentityClaim"])
         self.assertEqual(indexed_event["identityAddress"], "0x" + "2" * 40)
         self.assertEqual(indexed_event["operatorAttester"], "0x" + "a" * 40)
-        self.assertEqual(indexed_event["backingAccount"], "0x" + "a" * 40)
+        self.assertEqual(indexed_event["nodeId"], "")
+        self.assertEqual(indexed_event["cardSpecificTdh"], 0)
 
     def test_build_static_index_reports_tdh_weighted_agreement_groups(self):
         locator = encode_publication_locator_uri(
@@ -155,8 +157,8 @@ class RsoIndexerTest(unittest.TestCase):
             chunk_size=10,
             events=[first, second],
             operator_backing={
-                "0x" + "a" * 40: 100,
-                "0x" + "b" * 40: 25,
+                "github:owner/repo": 100,
+                "github:other/repo": 25,
             },
             indexed_at="2026-05-22T00:00:00Z",
         )
@@ -164,7 +166,7 @@ class RsoIndexerTest(unittest.TestCase):
         groups = index["docRefs"]["20260519000000"]["agreementGroups"]
         self.assertEqual(len(groups), 2)
         self.assertEqual(groups[0]["cardSpecificTdh"], 100)
-        self.assertEqual(groups[0]["backingAccounts"], ["0x" + "a" * 40])
+        self.assertEqual(groups[0]["backingNodeIds"], ["github:owner/repo"])
         self.assertEqual(groups[0]["bundleFingerprints"], ["11" * 32])
         self.assertEqual(
             groups[0]["locations"],
@@ -202,9 +204,12 @@ class RsoIndexerTest(unittest.TestCase):
 
     def test_normalize_operator_backing_accepts_schema_records(self):
         self.assertEqual(
-            normalize_operator_backing({"0X" + "AB" * 20: {"cardSpecificTdh": "42"}}),
-            {"0x" + "ab" * 20: 42},
+            normalize_operator_backing({"GitHub:Owner/Repo": {"cardSpecificTdh": "42"}}),
+            {"github:owner/repo": 42},
         )
+
+    def test_normalize_node_id_accepts_github_short_form(self):
+        self.assertEqual(normalize_node_id("Owner/Repo"), "github:owner/repo")
 
     def test_cli_load_operator_backing_accepts_snapshot_schema(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -215,7 +220,7 @@ class RsoIndexerTest(unittest.TestCase):
                         "schema": "rso-operator-backing-snapshot-v1",
                         "date": "2026-06-01",
                         "operators": {
-                            "0x" + "ab" * 20: {
+                            "github:owner/repo": {
                                 "cardSpecificTdh": 99,
                                 "backerCount": 3,
                             }
@@ -225,7 +230,7 @@ class RsoIndexerTest(unittest.TestCase):
                 encoding="utf-8",
             )
 
-            self.assertEqual(cli.load_operator_backing(str(path)), {"0x" + "ab" * 20: 99})
+            self.assertEqual(cli.load_operator_backing(str(path)), {"github:owner/repo": 99})
 
     def test_build_static_index_dedupes_duplicate_events(self):
         event = make_event(doc_ref=20260519000000, transaction_hash="0x" + "1" * 64)

@@ -136,7 +136,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--deployment-block", type=int, help="First block for --network custom.")
     parser.add_argument(
         "--backing",
-        help="Optional JSON backing snapshot mapping operator attesters to card-specific TDH.",
+        help="Optional JSON backing snapshot mapping node ids to card-specific TDH.",
     )
     parser.add_argument("--quiet", action="store_true")
     return parser.parse_args()

@@ -32,7 +32,8 @@ Indexers and viewers interpret those claims under the RSO profile.
 
 1. The node captures and publishes the daily archive bundle.
 2. The node prepares a DocChain `DocAttestation` for that day.
-3. The node signs it with `DISPOSABLE_NO_FUNDS_ETH_PRIVATE_KEY`.
+3. The node signs it with a disposable EOA, usually through
+   `DISPOSABLE_NO_FUNDS_ETH_PRIVATE_KEY` or an encrypted keystore secret.
 4. The node writes the signed artifact to:
 
 ```text
@@ -56,7 +57,8 @@ For each known operator and archive day, it:
 4. Fetches each selected operator's signed attestation artifact.
 5. Checks the signed payload targets the expected DocChain contract and RSO
    `docChainId`.
-6. Checks the signed attester matches the registered operator.
+6. Checks the signed attester matches the registered operator, if the registry
+   pins an attester for that node.
 7. Fetches the archive bundle locations and verifies both the signed bundle
    fingerprint, when present, and the signed `contentHash`.
 8. Simulates `attestDoc`.
@@ -69,8 +71,9 @@ which history is true.
 ## Operator Backing
 
 RSO V1 backing is holder-to-operator. Operators can stay pseudonymous. A holder
-backs the operator signing address they trust, and that backing is captured in a
-daily snapshot after the 6529 TDH calculation.
+backs the node they trust, and that backing is captured in a daily snapshot
+after the 6529 TDH calculation. The node can rotate its disposable signing key
+without changing the node id that holders backed.
 
 The daily signed attestation includes:
 
@@ -96,11 +99,14 @@ not carry its own schema field. The signed `contentHash` remains the canonical
 catalog fingerprint; `bundleSha256` fixes the exact `.tar.gz` artifact being
 published.
 
-The daily backing snapshot is keyed by `attester`:
+The daily backing snapshot is keyed by `nodeId`:
 
 ```text
-date -> operator attester -> card-specific TDH backing
+date -> node id -> card-specific TDH backing
 ```
+
+For GitHub-hosted nodes, the node id is `github:owner/repo`. A manual operator
+registry can declare another `nodeId` for non-GitHub nodes.
 
 `onBehalfOf` remains available in the generic DocChain schema for future
 profiles that need delegated identities. RSO V1 does not use it for sponsorship
@@ -121,7 +127,8 @@ It then reports:
 - which operators attested to each daily chain link
 - which operators agree or disagree
 - which branch follows the expected parent links
-- which operator signing keys and card-specific backing support each group
+- which nodes, operator signing keys, and card-specific backing support each
+  group
 
 The indexer should not count raw GitHub repos as votes. Support comes from
 recognized operators and card-specific backing, not sybilable repository count.

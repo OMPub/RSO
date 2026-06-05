@@ -59,6 +59,10 @@ jobs:
       RSO_ON_BEHALF_OF_ADDRESS: ${{ vars.RSO_ON_BEHALF_OF_ADDRESS }}
       RSO_ATTESTATION_URI_MODE: ${{ vars.RSO_ATTESTATION_URI_MODE || 'auto' }}
       RSO_ATTESTATION_BOOTSTRAP_PARENT_HASH: ${{ vars.RSO_ATTESTATION_BOOTSTRAP_PARENT_HASH }}
+      RSO_INPUT_DATE: ${{ inputs.date || '' }}
+      RSO_INPUT_MODE: ${{ inputs.mode || 'auto' }}
+      RSO_INPUT_OVERWRITE: ${{ inputs.overwrite || false }}
+      RSO_INPUT_AUTO_UPDATE_CODE: ${{ inputs.auto_update_code || '' }}
 
     steps:
       - name: Checkout controller branch
@@ -76,7 +80,7 @@ jobs:
       - name: Sync main from upstream
         run: |
           set -euo pipefail
-          AUTO_UPDATE="${{ github.event.inputs.auto_update_code }}"
+          AUTO_UPDATE="$RSO_INPUT_AUTO_UPDATE_CODE"
           if [ -z "$AUTO_UPDATE" ]; then
             AUTO_UPDATE="$RSO_AUTO_UPDATE_CODE"
           fi
@@ -166,12 +170,12 @@ jobs:
           SPACETRACK_PASS: ${{ secrets.SPACETRACK_PASS }}
         run: |
           set -euo pipefail
-          MODE="${{ github.event.inputs.mode }}"
+          MODE="$RSO_INPUT_MODE"
           if [ -z "$MODE" ]; then
             MODE="auto"
           fi
 
-          INPUT_DATE="${{ github.event.inputs.date }}"
+          INPUT_DATE="$RSO_INPUT_DATE"
           END_DATE="$(date -u +%F)"
           if [ -n "$INPUT_DATE" ]; then
             START_DATE="$INPUT_DATE"
@@ -200,7 +204,7 @@ jobs:
             fi
 
             args=(pipeline/snapshot.py "$command" --date "$snapshot_date")
-            if [ "${{ github.event.inputs.overwrite }}" = "true" ]; then
+            if [ "$RSO_INPUT_OVERWRITE" = "true" ]; then
               args+=(--force)
             fi
             python "${args[@]}"
@@ -262,7 +266,7 @@ jobs:
           set -euo pipefail
           TARGET_COMMIT="$(git rev-parse HEAD)"
           args=(pipeline/snapshot.py publish --start "$RSO_SNAPSHOT_START_DATE" --end "$RSO_SNAPSHOT_END_DATE" --use-existing-bundle --target-commitish "$TARGET_COMMIT")
-          if [ "${{ github.event.inputs.overwrite }}" = "true" ]; then
+          if [ "$RSO_INPUT_OVERWRITE" = "true" ]; then
             args+=(--force)
           fi
           python "${args[@]}"
@@ -283,10 +287,19 @@ jobs:
       - name: Check attestation configuration
         env:
           DISPOSABLE_NO_FUNDS_ETH_PRIVATE_KEY: ${{ secrets.DISPOSABLE_NO_FUNDS_ETH_PRIVATE_KEY }}
+          DISPOSABLE_NO_FUNDS_ETH_KEYSTORE_JSON: ${{ secrets.DISPOSABLE_NO_FUNDS_ETH_KEYSTORE_JSON }}
+          DISPOSABLE_NO_FUNDS_ETH_KEYSTORE_PASSWORD: ${{ secrets.DISPOSABLE_NO_FUNDS_ETH_KEYSTORE_PASSWORD }}
+          DISPOSABLE_NO_FUNDS_ETH_KEYSTORE: ${{ vars.DISPOSABLE_NO_FUNDS_ETH_KEYSTORE }}
+          DISPOSABLE_NO_FUNDS_ETH_ACCOUNT: ${{ vars.DISPOSABLE_NO_FUNDS_ETH_ACCOUNT }}
           RSO_ATTESTER_ADDRESS: ${{ secrets.RSO_ATTESTER_ADDRESS || vars.RSO_ATTESTER_ADDRESS }}
         run: |
           set -euo pipefail
-          if [ -n "${DISPOSABLE_NO_FUNDS_ETH_PRIVATE_KEY:-}" ] && [ -n "${RSO_ATTESTER_ADDRESS:-}" ] && [ -n "${RSO_DOCCHAIN_ADDRESS:-}" ]; then
+          if [ -n "${DISPOSABLE_NO_FUNDS_ETH_PRIVATE_KEY:-}" ] || [ -n "${DISPOSABLE_NO_FUNDS_ETH_KEYSTORE_JSON:-}" ] || [ -n "${DISPOSABLE_NO_FUNDS_ETH_KEYSTORE:-}" ] || [ -n "${DISPOSABLE_NO_FUNDS_ETH_ACCOUNT:-}" ]; then
+            RSO_ATTESTER_HAS_WALLET=true
+          else
+            RSO_ATTESTER_HAS_WALLET=false
+          fi
+          if [ "$RSO_ATTESTER_HAS_WALLET" = "true" ] && [ -n "${RSO_ATTESTER_ADDRESS:-}" ] && [ -n "${RSO_DOCCHAIN_ADDRESS:-}" ]; then
             echo "RSO_ATTESTATION_ENABLED=true" >> "$GITHUB_ENV"
           else
             echo "RSO_ATTESTATION_ENABLED=false" >> "$GITHUB_ENV"
@@ -300,6 +313,10 @@ jobs:
         if: env.RSO_ATTESTATION_ENABLED == 'true'
         env:
           DISPOSABLE_NO_FUNDS_ETH_PRIVATE_KEY: ${{ secrets.DISPOSABLE_NO_FUNDS_ETH_PRIVATE_KEY }}
+          DISPOSABLE_NO_FUNDS_ETH_KEYSTORE_JSON: ${{ secrets.DISPOSABLE_NO_FUNDS_ETH_KEYSTORE_JSON }}
+          DISPOSABLE_NO_FUNDS_ETH_KEYSTORE_PASSWORD: ${{ secrets.DISPOSABLE_NO_FUNDS_ETH_KEYSTORE_PASSWORD }}
+          DISPOSABLE_NO_FUNDS_ETH_KEYSTORE: ${{ vars.DISPOSABLE_NO_FUNDS_ETH_KEYSTORE }}
+          DISPOSABLE_NO_FUNDS_ETH_ACCOUNT: ${{ vars.DISPOSABLE_NO_FUNDS_ETH_ACCOUNT }}
           RSO_ATTESTER_ADDRESS: ${{ secrets.RSO_ATTESTER_ADDRESS || vars.RSO_ATTESTER_ADDRESS }}
           RSO_ON_BEHALF_OF_ADDRESS: ${{ secrets.RSO_ON_BEHALF_OF_ADDRESS || vars.RSO_ON_BEHALF_OF_ADDRESS }}
         run: |

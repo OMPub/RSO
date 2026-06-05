@@ -25,14 +25,14 @@ relationship.
 ## Card-Backed Operator Support
 
 Operators do not need to connect their disposable key to a 6529 identity in RSO
-V1. Card holders back operator signing addresses directly. That lets operators
-remain pseudonymous, and lets card holders switch support as operator
-performance changes.
+V1. Card holders back nodes, not signing addresses. That lets operators rotate
+disposable signing keys without asking backers to move, and lets card holders
+switch support as node performance changes.
 
 Recommended V1 shape:
 
 ```text
-card holder -> backs operator attester
+card holder -> backs node
 ```
 
 The daily signed attestation sets:
@@ -45,19 +45,22 @@ onBehalfOf  normally zero for RSO V1
 After the daily 6529 TDH calculation, RSO computes a backing snapshot:
 
 ```text
-date -> operator attester -> card-specific TDH backing
+date -> node id -> card-specific TDH backing
 ```
 
 The sweeper uses that snapshot before spending treasury gas. The indexer uses
-the same snapshot when reporting weighted agreement groups.
+the same snapshot when reporting weighted agreement groups. For GitHub-hosted
+nodes, the node id is `github:owner/repo`.
 
 ## Sweeper Role
 
 The sweeper:
 
-- reads the known operator registry
+- reads a known operator registry or discovers candidate repositories from the
+  upstream GitHub fork graph
 - reads the daily operator-backing snapshot
-- ranks operators by card-specific TDH backing
+- extracts each signed artifact's attester and ranks only backed nodes by
+  card-specific TDH backing
 - fetches signed artifacts from operator `node` branches
 - validates signatures by simulating `attestDoc`
 - validates the signed archive bundle fingerprint and the catalog fingerprint
@@ -66,6 +69,10 @@ The sweeper:
 
 The sweeper does not decide truth. If it refuses to submit a valid signature,
 the public signature can still be submitted by anyone else.
+
+Fork discovery is not a trust signal. It only tells the sweeper where to look.
+Sponsorship still requires a signed artifact from a node present in the daily
+backing snapshot.
 
 ## Treasury Role
 
@@ -92,6 +99,25 @@ If the sweeper fails:
 - signed artifacts remain public
 - another sweeper can submit them
 - anyone can submit a valid signature manually
+- the next scheduled sweep can retry missed signed artifacts that remain
+  eligible and discoverable
+
+The sweeper publishes public per-date reports under:
+
+```text
+reports/sweeper/YYYY-MM-DD.json
+```
+
+Node repos include a default **Check RSO Sweeper Report** workflow. It reads the
+public report for its own `nodeId` and opens, updates, or closes one local issue
+when the report shows a condition that may need operator attention. Operators do
+not need to monitor Actions artifacts manually.
+
+If a signed attestation lists multiple publication locations, the sweeper checks
+every listed location before submitting it onchain. Temporary fetch failures are
+retried immediately, then deferred to a later sweep. Locators with too many
+locations are rejected to keep one operator from consuming unbounded treasury
+resources.
 
 If operators disagree:
 

@@ -40,7 +40,7 @@ class RsoAttestationNodeTest(unittest.TestCase):
                 }
             ]
         }
-        with self.assertRaisesRegex(ValueError, "expected 2026-05-27"):
+        with self.assertRaisesRegex(ValueError, "no prior DocChain blockHash"):
             node.parent_hash_for_date("2026-05-28", state)
 
     def test_state_attestation_for_date_finds_existing_entries(self):
@@ -71,7 +71,11 @@ class RsoAttestationNodeTest(unittest.TestCase):
                                 "release_url": "https://github.com/owner/repo/releases/tag/rso-archive-2026-05-28",
                                 "asset_name": "rso-archive-2026-05-28.tar.gz",
                             },
-                            "arweave": {"transaction_id": "abc123"},
+                            "arweave": {
+                                "status": "submitted",
+                                "bundle_sha256": "aa" * 32,
+                                "transaction_id": "abc123",
+                            },
                         }
                     }
                 ),
@@ -96,6 +100,49 @@ class RsoAttestationNodeTest(unittest.TestCase):
                     ],
                 )
 
+    def test_release_uri_ignores_failed_or_mismatched_arweave_receipts(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            data_dir = Path(tmpdir) / "data"
+            day_dir = data_dir / "2026" / "05" / "28"
+            day_dir.mkdir(parents=True)
+            (day_dir / "storage.json").write_text(
+                json.dumps(
+                    {
+                        "bundle_sha256": "aa" * 32,
+                        "destinations": {
+                            "github_release": {
+                                "release_url": "https://github.com/owner/repo/releases/tag/rso-archive-2026-05-28",
+                                "asset_name": "rso-archive-2026-05-28.tar.gz",
+                            },
+                            "arweave": {
+                                "status": "failed",
+                                "bundle_sha256": "aa" * 32,
+                                "transaction_id": "abc123",
+                            },
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            with patch.object(node, "DATA_DIR", data_dir):
+                publication = describe_publication_uri(node.release_uri("2026-05-28"))
+                self.assertEqual(
+                    publication["locations"],
+                    [
+                        "https://github.com/owner/repo/releases/download/rso-archive-2026-05-28/rso-archive-2026-05-28.tar.gz",
+                    ],
+                )
+
+            receipt = json.loads((day_dir / "storage.json").read_text(encoding="utf-8"))
+            receipt["destinations"]["arweave"]["status"] = "submitted"
+            receipt["destinations"]["arweave"]["bundle_sha256"] = "bb" * 32
+            (day_dir / "storage.json").write_text(json.dumps(receipt), encoding="utf-8")
+
+            with patch.object(node, "DATA_DIR", data_dir):
+                publication = describe_publication_uri(node.release_uri("2026-05-28"))
+                self.assertEqual(len(publication["locations"]), 1)
+
     def test_release_uri_falls_back_to_direct_location_without_bundle_fingerprint(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             data_dir = Path(tmpdir) / "data"
@@ -105,7 +152,10 @@ class RsoAttestationNodeTest(unittest.TestCase):
                 json.dumps(
                     {
                         "destinations": {
-                            "arweave": {"transaction_id": "abc123"},
+                            "arweave": {
+                                "status": "submitted",
+                                "transaction_id": "abc123",
+                            },
                         }
                     }
                 ),
@@ -177,11 +227,53 @@ class RsoAttestationNodeTest(unittest.TestCase):
                 block_hash=prepared.block_hash,
             )
             self.assertEqual(entry["blockHash"], "0x" + "22" * 32)
+            self.assertTrue(entry["signedPath"].startswith("data/attestations/signed/2026-04-20/"))
+            self.assertEqual(entry["latestSignedPath"], "data/attestations/signed/2026-04-20.json")
             self.assertEqual(entry["submissionStatus"], "signed")
             state_path = Path(tmpdir) / "state.json"
             state = node.record_state_entry(state_path, entry)
             self.assertEqual(state["latest"]["date"], "2026-04-20")
             self.assertEqual(len(state["attestations"]), 1)
+
+    def test_state_allows_multiple_same_day_attestations_for_different_uris(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            state_path = Path(tmpdir) / "state.json"
+            base_entry = {
+                "date": "2026-04-20",
+                "artifactId": "one",
+                "docRef": 20260420000000,
+                "attester": "0x" + "bb" * 20,
+                "onBehalfOf": node.ZERO_ADDRESS,
+                "parentHash": node.ZERO_BYTES32,
+                "blockHash": "0x" + "11" * 32,
+                "contentHash": "0x" + "22" * 32,
+                "uri": "ar://one",
+                "signedPath": "one.json",
+                "signature": "0x1234",
+                "submissionStatus": "signed",
+                "updatedAt": "2026-06-01T00:00:00Z",
+            }
+            second_entry = dict(base_entry)
+            second_entry["artifactId"] = "two"
+            second_entry["uri"] = "ar://two"
+            second_entry["updatedAt"] = "2026-06-01T00:01:00Z"
+
+            state = node.record_state_entry(state_path, base_entry)
+            state = node.record_state_entry(state_path, second_entry)
+
+            self.assertEqual(len(state["attestations"]), 2)
+            self.assertEqual(node.state_attestation_for_date(state, "2026-04-20")["uri"], "ar://two")
+            self.assertIsNotNone(
+                node.state_attestation_for_inputs(
+                    state,
+                    snapshot_date="2026-04-20",
+                    attester="0x" + "bb" * 20,
+                    on_behalf_of=node.ZERO_ADDRESS,
+                    parent_hash=node.ZERO_BYTES32,
+                    content_hash="0x" + "22" * 32,
+                    uri="ar://one",
+                )
+            )
 
 
 if __name__ == "__main__":

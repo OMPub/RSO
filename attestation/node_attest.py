@@ -15,20 +15,27 @@ if str(ROOT) not in sys.path:
 
 from attestation.rso_attestation import (  # noqa: E402
     DEFAULT_STATE_PATH,
+    content_hash_from_manifest,
     date_range,
+    load_manifest,
     load_attestation_state,
+    parent_hash_for_date,
     prepare_sign_one,
     record_state_entry,
+    release_uri,
     signed_attestation_path,
-    state_attestation_for_date,
+    state_attestation_for_inputs,
     state_entry_from_signed_artifact,
     write_signed_artifact,
 )
 from vendor.docchain.attestation import (  # noqa: E402
+    has_cast_wallet_config,
     normalize_address,
     subprocess_error_detail,
 )
 from vendor.docchain.model import ZERO_ADDRESS  # noqa: E402
+
+MAX_ATTESTATION_TTL = 7 * 24 * 60 * 60
 
 
 def main() -> int:
@@ -40,9 +47,24 @@ def main() -> int:
         state_path = Path(args.state)
         state = load_attestation_state(state_path)
         for snapshot_date in date_range(args.start, args.end):
-            existing = state_attestation_for_date(state, snapshot_date)
+            parent_hash = parent_hash_for_date(
+                snapshot_date,
+                state,
+                bootstrap_parent_hash=args.bootstrap_parent_hash,
+            )
+            content_hash = content_hash_from_manifest(load_manifest(snapshot_date))
+            uri = release_uri(snapshot_date, mode=args.uri_mode)
+            existing = state_attestation_for_inputs(
+                state,
+                snapshot_date=snapshot_date,
+                attester=args.attester,
+                on_behalf_of=args.on_behalf_of,
+                parent_hash=parent_hash,
+                content_hash=content_hash,
+                uri=uri,
+            )
             if existing is not None:
-                print(f"Attestation skipped for {snapshot_date}: already recorded in node state.")
+                print(f"Attestation skipped for {snapshot_date}: exact attestation already recorded in node state.")
                 continue
             prepared, artifact = prepare_sign_one(
                 snapshot_date=snapshot_date,
@@ -59,15 +81,19 @@ def main() -> int:
                 repository=args.repository,
                 workflow_run_id=args.workflow_run_id,
                 cast=args.cast,
+                parent_hash=parent_hash,
+                uri=uri,
             )
-            artifact_path = signed_attestation_path(snapshot_date)
-            write_signed_artifact(artifact_path, artifact)
             entry = state_entry_from_signed_artifact(
                 snapshot_date=snapshot_date,
                 prepared=prepared.prepared,
                 signed=prepared.signed,
                 block_hash=prepared.block_hash,
             )
+            artifact_path = signed_attestation_path(snapshot_date)
+            historical_path = signed_attestation_path(snapshot_date, str(entry["artifactId"]))
+            write_signed_artifact(historical_path, artifact)
+            write_signed_artifact(artifact_path, artifact)
             state = record_state_entry(state_path, entry)
             print(
                 f"Signed {snapshot_date}: docRef={prepared.doc_ref} "
@@ -139,7 +165,9 @@ def parse_args() -> argparse.Namespace:
 
 
 def should_skip(args: argparse.Namespace) -> bool:
-    if not os.environ.get(args.private_key_env):
+    if args.ttl <= 0 or args.ttl > MAX_ATTESTATION_TTL:
+        raise ValueError(f"RSO_ATTESTATION_TTL must be between 1 and {MAX_ATTESTATION_TTL} seconds")
+    if not has_cast_wallet_config(private_key_env=args.private_key_env):
         return True
     if not args.attester:
         return True

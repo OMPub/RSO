@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 import binascii
 import json
+import re
 import urllib.parse
 from collections import defaultdict
 from collections.abc import Iterable
@@ -111,12 +112,49 @@ def decorate_operator_backing(event: dict[str, object], backing: dict[str, int] 
     backing = backing or {}
     on_behalf_of = normalize_address(event.get("onBehalfOf", ZERO_ADDRESS))
     attester = normalize_address(event["attester"])
+    node_id = event_node_id(event)
     event["onBehalfOf"] = on_behalf_of
     event["hasIdentityClaim"] = on_behalf_of != ZERO_ADDRESS
     event["identityAddress"] = "" if on_behalf_of == ZERO_ADDRESS else on_behalf_of
     event["operatorAttester"] = attester
-    event["backingAccount"] = attester
-    event["cardSpecificTdh"] = backing.get(attester, 0)
+    event["nodeId"] = node_id
+    event["backingNodeId"] = node_id
+    event["cardSpecificTdh"] = backing.get(node_id, 0) if node_id else 0
+
+
+def event_node_id(event: dict[str, object]) -> str:
+    publication = event.get("publication", {})
+    if not isinstance(publication, dict):
+        return ""
+    locations = publication.get("locations", [])
+    if not isinstance(locations, list):
+        return ""
+    for location in locations:
+        if not isinstance(location, str):
+            continue
+        node_id = node_id_from_publication_location(location)
+        if node_id:
+            return node_id
+    return ""
+
+
+def node_id_from_publication_location(location: str) -> str:
+    parsed = urllib.parse.urlparse(location)
+    host = (parsed.hostname or "").lower()
+    parts = [urllib.parse.unquote(part) for part in parsed.path.split("/") if part]
+    if host == "github.com" and len(parts) >= 2:
+        return github_node_id(parts[0], parts[1])
+    if host == "raw.githubusercontent.com" and len(parts) >= 2:
+        return github_node_id(parts[0], parts[1])
+    return ""
+
+
+def github_node_id(owner: str, repo: str) -> str:
+    if not re.fullmatch(r"[A-Za-z0-9_.-]+", owner):
+        return ""
+    if not re.fullmatch(r"[A-Za-z0-9_.-]+", repo):
+        return ""
+    return f"github:{owner.lower()}/{repo.lower()}"
 
 
 def decorate_publication(event: dict[str, object]) -> None:
@@ -209,8 +247,8 @@ def normalize_locations(raw: object) -> list[str]:
     return locations
 
 
-def event_backing_account(event: dict[str, object]) -> str:
-    return normalize_address(event["attester"])
+def event_backing_node_id(event: dict[str, object]) -> str:
+    return str(event.get("backingNodeId", ""))
 
 
 def agreement_groups(
@@ -227,15 +265,15 @@ def agreement_groups(
         groups[(str(event["blockHash"]), str(event["contentHash"]))].append(event)
     records = []
     for (block_hash, content_hash), group_events in groups.items():
-        backing_accounts = sorted({event_backing_account(event) for event in group_events})
+        backing_node_ids = sorted({event_backing_node_id(event) for event in group_events if event_backing_node_id(event)})
         records.append(
             {
                 "blockHash": block_hash,
                 "contentHash": content_hash,
                 "attestationCount": len(group_events),
                 "operators": sorted({normalize_address(event["attester"]) for event in group_events}),
-                "backingAccounts": backing_accounts,
-                "cardSpecificTdh": sum(backing.get(account, 0) for account in backing_accounts),
+                "backingNodeIds": backing_node_ids,
+                "cardSpecificTdh": sum(backing.get(node_id, 0) for node_id in backing_node_ids),
                 "bundleFingerprints": sorted(
                     {
                         str(event.get("publication", {}).get("bundleSha256", ""))
@@ -270,7 +308,7 @@ def normalize_operator_backing(raw: object) -> dict[str, int]:
     if not isinstance(raw, dict):
         raise ValueError("operator backing must be a JSON object")
     normalized: dict[str, int] = {}
-    for operator, value in raw.items():
+    for node_id, value in raw.items():
         if isinstance(value, dict):
             amount = value.get("cardSpecificTdh", 0)
         else:
@@ -278,8 +316,25 @@ def normalize_operator_backing(raw: object) -> dict[str, int]:
         amount_int = int(amount)
         if amount_int < 0:
             raise ValueError("cardSpecificTdh must not be negative")
-        normalized[normalize_address(operator)] = amount_int
+        normalized[normalize_node_id(str(node_id))] = amount_int
     return normalized
+
+
+def normalize_node_id(value: str) -> str:
+    text = value.strip().lower()
+    if text.startswith("github:"):
+        body = text.removeprefix("github:")
+    elif "/" in text and ":" not in text:
+        body = text
+    else:
+        raise ValueError("operator backing keys must be node ids, for example github:owner/repo")
+    owner_repo = body.split("/", 1)
+    if len(owner_repo) != 2:
+        raise ValueError("GitHub node ids must be github:owner/repo")
+    node_id = github_node_id(owner_repo[0], owner_repo[1])
+    if not node_id:
+        raise ValueError("GitHub node id contains invalid owner or repo")
+    return node_id
 
 
 def normalize_identity_backing(raw: object) -> dict[str, int]:

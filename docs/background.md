@@ -287,8 +287,7 @@ DocChain:
 4. RSO indexers group events by `docChainId`, `docRef`, and `blockHash`,
    then walk `parentHash` links to build branches.
 5. After the daily 6529 TDH calculation, RSO records which card holders backed
-   which operator attesters and how much card-specific TDH each operator has for
-   that day.
+   which nodes and how much card-specific TDH each node has for that day.
 6. The branch with the most eligible historical card-specific TDH is canonical
    for RSO display.
 

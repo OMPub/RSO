@@ -12,7 +12,9 @@ from sweeper.rso_sweeper import (
     SweeperConfig,
     SweeperError,
     backing_snapshot_location,
+    candidate_operator_payloads,
     eligible_operators,
+    github_fork_operator_registry,
     handle_signed_attestation,
     host_allowed,
     normalize_backing_snapshot,
@@ -21,7 +23,9 @@ from sweeper.rso_sweeper import (
     transaction_hash_from_cast_output,
     validate_bundle_sha256,
     validate_fetch_url,
+    validate_uri,
     validate_release_bundle,
+    write_date_reports,
 )
 from indexer.rso_profile import encode_publication_locator_uri
 from vendor.docchain.attestation import prepare_attestation, signed_attestation
@@ -61,7 +65,7 @@ class RsoSweeperTest(unittest.TestCase):
                 "schema": "rso-operator-backing-snapshot-v1",
                 "date": "2026-06-01",
                 "operators": {
-                    "0X" + "BB" * 20: {
+                    "github:owner/repo": {
                         "cardSpecificTdh": "100",
                         "backerCount": 3,
                         "rank": 1,
@@ -71,21 +75,22 @@ class RsoSweeperTest(unittest.TestCase):
             expected_date="2026-06-01",
         )
 
-        self.assertEqual(snapshot["0x" + "bb" * 20]["cardSpecificTdh"], 100)
-        self.assertEqual(snapshot["0x" + "bb" * 20]["backerCount"], 3)
+        self.assertEqual(snapshot["github:owner/repo"]["nodeId"], "github:owner/repo")
+        self.assertEqual(snapshot["github:owner/repo"]["cardSpecificTdh"], 100)
+        self.assertEqual(snapshot["github:owner/repo"]["backerCount"], 3)
 
     def test_eligible_operators_ranks_by_card_specific_tdh_and_caps(self):
         operators = [
-            {"name": "low", "attester": "0x" + "11" * 20},
-            {"name": "high", "attester": "0x" + "22" * 20},
-            {"name": "zero", "attester": "0x" + "33" * 20},
+            {"name": "low", "repository": "owner/low"},
+            {"name": "high", "repository": "owner/high"},
+            {"name": "zero", "repository": "owner/zero"},
         ]
         backing = normalize_backing_snapshot(
             {
                 "operators": {
-                    "0x" + "11" * 20: {"cardSpecificTdh": 25},
-                    "0x" + "22" * 20: {"cardSpecificTdh": 100},
-                    "0x" + "33" * 20: {"cardSpecificTdh": 0},
+                    "github:owner/low": {"cardSpecificTdh": 25},
+                    "github:owner/high": {"cardSpecificTdh": 100},
+                    "github:owner/zero": {"cardSpecificTdh": 0},
                 }
             }
         )
@@ -116,6 +121,15 @@ class RsoSweeperTest(unittest.TestCase):
 
         with self.assertRaisesRegex(SweeperError, "fingerprint"):
             validate_release_bundle(bundle, "0x" + "00" * 32, config)
+
+    def test_validate_release_bundle_bounds_manifest_members(self):
+        catalog = b'{"catalog":true}\n'
+        content_hash = "0x" + __import__("hashlib").sha256(catalog).hexdigest()
+        bundle = make_release_bundle(catalog, content_hash[2:])
+        config = config_for_test(require_uri=True, max_json_bytes=8)
+
+        with self.assertRaisesRegex(SweeperError, "release-manifest.json exceeds"):
+            validate_release_bundle(bundle, content_hash, config)
 
     def test_validate_bundle_sha256_checks_exact_bundle_bytes(self):
         bundle = b"bundle"
@@ -148,7 +162,7 @@ class RsoSweeperTest(unittest.TestCase):
         with patch("sweeper.rso_sweeper.fetch_uri_bytes", side_effect=fake_fetch_uri_bytes):
             response = handle_signed_attestation(
                 make_artifact(uri=uri, content_hash=content_hash),
-                operator={"attester": "0x" + "bb" * 20, "_backing": backed_operator()},
+                operator={"repository": "owner/repo", "attester": "0x" + "bb" * 20, "_backing": backed_operator()},
                 config=config_for_test(require_uri=True),
                 rpc=FakeRpc(),
                 expected_date="2026-06-01",
@@ -176,11 +190,96 @@ class RsoSweeperTest(unittest.TestCase):
             with self.assertRaisesRegex(SweeperError, "bundle fingerprint"):
                 handle_signed_attestation(
                     make_artifact(uri=uri, content_hash=content_hash),
-                    operator={"attester": "0x" + "bb" * 20, "_backing": backed_operator()},
+                    operator={"repository": "owner/repo", "attester": "0x" + "bb" * 20, "_backing": backed_operator()},
                     config=config_for_test(require_uri=True),
                     rpc=FakeRpc(),
                     expected_date="2026-06-01",
                 )
+
+    def test_validate_uri_rejects_too_many_publication_locations(self):
+        uri = encode_publication_locator_uri(
+            bundle_sha256="aa" * 32,
+            locations=[
+                "ar://one",
+                "ar://two",
+                "ar://three",
+                "ar://four",
+                "ar://five",
+            ],
+        )
+        payload = make_artifact(uri=uri)
+        attestation = payload["signed"]["prepared"]["attestation"]
+
+        with self.assertRaisesRegex(SweeperError, "too many locations"):
+            validate_uri(attestation, config_for_test(require_uri=True, max_publication_locations=4))
+
+    def test_candidate_operator_payloads_discovers_attester_from_fork_artifact(self):
+        artifact = make_artifact()
+        operators = [{"name": "fork", "repository": "owner/fork", "branch": "node"}]
+        backing = normalize_backing_snapshot(
+            {
+                "operators": {
+                    "github:owner/fork": {"cardSpecificTdh": 100},
+                }
+            }
+        )
+
+        with patch("sweeper.rso_sweeper.fetch_json_url", return_value=artifact):
+            candidates, records = candidate_operator_payloads(
+                operators,
+                backing,
+                snapshot_date="2026-06-01",
+                config=config_for_test(),
+            )
+
+        self.assertEqual(len(candidates), 1)
+        self.assertEqual(candidates[0]["nodeId"], "github:owner/fork")
+        self.assertEqual(candidates[0]["attester"], "0x" + "bb" * 20)
+        self.assertEqual(candidates[0]["_backing"]["cardSpecificTdh"], 100)
+        self.assertEqual(records[0]["status"], "candidate")
+
+    def test_github_fork_operator_registry_includes_root_and_bounded_forks(self):
+        forks = [
+            {"full_name": "alice/RSO"},
+            {"full_name": "bob/RSO"},
+        ]
+
+        with patch("sweeper.rso_sweeper.fetch_github_json_array", return_value=forks):
+            with patch.dict("os.environ", {"RSO_SWEEPER_MAX_FORKS": "2"}, clear=False):
+                operators = github_fork_operator_registry("OMPub/RSO", timeout=1)
+
+        self.assertEqual(
+            [operator["repository"] for operator in operators],
+            ["OMPub/RSO", "alice/RSO", "bob/RSO"],
+        )
+        self.assertEqual(
+            [operator["nodeId"] for operator in operators],
+            ["github:ompub/rso", "github:alice/rso", "github:bob/rso"],
+        )
+
+    def test_write_date_reports_publishes_one_json_per_date(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            write_date_reports(
+                Path(tmpdir),
+                {
+                    "schema": "rso-sweeper-report-v1",
+                    "operatorSource": "github-forks:OMPub/RSO",
+                    "startedAt": "2026-06-05T01:15:00Z",
+                    "finishedAt": "2026-06-05T01:16:00Z",
+                    "dates": [
+                        {
+                            "date": "2026-06-04",
+                            "status": "checked",
+                            "operators": [{"nodeId": "github:owner/rso", "status": "submitted"}],
+                        }
+                    ],
+                },
+            )
+
+            report = json.loads((Path(tmpdir) / "2026-06-04.json").read_text(encoding="utf-8"))
+            self.assertEqual(report["schema"], "rso-sweeper-date-report-v1")
+            self.assertEqual(report["date"], "2026-06-04")
+            self.assertEqual(report["operators"][0]["nodeId"], "github:owner/rso")
 
     def test_handle_signed_attestation_keeps_direct_uri_compatibility(self):
         catalog = b'{"catalog":true}\n'
@@ -190,7 +289,7 @@ class RsoSweeperTest(unittest.TestCase):
         with patch("sweeper.rso_sweeper.fetch_uri_bytes", return_value=bundle) as fetch:
             response = handle_signed_attestation(
                 make_artifact(uri="ar://abc123", content_hash=content_hash),
-                operator={"attester": "0x" + "bb" * 20, "_backing": backed_operator()},
+                operator={"repository": "owner/repo", "attester": "0x" + "bb" * 20, "_backing": backed_operator()},
                 config=config_for_test(require_uri=True),
                 rpc=FakeRpc(),
                 expected_date="2026-06-01",
@@ -206,8 +305,9 @@ class RsoSweeperTest(unittest.TestCase):
             make_artifact(),
             operator={
                 "attester": "0x" + "bb" * 20,
+                "repository": "owner/repo",
                 "_backing": {
-                    "attester": "0x" + "bb" * 20,
+                    "nodeId": "github:owner/repo",
                     "cardSpecificTdh": 100,
                     "backerCount": 2,
                     "rank": 1,
@@ -223,6 +323,7 @@ class RsoSweeperTest(unittest.TestCase):
         self.assertEqual(response["blockHash"], "0x" + "11" * 32)
         self.assertEqual(response["operatorAttester"], "0x" + "bb" * 20)
         self.assertEqual(response["sponsorship"]["scheme"], "rso-operator-backing-snapshot")
+        self.assertEqual(response["sponsorship"]["nodeId"], "github:owner/repo")
         self.assertEqual(response["sponsorship"]["cardSpecificTdh"], 100)
         self.assertTrue(any(call.startswith("0xd2b85e96") for call in rpc.calls))
 
@@ -233,7 +334,7 @@ class RsoSweeperTest(unittest.TestCase):
         with self.assertRaisesRegex(SweeperError, "registered operator attester"):
             handle_signed_attestation(
                 make_artifact(),
-                operator={"attester": "0x" + "aa" * 20, "_backing": backed_operator()},
+                operator={"repository": "owner/repo", "attester": "0x" + "aa" * 20, "_backing": backed_operator()},
                 config=config,
                 rpc=rpc,
             )
@@ -245,7 +346,7 @@ class RsoSweeperTest(unittest.TestCase):
         with self.assertRaisesRegex(SweeperError, "daily backing snapshot"):
             handle_signed_attestation(
                 make_artifact(),
-                operator={"attester": "0x" + "bb" * 20},
+                operator={"repository": "owner/repo", "attester": "0x" + "bb" * 20},
                 config=config,
                 rpc=rpc,
             )
@@ -257,7 +358,7 @@ class RsoSweeperTest(unittest.TestCase):
         with self.assertRaisesRegex(SweeperError, "swept date"):
             handle_signed_attestation(
                 make_artifact(),
-                operator={"attester": "0x" + "bb" * 20, "_backing": backed_operator()},
+                operator={"repository": "owner/repo", "attester": "0x" + "bb" * 20, "_backing": backed_operator()},
                 config=config,
                 rpc=rpc,
                 expected_date="2026-06-02",
@@ -269,13 +370,24 @@ class RsoSweeperTest(unittest.TestCase):
         tx = "0x" + "44" * 32
 
         def fake_run(command, check, capture_output, text):
-            self.assertIn("--private-key", command)
+            command_text = " ".join(command)
+            self.assertIn("--keystore", command)
+            self.assertIn("--password-file", command)
+            self.assertNotIn("treasury-keystore-json", command_text)
+            self.assertNotIn("treasury-keystore-password", command_text)
             return subprocess.CompletedProcess(command, 0, stdout=f"transactionHash {tx}\n", stderr="")
 
-        with patch.dict("os.environ", {"RSO_SWEEPER_PRIVATE_KEY": "0xabc"}, clear=False):
+        with patch.dict(
+            "os.environ",
+            {
+                "RSO_SWEEPER_KEYSTORE_JSON": "treasury-keystore-json",
+                "RSO_SWEEPER_KEYSTORE_PASSWORD": "treasury-keystore-password",
+            },
+            clear=False,
+        ):
             response = handle_signed_attestation(
                 make_artifact(),
-                operator={"attester": "0x" + "bb" * 20, "_backing": backed_operator()},
+                operator={"repository": "owner/repo", "attester": "0x" + "bb" * 20, "_backing": backed_operator()},
                 config=config,
                 rpc=rpc,
                 run=fake_run,
@@ -318,7 +430,7 @@ def config_for_test(**overrides):
 
 def backed_operator():
     return {
-        "attester": "0x" + "bb" * 20,
+        "nodeId": "github:owner/repo",
         "cardSpecificTdh": 100,
         "backerCount": 2,
         "rank": 1,
