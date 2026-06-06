@@ -16,6 +16,7 @@ import http.cookiejar
 import ipaddress
 import json
 import os
+import re
 import socket
 import sys
 import tarfile
@@ -274,9 +275,26 @@ def validate_gp_records(records, min_count=MIN_OBJECT_COUNT, context="Space-Trac
             raise SnapshotError(f"{context} record {cat_id} missing fields: {missing_list}")
 
 
+# A NORAD catalog number is a canonical non-negative decimal integer: ASCII
+# digits only with no leading-zero alias ("0" itself is allowed; "05" is not).
+# This keeps the string form a bijection with the int used for sort/dedup, so
+# string-keyed uniqueness and int-keyed ordering can never disagree, and the
+# hashed catalog bytes stay reproducible across language implementations.
+# str.isdigit() is insufficient: it also accepts Unicode digits (Arabic-Indic,
+# fullwidth) and non-decimal digit characters (superscripts) that int() then
+# rejects or aliases. NORAD_CAT_ID is an integer, not a hash or 0x address;
+# identifiers that legitimately carry significant leading zeros are compared as
+# canonical strings elsewhere and are never int()-coerced.
+_CANONICAL_NORAD_CAT_ID = re.compile(r"0|[1-9][0-9]*")
+
+
+def is_canonical_norad_cat_id(value):
+    return isinstance(value, str) and _CANONICAL_NORAD_CAT_ID.fullmatch(value) is not None
+
+
 def validate_gp_record_values(record, *, index, context):
     cat_id = record.get("NORAD_CAT_ID")
-    if not isinstance(cat_id, str) or not cat_id.isdigit():
+    if not is_canonical_norad_cat_id(cat_id):
         raise SnapshotError(f"{context} record {index} has invalid NORAD_CAT_ID")
     for field, value in record.items():
         if not isinstance(field, str):
@@ -368,7 +386,7 @@ def records_by_cat_id(records):
     selected = {}
     for index, record in enumerate(records):
         cat_id = record.get("NORAD_CAT_ID")
-        if not isinstance(cat_id, str) or not cat_id.isdigit():
+        if not is_canonical_norad_cat_id(cat_id):
             raise SnapshotError(f"catalog record {index} has invalid NORAD_CAT_ID")
         if cat_id in selected:
             raise SnapshotError(f"duplicate NORAD_CAT_ID value: {cat_id}")
@@ -1353,6 +1371,10 @@ class NoRedirectHandler(urllib.request.HTTPRedirectHandler):
         return None
 
 
+def strip_authorization_headers(headers):
+    return {key: value for key, value in headers.items() if str(key).lower() != "authorization"}
+
+
 def fetch_url_bytes_with_redirects(url, *, timeout, max_bytes, headers, label, validate_url):
     opener = urllib.request.build_opener(NoRedirectHandler)
     current = url
@@ -1362,8 +1384,7 @@ def fetch_url_bytes_with_redirects(url, *, timeout, max_bytes, headers, label, v
         current_host = (urllib.parse.urlparse(current).hostname or "").lower()
         request_headers = dict(headers)
         if current_host != origin_host:
-            request_headers.pop("Authorization", None)
-            request_headers.pop("authorization", None)
+            request_headers = strip_authorization_headers(request_headers)
         request = urllib.request.Request(current, headers=request_headers)
         try:
             with opener.open(request, timeout=timeout) as response:
@@ -1371,10 +1392,13 @@ def fetch_url_bytes_with_redirects(url, *, timeout, max_bytes, headers, label, v
         except urllib.error.HTTPError as exc:
             if exc.code not in (301, 302, 303, 307, 308):
                 raise
-            location = exc.headers.get("location")
-            if not location:
-                raise SnapshotError(f"{label} redirect response is missing Location") from exc
-            current = urllib.parse.urljoin(current, location)
+            try:
+                location = exc.headers.get("location")
+                if not location:
+                    raise SnapshotError(f"{label} redirect response is missing Location") from exc
+                current = urllib.parse.urljoin(current, location)
+            finally:
+                exc.close()
     raise SnapshotError(f"{label} redirects too many times")
 
 
@@ -1854,6 +1878,7 @@ def reject_private_host(host, *, context):
             or ip.is_multicast
             or ip.is_reserved
             or ip.is_unspecified
+            or not ip.is_global
         ):
             raise SnapshotError(f"{context} resolves to a non-public address")
 

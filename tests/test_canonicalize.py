@@ -60,6 +60,21 @@ class CanonicalizeTests(unittest.TestCase):
         with self.assertRaisesRegex(snapshot.SnapshotError, "positive"):
             snapshot.read_limited(io.BytesIO(b"x"), 0)
 
+    def test_norad_cat_id_canonical_form(self):
+        for good in ("0", "4", "5", "25544", "270438"):
+            self.assertTrue(snapshot.is_canonical_norad_cat_id(good), good)
+        # Leading-zero aliases ("05" int-equals "5"), Unicode / non-decimal
+        # digits that str.isdigit() accepts, and non-strings must all be rejected
+        # so the string form stays a bijection with the int used for sort/dedup.
+        for bad in ("05", "00005", "", "5a", "-1", " 5", "٥", "\U0001d7d3", "²", "①"):
+            self.assertFalse(snapshot.is_canonical_norad_cat_id(bad), repr(bad))
+        self.assertFalse(snapshot.is_canonical_norad_cat_id(5))
+
+    def test_records_by_cat_id_rejects_noncanonical_ids(self):
+        for bad in ("05", "٥", "²"):
+            with self.assertRaisesRegex(snapshot.SnapshotError, "invalid NORAD_CAT_ID"):
+                snapshot.records_by_cat_id([{"NORAD_CAT_ID": bad}])
+
 
 if __name__ == "__main__":
     unittest.main()
