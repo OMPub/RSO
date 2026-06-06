@@ -27,7 +27,13 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from indexer.rso_profile import RSO_DOC_CHAIN_ID, describe_publication_uri, doc_ref_to_date  # noqa: E402
+from indexer.rso_profile import (  # noqa: E402
+    RSO_DOC_CHAIN_ID,
+    attestation_claim_fingerprint,
+    describe_publication_uri,
+    doc_ref_to_date,
+    normalize_node_id as normalize_profile_node_id,
+)
 from vendor.docchain.attestation import (  # noqa: E402
     attest_doc_calldata,
     cast_wallet_args_from_env,
@@ -42,6 +48,9 @@ from vendor.docchain.indexer import EthereumRpc, RpcError  # noqa: E402
 
 ARWEAVE_GATEWAY = "https://arweave.net"
 DEFAULT_SPONSORSHIP_LIMIT = 5
+DEFAULT_MAX_BACKED_NODE_DISCOVERY = 100
+DEFAULT_MAX_REPORT_RECORDS_PER_DATE = 1000
+MAX_ATTESTATION_URI_BYTES = 8192
 
 
 class SweeperError(ValueError):
@@ -168,6 +177,9 @@ def github_fork_operator_registry(repo: str, *, timeout: float) -> list[dict[str
 def normalize_github_repo(repo: str) -> str:
     if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repo):
         raise SweeperError("GitHub repository must be OWNER/REPO")
+    owner, name = repo.split("/", 1)
+    if owner in (".", "..") or name in (".", ".."):
+        raise SweeperError("GitHub repository must be OWNER/REPO")
     return repo
 
 
@@ -186,19 +198,10 @@ def operator_node_id(operator: Mapping[str, object]) -> str:
 
 
 def normalize_node_id(value: str) -> str:
-    text = value.strip().lower()
-    if not text:
-        raise SweeperError("nodeId must not be empty")
-    if text.startswith("github:"):
-        return github_node_id(text.removeprefix("github:"))
-    if "/" in text and ":" not in text:
-        return github_node_id(text)
-    if text.startswith("domain:"):
-        host = text.removeprefix("domain:")
-        if "/" in host or not re.fullmatch(r"[a-z0-9][a-z0-9.-]*[a-z0-9]", host):
-            raise SweeperError("domain nodeId must be domain:hostname")
-        return "domain:" + host
-    raise SweeperError("nodeId must use a supported scheme such as github:OWNER/REPO")
+    try:
+        return normalize_profile_node_id(value)
+    except ValueError as exc:
+        raise SweeperError(str(exc)) from exc
 
 
 def fetch_github_json_array(url: str, timeout: float) -> list[object]:
@@ -252,9 +255,16 @@ def normalize_backing_snapshot(
     expected_date: str | None = None,
 ) -> dict[str, dict[str, object]]:
     schema = raw.get("schema")
-    if schema not in (None, "rso-operator-backing-snapshot-v1", "rso-operator-backing-v1"):
+    if schema not in (
+        None,
+        "rso-operator-backing-snapshot-v1",
+        "rso-operator-backing-v1",
+        "rso-tdh-support-snapshot-v1",
+    ):
         raise SweeperError("unsupported backing snapshot schema")
     snapshot_date = str(raw.get("date", ""))
+    if schema == "rso-tdh-support-snapshot-v1" and not snapshot_date:
+        raise SweeperError("TDH support snapshot requires date")
     if expected_date is not None and snapshot_date and snapshot_date != expected_date:
         raise SweeperError("backing snapshot date does not match swept date")
     operators = raw.get("operators")
@@ -266,6 +276,8 @@ def normalize_backing_snapshot(
     if isinstance(operators, Mapping):
         for node_id, record in operators.items():
             normalized_node_id = normalize_node_id(str(node_id))
+            if normalized_node_id in normalized:
+                raise SweeperError("backing snapshot contains duplicate normalized node ids")
             normalized[normalized_node_id] = normalize_backing_record(
                 node_id=normalized_node_id,
                 record=record,
@@ -279,6 +291,8 @@ def normalize_backing_snapshot(
             if not isinstance(node_id, str):
                 raise SweeperError("operator backing record requires nodeId")
             normalized_node_id = normalize_node_id(node_id)
+            if normalized_node_id in normalized:
+                raise SweeperError("backing snapshot contains duplicate normalized node ids")
             normalized[normalized_node_id] = normalize_backing_record(
                 node_id=normalized_node_id,
                 record=record,
@@ -296,15 +310,17 @@ def normalize_backing_record(
     snapshot_date: str = "",
 ) -> dict[str, object]:
     if isinstance(record, Mapping):
-        card_specific_tdh = int(record.get("cardSpecificTdh", 0))
+        card_specific_tdh_backing = int(
+            record.get("cardSpecificTdhBacking", record.get("cardSpecificTdh", 0))
+        )
         backer_count = int(record.get("backerCount", 0))
         rank_raw = record.get("rank")
     else:
-        card_specific_tdh = int(record)
+        card_specific_tdh_backing = int(record)
         backer_count = 0
         rank_raw = None
-    if card_specific_tdh < 0:
-        raise SweeperError("cardSpecificTdh must not be negative")
+    if card_specific_tdh_backing < 0:
+        raise SweeperError("cardSpecificTdhBacking must not be negative")
     if backer_count < 0:
         raise SweeperError("backerCount must not be negative")
     rank = int(rank_raw) if rank_raw is not None else 0
@@ -312,7 +328,7 @@ def normalize_backing_record(
         raise SweeperError("rank must not be negative")
     return {
         "nodeId": normalize_node_id(node_id),
-        "cardSpecificTdh": card_specific_tdh,
+        "cardSpecificTdhBacking": card_specific_tdh_backing,
         "backerCount": backer_count,
         "rank": rank,
         "snapshotDate": snapshot_date,
@@ -336,7 +352,7 @@ def eligible_operators(
         backing_record = backing.get(node_id)
         if not backing_record:
             continue
-        if int(backing_record["cardSpecificTdh"]) < min_card_specific_tdh:
+        if int(backing_record["cardSpecificTdhBacking"]) < min_card_specific_tdh:
             continue
         enriched = dict(operator)
         enriched["nodeId"] = node_id
@@ -346,23 +362,70 @@ def eligible_operators(
     return eligible if limit == 0 else eligible[:limit]
 
 
+def augment_operators_with_backed_github_nodes(
+    operators: list[dict[str, object]],
+    backing: Mapping[str, dict[str, object]],
+    *,
+    limit: int = DEFAULT_MAX_BACKED_NODE_DISCOVERY,
+) -> list[dict[str, object]]:
+    if limit < 0:
+        raise SweeperError("backed-node discovery limit must not be negative")
+    augmented = [dict(operator) for operator in operators]
+    seen = {operator_node_id(operator) for operator in augmented}
+    ranked = sorted(
+        backing.values(),
+        key=lambda record: (
+            -int(record.get("cardSpecificTdhBacking", 0)),
+            int(record.get("rank", 0)) or 1_000_000_000,
+            str(record.get("nodeId", "")),
+        ),
+    )
+    added = 0
+    for record in ranked:
+        node_id = normalize_node_id(str(record.get("nodeId", "")))
+        if node_id in seen or not node_id.startswith("github:"):
+            continue
+        if limit and added >= limit:
+            break
+        repository = node_id.removeprefix("github:")
+        augmented.append(
+            {
+                "name": repository,
+                "nodeId": node_id,
+                "repository": repository,
+                "branch": "node",
+                "source": "tdh-support-snapshot",
+            }
+        )
+        seen.add(node_id)
+        added += 1
+    return augmented
+
+
 def operator_sponsorship_sort_key(operator: Mapping[str, object]) -> tuple[int, int, str]:
     backing = operator.get("_backing")
     if not isinstance(backing, Mapping):
         raise SweeperError("eligible operator is missing backing")
     rank = int(backing.get("rank", 0))
     rank_sort = rank if rank > 0 else 1_000_000_000
-    return (-int(backing.get("cardSpecificTdh", 0)), rank_sort, str(operator.get("name", operator.get("attester", ""))))
+    return (
+        -int(backing.get("cardSpecificTdhBacking", 0)),
+        rank_sort,
+        str(operator.get("name", operator.get("attester", ""))),
+    )
 
 
 def signed_attestation_url(operator: Mapping[str, object], snapshot_date: str) -> str:
     template = operator.get("signedAttestationUrlTemplate")
     if isinstance(template, str) and template:
         return template.format(date=snapshot_date)
-    repository = str(operator.get("repository", ""))
+    repository = normalize_github_repo(str(operator.get("repository", "")))
     branch = str(operator.get("branch", "node"))
-    if not repository or "/" not in repository:
-        raise SweeperError("operator requires repository or signedAttestationUrlTemplate")
+    if (
+        not re.fullmatch(r"[A-Za-z0-9_.-]+", branch)
+        or branch in (".", "..")
+    ):
+        raise SweeperError("operator branch must be a simple Git ref name")
     return (
         "https://raw.githubusercontent.com/"
         + repository.strip("/")
@@ -372,6 +435,34 @@ def signed_attestation_url(operator: Mapping[str, object], snapshot_date: str) -
         + urllib.parse.quote(snapshot_date, safe="")
         + ".json"
     )
+
+
+def validate_node_artifact_url(url: str, node_id: str) -> None:
+    parsed = urllib.parse.urlparse(url)
+    if parsed.scheme != "https" or not parsed.hostname:
+        raise SweeperError("signed node artifact URL must use HTTPS")
+    host = parsed.hostname.lower()
+    normalized_node_id = normalize_node_id(node_id)
+    if normalized_node_id.startswith("github:"):
+        expected_repo = normalized_node_id.removeprefix("github:")
+        parts = [
+            urllib.parse.unquote(part).lower()
+            for part in parsed.path.split("/")
+            if part
+        ]
+        if (
+            host != "raw.githubusercontent.com"
+            or len(parts) < 2
+            or "/".join(parts[:2]) != expected_repo
+        ):
+            raise SweeperError("signed node artifact URL does not belong to selected GitHub node")
+        return
+    if normalized_node_id.startswith("domain:"):
+        expected_host = normalized_node_id.removeprefix("domain:")
+        if host != expected_host:
+            raise SweeperError("signed node artifact URL does not belong to selected domain node")
+        return
+    raise SweeperError("unsupported nodeId scheme")
 
 
 def operator_label(operator: Mapping[str, object]) -> str:
@@ -394,9 +485,10 @@ def candidate_operator_payloads(
         if not backing_record:
             records.append({"operator": label, "nodeId": node_id, "status": "not_backed"})
             continue
-        expected_attester = operator.get("attester")
-        url = signed_attestation_url(operator, snapshot_date)
+        url = ""
         try:
+            url = signed_attestation_url(operator, snapshot_date)
+            validate_node_artifact_url(url, node_id)
             payload = fetch_json_url(
                 url,
                 config.request_timeout,
@@ -404,17 +496,30 @@ def candidate_operator_payloads(
                 retry_delay=config.fetch_retry_delay,
                 max_bytes=config.max_json_bytes,
             )
-            attester = attester_from_signed_payload(payload)
-            if isinstance(expected_attester, str) and normalize_address(expected_attester) != attester:
-                raise SweeperError("signed artifact attester does not match operator registry")
+            attestation = attestation_from_signed_payload(payload)
+            validate_expected_date(payload, attestation, snapshot_date)
+            authorization = validate_node_authorization(operator, payload, attestation)
             enriched = dict(operator)
             enriched["nodeId"] = node_id
-            enriched["attester"] = attester
+            enriched["attester"] = authorization["attestationAttester"]
             enriched["_backing"] = dict(backing_record)
             enriched["_payload"] = payload
             enriched["_url"] = url
             candidates.append(enriched)
-            records.append({"operator": label, "nodeId": node_id, "status": "candidate", "attester": attester})
+            records.append(
+                {
+                    "operator": label,
+                    "nodeId": node_id,
+                    "status": "candidate",
+                    "authorizationStatus": "pending_signature",
+                    "publicationStatus": "pending",
+                    "declarationUrl": url,
+                    "claimFingerprint": attestation_claim_fingerprint(attestation),
+                    "observedAt": utc_now(),
+                    "backing": dict(backing_record),
+                    **authorization,
+                }
+            )
         except urllib.error.HTTPError as exc:
             status = "missing" if exc.code == 404 else "deferred"
             records.append({"operator": label, "nodeId": node_id, "status": status, "error": f"HTTP {exc.code}", "url": url})
@@ -424,15 +529,66 @@ def candidate_operator_payloads(
     return candidates, records
 
 
-def attester_from_signed_payload(payload: Mapping[str, object]) -> str:
+def attestation_from_signed_payload(payload: Mapping[str, object]) -> Mapping[str, object]:
     signed = extract_signed(payload)
-    prepared = signed["prepared"]
+    prepared = signed.get("prepared")
     if not isinstance(prepared, Mapping):
         raise SweeperError("signed.prepared must be an object")
-    attestation = prepared["attestation"]
+    attestation = prepared.get("attestation")
     if not isinstance(attestation, Mapping):
         raise SweeperError("prepared.attestation must be an object")
-    return normalize_address(attestation["attester"])
+    return attestation
+
+
+def node_declaration_from_payload(payload: Mapping[str, object]) -> dict[str, str]:
+    if payload.get("schema") != "rso-signed-attestation-v1":
+        raise SweeperError("backed node sponsorship requires an RSO signed artifact")
+    node = payload.get("node")
+    if not isinstance(node, Mapping):
+        raise SweeperError("RSO signed artifact requires a node declaration")
+    node_id = normalize_node_id(str(node.get("nodeId", "")))
+    attester = normalize_address(node.get("attester"))
+    canonical = json.dumps(
+        dict(node),
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return {
+        "declaredNodeId": node_id,
+        "declaredAttester": attester,
+        "declarationSha256": hashlib.sha256(canonical).hexdigest(),
+    }
+
+
+def validate_node_authorization(
+    operator: Mapping[str, object],
+    payload: Mapping[str, object],
+    attestation: Mapping[str, object],
+) -> dict[str, str]:
+    selected_node_id = operator_node_id(operator)
+    declaration = node_declaration_from_payload(payload)
+    attestation_attester = normalize_address(attestation["attester"])
+    expected_attester = operator.get("attester")
+    if expected_attester and normalize_address(expected_attester) != attestation_attester:
+        raise SweeperError("signed attestation does not match registered operator attester")
+    publication = publication_from_attestation(attestation)
+    claimed_node_id = str(publication.get("nodeId", ""))
+    if not claimed_node_id:
+        raise SweeperError("backed node attestation requires a signed publication nodeId")
+    if declaration["declaredNodeId"] != selected_node_id:
+        raise SweeperError("node declaration does not match selected nodeId")
+    if claimed_node_id != selected_node_id:
+        raise SweeperError("signed publication nodeId does not match selected nodeId")
+    if declaration["declaredAttester"] != attestation_attester:
+        raise SweeperError("node declaration attester does not match signed attestation")
+    return {
+        "nodeBindingStatus": "aligned",
+        "nodeId": selected_node_id,
+        "claimedNodeId": claimed_node_id,
+        "declaredAttester": declaration["declaredAttester"],
+        "attestationAttester": attestation_attester,
+        "declarationSha256": declaration["declarationSha256"],
+    }
 
 
 def fetch_json_url(
@@ -498,15 +654,7 @@ def validate_prepared_context(prepared: Mapping[str, object], config: SweeperCon
         raise SweeperError("attestation deadline has expired")
 
 
-def validate_operator(operator: Mapping[str, object], attestation: Mapping[str, object]) -> str:
-    attester = normalize_address(attestation["attester"])
-    expected_attester = operator.get("attester")
-    if expected_attester and normalize_address(expected_attester) != attester:
-        raise SweeperError("signed attestation does not match registered operator attester")
-    return attester
-
-
-def sponsorship_record(operator: Mapping[str, object], attester: str) -> dict[str, object]:
+def sponsorship_record(operator: Mapping[str, object]) -> dict[str, object]:
     backing = operator.get("_backing")
     if not isinstance(backing, Mapping):
         raise SweeperError("operator is not present in the daily backing snapshot")
@@ -516,35 +664,55 @@ def sponsorship_record(operator: Mapping[str, object], attester: str) -> dict[st
         record=backing,
         snapshot_date=str(backing.get("snapshotDate", "")),
     )
-    if int(normalized["cardSpecificTdh"]) <= 0:
+    if int(normalized["cardSpecificTdhBacking"]) <= 0:
         raise SweeperError("operator has no card-specific TDH backing")
     return {
         "status": "eligible",
-        "scheme": "rso-operator-backing-snapshot",
+        "scheme": "rso-tdh-support-snapshot",
         "tdhBoundary": "daily",
         "snapshotDate": normalized["snapshotDate"],
         "nodeId": node_id,
-        "operatorAttester": attester,
-        "cardSpecificTdh": normalized["cardSpecificTdh"],
+        "cardSpecificTdhBacking": normalized["cardSpecificTdhBacking"],
         "backerCount": normalized["backerCount"],
         "rank": normalized["rank"],
         "checkedAt": utc_now(),
     }
 
 
-def validate_uri(attestation: Mapping[str, object], config: SweeperConfig) -> None:
+def publication_from_attestation(attestation: Mapping[str, object]) -> dict[str, object]:
     uri = str(attestation.get("uri", ""))
+    try:
+        return describe_publication_uri(uri)
+    except ValueError as exc:
+        raise SweeperError(str(exc)) from exc
+
+
+def validate_uri(
+    attestation: Mapping[str, object],
+    config: SweeperConfig,
+    *,
+    expected_node_id: str | None = None,
+) -> dict[str, object]:
+    uri = str(attestation.get("uri", ""))
+    if len(uri.encode("utf-8")) > MAX_ATTESTATION_URI_BYTES:
+        raise SweeperError("attestation URI exceeds contract size limit")
     if not uri:
-        if config.require_uri:
+        if config.require_uri or expected_node_id:
             raise SweeperError("sweeper sponsorship requires a verifiable publication URI")
-        return
+        return {
+            "publicationStatus": "not_required",
+            "nodeId": "",
+            "bundleSha256": "",
+            "contentHash": "",
+            "locations": [],
+        }
     doc_block = attestation["docBlock"]
     assert isinstance(doc_block, Mapping)
     expected_content_hash = normalize_bytes32(doc_block["contentHash"])
-    try:
-        publication = describe_publication_uri(uri)
-    except ValueError as exc:
-        raise SweeperError(str(exc)) from exc
+    publication = publication_from_attestation(attestation)
+    publication_node_id = str(publication.get("nodeId", ""))
+    if expected_node_id and publication_node_id != normalize_node_id(expected_node_id):
+        raise SweeperError("signed publication nodeId does not match selected nodeId")
     locations = publication.get("locations", [])
     if not isinstance(locations, list) or not locations:
         raise SweeperError("publication URI does not contain any locations")
@@ -556,6 +724,13 @@ def validate_uri(attestation: Mapping[str, object], config: SweeperConfig) -> No
         if expected_bundle_sha256:
             validate_bundle_sha256(bundle_bytes, expected_bundle_sha256)
         validate_release_bundle(bundle_bytes, expected_content_hash, config)
+    return {
+        "publicationStatus": "verified",
+        "nodeId": publication_node_id,
+        "bundleSha256": expected_bundle_sha256,
+        "contentHash": expected_content_hash,
+        "locations": list(locations),
+    }
 
 
 def validate_bundle_sha256(bundle_bytes: bytes, expected_bundle_sha256: str) -> None:
@@ -596,6 +771,10 @@ def fetch_uri_bytes_once(uri: str, config: SweeperConfig) -> bytes:
     )
 
 
+def strip_authorization_headers(headers: Mapping[str, str]) -> dict[str, str]:
+    return {key: value for key, value in headers.items() if str(key).lower() != "authorization"}
+
+
 def fetch_url_bytes_with_redirects(
     url: str,
     *,
@@ -607,13 +786,13 @@ def fetch_url_bytes_with_redirects(
 ) -> bytes:
     opener = urllib.request.build_opener(NoRedirectHandler)
     current = url
-    origin_host = urllib.parse.urlparse(url).hostname or ""
+    origin_host = (urllib.parse.urlparse(url).hostname or "").lower()
     for _redirect in range(4):
         validate_fetch_url(current)
+        current_host = (urllib.parse.urlparse(current).hostname or "").lower()
         request_headers = dict(headers)
-        if not allow_authorized_redirects and (urllib.parse.urlparse(current).hostname or "") != origin_host:
-            request_headers.pop("authorization", None)
-            request_headers.pop("Authorization", None)
+        if not allow_authorized_redirects and current_host != origin_host:
+            request_headers = strip_authorization_headers(request_headers)
         request = urllib.request.Request(current, headers=request_headers)
         try:
             with opener.open(request, timeout=timeout) as response:
@@ -621,10 +800,13 @@ def fetch_url_bytes_with_redirects(
         except urllib.error.HTTPError as exc:
             if exc.code not in (301, 302, 303, 307, 308):
                 raise
-            location = exc.headers.get("location")
-            if not location:
-                raise SweeperError(f"{label} redirect response is missing Location") from exc
-            current = urllib.parse.urljoin(current, location)
+            try:
+                location = exc.headers.get("location")
+                if not location:
+                    raise SweeperError(f"{label} redirect response is missing Location") from exc
+                current = urllib.parse.urljoin(current, location)
+            finally:
+                exc.close()
     raise SweeperError(f"{label} redirects too many times")
 
 
@@ -682,6 +864,7 @@ def reject_private_host(host: str) -> None:
             or ip.is_multicast
             or ip.is_reserved
             or ip.is_unspecified
+            or not ip.is_global
         ):
             raise SweeperError("publication URI resolves to a non-public address")
 
@@ -782,17 +965,37 @@ def handle_signed_attestation(
     validate_prepared_context(prepared, config)
     if expected_date is not None:
         validate_expected_date(payload, attestation, expected_date)
-    attester = validate_operator(operator, attestation)
-    sponsorship = sponsorship_record(operator, attester)
+    authorization = validate_node_authorization(operator, payload, attestation)
+    sponsorship = sponsorship_record(operator)
     rpc_client = rpc or EthereumRpc(config.rpc_url, timeout=config.request_timeout)
-    validate_uri(attestation, config)
+    publication = validate_uri(
+        attestation,
+        config,
+        expected_node_id=authorization["nodeId"],
+    )
+    evidence = {
+        **authorization,
+        "authorizationStatus": "verified",
+        "nodeBindingStatus": "verified",
+        "publicationStatus": publication["publicationStatus"],
+        "bundleSha256": publication["bundleSha256"],
+        "contentHash": publication["contentHash"],
+        "locations": publication["locations"],
+        "claimFingerprint": attestation_claim_fingerprint(attestation),
+        "declarationUrl": str(operator.get("_url", "")),
+        "observedAt": utc_now(),
+    }
     signature = normalize_hex_bytes(signed["signature"])
     calldata = attest_doc_calldata(attestation, signature)
     try:
         simulation = simulate_attest_doc(rpc_client, config.docchain_address, calldata)
     except RpcError as exc:
         if is_duplicate_error(str(exc)):
-            return {"status": "duplicate", "operatorAttester": attester, "sponsorship": sponsorship}
+            return {
+                "status": "duplicate",
+                "sponsorship": sponsorship,
+                **evidence,
+            }
         raise
     if config.dry_run:
         transaction_hash = ""
@@ -806,8 +1009,8 @@ def handle_signed_attestation(
         "blockHash": simulation["blockHash"],
         "uriHash": simulation["uriHash"],
         "attestationKey": simulation["attestationKey"],
-        "operatorAttester": attester,
         "sponsorship": sponsorship,
+        **evidence,
     }
 
 
@@ -952,8 +1155,18 @@ def main() -> int:
                     date_report["status"] = "missing_backing"
                     continue
                 raise
-            candidate_operators, discovery_records = candidate_operator_payloads(
+            daily_operators = augment_operators_with_backed_github_nodes(
                 operators,
+                backing,
+                limit=int(
+                    os.environ.get(
+                        "RSO_SWEEPER_MAX_BACKED_NODE_DISCOVERY",
+                        str(DEFAULT_MAX_BACKED_NODE_DISCOVERY),
+                    )
+                ),
+            )
+            candidate_operators, discovery_records = candidate_operator_payloads(
+                daily_operators,
                 backing,
                 snapshot_date=snapshot_date,
                 config=config,
@@ -962,7 +1175,7 @@ def main() -> int:
             candidate_operators = [
                 operator
                 for operator in candidate_operators
-                if int(operator["_backing"]["cardSpecificTdh"]) >= args.min_tdh
+                if int(operator["_backing"]["cardSpecificTdhBacking"]) >= args.min_tdh
             ]
             candidate_operators.sort(key=operator_sponsorship_sort_key)
             selected_operators = candidate_operators if args.limit == 0 else candidate_operators[: args.limit]
@@ -985,10 +1198,7 @@ def main() -> int:
                     date_report["operators"].append(
                         {
                             "operator": label,
-                            "nodeId": operator.get("nodeId", ""),
-                            "attester": result.get("operatorAttester"),
-                            "status": result["status"],
-                            "transactionHash": result.get("transactionHash", ""),
+                            **result,
                         }
                     )
                 except urllib.error.HTTPError as exc:
@@ -1087,7 +1297,70 @@ def write_date_reports(report_dir: Path, report: Mapping[str, object]) -> None:
             "finishedAt": report.get("finishedAt", ""),
             **dict(date_report),
         }
-        write_json_report(report_dir / f"{snapshot_date}.json", payload)
+        path = report_dir / f"{snapshot_date}.json"
+        if path.exists():
+            existing = json.loads(path.read_text(encoding="utf-8"))
+            if not isinstance(existing, Mapping):
+                raise SweeperError(f"{path} must contain a JSON object")
+            payload = merge_date_report(existing, payload)
+        write_json_report(path, payload)
+
+
+def merge_date_report(
+    existing: Mapping[str, object],
+    current: Mapping[str, object],
+    *,
+    max_records: int = DEFAULT_MAX_REPORT_RECORDS_PER_DATE,
+) -> dict[str, object]:
+    if max_records < 1:
+        raise SweeperError("maximum report records per date must be positive")
+    if existing.get("schema") != "rso-sweeper-date-report-v1":
+        raise SweeperError("existing sweeper date report has unsupported schema")
+    if existing.get("date") != current.get("date"):
+        raise SweeperError("cannot merge sweeper reports for different dates")
+    combined = []
+    seen = set()
+    for source in (existing.get("operators", []), current.get("operators", [])):
+        if not isinstance(source, list):
+            raise SweeperError("sweeper date report operators must be an array")
+        for record in source:
+            if not isinstance(record, Mapping):
+                continue
+            normalized = dict(record)
+            key = json.dumps(normalized, sort_keys=True, separators=(",", ":"))
+            if key not in seen:
+                seen.add(key)
+                combined.append(normalized)
+    completed = [record for record in combined if is_completed_verification_record(record)]
+    if len(completed) > max_records:
+        raise SweeperError("verified sweeper report history exceeds record limit")
+    completed_keys = {
+        json.dumps(record, sort_keys=True, separators=(",", ":"))
+        for record in completed
+    }
+    remaining = [
+        record
+        for record in combined
+        if json.dumps(record, sort_keys=True, separators=(",", ":")) not in completed_keys
+    ]
+    remaining_capacity = max_records - len(completed)
+    retained = completed + (remaining[-remaining_capacity:] if remaining_capacity else [])
+    return {
+        **dict(current),
+        "firstStartedAt": existing.get(
+            "firstStartedAt",
+            existing.get("startedAt", current.get("startedAt", "")),
+        ),
+        "operators": retained,
+    }
+
+
+def is_completed_verification_record(record: Mapping[str, object]) -> bool:
+    return (
+        record.get("status") in ("submitted", "duplicate", "simulated")
+        and record.get("authorizationStatus") == "verified"
+        and record.get("publicationStatus") == "verified"
+    )
 
 
 if __name__ == "__main__":

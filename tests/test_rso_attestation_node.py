@@ -4,6 +4,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
+from attestation import node_attest as node_cli
 from attestation import rso_attestation as node
 from indexer.rso_profile import describe_publication_uri
 
@@ -11,6 +12,14 @@ from indexer.rso_profile import describe_publication_uri
 class RsoAttestationNodeTest(unittest.TestCase):
     def test_doc_ref_for_date(self):
         self.assertEqual(node.doc_ref_for_date("2026-05-28"), 20260528000000)
+
+    def test_node_cli_default_ttl_allows_multiple_sweeper_retries(self):
+        with patch.dict("os.environ", {}, clear=True), patch(
+            "sys.argv",
+            ["node_attest.py", "--start", "2026-05-28", "--end", "2026-05-28"],
+        ):
+            args = node_cli.parse_args()
+        self.assertEqual(args.ttl, node_cli.MAX_ATTESTATION_TTL)
 
     def test_parent_hash_for_baseline_is_zero(self):
         self.assertEqual(
@@ -83,7 +92,10 @@ class RsoAttestationNodeTest(unittest.TestCase):
             )
 
             with patch.object(node, "DATA_DIR", data_dir):
-                publication = describe_publication_uri(node.release_uri("2026-05-28"))
+                publication = describe_publication_uri(
+                    node.release_uri("2026-05-28", node_id="github:owner/repo")
+                )
+                self.assertEqual(publication["nodeId"], "github:owner/repo")
                 self.assertEqual(publication["bundleSha256"], "aa" * 32)
                 self.assertEqual(
                     publication["locations"],
@@ -164,6 +176,15 @@ class RsoAttestationNodeTest(unittest.TestCase):
 
             with patch.object(node, "DATA_DIR", data_dir):
                 self.assertEqual(node.release_uri("2026-05-28"), "ar://abc123")
+                with self.assertRaisesRegex(ValueError, "bundle fingerprint"):
+                    node.release_uri("2026-05-28", node_id="github:owner/repo")
+
+    def test_release_uri_rejects_node_attestation_without_publication_location(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            with patch.object(node, "DATA_DIR", Path(tmpdir) / "data"):
+                self.assertEqual(node.release_uri("2026-05-28"), "")
+                with self.assertRaisesRegex(ValueError, "publication location"):
+                    node.release_uri("2026-05-28", node_id="github:owner/repo")
 
     def test_prepare_sign_records_signed_artifact_and_state_entry(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -205,6 +226,7 @@ class RsoAttestationNodeTest(unittest.TestCase):
                             contract_address="0x" + "aa" * 20,
                             attester="0x" + "bb" * 20,
                             on_behalf_of="0x" + "cc" * 20,
+                            node_id="github:owner/repo",
                         )
 
             self.assertEqual(prepared.parent_hash, node.ZERO_BYTES32)
@@ -212,6 +234,7 @@ class RsoAttestationNodeTest(unittest.TestCase):
             self.assertEqual(prepared.content_hash, "0x" + "11" * 32)
             publication = describe_publication_uri(prepared.uri)
             self.assertEqual(publication["bundleSha256"], "dd" * 32)
+            self.assertEqual(publication["nodeId"], "github:owner/repo")
             self.assertEqual(
                 publication["locations"],
                 [
@@ -220,6 +243,8 @@ class RsoAttestationNodeTest(unittest.TestCase):
             )
             self.assertEqual(artifact["schema"], "rso-signed-attestation-v1")
             self.assertEqual(artifact["blockHash"], "0x" + "22" * 32)
+            self.assertEqual(artifact["node"]["nodeId"], "github:owner/repo")
+            self.assertEqual(artifact["node"]["attester"], "0x" + "bb" * 20)
             entry = node.state_entry_from_signed_artifact(
                 snapshot_date="2026-04-20",
                 prepared=prepared.prepared,

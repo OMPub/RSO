@@ -8,6 +8,7 @@ from sweeper.check_sweeper_report import (
     issue_body,
     node_records,
     normalize_node_id,
+    normalize_snapshot_date,
     read_limited,
     report_url_for,
     validate_report_url,
@@ -37,6 +38,18 @@ class SweeperReportCheckTest(unittest.TestCase):
     def test_node_id_normalization_defaults_github_scheme(self):
         self.assertEqual(normalize_node_id("Owner/RSO"), "github:owner/rso")
         self.assertEqual(normalize_node_id("GitHub:Owner/RSO"), "github:owner/rso")
+        self.assertEqual(normalize_node_id("domain:node.example.com"), "domain:node.example.com")
+        with self.assertRaisesRegex(ReportCheckError, "domain:hostname"):
+            normalize_node_id("domain:node..example.com")
+        with self.assertRaisesRegex(ReportCheckError, "GitHub node id"):
+            normalize_node_id("github:../repo")
+
+    def test_report_date_must_be_a_real_calendar_date(self):
+        self.assertEqual(normalize_snapshot_date("2026-06-04"), "2026-06-04")
+        for value in ("2026-06-04/other", "2026-02-30", "not-a-date"):
+            with self.subTest(value=value):
+                with self.assertRaises(ReportCheckError):
+                    normalize_snapshot_date(value)
 
     def test_classify_submitted_node_as_healthy(self):
         status = classify_node_status(

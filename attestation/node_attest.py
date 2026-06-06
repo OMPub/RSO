@@ -28,6 +28,7 @@ from attestation.rso_attestation import (  # noqa: E402
     state_entry_from_signed_artifact,
     write_signed_artifact,
 )
+from indexer.rso_profile import normalize_node_id  # noqa: E402
 from vendor.docchain.attestation import (  # noqa: E402
     has_cast_wallet_config,
     normalize_address,
@@ -53,7 +54,7 @@ def main() -> int:
                 bootstrap_parent_hash=args.bootstrap_parent_hash,
             )
             content_hash = content_hash_from_manifest(load_manifest(snapshot_date))
-            uri = release_uri(snapshot_date, mode=args.uri_mode)
+            uri = release_uri(snapshot_date, mode=args.uri_mode, node_id=args.node_id)
             existing = state_attestation_for_inputs(
                 state,
                 snapshot_date=snapshot_date,
@@ -78,6 +79,7 @@ def main() -> int:
                 bootstrap_parent_hash=args.bootstrap_parent_hash,
                 ttl=args.ttl,
                 network=args.network,
+                node_id=args.node_id,
                 repository=args.repository,
                 workflow_run_id=args.workflow_run_id,
                 cast=args.cast,
@@ -133,6 +135,11 @@ def parse_args() -> argparse.Namespace:
         help="Disposable EOA public address matching the configured private key.",
     )
     parser.add_argument(
+        "--node-id",
+        default=os.environ.get("RSO_NODE_ID") or default_node_id(),
+        help="Stable node identity claimed inside the signed publication locator.",
+    )
+    parser.add_argument(
         "--on-behalf-of",
         default=os.environ.get("RSO_ON_BEHALF_OF_ADDRESS", ZERO_ADDRESS),
         help="6529 identity/card-holding address represented by the disposable EOA.",
@@ -157,7 +164,11 @@ def parse_args() -> argparse.Namespace:
         default=os.environ.get("RSO_ATTESTATION_BOOTSTRAP_PARENT_HASH"),
         help="One-time parent blockHash for joining an already-started DocChain.",
     )
-    parser.add_argument("--ttl", type=int, default=int(os.environ.get("RSO_ATTESTATION_TTL", "86400")))
+    parser.add_argument(
+        "--ttl",
+        type=int,
+        default=int(os.environ.get("RSO_ATTESTATION_TTL", str(MAX_ATTESTATION_TTL))),
+    )
     parser.add_argument("--repository", default=os.environ.get("GITHUB_REPOSITORY", ""))
     parser.add_argument("--workflow-run-id", default=os.environ.get("GITHUB_RUN_ID", ""))
     parser.add_argument("--cast", default=os.environ.get("CAST"))
@@ -173,10 +184,18 @@ def should_skip(args: argparse.Namespace) -> bool:
         return True
     if not args.contract_address:
         return True
+    if not args.node_id:
+        raise ValueError("RSO_NODE_ID or GITHUB_REPOSITORY is required for node attestations")
+    args.node_id = normalize_node_id(args.node_id)
     normalize_address(args.attester)
     normalize_address(args.on_behalf_of)
     normalize_address(args.contract_address)
     return False
+
+
+def default_node_id() -> str:
+    repository = os.environ.get("GITHUB_REPOSITORY", "")
+    return "github:" + repository if repository else ""
 
 
 if __name__ == "__main__":

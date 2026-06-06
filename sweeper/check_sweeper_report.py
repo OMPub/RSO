@@ -7,6 +7,7 @@ import argparse
 import json
 import os
 import ipaddress
+import re
 import socket
 import sys
 import urllib.error
@@ -15,6 +16,12 @@ import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Mapping
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from indexer.rso_profile import normalize_node_id as normalize_profile_node_id  # noqa: E402
 
 
 ACTIONABLE_STATUSES = frozenset({"missing", "deferred", "failed", "error", "not_found"})
@@ -32,16 +39,17 @@ class ReportCheckError(ValueError):
 def main() -> int:
     try:
         args = parse_args()
+        snapshot_date = normalize_snapshot_date(args.date)
         report_url = args.report_url or report_url_for(
             repo=args.report_repo,
             branch=args.report_branch,
             path_template=args.report_path_template,
-            snapshot_date=args.date,
+            snapshot_date=snapshot_date,
         )
         report = fetch_report(report_url, timeout=args.timeout)
         node_id = normalize_node_id(args.node_id)
         status = classify_node_status(report, node_id=node_id)
-        print(f"{args.date} {node_id}: {status['status']}")
+        print(f"{snapshot_date} {node_id}: {status['status']}")
         if args.dry_run:
             print(json.dumps(status, indent=2, sort_keys=True))
             return 0
@@ -54,7 +62,7 @@ def main() -> int:
             issue_repo=issue_repo,
             token=token,
             node_id=node_id,
-            snapshot_date=args.date,
+            snapshot_date=snapshot_date,
             report_url=report_url,
             status=status,
             labels=args.labels,
@@ -92,6 +100,16 @@ def parse_args() -> argparse.Namespace:
 
 def yesterday_utc() -> str:
     return (datetime.now(timezone.utc).date() - timedelta(days=1)).isoformat()
+
+
+def normalize_snapshot_date(value: str) -> str:
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+        raise ReportCheckError("report date must be YYYY-MM-DD")
+    try:
+        parsed = datetime.strptime(value, "%Y-%m-%d").date()
+    except ValueError as exc:
+        raise ReportCheckError("report date must be a valid YYYY-MM-DD date") from exc
+    return parsed.isoformat()
 
 
 def default_node_id() -> str:
@@ -153,6 +171,7 @@ def reject_private_host(host: str, *, context: str) -> None:
             or ip.is_multicast
             or ip.is_reserved
             or ip.is_unspecified
+            or not ip.is_global
         ):
             raise ReportCheckError(f"{context} resolves to a non-public address")
 
@@ -317,22 +336,33 @@ def markdown_fence(content: str) -> str:
     return "`" * max(3, longest + 1)
 
 
-def find_open_issue(*, issue_repo: str, token: str, title: str) -> dict[str, object] | None:
-    issues = github_request(
-        "GET",
-        issue_repo,
-        "/issues?state=open&per_page=100",
-        token=token,
-    )
-    if not isinstance(issues, list):
-        raise ReportCheckError("GitHub issues response must be an array")
-    for issue in issues:
-        if not isinstance(issue, dict):
-            continue
-        if "pull_request" in issue:
-            continue
-        if issue.get("title") == title:
-            return issue
+def find_open_issue(
+    *, issue_repo: str, token: str, title: str, max_pages: int = 20
+) -> dict[str, object] | None:
+    # Paginate the open issues. The canonical sweeper-alert issue is deduped by
+    # title; without pagination it would fall off page 1 once the repo has >100
+    # newer open issues, causing a duplicate alert to be opened and the real one
+    # to never be updated/closed. Capped at max_pages (2000 issues) as a backstop.
+    for page in range(1, max_pages + 1):
+        issues = github_request(
+            "GET",
+            issue_repo,
+            f"/issues?state=open&per_page=100&page={page}",
+            token=token,
+        )
+        if not isinstance(issues, list):
+            raise ReportCheckError("GitHub issues response must be an array")
+        if not issues:
+            return None
+        for issue in issues:
+            if not isinstance(issue, dict):
+                continue
+            if "pull_request" in issue:
+                continue
+            if issue.get("title") == title:
+                return issue
+        if len(issues) < 100:
+            return None
     return None
 
 
@@ -401,24 +431,19 @@ def github_request(
 
 def normalize_github_repo(repo: str) -> str:
     text = repo.strip()
-    if "/" not in text:
+    if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", text):
         raise ReportCheckError("GitHub repository must be OWNER/REPO")
     owner, name = text.split("/", 1)
-    if not owner or not name or "/" in name:
+    if owner in (".", "..") or name in (".", ".."):
         raise ReportCheckError("GitHub repository must be OWNER/REPO")
-    return owner + "/" + name
+    return text
 
 
 def normalize_node_id(node_id: str) -> str:
-    text = node_id.strip().lower()
-    if not text:
-        raise ReportCheckError("node id is not configured")
-    if text.startswith("github:"):
-        repo = normalize_github_repo(text.removeprefix("github:"))
-        return "github:" + repo.lower()
-    if "/" in text and ":" not in text:
-        return "github:" + normalize_github_repo(text).lower()
-    return text
+    try:
+        return normalize_profile_node_id(node_id)
+    except ValueError as exc:
+        raise ReportCheckError(str(exc)) from exc
 
 
 if __name__ == "__main__":

@@ -11,7 +11,7 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Mapping
 
-from indexer.rso_profile import RSO_DOC_CHAIN_ID, encode_publication_locator_uri
+from indexer.rso_profile import RSO_DOC_CHAIN_ID, encode_publication_locator_uri, normalize_node_id
 from vendor.docchain.attestation import (
     doc_block_hash_with_cast,
     normalize_address,
@@ -214,7 +214,7 @@ def parent_hash_for_date(
     return normalize_bytes32(str(previous["blockHash"]))
 
 
-def release_uri(snapshot_date: str, *, mode: str = "auto") -> str:
+def release_uri(snapshot_date: str, *, mode: str = "auto", node_id: str = "") -> str:
     """Choose the publication URI to include in a node attestation."""
     if mode == "empty":
         return ""
@@ -226,8 +226,17 @@ def release_uri(snapshot_date: str, *, mode: str = "auto") -> str:
             return encode_publication_locator_uri(
                 bundle_sha256=bundle_sha256,
                 locations=locations,
+                node_id=node_id,
+            )
+        if node_id:
+            raise ValueError(
+                f"{snapshot_date}: node attestations require a bundle fingerprint"
             )
         return locations[0]
+    if mode == "auto" and node_id:
+        raise ValueError(
+            f"{snapshot_date}: node attestations require at least one publication location"
+        )
     if mode == "auto":
         return ""
     raise ValueError(f"{snapshot_date}: no {mode} destination in storage receipt")
@@ -309,7 +318,7 @@ def build_prepared_attestation(
     parent_hash: str,
     uri: str,
     deadline: int | None = None,
-    ttl: int = 86_400,
+    ttl: int = 7 * 24 * 60 * 60,
     network: str = "",
 ) -> dict[str, object]:
     manifest = load_manifest(snapshot_date)
@@ -431,6 +440,7 @@ def signed_artifact(
     prepared: Mapping[str, object],
     signed: Mapping[str, object],
     block_hash: str,
+    node_id: str = "",
     repository: str = "",
     workflow_run_id: str = "",
 ) -> dict[str, object]:
@@ -447,6 +457,8 @@ def signed_artifact(
         "blockHash": normalize_bytes32(block_hash),
         "signed": dict(signed),
         "node": {
+            "nodeId": normalize_node_id(node_id) if node_id else "",
+            "attester": normalize_address(attestation["attester"]),
             "repository": repository,
             "workflowRunId": workflow_run_id,
         },
@@ -479,8 +491,9 @@ def prepare_sign_one(
     private_key_env: str = "DISPOSABLE_NO_FUNDS_ETH_PRIVATE_KEY",
     uri_mode: str = "auto",
     bootstrap_parent_hash: str | None = None,
-    ttl: int = 86_400,
+    ttl: int = 7 * 24 * 60 * 60,
     network: str = "",
+    node_id: str = "",
     repository: str = "",
     workflow_run_id: str = "",
     cast: str | None = None,
@@ -496,7 +509,7 @@ def prepare_sign_one(
     else:
         parent_hash = normalize_bytes32(parent_hash)
     if uri is None:
-        uri = release_uri(snapshot_date, mode=uri_mode)
+        uri = release_uri(snapshot_date, mode=uri_mode, node_id=node_id)
     prepared = build_prepared_attestation(
         snapshot_date=snapshot_date,
         chain_id=chain_id,
@@ -520,6 +533,7 @@ def prepare_sign_one(
         prepared=prepared,
         signed=signed,
         block_hash=block_hash,
+        node_id=node_id,
         repository=repository,
         workflow_run_id=workflow_run_id,
     )

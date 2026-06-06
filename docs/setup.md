@@ -153,10 +153,12 @@ RSO_ATTESTER_ADDRESS
 
 For RSO V1, leave `RSO_ON_BEHALF_OF_ADDRESS` unset unless you are testing a
 future DocChain profile that needs delegated identity metadata. Card holders
-back your `RSO_ATTESTER_ADDRESS` directly through the RSO backing process. If
-you rotate the disposable key, update the raw key or keystore secret, update
-`RSO_ATTESTER_ADDRESS`, and ask backers to move support to the new operator
-address. No contract change is needed.
+back your stable `RSO_NODE_ID`, not the disposable signing address. The workflow
+defaults `RSO_NODE_ID` to `github:OWNER/REPO`; set it explicitly only when the
+node uses another supported identity such as `domain:node.example.org`. If you
+rotate the disposable key, update the raw key or keystore secret and
+`RSO_ATTESTER_ADDRESS`. Backers do not need to move support, and no contract
+change is needed.
 
 Finally, configure the DocChain deployment:
 
@@ -287,7 +289,7 @@ treated as a limited treasury allowance.
    `github-forks:OMPub/RSO`. You can still copy
    `sweeper/operators.example.json` to `sweeper/operators.json` for a manual
    registry.
-3. Configure mainnet RPC, DocChain, and the daily operator-backing snapshot.
+3. Configure mainnet RPC, DocChain, and the daily TDH support snapshot.
 4. Generate and fund a hot wallet within the ceiling described in
    [`operator.md`](operator.md).
 5. Run:
@@ -300,16 +302,23 @@ python3 sweeper/rso_sweeper.py \
 ```
 
 The repository also includes a daily **Sweep RSO Attestations** GitHub Actions
-workflow. It is scheduled for one hour after the expected TDH/backing snapshot
+workflow. It is scheduled for one hour after the expected TDH support snapshot
 boundary. By default, it uses GitHub fork discovery as the operator source and
-runs when the required sweeper secrets/variables are configured. If a backing
-snapshot is not available yet, that date is skipped.
+runs when the required sweeper secrets/variables are configured. Its scheduled
+run checks yesterday plus the prior date once, giving deferred claims a bounded
+next-day retry. If a TDH support snapshot is not available yet, that date is
+skipped.
 
 The sweeper publishes public date reports to:
 
 ```text
 reports/sweeper/YYYY-MM-DD.json
 ```
+
+Each accepted record includes the selected node id, the node-declared and signed
+attester, the signed claim fingerprint, every verified publication location,
+and the submission result. These reports provide the public history of which
+signing addresses each node used.
 
 Every node also has a default **Check RSO Sweeper Report** workflow. It runs
 after the sweeper window, reads the public report for its own `nodeId`, and
@@ -338,6 +347,7 @@ Important optional settings:
 RSO_SWEEPER_DRY_RUN
 RSO_SWEEPER_OPERATORS
 RSO_SWEEPER_MAX_FORKS
+RSO_SWEEPER_MAX_BACKED_NODE_DISCOVERY
 RSO_SWEEPER_TOP_OPERATORS
 RSO_SWEEPER_MIN_CARD_SPECIFIC_TDH
 RSO_SWEEPER_MAX_PUBLICATION_LOCATIONS
@@ -347,13 +357,20 @@ RSO_SWEEPER_REPORT_BRANCH
 RSO_NODE_ID
 ```
 
-The default backing snapshot location is:
+The default TDH support snapshot location is:
 
 ```text
 data/backing/{date}.json
 ```
 
 The default sponsorship policy funds the top 5 backed operators for each day.
+The sweeper also uses the daily support snapshot to discover backed GitHub nodes
+that are not present in the upstream fork graph. This discovery is TDH-ranked
+and capped by `RSO_SWEEPER_MAX_BACKED_NODE_DISCOVERY`, defaulting to 100.
+The static indexer can consume a directory of these daily snapshots with
+`--tdh-support data/backing` and the public reports with
+`--sweeper-reports reports/sweeper`. It applies support only to the matching
+archive date.
 
 For background on the operator/sweeper split, see [`operator.md`](operator.md).
 For RSO profile details — DocBlock validation, sponsorship policy, deadline
