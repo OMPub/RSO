@@ -148,7 +148,7 @@ jobs:
           # exactly the node (HEAD) version, resolving any merge conflict on it to
           # the node side. `git restore`/`git checkout` abort on an unmerged
           # modify/delete path, so clear the index entry first, then restore from HEAD.
-          for path in data ledger.json reports; do
+          for path in data ledger.json reports indexer/cache indexer/generated; do
             git rm -r --cached --quiet --ignore-unmatch -- "$path" || true
             if git cat-file -e "HEAD:$path" 2>/dev/null; then
               git checkout HEAD -- "$path"
