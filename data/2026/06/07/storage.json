@@ -25,10 +25,10 @@
       "asset_url": "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-06-07/rso-archive-2026-06-07.tar.gz",
       "release_url": "https://github.com/OMPub/RSO/releases/tag/rso-archive-2026-06-07",
       "repo": "OMPub/RSO",
-      "status": "created",
+      "status": "skipped",
       "tag": "rso-archive-2026-06-07"
     }
   },
   "manifest_sha256": "e326dfd8856503c1dd9e0bf9781160a5cc4e247df7c031d3da711f3e5ac415d5",
-  "updated_at": "2026-06-07T06:08:20Z"
+  "updated_at": "2026-06-07T07:53:12Z"
 }
