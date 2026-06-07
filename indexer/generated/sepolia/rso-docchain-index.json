@@ -1,0 +1,23 @@
+{
+  "chainId": 11155111,
+  "chunkSize": 10,
+  "confirmations": 12,
+  "contractAddress": "0x1133895b7b8C4A0A8aae0b5d40B96C652192F5DA",
+  "directWitnessAccountCount": 0,
+  "docChainId": "0x8621c2851714436d60da45cf0e11253114a4f2002f73ddc159b4dc88fea5611d",
+  "docRefCount": 0,
+  "docRefs": {},
+  "eventCount": 0,
+  "events": [],
+  "fromBlock": 11007365,
+  "indexedAt": "2026-06-07T08:08:14Z",
+  "latestChainBlock": 11007392,
+  "network": "sepolia",
+  "profileURI": "https://om.pub/rso/doc-chain/v1",
+  "schema": "rso-docchain-index-v1",
+  "sweeperVerifiedClaimCount": 1,
+  "tdhSupportDates": [
+    "2026-06-07"
+  ],
+  "toBlock": 11007380
+}
