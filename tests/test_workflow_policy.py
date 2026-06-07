@@ -17,6 +17,8 @@ class WorkflowPolicyTest(unittest.TestCase):
         )
         self.assertNotIn("data ledger.json reports .github/workflows", workflow)
         self.assertIn('path=".github/workflows/sweep-attestations.yml"', workflow)
+        self.assertIn('path=".github/workflows/check-sweeper-report.yml"', workflow)
+        self.assertIn('git checkout "$DEFAULT_BRANCH" -- "$path"', workflow)
         self.assertTrue((ROOT / ".github/workflows/check-sweeper-report.yml").is_file())
 
 
