@@ -1,0 +1,18 @@
+{
+  "cardTokenId": null,
+  "date": "2026-06-07",
+  "identities": {},
+  "operators": {
+    "github:ompub/rso": {
+      "backerCount": 1,
+      "cardSpecificTdhBacking": 1,
+      "rank": 1
+    }
+  },
+  "schema": "rso-tdh-support-snapshot-v1",
+  "tdhSnapshot": {
+    "completedAt": "2026-06-07T00:15:00Z",
+    "note": "Synthetic Sepolia-only backing used to exercise the end-to-end attestation path.",
+    "source": "rso-sepolia-e2e-test"
+  }
+}
