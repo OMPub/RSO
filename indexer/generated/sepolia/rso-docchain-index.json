@@ -1,0 +1,155 @@
+{
+  "chainId": 11155111,
+  "chunkSize": 10,
+  "confirmations": 12,
+  "contractAddress": "0x1133895b7b8C4A0A8aae0b5d40B96C652192F5DA",
+  "directWitnessAccountCount": 0,
+  "docChainId": "0x8621c2851714436d60da45cf0e11253114a4f2002f73ddc159b4dc88fea5611d",
+  "docRefCount": 1,
+  "docRefs": {
+    "20260607000000": {
+      "agreementGroups": [
+        {
+          "attestationCount": 1,
+          "attesters": [
+            "0x226db9fe9ed3eb91baeccb081f4505a799e4e376"
+          ],
+          "backedNodeIds": [],
+          "blockHash": "0xf6b2b68ed73a5327c1d5d0725edef9dc3d1a875aee29d0fc75579f49abd92ca4",
+          "bundleFingerprints": [
+            "f2f0b9fde608a3596a0b165cea95a740eef045aa7a71cb3aa82d9e7ce66acbbe"
+          ],
+          "combinedSupportTdh": 0,
+          "contentHash": "0xd35dfd6ba531b98dbf5feb8cb787848b06dcc297ef5a36f88a93107ee97d36e3",
+          "directWitnessIdentities": [],
+          "directWitnessTdh": 0,
+          "equivocatingDirectWitnessIdentities": [],
+          "equivocatingNodes": [],
+          "locations": [
+            "ar://0HpbzX1GC01TG1Wro6_w6op5AONAeimruDBo20YFtg4",
+            "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-06-07/rso-archive-2026-06-07.tar.gz"
+          ],
+          "nodeBackingTdh": 0
+        }
+      ],
+      "blockFingerprints": [
+        "0xf6b2b68ed73a5327c1d5d0725edef9dc3d1a875aee29d0fc75579f49abd92ca4"
+      ],
+      "blockHashes": [
+        "0xf6b2b68ed73a5327c1d5d0725edef9dc3d1a875aee29d0fc75579f49abd92ca4"
+      ],
+      "candidateCount": 1,
+      "contentFingerprints": [
+        "0xd35dfd6ba531b98dbf5feb8cb787848b06dcc297ef5a36f88a93107ee97d36e3"
+      ],
+      "contentHashes": [
+        "0xd35dfd6ba531b98dbf5feb8cb787848b06dcc297ef5a36f88a93107ee97d36e3"
+      ],
+      "date": "2026-06-07",
+      "events": [
+        {
+          "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
+          "blockHash": "0xf6b2b68ed73a5327c1d5d0725edef9dc3d1a875aee29d0fc75579f49abd92ca4",
+          "claimFingerprint": "907ec10ad1dde445c74a68e2fc373d6f7726d51b5524ba8eaa53616a320e03fa",
+          "claimedNodeId": "github:ompub/rso",
+          "combinedSupportTdh": 0,
+          "contentHash": "0xd35dfd6ba531b98dbf5feb8cb787848b06dcc297ef5a36f88a93107ee97d36e3",
+          "date": "2026-06-07",
+          "directWitnessIdentity": "",
+          "directWitnessTdh": 0,
+          "docChainId": "0x8621c2851714436d60da45cf0e11253114a4f2002f73ddc159b4dc88fea5611d",
+          "docRef": 20260607000000,
+          "ethereumBlock": 11007392,
+          "ethereumBlockHash": "0x41430f6c538b0a81ff6b445ad960d1378e670a24e1259c4001843bf358c52b8f",
+          "logIndex": 736,
+          "nodeAuthorizationStatus": "unverified",
+          "nodeBackingTdh": 0,
+          "nodeId": "",
+          "onBehalfOf": "0x0000000000000000000000000000000000000000",
+          "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "publication": {
+            "bundleSha256": "f2f0b9fde608a3596a0b165cea95a740eef045aa7a71cb3aa82d9e7ce66acbbe",
+            "locations": [
+              "ar://0HpbzX1GC01TG1Wro6_w6op5AONAeimruDBo20YFtg4",
+              "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-06-07/rso-archive-2026-06-07.tar.gz"
+            ],
+            "nodeId": "github:ompub/rso"
+          },
+          "submitter": "0xaf6b7ccc64820f0f88d7388e7104c6e4c2ae6d4d",
+          "transactionHash": "0x253a8a4e283315dacc3bbb77600b13deedadfb1b4106ef946296347c4f881291",
+          "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJmMmYwYjlmZGU2MDhhMzU5NmEwYjE2NWNlYTk1YTc0MGVlZjA0NWFhN2E3MWNiM2FhODJkOWU3Y2U2NmFjYmJlIiwibG9jYXRpb25zIjpbImFyOi8vMEhwYnpYMUdDMDFURzFXcm82X3c2b3A1QU9OQWVpbXJ1REJvMjBZRnRnNCIsImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wNy9yc28tYXJjaGl2ZS0yMDI2LTA2LTA3LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
+          "uriHash": "0x97b512cfa4ca99e5223c460f349f071769bc33ce9835d7b25b370f074ba9e72a"
+        }
+      ],
+      "leadingAgreementGroup": {
+        "attestationCount": 1,
+        "attesters": [
+          "0x226db9fe9ed3eb91baeccb081f4505a799e4e376"
+        ],
+        "backedNodeIds": [],
+        "blockHash": "0xf6b2b68ed73a5327c1d5d0725edef9dc3d1a875aee29d0fc75579f49abd92ca4",
+        "bundleFingerprints": [
+          "f2f0b9fde608a3596a0b165cea95a740eef045aa7a71cb3aa82d9e7ce66acbbe"
+        ],
+        "combinedSupportTdh": 0,
+        "contentHash": "0xd35dfd6ba531b98dbf5feb8cb787848b06dcc297ef5a36f88a93107ee97d36e3",
+        "directWitnessIdentities": [],
+        "directWitnessTdh": 0,
+        "equivocatingDirectWitnessIdentities": [],
+        "equivocatingNodes": [],
+        "locations": [
+          "ar://0HpbzX1GC01TG1Wro6_w6op5AONAeimruDBo20YFtg4",
+          "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-06-07/rso-archive-2026-06-07.tar.gz"
+        ],
+        "nodeBackingTdh": 0
+      }
+    }
+  },
+  "eventCount": 1,
+  "events": [
+    {
+      "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
+      "blockHash": "0xf6b2b68ed73a5327c1d5d0725edef9dc3d1a875aee29d0fc75579f49abd92ca4",
+      "claimFingerprint": "907ec10ad1dde445c74a68e2fc373d6f7726d51b5524ba8eaa53616a320e03fa",
+      "claimedNodeId": "github:ompub/rso",
+      "combinedSupportTdh": 0,
+      "contentHash": "0xd35dfd6ba531b98dbf5feb8cb787848b06dcc297ef5a36f88a93107ee97d36e3",
+      "date": "2026-06-07",
+      "directWitnessIdentity": "",
+      "directWitnessTdh": 0,
+      "docChainId": "0x8621c2851714436d60da45cf0e11253114a4f2002f73ddc159b4dc88fea5611d",
+      "docRef": 20260607000000,
+      "ethereumBlock": 11007392,
+      "ethereumBlockHash": "0x41430f6c538b0a81ff6b445ad960d1378e670a24e1259c4001843bf358c52b8f",
+      "logIndex": 736,
+      "nodeAuthorizationStatus": "unverified",
+      "nodeBackingTdh": 0,
+      "nodeId": "",
+      "onBehalfOf": "0x0000000000000000000000000000000000000000",
+      "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "publication": {
+        "bundleSha256": "f2f0b9fde608a3596a0b165cea95a740eef045aa7a71cb3aa82d9e7ce66acbbe",
+        "locations": [
+          "ar://0HpbzX1GC01TG1Wro6_w6op5AONAeimruDBo20YFtg4",
+          "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-06-07/rso-archive-2026-06-07.tar.gz"
+        ],
+        "nodeId": "github:ompub/rso"
+      },
+      "submitter": "0xaf6b7ccc64820f0f88d7388e7104c6e4c2ae6d4d",
+      "transactionHash": "0x253a8a4e283315dacc3bbb77600b13deedadfb1b4106ef946296347c4f881291",
+      "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJmMmYwYjlmZGU2MDhhMzU5NmEwYjE2NWNlYTk1YTc0MGVlZjA0NWFhN2E3MWNiM2FhODJkOWU3Y2U2NmFjYmJlIiwibG9jYXRpb25zIjpbImFyOi8vMEhwYnpYMUdDMDFURzFXcm82X3c2b3A1QU9OQWVpbXJ1REJvMjBZRnRnNCIsImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wNy9yc28tYXJjaGl2ZS0yMDI2LTA2LTA3LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
+      "uriHash": "0x97b512cfa4ca99e5223c460f349f071769bc33ce9835d7b25b370f074ba9e72a"
+    }
+  ],
+  "fromBlock": 11007365,
+  "indexedAt": "2026-06-07T08:18:38Z",
+  "latestChainBlock": 11007441,
+  "network": "sepolia",
+  "profileURI": "https://om.pub/rso/doc-chain/v1",
+  "schema": "rso-docchain-index-v1",
+  "sweeperVerifiedClaimCount": 0,
+  "tdhSupportDates": [
+    "2026-06-07"
+  ],
+  "toBlock": 11007429
+}
