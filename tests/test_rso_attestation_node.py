@@ -21,6 +21,14 @@ class RsoAttestationNodeTest(unittest.TestCase):
             args = node_cli.parse_args()
         self.assertEqual(args.ttl, node_cli.MAX_ATTESTATION_TTL)
 
+    def test_node_cli_treats_empty_on_behalf_of_environment_as_zero_address(self):
+        with patch.dict("os.environ", {"RSO_ON_BEHALF_OF_ADDRESS": ""}, clear=True), patch(
+            "sys.argv",
+            ["node_attest.py", "--start", "2026-05-28", "--end", "2026-05-28"],
+        ):
+            args = node_cli.parse_args()
+        self.assertEqual(args.on_behalf_of, node.ZERO_ADDRESS)
+
     def test_parent_hash_for_baseline_is_zero(self):
         self.assertEqual(
             node.parent_hash_for_date("2026-04-20", {"attestations": []}),
