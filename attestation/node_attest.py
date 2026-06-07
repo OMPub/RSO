@@ -141,7 +141,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--on-behalf-of",
-        default=os.environ.get("RSO_ON_BEHALF_OF_ADDRESS", ZERO_ADDRESS),
+        default=os.environ.get("RSO_ON_BEHALF_OF_ADDRESS") or ZERO_ADDRESS,
         help="6529 identity/card-holding address represented by the disposable EOA.",
     )
     parser.add_argument(
