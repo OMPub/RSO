@@ -1,6 +1,6 @@
 {
   "date": "2026-06-07",
-  "finishedAt": "2026-06-07T08:10:38Z",
+  "finishedAt": "2026-06-07T08:15:18Z",
   "firstStartedAt": "2026-06-07T08:08:02Z",
   "operatorSource": "github-forks:OMPub/RSO",
   "operators": [
@@ -39,6 +39,38 @@
       "status": "submitted",
       "transactionHash": "0x253a8a4e283315dacc3bbb77600b13deedadfb1b4106ef946296347c4f881291",
       "uriHash": "0x97b512cfa4ca99e5223c460f349f071769bc33ce9835d7b25b370f074ba9e72a"
+    },
+    {
+      "attestationAttester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
+      "authorizationStatus": "verified",
+      "bundleSha256": "f2f0b9fde608a3596a0b165cea95a740eef045aa7a71cb3aa82d9e7ce66acbbe",
+      "claimFingerprint": "907ec10ad1dde445c74a68e2fc373d6f7726d51b5524ba8eaa53616a320e03fa",
+      "claimedNodeId": "github:ompub/rso",
+      "contentHash": "0xd35dfd6ba531b98dbf5feb8cb787848b06dcc297ef5a36f88a93107ee97d36e3",
+      "declarationSha256": "852e24ed1a8d19bdea7b1f09cccedefd7fb6d434d6d280d102f166f496e1ea46",
+      "declarationUrl": "https://raw.githubusercontent.com/OMPub/RSO/node/data/attestations/signed/2026-06-07.json",
+      "declaredAttester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
+      "locations": [
+        "ar://0HpbzX1GC01TG1Wro6_w6op5AONAeimruDBo20YFtg4",
+        "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-06-07/rso-archive-2026-06-07.tar.gz"
+      ],
+      "nodeBindingStatus": "verified",
+      "nodeId": "github:ompub/rso",
+      "observedAt": "2026-06-07T08:15:18Z",
+      "operator": "OMPub/RSO",
+      "publicationStatus": "verified",
+      "sponsorship": {
+        "backerCount": 1,
+        "cardSpecificTdhBacking": 1,
+        "checkedAt": "2026-06-07T08:15:15Z",
+        "nodeId": "github:ompub/rso",
+        "rank": 1,
+        "scheme": "rso-tdh-support-snapshot",
+        "snapshotDate": "2026-06-07",
+        "status": "eligible",
+        "tdhBoundary": "daily"
+      },
+      "status": "duplicate"
     },
     {
       "attestationAttester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
@@ -94,9 +126,31 @@
       "nodeId": "github:ompub/rso",
       "operator": "OMPub/RSO",
       "status": "deferred"
+    },
+    {
+      "attestationAttester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
+      "authorizationStatus": "pending_signature",
+      "backing": {
+        "backerCount": 1,
+        "cardSpecificTdhBacking": 1,
+        "nodeId": "github:ompub/rso",
+        "rank": 1,
+        "snapshotDate": "2026-06-07"
+      },
+      "claimFingerprint": "907ec10ad1dde445c74a68e2fc373d6f7726d51b5524ba8eaa53616a320e03fa",
+      "claimedNodeId": "github:ompub/rso",
+      "declarationSha256": "852e24ed1a8d19bdea7b1f09cccedefd7fb6d434d6d280d102f166f496e1ea46",
+      "declarationUrl": "https://raw.githubusercontent.com/OMPub/RSO/node/data/attestations/signed/2026-06-07.json",
+      "declaredAttester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
+      "nodeBindingStatus": "aligned",
+      "nodeId": "github:ompub/rso",
+      "observedAt": "2026-06-07T08:15:15Z",
+      "operator": "OMPub/RSO",
+      "publicationStatus": "pending",
+      "status": "candidate"
     }
   ],
   "schema": "rso-sweeper-date-report-v1",
-  "startedAt": "2026-06-07T08:10:36Z",
+  "startedAt": "2026-06-07T08:15:15Z",
   "status": "checked"
 }
