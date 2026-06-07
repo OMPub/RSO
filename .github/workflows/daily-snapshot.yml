@@ -144,23 +144,27 @@ jobs:
           MERGE_STATUS=0
           git merge --no-ff --no-commit "$DEFAULT_BRANCH" || MERGE_STATUS=$?
 
-          # Keep this node's own generated state and pinned workflow set. Force each
-          # pinned path back to exactly the node (HEAD) version, resolving ANY merge
-          # conflict on it to the node side -- including a modify/delete where main
-          # changed a workflow this node intentionally removed (e.g. the sweeper
-          # workflows). `git restore`/`git checkout` abort on an unmerged
+          # Keep this node's own generated state. Force each pinned path back to
+          # exactly the node (HEAD) version, resolving any merge conflict on it to
+          # the node side. `git restore`/`git checkout` abort on an unmerged
           # modify/delete path, so clear the index entry first, then restore from HEAD.
-          for path in data ledger.json reports .github/workflows; do
+          for path in data ledger.json reports; do
             git rm -r --cached --quiet --ignore-unmatch -- "$path" || true
             if git cat-file -e "HEAD:$path" 2>/dev/null; then
               git checkout HEAD -- "$path"
             fi
           done
-          # Drop any worktree file main added under a pinned path that this node does
-          # not track (the "left in tree" side of a modify/delete), so it is neither
-          # committed nor left behind.
-          git ls-files --others --exclude-standard -z -- .github/workflows \
-            | xargs -0r rm -f --
+
+          # A node consumes the public sweeper report but must not run the treasury
+          # sweeper itself. Preserve that one intentional workflow deletion while
+          # allowing node-side workflows such as the report checker to follow main.
+          path=".github/workflows/sweep-attestations.yml"
+          git rm --cached --quiet --ignore-unmatch -- "$path" || true
+          if git cat-file -e "HEAD:$path" 2>/dev/null; then
+            git checkout HEAD -- "$path"
+          else
+            rm -f -- "$path"
+          fi
 
           if git diff --name-only --diff-filter=U | grep .; then
             echo "::error::Code merge into $NODE_BRANCH has unresolved conflicts outside generated node state."
