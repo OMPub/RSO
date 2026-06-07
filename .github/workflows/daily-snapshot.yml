@@ -166,6 +166,14 @@ jobs:
             rm -f -- "$path"
           fi
 
+          # Every node runs the public report checker. Resolve a historical
+          # deletion or modify/delete conflict by taking the current main copy.
+          path=".github/workflows/check-sweeper-report.yml"
+          git rm --cached --quiet --ignore-unmatch -- "$path" || true
+          if git cat-file -e "$DEFAULT_BRANCH:$path" 2>/dev/null; then
+            git checkout "$DEFAULT_BRANCH" -- "$path"
+          fi
+
           if git diff --name-only --diff-filter=U | grep .; then
             echo "::error::Code merge into $NODE_BRANCH has unresolved conflicts outside generated node state."
             exit "$MERGE_STATUS"
