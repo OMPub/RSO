@@ -1,35 +1,9 @@
 {
   "date": "2026-06-07",
-  "finishedAt": "2026-06-07T08:08:13Z",
+  "finishedAt": "2026-06-07T08:10:38Z",
+  "firstStartedAt": "2026-06-07T08:08:02Z",
   "operatorSource": "github-forks:OMPub/RSO",
   "operators": [
-    {
-      "attestationAttester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
-      "authorizationStatus": "pending_signature",
-      "backing": {
-        "backerCount": 1,
-        "cardSpecificTdhBacking": 1,
-        "nodeId": "github:ompub/rso",
-        "rank": 1,
-        "snapshotDate": "2026-06-07"
-      },
-      "claimFingerprint": "907ec10ad1dde445c74a68e2fc373d6f7726d51b5524ba8eaa53616a320e03fa",
-      "claimedNodeId": "github:ompub/rso",
-      "declarationSha256": "852e24ed1a8d19bdea7b1f09cccedefd7fb6d434d6d280d102f166f496e1ea46",
-      "declarationUrl": "https://raw.githubusercontent.com/OMPub/RSO/node/data/attestations/signed/2026-06-07.json",
-      "declaredAttester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
-      "nodeBindingStatus": "aligned",
-      "nodeId": "github:ompub/rso",
-      "observedAt": "2026-06-07T08:08:03Z",
-      "operator": "OMPub/RSO",
-      "publicationStatus": "pending",
-      "status": "candidate"
-    },
-    {
-      "nodeId": "github:brookr/rso",
-      "operator": "brookr/RSO",
-      "status": "not_backed"
-    },
     {
       "attestationAttester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "attestationKey": "0x372d0e8c6cbfdd3949b08650c67c1dce34a1b43ab472576c23a868ba5ef192ea",
@@ -65,9 +39,64 @@
       "status": "submitted",
       "transactionHash": "0x253a8a4e283315dacc3bbb77600b13deedadfb1b4106ef946296347c4f881291",
       "uriHash": "0x97b512cfa4ca99e5223c460f349f071769bc33ce9835d7b25b370f074ba9e72a"
+    },
+    {
+      "attestationAttester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
+      "authorizationStatus": "pending_signature",
+      "backing": {
+        "backerCount": 1,
+        "cardSpecificTdhBacking": 1,
+        "nodeId": "github:ompub/rso",
+        "rank": 1,
+        "snapshotDate": "2026-06-07"
+      },
+      "claimFingerprint": "907ec10ad1dde445c74a68e2fc373d6f7726d51b5524ba8eaa53616a320e03fa",
+      "claimedNodeId": "github:ompub/rso",
+      "declarationSha256": "852e24ed1a8d19bdea7b1f09cccedefd7fb6d434d6d280d102f166f496e1ea46",
+      "declarationUrl": "https://raw.githubusercontent.com/OMPub/RSO/node/data/attestations/signed/2026-06-07.json",
+      "declaredAttester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
+      "nodeBindingStatus": "aligned",
+      "nodeId": "github:ompub/rso",
+      "observedAt": "2026-06-07T08:08:03Z",
+      "operator": "OMPub/RSO",
+      "publicationStatus": "pending",
+      "status": "candidate"
+    },
+    {
+      "nodeId": "github:brookr/rso",
+      "operator": "brookr/RSO",
+      "status": "not_backed"
+    },
+    {
+      "attestationAttester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
+      "authorizationStatus": "pending_signature",
+      "backing": {
+        "backerCount": 1,
+        "cardSpecificTdhBacking": 1,
+        "nodeId": "github:ompub/rso",
+        "rank": 1,
+        "snapshotDate": "2026-06-07"
+      },
+      "claimFingerprint": "907ec10ad1dde445c74a68e2fc373d6f7726d51b5524ba8eaa53616a320e03fa",
+      "claimedNodeId": "github:ompub/rso",
+      "declarationSha256": "852e24ed1a8d19bdea7b1f09cccedefd7fb6d434d6d280d102f166f496e1ea46",
+      "declarationUrl": "https://raw.githubusercontent.com/OMPub/RSO/node/data/attestations/signed/2026-06-07.json",
+      "declaredAttester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
+      "nodeBindingStatus": "aligned",
+      "nodeId": "github:ompub/rso",
+      "observedAt": "2026-06-07T08:10:36Z",
+      "operator": "OMPub/RSO",
+      "publicationStatus": "pending",
+      "status": "candidate"
+    },
+    {
+      "error": "eth_call returned error: {'code': 3, 'message': 'execution reverted', 'data': '0xdd65d744372d0e8c6cbfdd3949b08650c67c1dce34a1b43ab472576c23a868ba5ef192ea'}",
+      "nodeId": "github:ompub/rso",
+      "operator": "OMPub/RSO",
+      "status": "deferred"
     }
   ],
   "schema": "rso-sweeper-date-report-v1",
-  "startedAt": "2026-06-07T08:08:02Z",
+  "startedAt": "2026-06-07T08:10:36Z",
   "status": "checked"
 }
