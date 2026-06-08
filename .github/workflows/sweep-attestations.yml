@@ -62,6 +62,9 @@ jobs:
 
       - name: Set up Foundry
         uses: foundry-rs/foundry-toolchain@v1
+        with:
+          # Pin a known-good release; fetching "latest" has flaked on download.
+          version: v1.7.0
 
       - name: Check sweeper configuration
         run: |
