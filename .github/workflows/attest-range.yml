@@ -27,6 +27,11 @@ on:
         required: false
         default: "0x2c66585E7b60A20563a3fd2B7a4D75Ae5baa5437"
         type: string
+      keep_from:
+        description: "Ownership boundary, YYYY-MM-DD: keep own days on/after this date when hydrating."
+        required: false
+        default: ""
+        type: string
 
 permissions:
   contents: write
@@ -51,6 +56,7 @@ jobs:
           INPUT_START: ${{ inputs.start }}
           INPUT_END: ${{ inputs.end }}
           INPUT_CONTRACT: ${{ inputs.contract_address }}
+          INPUT_KEEP_FROM: ${{ inputs.keep_from }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -64,6 +70,10 @@ jobs:
               if re.fullmatch(pattern, value) is None:
                   print(f"Invalid {name}: {value!r}")
                   sys.exit(1)
+          keep_from = os.environ.get("INPUT_KEEP_FROM", "")
+          if keep_from and re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", keep_from) is None:
+              print(f"Invalid INPUT_KEEP_FROM: {keep_from!r}")
+              sys.exit(1)
           PY
           {
             echo "RSO_RANGE_START=${INPUT_START}"
@@ -82,11 +92,17 @@ jobs:
 
       - name: Hydrate verified upstream bundles
         if: inputs.hydrate_upstream
+        env:
+          RSO_HYDRATE_KEEP_FROM: ${{ inputs.keep_from }}
         run: |
           set -euo pipefail
-          python3 attestation/hydrate_from_upstream.py \
-            --start "$RSO_RANGE_START" --end "$RSO_RANGE_END" \
-            --upstream "$RSO_UPSTREAM_REPO"
+          args=(attestation/hydrate_from_upstream.py
+            --start "$RSO_RANGE_START" --end "$RSO_RANGE_END"
+            --upstream "$RSO_UPSTREAM_REPO")
+          if [ -n "$RSO_HYDRATE_KEEP_FROM" ]; then
+            args+=(--keep-from "$RSO_HYDRATE_KEEP_FROM")
+          fi
+          python3 "${args[@]}"
 
       - name: Commit hydrated archive days
         if: inputs.hydrate_upstream
@@ -99,6 +115,64 @@ jobs:
             echo "No hydrated archive changes to commit."
           else
             git commit -m "Adopt verified upstream v2 archive days"
+            git push origin "HEAD:$RSO_NODE_BRANCH"
+          fi
+
+      - name: Rebuild v2 fields for own archive days
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 pipeline/snapshot.py rebuild-v2 \
+            --start "$RSO_RANGE_START" --end "$RSO_RANGE_END"
+
+      - name: Publish own v2 bundles for non-adopted days
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARWEAVE_JWK: ${{ secrets.ARWEAVE_JWK }}
+        run: |
+          set -euo pipefail
+          python3 - <<'DATES'
+          # publish --v2-backfill day-by-day, skipping adopted days (the
+          # publish guard raises for them) and days already carrying a v2
+          # receipt; failures on individual days stop the run loudly.
+          import json, subprocess, sys
+          from datetime import datetime, timedelta
+          import os
+          start = datetime.strptime(os.environ["RSO_RANGE_START"], "%Y-%m-%d")
+          end = datetime.strptime(os.environ["RSO_RANGE_END"], "%Y-%m-%d")
+          day = start
+          while day <= end:
+              date = day.strftime("%Y-%m-%d")
+              day += timedelta(days=1)
+              receipt_path = f"data/{date[:4]}/{date[5:7]}/{date[8:10]}/storage.json"
+              try:
+                  receipt = json.load(open(receipt_path))
+              except FileNotFoundError:
+                  receipt = {}
+              if receipt.get("verified_from_upstream"):
+                  print(f"  {date}: adopted from upstream; shared locations stand")
+                  continue
+              if str(receipt.get("asset_name", "")).endswith("-v2.tar.gz"):
+                  print(f"  {date}: v2 receipt already recorded")
+                  continue
+              subprocess.run(
+                  [sys.executable, "pipeline/snapshot.py", "publish",
+                   "--date", date, "--v2-backfill"],
+                  check=True,
+              )
+          DATES
+
+      - name: Commit rebuilt archive metadata
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data ledger.json
+          if git diff --cached --quiet; then
+            echo "No rebuilt metadata to commit."
+          else
+            git commit -m "Record v2 content fields and publish destinations"
             git push origin "HEAD:$RSO_NODE_BRANCH"
           fi
 

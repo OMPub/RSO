@@ -377,6 +377,32 @@ class AttestationV2Test(unittest.TestCase):
         parent = rso_attestation.parent_hash_for_date("2026-04-20", {"attestations": []})
         self.assertEqual(parent, rso_attestation.ZERO_BYTES32)
 
+    def test_record_state_entry_preserves_v2_schema(self):
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "state-v2.json"
+            entry = {
+                "date": "2026-04-20",
+                "updatedAt": "2026-06-09T00:00:00Z",
+                "artifactId": "abc",
+                "blockHash": "0x" + "11" * 32,
+            }
+            state = rso_attestation.record_state_entry(
+                path, entry, schema=rso_attestation.STATE_SCHEMA_V2
+            )
+            self.assertEqual(state["schema"], "rso-docchain-node-state-v2")
+            reloaded = rso_attestation.load_attestation_state(
+                path, schema=rso_attestation.STATE_SCHEMA_V2
+            )
+            self.assertEqual(len(reloaded["attestations"]), 1)
+            with self.assertRaises(ValueError):
+                rso_attestation.load_attestation_state(
+                    path, schema=rso_attestation.STATE_SCHEMA_V1
+                )
+            any_schema = rso_attestation.load_attestation_state(path, schema=None)
+            self.assertEqual(any_schema["schema"], "rso-docchain-node-state-v2")
+
     def test_state_schema_v2_accepted_and_v1_rejected_for_v2_path(self):
         state = rso_attestation.load_attestation_state(
             Path("/nonexistent/state.json"), schema=rso_attestation.STATE_SCHEMA_V2

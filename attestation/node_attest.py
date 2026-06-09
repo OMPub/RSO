@@ -100,7 +100,7 @@ def main() -> int:
             historical_path = signed_attestation_path(snapshot_date, str(entry["artifactId"]))
             write_signed_artifact(historical_path, artifact)
             write_signed_artifact(artifact_path, artifact)
-            state = record_state_entry(state_path, entry)
+            state = record_state_entry(state_path, entry, schema=STATE_SCHEMA_V2)
             print(
                 f"Signed {snapshot_date}: docRef={prepared.doc_ref} "
                 f"blockHash={entry['blockHash']} artifact={artifact_path.relative_to(ROOT)}"
