@@ -143,16 +143,26 @@ def content_hash_from_manifest(manifest: Mapping[str, object]) -> str:
 def load_attestation_state(
     path: Path = DEFAULT_STATE_PATH,
     *,
-    schema: str = STATE_SCHEMA_V1,
+    schema: str | None = STATE_SCHEMA_V1,
 ) -> dict[str, object]:
-    if schema not in ACCEPTED_STATE_SCHEMAS:
+    """Load a node attestation state file.
+
+    `schema` pins the expected schema; pass None to accept any known schema
+    (used by helpers that must follow whatever chain the file belongs to).
+    A missing file yields a fresh state carrying the requested schema.
+    """
+    if schema is not None and schema not in ACCEPTED_STATE_SCHEMAS:
         raise ValueError(f"unsupported attestation state schema {schema!r}")
     if not path.exists():
-        return {"schema": schema, "attestations": []}
+        return {"schema": schema or STATE_SCHEMA_V1, "attestations": []}
     raw = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(raw, dict):
         raise ValueError(f"{path} must contain a JSON object")
-    if raw.get("schema") != schema:
+    found = raw.get("schema")
+    if schema is None:
+        if found not in ACCEPTED_STATE_SCHEMAS:
+            raise ValueError(f"{path} has unsupported schema")
+    elif found != schema:
         raise ValueError(f"{path} has unsupported schema")
     attestations = raw.get("attestations")
     if not isinstance(attestations, list):
@@ -466,8 +476,13 @@ def state_entry_key(
     )
 
 
-def record_state_entry(path: Path, entry: Mapping[str, object]) -> dict[str, object]:
-    state = load_attestation_state(path)
+def record_state_entry(
+    path: Path,
+    entry: Mapping[str, object],
+    *,
+    schema: str = STATE_SCHEMA_V1,
+) -> dict[str, object]:
+    state = load_attestation_state(path, schema=schema)
     attestations = state["attestations"]
     assert isinstance(attestations, list)
     entry_key = state_entry_key(entry)
