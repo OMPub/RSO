@@ -1830,6 +1830,18 @@ def release_asset_name(current_date_str):
     return f"rso-archive-{current_date_str}.tar.gz"
 
 
+def release_asset_name_v2(current_date_str):
+    """Backfill asset name for v2 bundles on pre-v2 release tags.
+
+    Historical v1 assets are frozen (their bytes are referenced by v1
+    attestation uriHashes), so the v2 bundle for an already-released day is
+    published as a sibling asset. Days archived after the v2 cutover use the
+    plain asset name: their only bundle is a v2 bundle.
+    """
+    parse_date(current_date_str)
+    return f"rso-archive-{current_date_str}-v2.tar.gz"
+
+
 def release_title(current_date_str):
     parse_date(current_date_str)
     return f"RSO Archive {current_date_str}"
@@ -2085,7 +2097,9 @@ def add_tar_bytes(tar, arcname, data):
     tar.addfile(info, io.BytesIO(data))
 
 
-def build_release_bundle(current_date_str, output_dir=None, min_count=MIN_OBJECT_COUNT):
+def build_release_bundle(
+    current_date_str, output_dir=None, min_count=MIN_OBJECT_COUNT, asset_name=None
+):
     parse_date(current_date_str)
     errors, manifest = validate_snapshot_artifacts(
         current_date_str,
@@ -2107,7 +2121,7 @@ def build_release_bundle(current_date_str, output_dir=None, min_count=MIN_OBJECT
 
     output_dir = Path(output_dir or RELEASE_OUTPUT_DIR)
     output_dir.mkdir(parents=True, exist_ok=True)
-    bundle_path = output_dir / release_asset_name(current_date_str)
+    bundle_path = output_dir / (asset_name or release_asset_name(current_date_str))
 
     bundle_manifest = release_manifest_payload(current_date_str, manifest, artifact_paths)
     bundle_manifest_bytes = canonicalize(bundle_manifest) + b"\n"
@@ -2194,6 +2208,43 @@ def release_bundle_from_existing(current_date_str, output_dir=None):
         "state_as_of_utc": manifest.get("state_as_of_utc"),
         "files": bundle_manifest["files"],
     }
+
+
+def build_v2_backfill_bundle(current_date_str, output_dir=None, min_count=MIN_OBJECT_COUNT):
+    """Build the v2 sibling bundle for an already-released day.
+
+    Always builds locally from the day directory (never fetches the frozen v1
+    asset), requires the day to carry rso-core-v2 fields and annotations, and
+    preserves a v1-era storage receipt as storage-v1.json before the publish
+    steps overwrite storage.json with the v2 publication of record.
+    """
+    manifest = load_manifest(current_date_str)
+    if manifest.get("content_schema") != CONTENT_SCHEMA_V2:
+        raise SnapshotError(
+            f"{current_date_str}: manifest lacks {CONTENT_SCHEMA_V2} fields; run rebuild-v2 first"
+        )
+    if "annotations_sha256" not in manifest:
+        raise SnapshotError(
+            f"{current_date_str}: manifest has no annotations_sha256; run rebuild-v2 first"
+        )
+
+    receipt_path = storage_receipt_path(current_date_str)
+    if receipt_path.exists():
+        receipt = load_storage_receipt(current_date_str)
+        v1_receipt_path = receipt_path.with_name("storage-v1.json")
+        if (
+            receipt.get("asset_name") == release_asset_name(current_date_str)
+            and not v1_receipt_path.exists()
+        ):
+            v1_receipt_path.write_bytes(receipt_path.read_bytes())
+            print(f"  Preserved v1 storage receipt as {v1_receipt_path.name}")
+
+    return build_release_bundle(
+        current_date_str,
+        output_dir=output_dir,
+        min_count=min_count,
+        asset_name=release_asset_name_v2(current_date_str),
+    )
 
 
 def build_or_fetch_release_bundle(current_date_str, output_dir=None, min_count=MIN_OBJECT_COUNT, repo=None):
@@ -3079,7 +3130,13 @@ def process_publish(args):
     results = []
     for current_date_str in dates:
         print(f"\n  Date: {current_date_str}")
-        if args.use_existing_bundle:
+        if getattr(args, "v2_backfill", False):
+            bundle = build_v2_backfill_bundle(
+                current_date_str,
+                output_dir=args.output_dir,
+                min_count=args.min_objects,
+            )
+        elif args.use_existing_bundle:
             bundle = release_bundle_from_existing(
                 current_date_str,
                 output_dir=args.output_dir,
@@ -3770,6 +3827,14 @@ def main():
         "--use-existing-bundle",
         action="store_true",
         help="Upload a bundle already present in --output-dir instead of rebuilding it",
+    )
+    publish_parser.add_argument(
+        "--v2-backfill",
+        action="store_true",
+        help=(
+            "Publish v2 sibling bundles (rso-archive-DATE-v2.tar.gz) for days whose "
+            "v1 assets are frozen; requires rebuild-v2 to have run first"
+        ),
     )
     publish_parser.add_argument(
         "--prerelease",
