@@ -249,6 +249,101 @@ class AnnotationsTest(unittest.TestCase):
         )
 
 
+class RebuildV2Test(unittest.TestCase):
+    def _archive_day(self, day, records):
+        manifest = snapshot.save_snapshot(
+            day,
+            snapshot.canonicalize(records),
+            records,
+            "test_provenance",
+            "test_strategy",
+            [],
+        )
+        # simulate a v1-era manifest: strip the v2 fields save_snapshot now adds
+        manifest_path = snapshot.snapshot_dir(day) / "manifest.json"
+        import json as json_module
+
+        stored = json_module.loads(manifest_path.read_text(encoding="utf-8"))
+        for key in ("content_schema", "content_excluded_fields", "content_sha256"):
+            stored.pop(key, None)
+        manifest_path.write_text(json_module.dumps(stored, indent=2) + "\n", encoding="utf-8")
+        return manifest
+
+    def test_rebuild_adds_content_fields_and_annotations(self):
+        import argparse
+        import json as json_module
+        import tempfile
+        from unittest.mock import patch
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            with patch.object(snapshot, "DATA_DIR", tmp_path / "data"), patch.object(
+                snapshot, "LEDGER_PATH", tmp_path / "ledger.json"
+            ):
+                day_one = [gp_record()]
+                day_two = [gp_record(DECAY_DATE="2026-06-07")]
+                self._archive_day("2026-04-20", day_one)
+                self._archive_day("2026-04-21", day_two)
+
+                snapshot.process_rebuild_v2(
+                    argparse.Namespace(start="2026-04-20", end="2026-04-21")
+                )
+
+                for day, records in (("2026-04-20", day_one), ("2026-04-21", day_two)):
+                    manifest = json_module.loads(
+                        (snapshot.snapshot_dir(day) / "manifest.json").read_text()
+                    )
+                    self.assertEqual(manifest["content_schema"], "rso-core-v2")
+                    self.assertEqual(
+                        manifest["content_sha256"], snapshot.core_content_sha256(records)
+                    )
+                    self.assertIn("annotations_sha256", manifest)
+
+                genesis_annotations = json_module.loads(
+                    (snapshot.snapshot_dir("2026-04-20") / "annotations.json").read_text()
+                )
+                self.assertTrue(genesis_annotations["baseline"])
+                self.assertTrue(genesis_annotations["rebuilt"])
+                self.assertEqual(genesis_annotations["catalog_changes"], [])
+
+                day_two_annotations = json_module.loads(
+                    (snapshot.snapshot_dir("2026-04-21") / "annotations.json").read_text()
+                )
+                self.assertFalse(day_two_annotations["baseline"])
+                self.assertEqual(
+                    [
+                        (item["field"], item["previous"], item["current"])
+                        for item in day_two_annotations["catalog_changes"]
+                    ],
+                    [("DECAY_DATE", None, "2026-06-07")],
+                )
+
+                ledger = json_module.loads((tmp_path / "ledger.json").read_text())
+                self.assertTrue(all("content_sha256" in entry for entry in ledger))
+
+    def test_rebuild_refuses_tampered_catalog(self):
+        import argparse
+        import gzip as gzip_module
+        import tempfile
+        from unittest.mock import patch
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            with patch.object(snapshot, "DATA_DIR", tmp_path / "data"), patch.object(
+                snapshot, "LEDGER_PATH", tmp_path / "ledger.json"
+            ):
+                self._archive_day("2026-04-20", [gp_record()])
+                gz_path = snapshot.snapshot_dir("2026-04-20") / "catalog.json.gz"
+                tampered = snapshot.canonicalize([gp_record(EPOCH="1999-01-01T00:00:00")])
+                with gzip_module.open(gz_path, "wb") as handle:
+                    handle.write(tampered)
+
+                with self.assertRaises(snapshot.SnapshotError):
+                    snapshot.process_rebuild_v2(
+                        argparse.Namespace(start="2026-04-20", end="2026-04-20")
+                    )
+
+
 class AttestationV2Test(unittest.TestCase):
     def test_content_hash_prefers_core_projection(self):
         manifest = {"sha256": "aa" * 32, "content_sha256": "bb" * 32}

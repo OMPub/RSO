@@ -685,7 +685,7 @@ def build_annotations(
     two nodes may legitimately hold different annotations for the same day.
     """
     changes = []
-    if not baseline:
+    if not baseline and previous_records is not None:
         previous_by_id = records_by_cat_id(previous_records or [])
         for record in records:
             cat_id = record.get("NORAD_CAT_ID")
@@ -1486,6 +1486,85 @@ def process_roll_forward(args, client):
         current += timedelta(days=1)
 
     print(f"\nRoll-forward complete: {archived} days archived, {skipped} skipped")
+
+
+def process_rebuild_v2(args):
+    """Add v2 consensus/observation artifacts to already-archived days.
+
+    Offline (no Space-Track access): for each day the recorded raw catalog is
+    loaded (local gz or release bundle), its sha256 is verified against the
+    committed manifest -- the integrity gate that proves the rebuild describes
+    exactly the bytes we archived -- and then the manifest gains the v2 content
+    fields while annotations.json is derived from consecutive recorded
+    catalogs with observed_at set to each day's original archived_at. Nothing
+    in the raw record of "what we knew, when" is altered.
+    """
+    days = []
+    current = parse_date(args.start)
+    end = parse_date(args.end)
+    if end < current:
+        raise SnapshotError("--end must be on or after --start")
+    while current <= end:
+        days.append(date_str(current))
+        current += timedelta(days=1)
+
+    print(f"\nRebuilding v2 content fields for {len(days)} days: {args.start} to {args.end}")
+    previous_records = None
+    previous_date_value = previous_date_str(args.start)
+    previous_manifest = read_json_if_exists(snapshot_dir(previous_date_value) / "manifest.json")
+    if previous_manifest is not None:
+        previous_records = json.loads(read_catalog_bytes(previous_date_value))
+
+    rebuilt = 0
+    for day in days:
+        manifest_path = snapshot_dir(day) / "manifest.json"
+        manifest = read_json_if_exists(manifest_path)
+        if manifest is None:
+            raise SnapshotError(f"{day}: no committed manifest; cannot rebuild an unarchived day")
+
+        records = json.loads(read_catalog_bytes(day))
+        canonical = canonicalize(records)
+        computed = compute_hash(canonical)
+        if computed != manifest["sha256"]:
+            raise SnapshotError(
+                f"{day}: catalog bytes hash {computed} != recorded manifest sha256 "
+                f"{manifest['sha256']}; refusing to rebuild from unverified bytes"
+            )
+
+        observed_at = str(manifest.get("observed_at_utc") or manifest.get("archived_at"))
+        baseline = previous_records is None
+        annotations = build_annotations(
+            day,
+            records,
+            previous_records,
+            observed_at_utc=observed_at,
+            window_start_utc=manifest.get("delta_window_start_utc"),
+            window_end_utc=manifest.get("delta_window_end_utc"),
+            baseline=baseline,
+        )
+        annotations["rebuilt"] = True
+        annotations["rebuilt_at"] = utc_stamp()
+
+        day_dir = snapshot_dir(day)
+        annotations_file = day_dir / "annotations.json"
+        write_json(annotations_file, annotations)
+
+        manifest["content_schema"] = CONTENT_SCHEMA_V2
+        manifest["content_excluded_fields"] = list(CONTENT_EXCLUDED_FIELDS)
+        manifest["content_sha256"] = core_content_sha256(records)
+        manifest["annotations_sha256"] = sha256_path(annotations_file)
+        write_json(manifest_path, manifest)
+        update_ledger(manifest)
+
+        rebuilt += 1
+        print(
+            f"  {day}: raw={manifest['sha256'][:12]} core={manifest['content_sha256'][:12]} "
+            f"changes={len(annotations['catalog_changes'])}"
+            f"{' (baseline)' if baseline else ''}"
+        )
+        previous_records = records
+
+    print(f"\nRebuild complete: {rebuilt} days now carry {CONTENT_SCHEMA_V2} content fields")
 
 
 def compare_record_sets(replay_records, current_gp_records, sample_size=25):
@@ -3595,6 +3674,13 @@ def main():
     )
     verify_parser.add_argument("--date", required=True, help="Date (YYYY-MM-DD)")
 
+    rebuild_v2_parser = subparsers.add_parser(
+        "rebuild-v2",
+        help="Add v2 content fields and annotations to already-archived days (offline)",
+    )
+    rebuild_v2_parser.add_argument("--start", required=True, help="Start date (YYYY-MM-DD)")
+    rebuild_v2_parser.add_argument("--end", required=True, help="End date inclusive (YYYY-MM-DD)")
+
     validate_parser = subparsers.add_parser(
         "validate", help="Validate every committed archive artifact without network access"
     )
@@ -3800,6 +3886,9 @@ def main():
         return
     if args.command == "mark-prerelease":
         process_mark_prerelease(args)
+        return
+    if args.command == "rebuild-v2":
+        process_rebuild_v2(args)
         return
 
     client = SpaceTrackClient()
