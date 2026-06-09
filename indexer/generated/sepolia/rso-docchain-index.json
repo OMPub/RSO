@@ -218,14 +218,15 @@
     }
   ],
   "fromBlock": 11007365,
-  "indexedAt": "2026-06-08T23:48:37Z",
-  "latestChainBlock": 11018691,
+  "indexedAt": "2026-06-09T05:17:59Z",
+  "latestChainBlock": 11020329,
   "network": "sepolia",
   "profileURI": "https://om.pub/rso/doc-chain/v1",
   "schema": "rso-docchain-index-v1",
-  "sweeperVerifiedClaimCount": 2,
+  "sweeperVerifiedClaimCount": 4,
   "tdhSupportDates": [
-    "2026-06-07"
+    "2026-06-07",
+    "2026-06-08"
   ],
-  "toBlock": 11018679
+  "toBlock": 11020317
 }
