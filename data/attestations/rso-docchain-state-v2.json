@@ -937,6 +937,6 @@
     "updatedAt": "2026-06-09T22:57:51Z",
     "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI5ZjBiY2EzYzliOTkyOTZiYjczMWM4NGE4ZmIzMjE4NWM4ZDBiYmM4Mzk4NzBhYjhkZjU3NTFmMmM0YTU5NzcyIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wOS9yc28tYXJjaGl2ZS0yMDI2LTA2LTA5LXYyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0="
   },
-  "schema": "rso-docchain-node-state-v1",
+  "schema": "rso-docchain-node-state-v2",
   "updatedAt": "2026-06-09T22:57:51Z"
 }
