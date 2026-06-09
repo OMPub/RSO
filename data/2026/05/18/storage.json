@@ -1,38 +1,25 @@
 {
-  "asset_name": "rso-archive-2026-05-18.tar.gz",
-  "bundle_bytes": 11174675,
-  "bundle_sha256": "c3bab08e727f400cbbc9536eb50f837f4f3a748e3af0311a7866521f5b3d8c5c",
+  "asset_name": "rso-archive-2026-05-18-v2.tar.gz",
+  "bundle_bytes": 11175184,
+  "bundle_sha256": "078e36b5c3c5a7e4001f612a86b4a5a985f47ecb07ce8fb3a777f44f49c05abf",
   "catalog_sha256": "3921c7c12606f152973b31bea02c59e8e49401e5ecd3eda5b79c689712e6d043",
   "date": "2026-05-18",
   "destinations": {
     "arweave": {
-      "anchor": "lFUPLpjRa3Q9q_bMfImDbSawKT1eXKcRik7obTKsTo_P3dWUcFP3G4KIKuP66JoP",
-      "bundle_sha256": "c3bab08e727f400cbbc9536eb50f837f4f3a748e3af0311a7866521f5b3d8c5c",
-      "chunk_count": 43,
-      "gateway": "https://arweave.net",
-      "reward_winston": "75867371384",
-      "status": "submitted",
-      "status_code": 200,
-      "status_response": {
-        "block_height": 1920102,
-        "block_indep_hash": "BWQhRi-z2COhQTZlau59NrWpTpyyD4Q_gy29D75Eq0uHjDarjvgu8dV0OWyVv7-I",
-        "number_of_confirmations": 1
-      },
-      "submitted_at": "2026-05-18T04:45:57Z",
-      "transaction_id": "7jwMOJXJY4Qw5UXI5MXdAsRCvXu3MJIeahgriAv5rF4",
-      "transaction_url": "https://arweave.net/7jwMOJXJY4Qw5UXI5MXdAsRCvXu3MJIeahgriAv5rF4",
-      "upload_mode": "chunked",
-      "wallet_address": "0M5DwTnTNoSMjNY-iphmO5Se-8acobq_hD4pRazNPms"
+      "bundle_sha256": "078e36b5c3c5a7e4001f612a86b4a5a985f47ecb07ce8fb3a777f44f49c05abf",
+      "error": "Arweave wallet 0M5DwTnTNoSMjNY-iphmO5Se-8acobq_hD4pRazNPms has 26765423793 winston, below required reward 106713782060",
+      "failed_at": "2026-06-09T22:51:27Z",
+      "status": "failed"
     },
     "github_release": {
-      "asset_name": "rso-archive-2026-05-18.tar.gz",
-      "asset_url": "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-18/rso-archive-2026-05-18.tar.gz",
+      "asset_name": "rso-archive-2026-05-18-v2.tar.gz",
+      "asset_url": "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-18/rso-archive-2026-05-18-v2.tar.gz",
       "release_url": "https://github.com/OMPub/RSO/releases/tag/rso-archive-2026-05-18",
       "repo": "OMPub/RSO",
-      "status": "created",
+      "status": "uploaded",
       "tag": "rso-archive-2026-05-18"
     }
   },
-  "manifest_sha256": "cf5e09979c3a507cb651c5a66623870aff5c673d39eb1a9649d60231c7d0a348",
-  "updated_at": "2026-05-18T04:45:57Z"
+  "manifest_sha256": "48bfd9984ee72bba364aca617290f8c2f6b973a9cf1c24cad217e9b1b9b9967e",
+  "updated_at": "2026-06-09T22:51:27Z"
 }

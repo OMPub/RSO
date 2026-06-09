@@ -1,34 +1,25 @@
 {
-  "asset_name": "rso-archive-2026-05-24.tar.gz",
-  "bundle_bytes": 11191601,
-  "bundle_sha256": "46babe513c1136eabf54ed6d3ab48c7b44376c7b7a6c42ea1369df826d2894c5",
+  "asset_name": "rso-archive-2026-05-24-v2.tar.gz",
+  "bundle_bytes": 11192924,
+  "bundle_sha256": "737866ddeef2889ef75662db96c9b5388dc3df75b4cc8af3bbf479beb80a5d6e",
   "catalog_sha256": "afd61b63b5c88be641c5effb7274d28e002744bdfbfa1775ce4793ba6f109351",
   "date": "2026-05-24",
   "destinations": {
     "arweave": {
-      "anchor": "jGkIqSwdUDxds9gpsBB3WHnIX6BO5L2LuvGUgNIFir9YntPn8SuIjqJYFsx0sqUS",
-      "bundle_sha256": "46babe513c1136eabf54ed6d3ab48c7b44376c7b7a6c42ea1369df826d2894c5",
-      "chunk_count": 43,
-      "gateway": "https://arweave.net",
-      "reward_winston": "87729596779",
-      "status": "submitted",
-      "status_code": 202,
-      "status_response": "Accepted",
-      "submitted_at": "2026-05-24T04:42:22Z",
-      "transaction_id": "50vApq3BCh9yxb2JyH716MaeRzMSq237UVDaM5xS6Ng",
-      "transaction_url": "https://arweave.net/50vApq3BCh9yxb2JyH716MaeRzMSq237UVDaM5xS6Ng",
-      "upload_mode": "chunked",
-      "wallet_address": "0M5DwTnTNoSMjNY-iphmO5Se-8acobq_hD4pRazNPms"
+      "bundle_sha256": "737866ddeef2889ef75662db96c9b5388dc3df75b4cc8af3bbf479beb80a5d6e",
+      "error": "Arweave wallet 0M5DwTnTNoSMjNY-iphmO5Se-8acobq_hD4pRazNPms has 26765423793 winston, below required reward 106713782060",
+      "failed_at": "2026-06-09T22:51:50Z",
+      "status": "failed"
     },
     "github_release": {
-      "asset_name": "rso-archive-2026-05-24.tar.gz",
-      "asset_url": "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-24/rso-archive-2026-05-24.tar.gz",
+      "asset_name": "rso-archive-2026-05-24-v2.tar.gz",
+      "asset_url": "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-24/rso-archive-2026-05-24-v2.tar.gz",
       "release_url": "https://github.com/OMPub/RSO/releases/tag/rso-archive-2026-05-24",
       "repo": "OMPub/RSO",
-      "status": "created",
+      "status": "uploaded",
       "tag": "rso-archive-2026-05-24"
     }
   },
-  "manifest_sha256": "bacade08e17c59843e509c6c87726461afe08fbf4a45179e8a87338d913cefbc",
-  "updated_at": "2026-05-24T04:42:22Z"
+  "manifest_sha256": "933b5637cd030f6ca595100bb587e97d2a2797cacba8e3277eee7463009574c6",
+  "updated_at": "2026-06-09T22:51:50Z"
 }
