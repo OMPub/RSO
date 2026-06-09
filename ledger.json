@@ -1,7 +1,10 @@
 [
   {
+    "annotations_sha256": "1bbdb0bf3979476bf13f1d4a6620dc7199b717855728f2dc87652f8321c11ced",
     "archived_at": "2026-04-20T00:01:01.390416+00:00",
     "compressed_bytes": 11301379,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "1838a06696902f7397d78d906c4bd9f5e9d9e372725ccbf4629bbd377231a740",
     "date": "2026-04-20",
     "object_count": 67208,
     "provenance": "genesis_from_gp",
@@ -10,10 +13,13 @@
     "state_as_of_utc": "2026-04-20T00:00:00Z"
   },
   {
+    "annotations_sha256": "12a3549831f84e7e1818897d9891e64c12237e4d0d48153b7337598fc6496d9d",
     "archived_at": "2026-04-21T03:49:28.354033+00:00",
     "base_snapshot_date": "2026-04-20",
     "base_snapshot_sha256": "5cd6af76f043b0335ced62c887703585560bdff0b5daf272fa4c76636e5ec1ab",
     "compressed_bytes": 11302770,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "c4ffe1aea1411239ec0d6b2059bec40415338994ca4914ef8753dad352bf6019",
     "date": "2026-04-21",
     "delta_window_end_utc": "2026-04-21T00:00:00Z",
     "delta_window_start_utc": "2026-04-20T00:00:00Z",
@@ -24,10 +30,13 @@
     "state_as_of_utc": "2026-04-21T00:00:00Z"
   },
   {
+    "annotations_sha256": "976e0e75121a40822f619548f0e0d96a36924ec7a6a8302d9f15093748f00857",
     "archived_at": "2026-04-22T03:46:05.219195+00:00",
     "base_snapshot_date": "2026-04-21",
     "base_snapshot_sha256": "e2a06299f48298915a902f544234815a0e7e8d46ca97eaa356c46f5c93de7f06",
     "compressed_bytes": 11248229,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "1d1658e33ce573829c89fbd6dab61223eb34607d597658fa06a57d429d1bc444",
     "date": "2026-04-22",
     "delta_window_end_utc": "2026-04-22T00:00:00Z",
     "delta_window_start_utc": "2026-04-21T00:00:00Z",
@@ -38,10 +47,13 @@
     "state_as_of_utc": "2026-04-22T00:00:00Z"
   },
   {
+    "annotations_sha256": "1b5af5f4839384872cb6b0e6181da5c449696fe7469df6bf69c69a6ec7e3785c",
     "archived_at": "2026-04-23T03:50:22.932275+00:00",
     "base_snapshot_date": "2026-04-22",
     "base_snapshot_sha256": "b649c86ea8ef3e629b6ca4fe5a620218378b64f7788afa8ad3ce08785737844b",
     "compressed_bytes": 11281196,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "82bff6f34cf855595b16cb0a4f7085b1356eef8fe087cda6964be961cb65dbd1",
     "date": "2026-04-23",
     "delta_window_end_utc": "2026-04-23T00:00:00Z",
     "delta_window_start_utc": "2026-04-22T00:00:00Z",
@@ -52,10 +64,13 @@
     "state_as_of_utc": "2026-04-23T00:00:00Z"
   },
   {
+    "annotations_sha256": "0821ee708aaec0ad2bac8d744ba5148e046c491cd6f0cb09957902b2d1f1e0df",
     "archived_at": "2026-04-24T03:53:59.646917+00:00",
     "base_snapshot_date": "2026-04-23",
     "base_snapshot_sha256": "aca918b0d803343624625d52f906f16250c7c53f32755141f5296374f7028827",
     "compressed_bytes": 11323100,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "0a0b33a835f585f20b731de21975578a068f27784e07db9e5151ec9b224794a7",
     "date": "2026-04-24",
     "delta_window_end_utc": "2026-04-24T00:00:00Z",
     "delta_window_start_utc": "2026-04-23T00:00:00Z",
@@ -66,10 +81,13 @@
     "state_as_of_utc": "2026-04-24T00:00:00Z"
   },
   {
+    "annotations_sha256": "aaa67640dbe1e0fe53fabf1e66b2e0135aca4b6e66173f1e6abf4d44ae82fab8",
     "archived_at": "2026-04-25T03:35:29.634140+00:00",
     "base_snapshot_date": "2026-04-24",
     "base_snapshot_sha256": "0875b754cf11e1bd0f3bcb85abf466c63959bfe7eda02fd47ea64ae1c716bf4e",
     "compressed_bytes": 11210162,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "1bbe5e9f6dc9bea6aad6112bcb91fdf83645043b372dcf571c7cba81b5c53bbd",
     "date": "2026-04-25",
     "delta_window_end_utc": "2026-04-25T00:00:00Z",
     "delta_window_start_utc": "2026-04-24T00:00:00Z",
@@ -80,10 +98,13 @@
     "state_as_of_utc": "2026-04-25T00:00:00Z"
   },
   {
+    "annotations_sha256": "d100cf0c13c4ec7059a5a15ba010836b1b991b4f45523ee7e5adff1298eadde8",
     "archived_at": "2026-04-26T03:59:17.850648+00:00",
     "base_snapshot_date": "2026-04-25",
     "base_snapshot_sha256": "d495861c6a93d85b66dd55e95aaec05adf05dd31d4c28df90ea297f3e94b1bb0",
     "compressed_bytes": 11217312,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "08de6e9c7fc87d20de17a8e41481d14ceb8cd3ba678fd281e832d97758ee9d15",
     "date": "2026-04-26",
     "delta_window_end_utc": "2026-04-26T00:00:00Z",
     "delta_window_start_utc": "2026-04-25T00:00:00Z",
@@ -94,10 +115,13 @@
     "state_as_of_utc": "2026-04-26T00:00:00Z"
   },
   {
+    "annotations_sha256": "6fc6b10aa017ed08ab83cd567d6ebea366092552e00d78e6fa9b86a5af293d55",
     "archived_at": "2026-04-27T04:03:45.263014+00:00",
     "base_snapshot_date": "2026-04-26",
     "base_snapshot_sha256": "01f8ca7d34acb5b442a01d2180fc68f6d5abfa0fcf9374e8225ff15af1a66e98",
     "compressed_bytes": 11223865,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "9596d70d3bbbb50436da32bdcabce977f3c6b7a2bce8835f2d8be0535bb7bbb1",
     "date": "2026-04-27",
     "delta_window_end_utc": "2026-04-27T00:00:00Z",
     "delta_window_start_utc": "2026-04-26T00:00:00Z",
@@ -108,10 +132,13 @@
     "state_as_of_utc": "2026-04-27T00:00:00Z"
   },
   {
+    "annotations_sha256": "8641834ce870d79fbe9364dc8b9ef1ff6f51a984e58438b611b3c59ab5e9fc73",
     "archived_at": "2026-04-28T04:09:01.982682+00:00",
     "base_snapshot_date": "2026-04-27",
     "base_snapshot_sha256": "0b80e3443908482aa720e41740c003e4b8965427be34a98d7463260a73bc48b8",
     "compressed_bytes": 11233385,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "9edbee00fab8035af57603e82dca61c339faab3757a636dc9f9f537416479822",
     "date": "2026-04-28",
     "delta_window_end_utc": "2026-04-28T00:00:00Z",
     "delta_window_start_utc": "2026-04-27T00:00:00Z",
@@ -122,10 +149,13 @@
     "state_as_of_utc": "2026-04-28T00:00:00Z"
   },
   {
+    "annotations_sha256": "4ed6d88ad8a297a79a31af69aa68eb71703892a9adb7c45f7267d343d7d0482e",
     "archived_at": "2026-04-29T04:05:59.049436+00:00",
     "base_snapshot_date": "2026-04-28",
     "base_snapshot_sha256": "4727abba9fc4e599a4b768207ce31318c9b5e43a9deaa014ca7b0a8f873ec92b",
     "compressed_bytes": 11230417,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "01bdb8f2f8199e3d7770c4244b054b4e4cac5fa814fba815695fc9babf91f419",
     "date": "2026-04-29",
     "delta_window_end_utc": "2026-04-29T00:00:00Z",
     "delta_window_start_utc": "2026-04-28T00:00:00Z",
@@ -136,10 +166,13 @@
     "state_as_of_utc": "2026-04-29T00:00:00Z"
   },
   {
+    "annotations_sha256": "9dcd671dd0d747d2a8a726e52344830310c3103c511e20faa0d07f7d7bb4f8d4",
     "archived_at": "2026-04-30T04:08:17.530676+00:00",
     "base_snapshot_date": "2026-04-29",
     "base_snapshot_sha256": "69a1d6e549b9de74165ae42784d0c8ac0a9c40ba6104335d9be676d3d9eb7b50",
     "compressed_bytes": 11258523,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "6dee641f600bf3c303670d0fc14147881e5cc2cde3b1843733bcfa20430c2b33",
     "date": "2026-04-30",
     "delta_window_end_utc": "2026-04-30T00:00:00Z",
     "delta_window_start_utc": "2026-04-29T00:00:00Z",
@@ -150,10 +183,13 @@
     "state_as_of_utc": "2026-04-30T00:00:00Z"
   },
   {
+    "annotations_sha256": "dca67140db164d7e22da8143f97f05e90d69976ccea73d1004482f9c5729a452",
     "archived_at": "2026-05-01T04:20:44.230077+00:00",
     "base_snapshot_date": "2026-04-30",
     "base_snapshot_sha256": "8d44ef178c730a7b6796c5564067fc1c4bd7eec2ef7c296eeefe391f4a25ddf7",
     "compressed_bytes": 11301305,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "e9fe102591934367c33fd6489412c575cc5f03d379bd4b71775678222b2c869d",
     "date": "2026-05-01",
     "delta_window_end_utc": "2026-05-01T00:00:00Z",
     "delta_window_start_utc": "2026-04-30T00:00:00Z",
@@ -164,10 +200,13 @@
     "state_as_of_utc": "2026-05-01T00:00:00Z"
   },
   {
+    "annotations_sha256": "01727072d5ddb631358aec1178051ca246e542ee8e2c5499dc924bf2c1599e94",
     "archived_at": "2026-05-02T03:54:34.649836+00:00",
     "base_snapshot_date": "2026-05-01",
     "base_snapshot_sha256": "f2a769f3791bb783e9a9ff1e989117dfee5ac106c82e92ea4d25ad09b5bdb6ab",
     "compressed_bytes": 11252428,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "18c05784e969511a4e65596655f8bd3a5d41cdfd54dfee0f23f9b389d12d404b",
     "date": "2026-05-02",
     "delta_window_end_utc": "2026-05-02T00:00:00Z",
     "delta_window_start_utc": "2026-05-01T00:00:00Z",
@@ -178,10 +217,13 @@
     "state_as_of_utc": "2026-05-02T00:00:00Z"
   },
   {
+    "annotations_sha256": "49cba18f0d9d22522471ffb2da04815c95ae189a18cc07b6a857b0716c10da10",
     "archived_at": "2026-05-03T04:14:42.067843+00:00",
     "base_snapshot_date": "2026-05-02",
     "base_snapshot_sha256": "ed49b7f51d1bd9c1664d93ab732588f7faf92e814950e47927b44cd2e7c54cf1",
     "compressed_bytes": 11248451,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "ed70676adf02636d92e40a5b25b2b406fb269e0772cfde5fe81fed321fc68df6",
     "date": "2026-05-03",
     "delta_window_end_utc": "2026-05-03T00:00:00Z",
     "delta_window_start_utc": "2026-05-02T00:00:00Z",
@@ -192,10 +234,13 @@
     "state_as_of_utc": "2026-05-03T00:00:00Z"
   },
   {
+    "annotations_sha256": "110569553e6305657e2944931c7944d38dd9a29a10c738d81f75aeb4ca57c2fb",
     "archived_at": "2026-05-04T04:12:39.226283+00:00",
     "base_snapshot_date": "2026-05-03",
     "base_snapshot_sha256": "1a703ba6183f6170b529fd0e3ab3d793b2dc0ceac618b183d9aa95b19c1da5b7",
     "compressed_bytes": 11275209,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "02ccaf96a9d603f98475d7ad05685504a210c9b1e73f42bad6df5c27e4a30571",
     "date": "2026-05-04",
     "delta_window_end_utc": "2026-05-04T00:00:00Z",
     "delta_window_start_utc": "2026-05-03T00:00:00Z",
@@ -206,10 +251,13 @@
     "state_as_of_utc": "2026-05-04T00:00:00Z"
   },
   {
+    "annotations_sha256": "1916991f855669c63faa8fafdc419a8ae4e9476842a82f60b094f630e1342314",
     "archived_at": "2026-05-05T03:53:47.621071+00:00",
     "base_snapshot_date": "2026-05-04",
     "base_snapshot_sha256": "57527a66768b22ef11e9e3810862d57a587ef286b5c005f800323bc056141e05",
     "compressed_bytes": 11260788,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "e1e71d4740082618fba60e801f2a85a0ff5ce1f6ed4fdf46caa0566e12afa878",
     "date": "2026-05-05",
     "delta_window_end_utc": "2026-05-05T00:00:00Z",
     "delta_window_start_utc": "2026-05-04T00:00:00Z",
@@ -220,10 +268,13 @@
     "state_as_of_utc": "2026-05-05T00:00:00Z"
   },
   {
+    "annotations_sha256": "788d380e758a2b62999d7041be5234e9666f7beb4a77d780798e0e5565f0b63c",
     "archived_at": "2026-05-06T04:08:14.697159+00:00",
     "base_snapshot_date": "2026-05-05",
     "base_snapshot_sha256": "454ba7753cf3be3d73b10829f9b2d3e7a1379c9ff4dad70cc0077cc01f271763",
     "compressed_bytes": 11269686,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "0dd4af778d91246dd936eb4d56ae3d43448cbec01292ff21db4c9025dcc56d9f",
     "date": "2026-05-06",
     "delta_window_end_utc": "2026-05-06T00:00:00Z",
     "delta_window_start_utc": "2026-05-05T00:00:00Z",
@@ -234,10 +285,13 @@
     "state_as_of_utc": "2026-05-06T00:00:00Z"
   },
   {
+    "annotations_sha256": "409f61851978cc218ffc0bd5b6fc044f7f28d5b047f410873fd515c8daca1af0",
     "archived_at": "2026-05-07T04:08:52.747990+00:00",
     "base_snapshot_date": "2026-05-06",
     "base_snapshot_sha256": "6f091caa8d0f929055860b2fe00d70ebc5ea71b598d75bc0489325bef4626fdf",
     "compressed_bytes": 11310165,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "f72c94f4a4d8e5ed9354beb3f1a864edef280bde2f0dc2bdf136f3059beff1c7",
     "date": "2026-05-07",
     "delta_window_end_utc": "2026-05-07T00:00:00Z",
     "delta_window_start_utc": "2026-05-06T00:00:00Z",
@@ -248,10 +302,13 @@
     "state_as_of_utc": "2026-05-07T00:00:00Z"
   },
   {
+    "annotations_sha256": "4aa52eeea158028ba053143e330efd6d2f85fbcef5d5c6f7f4556fd64c29fdd8",
     "archived_at": "2026-05-08T03:56:58.550875+00:00",
     "base_snapshot_date": "2026-05-07",
     "base_snapshot_sha256": "9442399aa3ceabc380ce4b2e559e36e5cfbdb3c194a97d0a9690f910efbf1a6f",
     "compressed_bytes": 11282156,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "d1abeaa192ea6b40f5e632c813062dae6e516d644b1edd84d1fc1d40efb657a9",
     "date": "2026-05-08",
     "delta_window_end_utc": "2026-05-08T00:00:00Z",
     "delta_window_start_utc": "2026-05-07T00:00:00Z",
@@ -262,10 +319,13 @@
     "state_as_of_utc": "2026-05-08T00:00:00Z"
   },
   {
+    "annotations_sha256": "b59178b4876a2239e8ce623b78639c16cb84d5126fc15fac2a513c75ea3a3d56",
     "archived_at": "2026-05-09T03:58:52.229106+00:00",
     "base_snapshot_date": "2026-05-08",
     "base_snapshot_sha256": "070cba0139d3b7779aefdd578db77295b83f64b2135d52d66f57aa2624361560",
     "compressed_bytes": 11257315,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "cfd5dcbe110f3b3c7bc2aa9506ff627606ce05177165546672c5b30bd9f118a8",
     "date": "2026-05-09",
     "delta_window_end_utc": "2026-05-09T00:00:00Z",
     "delta_window_start_utc": "2026-05-08T00:00:00Z",
@@ -276,10 +336,13 @@
     "state_as_of_utc": "2026-05-09T00:00:00Z"
   },
   {
+    "annotations_sha256": "0a1ee8a3e916ff2978b197dffb7f304aefb1ae122d86a401849014745cfbea92",
     "archived_at": "2026-05-10T04:18:45.503537+00:00",
     "base_snapshot_date": "2026-05-09",
     "base_snapshot_sha256": "324e8bc4429c1f934822f3be219b196afb948310fafad2f86882e2afa28711a3",
     "compressed_bytes": 11271631,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "8c44b1d03a4f7f25dbee55eadbc69dd6fec53aa4dc1a6c639e4b5bc9e91c2b30",
     "date": "2026-05-10",
     "delta_window_end_utc": "2026-05-10T00:00:00Z",
     "delta_window_start_utc": "2026-05-09T00:00:00Z",
@@ -290,10 +353,13 @@
     "state_as_of_utc": "2026-05-10T00:00:00Z"
   },
   {
+    "annotations_sha256": "303a977cf95fd68d4e2f565c83b95cd92ac55bd19965407992e725274b16c5c0",
     "archived_at": "2026-05-11T04:39:45.490760+00:00",
     "base_snapshot_date": "2026-05-10",
     "base_snapshot_sha256": "4231746b86f41453b22c8f53477ce6c8faab4426ee218815ee04260790f1925c",
     "compressed_bytes": 11270776,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "4f96c00a6cc305640727216bcd9532e066afc64998d75e90e6364d0549b73a71",
     "date": "2026-05-11",
     "delta_window_end_utc": "2026-05-11T00:00:00Z",
     "delta_window_start_utc": "2026-05-10T00:00:00Z",
@@ -304,10 +370,13 @@
     "state_as_of_utc": "2026-05-11T00:00:00Z"
   },
   {
+    "annotations_sha256": "341e9bcbb7e97028c5a55cd3eb405e8657d2d2e14d084a3baabb56a5adda9a31",
     "archived_at": "2026-05-12T04:08:50.943160+00:00",
     "base_snapshot_date": "2026-05-11",
     "base_snapshot_sha256": "a9ba2e33611da3a64e4ccbbf362112ee2cdf7e3bceec800ad6bdbdda4e23a647",
     "compressed_bytes": 11270241,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "bdd73f721e20d89139ab4d8805f8d48578700623179144060aef8eeac28cacdb",
     "date": "2026-05-12",
     "delta_window_end_utc": "2026-05-12T00:00:00Z",
     "delta_window_start_utc": "2026-05-11T00:00:00Z",
@@ -318,10 +387,13 @@
     "state_as_of_utc": "2026-05-12T00:00:00Z"
   },
   {
+    "annotations_sha256": "000ce2d15290851d673cba936f124e5f9629f8f7f404d79254af932fac77317d",
     "archived_at": "2026-05-13T04:15:43.942446+00:00",
     "base_snapshot_date": "2026-05-12",
     "base_snapshot_sha256": "6f5489502c1aeda5f6a50e928ac473b272bc8e67f11ae7e121d701e0fd970a35",
     "compressed_bytes": 11244789,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "143d896e22f8612e7cff97736337a8b82cd9f7ddb528a00c9e03acf3ab291197",
     "date": "2026-05-13",
     "delta_window_end_utc": "2026-05-13T00:00:00Z",
     "delta_window_start_utc": "2026-05-12T00:00:00Z",
@@ -332,10 +404,13 @@
     "state_as_of_utc": "2026-05-13T00:00:00Z"
   },
   {
+    "annotations_sha256": "a2f82030caaec199edc295713e01d103c2d4ac363f41361be6e8752436a62625",
     "archived_at": "2026-05-14T04:15:46.048836+00:00",
     "base_snapshot_date": "2026-05-13",
     "base_snapshot_sha256": "2b3af36b365f96eb5162fba75eb4849f9073a462d8a35191708531c98a763460",
     "compressed_bytes": 11288973,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "9595361b83205801eeb78ac7c204125fe57cd9ccd1f7ff2a26d3e2b12ce1650c",
     "date": "2026-05-14",
     "delta_window_end_utc": "2026-05-14T00:00:00Z",
     "delta_window_start_utc": "2026-05-13T00:00:00Z",
@@ -346,10 +421,13 @@
     "state_as_of_utc": "2026-05-14T00:00:00Z"
   },
   {
+    "annotations_sha256": "1b86e808bd4542c3bed66cdfcfad4c89fa662dba7e4d9bc248c336a56c1b3836",
     "archived_at": "2026-05-15T04:21:02.102240+00:00",
     "base_snapshot_date": "2026-05-14",
     "base_snapshot_sha256": "13903dcf63891e34d5e5f827d8b351acddb8c48f83274779a9e89ecd473bcfcc",
     "compressed_bytes": 11342900,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "15717c219cba0ac389d5c953f81ccc9c8f5a4b54d58340479bd2c22ced77132e",
     "date": "2026-05-15",
     "delta_window_end_utc": "2026-05-15T00:00:00Z",
     "delta_window_start_utc": "2026-05-14T00:00:00Z",
@@ -360,10 +438,13 @@
     "state_as_of_utc": "2026-05-15T00:00:00Z"
   },
   {
+    "annotations_sha256": "6442db115a9c789197bcacd90bc502e5d8f1302130aeb86a0e890c95f391a359",
     "archived_at": "2026-05-16T04:04:56.631808+00:00",
     "base_snapshot_date": "2026-05-15",
     "base_snapshot_sha256": "9dd0ce634076256b8fb428ada43b1a411a7fb70de1e563e42f3ca7e51d6653ae",
     "compressed_bytes": 11333330,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "56f6c67b81854923f7693671e84329bc3909e33ded2230e353c54ed8525a5e12",
     "date": "2026-05-16",
     "delta_window_end_utc": "2026-05-16T00:00:00Z",
     "delta_window_start_utc": "2026-05-15T00:00:00Z",
@@ -374,10 +455,13 @@
     "state_as_of_utc": "2026-05-16T00:00:00Z"
   },
   {
+    "annotations_sha256": "ca75b6d746de7c48b4e63afa6cb6995610e7435fd5fb93eb55c2492b4cf33635",
     "archived_at": "2026-05-17T04:35:14.301375+00:00",
     "base_snapshot_date": "2026-05-16",
     "base_snapshot_sha256": "6bb7ffae9c1e45238d0a30a934e54590d2fa428999b9ebfc365ea8438d8f2a23",
     "compressed_bytes": 11284531,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "77ba7dbc5ad771296e86c0a135e0c2faa94ad31b6cfa9725fc82ca5bc4bf99eb",
     "date": "2026-05-17",
     "delta_window_end_utc": "2026-05-17T00:00:00Z",
     "delta_window_start_utc": "2026-05-16T00:00:00Z",
@@ -388,10 +472,13 @@
     "state_as_of_utc": "2026-05-17T00:00:00Z"
   },
   {
+    "annotations_sha256": "b93f2439ef22f469876fa4e6b3ae60a128ec788a7390c4db2d4705fa54bd2efe",
     "archived_at": "2026-05-18T04:44:54.755343+00:00",
     "base_snapshot_date": "2026-05-17",
     "base_snapshot_sha256": "95807b05631aa7353af4ab9bffda3a7b84dbea1441377d77ac88422e79799f08",
     "compressed_bytes": 11287909,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "624ea64533fa17ad910512456f0dd4a4a0058f3101b37642c12da691badba503",
     "date": "2026-05-18",
     "delta_window_end_utc": "2026-05-18T00:00:00Z",
     "delta_window_start_utc": "2026-05-17T00:00:00Z",
@@ -402,10 +489,13 @@
     "state_as_of_utc": "2026-05-18T00:00:00Z"
   },
   {
+    "annotations_sha256": "2ee3ecfdfdfe7c738799cb19df8181b6bd8542ae4722897444e8df4ac45ab28f",
     "archived_at": "2026-05-19T04:36:59.269608+00:00",
     "base_snapshot_date": "2026-05-18",
     "base_snapshot_sha256": "3921c7c12606f152973b31bea02c59e8e49401e5ecd3eda5b79c689712e6d043",
     "compressed_bytes": 11296071,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "2f86cc6f3a99dd0bb5fda28d3c0dd0850cbb29e9a926a95cd1b79eb4c653e50f",
     "date": "2026-05-19",
     "delta_window_end_utc": "2026-05-19T00:00:00Z",
     "delta_window_start_utc": "2026-05-18T00:00:00Z",
@@ -416,10 +506,13 @@
     "state_as_of_utc": "2026-05-19T00:00:00Z"
   },
   {
+    "annotations_sha256": "31672fa26de16d59d980653587dea4a0f02dfccfccb5f6baedcbebc8d882fb1f",
     "archived_at": "2026-05-20T04:39:39.627823+00:00",
     "base_snapshot_date": "2026-05-19",
     "base_snapshot_sha256": "9d50e04d832fc6822aa3bc5ae41a0a880dac59bcdadc663e332f855628bb2477",
     "compressed_bytes": 11281312,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "2be5af69a8c3f3cbf10a479c48fe5898fa316af9389207f0b23a93b9a1f0064f",
     "date": "2026-05-20",
     "delta_window_end_utc": "2026-05-20T00:00:00Z",
     "delta_window_start_utc": "2026-05-19T00:00:00Z",
@@ -430,10 +523,13 @@
     "state_as_of_utc": "2026-05-20T00:00:00Z"
   },
   {
+    "annotations_sha256": "79e340132eed4faa16a9f3f8f8eedfd0fdc5fd6e7cb0f93ec4b2b08785145e83",
     "archived_at": "2026-05-21T04:47:05.932080+00:00",
     "base_snapshot_date": "2026-05-20",
     "base_snapshot_sha256": "b6fe18ca536a5d971b86d28c1079c89f493633f2090521a467c7fb08cb8ddab7",
     "compressed_bytes": 11351071,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "ec30d582b78fdbd1905e2a01bb7faf3f76c00da5a79db339db4c5e125d38024f",
     "date": "2026-05-21",
     "delta_window_end_utc": "2026-05-21T00:00:00Z",
     "delta_window_start_utc": "2026-05-20T00:00:00Z",
@@ -444,10 +540,13 @@
     "state_as_of_utc": "2026-05-21T00:00:00Z"
   },
   {
+    "annotations_sha256": "7cecabbc85449b1e12bc215aa5b32ae309811e30ebef8dec8a2276fe92dd11ca",
     "archived_at": "2026-05-22T04:38:52.872676+00:00",
     "base_snapshot_date": "2026-05-21",
     "base_snapshot_sha256": "297eea809f97554e73527a5db008cecce25b5bafd282318d0352a75ab9664f55",
     "compressed_bytes": 11302596,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "ebbb139c8b647d1cbed5c16db3651985168589e394ceccaafcba786555c9ae02",
     "date": "2026-05-22",
     "delta_window_end_utc": "2026-05-22T00:00:00Z",
     "delta_window_start_utc": "2026-05-21T00:00:00Z",
@@ -458,10 +557,13 @@
     "state_as_of_utc": "2026-05-22T00:00:00Z"
   },
   {
+    "annotations_sha256": "22a9a52352769c74dbdae6ef01fc6a52545b0891f3d1a05df98d17c3caf1b868",
     "archived_at": "2026-05-23T04:11:04.442636+00:00",
     "base_snapshot_date": "2026-05-22",
     "base_snapshot_sha256": "6117f3f5edb840f97cb50144edb28e3fdb9bba6f5a3d84fe174040db7dba7c96",
     "compressed_bytes": 11281371,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "13ccd247c21c0e324949f85ec2b90202d3ed04f877acaaa62ac1a0f2175c945b",
     "date": "2026-05-23",
     "delta_window_end_utc": "2026-05-23T00:00:00Z",
     "delta_window_start_utc": "2026-05-22T00:00:00Z",
@@ -472,10 +574,13 @@
     "state_as_of_utc": "2026-05-23T00:00:00Z"
   },
   {
+    "annotations_sha256": "3465902589391974a9a4da976fac2af10b9ca84db9ed40fe8e123ddc278554be",
     "archived_at": "2026-05-24T04:41:55.772687+00:00",
     "base_snapshot_date": "2026-05-23",
     "base_snapshot_sha256": "24cf6ff665fb96f61f0bc8e5000791d8649357858adc6b2838f36c8e04d16dfa",
     "compressed_bytes": 11302464,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "0f3c180ebdce41e8c87f002e31ba89571685153c06078ba8335a17bf6746aed6",
     "date": "2026-05-24",
     "delta_window_end_utc": "2026-05-24T00:00:00Z",
     "delta_window_start_utc": "2026-05-23T00:00:00Z",
@@ -486,10 +591,13 @@
     "state_as_of_utc": "2026-05-24T00:00:00Z"
   },
   {
+    "annotations_sha256": "444d971eaafbbcd45ad7f93fbb9a40499f1572ef668c1bf0bee6cd753f0d47bf",
     "archived_at": "2026-05-25T04:54:10.542049+00:00",
     "base_snapshot_date": "2026-05-24",
     "base_snapshot_sha256": "afd61b63b5c88be641c5effb7274d28e002744bdfbfa1775ce4793ba6f109351",
     "compressed_bytes": 11265538,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "a27a561436809a81141e8038eac6c40f4b71d85ac5530e5188eb52cffa2fd3e6",
     "date": "2026-05-25",
     "delta_window_end_utc": "2026-05-25T00:00:00Z",
     "delta_window_start_utc": "2026-05-24T00:00:00Z",
@@ -500,10 +608,13 @@
     "state_as_of_utc": "2026-05-25T00:00:00Z"
   },
   {
+    "annotations_sha256": "bc68e173892fdf0ecd943b95965fdf041df2ac65519d2152db8566a658108fde",
     "archived_at": "2026-05-26T04:37:38.698429+00:00",
     "base_snapshot_date": "2026-05-25",
     "base_snapshot_sha256": "9060aeaf3c5e67cb7a4cc22b9955e812ea9f71633be8f7a8f88a167e218f0256",
     "compressed_bytes": 11312941,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "4178b79a5427b8048ae8344bc685bb83a1443d8d9b7fa2167a083a702c94386e",
     "date": "2026-05-26",
     "delta_window_end_utc": "2026-05-26T00:00:00Z",
     "delta_window_start_utc": "2026-05-25T00:00:00Z",
@@ -514,10 +625,13 @@
     "state_as_of_utc": "2026-05-26T00:00:00Z"
   },
   {
+    "annotations_sha256": "e5063b6f57e1710d4e658b3939285de3ecbf06b982c228ac179d9e6027c25863",
     "archived_at": "2026-05-27T04:51:17.805949+00:00",
     "base_snapshot_date": "2026-05-26",
     "base_snapshot_sha256": "971f4dfb156d1cd2d7618f165091fa5bee5ba02a19f126cf72904d21e5ce8fc8",
     "compressed_bytes": 11324610,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "3f948b5ee394708fa0c5b575a2d4f5526ad727d4817fb86d32134f77ad8b86a4",
     "date": "2026-05-27",
     "delta_window_end_utc": "2026-05-27T00:00:00Z",
     "delta_window_start_utc": "2026-05-26T00:00:00Z",
@@ -528,10 +642,13 @@
     "state_as_of_utc": "2026-05-27T00:00:00Z"
   },
   {
+    "annotations_sha256": "b66c9695732601df56d6a6d10c026f626319d1199da3d3629a9cf81a21890c4d",
     "archived_at": "2026-05-28T04:43:04.398335+00:00",
     "base_snapshot_date": "2026-05-27",
     "base_snapshot_sha256": "1fc19e03ef1e3598a59dc504c667765fc97ba6d6b92d3fdb60fbae060be0855e",
     "compressed_bytes": 11302648,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "2f089dae653c4f933d8e50da67305bea84d2487aa37327b920b92b999484095a",
     "date": "2026-05-28",
     "delta_window_end_utc": "2026-05-28T00:00:00Z",
     "delta_window_start_utc": "2026-05-27T00:00:00Z",
@@ -542,10 +659,13 @@
     "state_as_of_utc": "2026-05-28T00:00:00Z"
   },
   {
+    "annotations_sha256": "5a09361419c45d5e398ac4b2dc91710235e20cd68e853c7523458bde618b46a3",
     "archived_at": "2026-05-29T04:45:59.853696+00:00",
     "base_snapshot_date": "2026-05-28",
     "base_snapshot_sha256": "bb9bc28bf8d859aad1095a63fef32b370a68adc39c1eedd04251aefece0ee895",
     "compressed_bytes": 11302341,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "5aafd9fe2d188aad720d9c6468f1831d0a83940e45e1be5971ad8873dacf5b86",
     "date": "2026-05-29",
     "delta_window_end_utc": "2026-05-29T00:00:00Z",
     "delta_window_start_utc": "2026-05-28T00:00:00Z",
@@ -556,10 +676,13 @@
     "state_as_of_utc": "2026-05-29T00:00:00Z"
   },
   {
+    "annotations_sha256": "d6470a0ca0b6f903ef34019946b0a7afd620d6869542e07f5a5665f53c9bee9c",
     "archived_at": "2026-05-30T04:20:56.618714+00:00",
     "base_snapshot_date": "2026-05-29",
     "base_snapshot_sha256": "b6d1e7862db5541d6aad5de754f2e02bbd8c12823d64e2ffc364db25caa6179b",
     "compressed_bytes": 11324884,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "69e87c041e67b365e806256c684377bac98c56540e10861dba3b123de14a2c0d",
     "date": "2026-05-30",
     "delta_window_end_utc": "2026-05-30T00:00:00Z",
     "delta_window_start_utc": "2026-05-29T00:00:00Z",
@@ -570,10 +693,13 @@
     "state_as_of_utc": "2026-05-30T00:00:00Z"
   },
   {
+    "annotations_sha256": "8371f00636b08bcfa1a67f6897f9a4a8a77e8d7b46b652b42e29b3f3979a4c90",
     "archived_at": "2026-05-31T04:54:37.960201+00:00",
     "base_snapshot_date": "2026-05-30",
     "base_snapshot_sha256": "2dc136bc6d4d8ba64e2a76bf6540be3691fd56c1f2595a10b06f794df0733594",
     "compressed_bytes": 11320473,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "2a0363c47d927da4313030f4f6c6678e9911129c2bf12424b17eecbbfb0a6ddc",
     "date": "2026-05-31",
     "delta_window_end_utc": "2026-05-31T00:00:00Z",
     "delta_window_start_utc": "2026-05-30T00:00:00Z",
@@ -584,10 +710,13 @@
     "state_as_of_utc": "2026-05-31T00:00:00Z"
   },
   {
+    "annotations_sha256": "8383c4912da5d9c69baf570df5f1279d53dc3eebab085f590b4c82e89c9678b3",
     "archived_at": "2026-06-01T05:19:06.974088+00:00",
     "base_snapshot_date": "2026-05-31",
     "base_snapshot_sha256": "714ba3b4e83245876fc647f9ecf70bb6d5d95f2388db02fe305479c3c7d905ab",
     "compressed_bytes": 11301034,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "8846cb904c9431f293a8c307f1b0cd665ef49e954d53979476124e6946e30ad4",
     "date": "2026-06-01",
     "delta_window_end_utc": "2026-06-01T00:00:00Z",
     "delta_window_start_utc": "2026-05-31T00:00:00Z",
@@ -598,10 +727,13 @@
     "state_as_of_utc": "2026-06-01T00:00:00Z"
   },
   {
+    "annotations_sha256": "ae56d995c236710131bc08256458b2cd47804698311143b4deb2ff1d66a09fd3",
     "archived_at": "2026-06-02T05:03:31.142075+00:00",
     "base_snapshot_date": "2026-06-01",
     "base_snapshot_sha256": "fc5f292a64204e77a863497abe3d0305d247e5c4ef011c7bcceea348c432ec5a",
     "compressed_bytes": 11347151,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "f1c0e0409203e57a3b256a4e51637faa5f76a43a789d00dff5a527f08d8debaf",
     "date": "2026-06-02",
     "delta_window_end_utc": "2026-06-02T00:00:00Z",
     "delta_window_start_utc": "2026-06-01T00:00:00Z",
@@ -612,10 +744,13 @@
     "state_as_of_utc": "2026-06-02T00:00:00Z"
   },
   {
+    "annotations_sha256": "825a103212eeeb5c580ddae2021d12ddd304fbb07994c07298d9ee58195aaa38",
     "archived_at": "2026-06-03T05:19:26.531974+00:00",
     "base_snapshot_date": "2026-06-02",
     "base_snapshot_sha256": "5841482b5541175d8a39c19766abfac9b2936ce01251f4c02a18ec6867b5a39e",
     "compressed_bytes": 11380032,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "adaa25577aad221b6842b6f29b96b6de49ba2e0c3add4909bbb98f3f189f9039",
     "date": "2026-06-03",
     "delta_window_end_utc": "2026-06-03T00:00:00Z",
     "delta_window_start_utc": "2026-06-02T00:00:00Z",
@@ -626,10 +761,13 @@
     "state_as_of_utc": "2026-06-03T00:00:00Z"
   },
   {
+    "annotations_sha256": "da973a0623ad18a318c3cf01f44fbce8c19bcb99c3e8d58a2855c7c9aed3d17b",
     "archived_at": "2026-06-04T05:07:37.543736+00:00",
     "base_snapshot_date": "2026-06-03",
     "base_snapshot_sha256": "b133724ebd34b76a61607dd3cb0be55d8afe1c23cf675ea85ba69a565b28962a",
     "compressed_bytes": 11424219,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "3c6eed791367ca7485ab2c3cfb81babdc22ec8f6e823a896c2e46728038f6336",
     "date": "2026-06-04",
     "delta_window_end_utc": "2026-06-04T00:00:00Z",
     "delta_window_start_utc": "2026-06-03T00:00:00Z",
@@ -640,10 +778,13 @@
     "state_as_of_utc": "2026-06-04T00:00:00Z"
   },
   {
+    "annotations_sha256": "e3a2fbdfdef5cc538c1892c86e2807ccb8e0137d5c620948c735211ca3c2b836",
     "archived_at": "2026-06-05T04:49:31.479350+00:00",
     "base_snapshot_date": "2026-06-04",
     "base_snapshot_sha256": "0713f31e6121000f511b0a5b5c2d64aefa366a4e567947ad2689ac01afd45e56",
     "compressed_bytes": 11452390,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "156d34876b7a68aa0014e3e6d2313ec7bf995f832336ef68e6a951ad8aea0c27",
     "date": "2026-06-05",
     "delta_window_end_utc": "2026-06-05T00:00:00Z",
     "delta_window_start_utc": "2026-06-04T00:00:00Z",
@@ -654,10 +795,13 @@
     "state_as_of_utc": "2026-06-05T00:00:00Z"
   },
   {
+    "annotations_sha256": "b356ddb031d1eb3f464d8e1bad097474f4b106716975525889756b7d573d1ea9",
     "archived_at": "2026-06-07T06:04:04.811599+00:00",
     "base_snapshot_date": "2026-06-05",
     "base_snapshot_sha256": "a217462bbc031ab4179e63fd3d69479d9ab69022e51d148ddc4bd7f3f7e5ec9d",
     "compressed_bytes": 11379578,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "be7fc77a2eaf68c50273f66985142ad0b0b810d03c404428a0c87e92e5264105",
     "date": "2026-06-06",
     "delta_window_end_utc": "2026-06-06T00:00:00Z",
     "delta_window_start_utc": "2026-06-05T00:00:00Z",
@@ -668,10 +812,13 @@
     "state_as_of_utc": "2026-06-06T00:00:00Z"
   },
   {
+    "annotations_sha256": "360116275d0912cd53d3e9b54f064d432c4579b24f0b48f11f4dce90e137de54",
     "archived_at": "2026-06-07T06:07:31.764998+00:00",
     "base_snapshot_date": "2026-06-06",
     "base_snapshot_sha256": "78b4e985d70815579587402e2a97a707e8032a805642168cfbf4ced89d09e0b9",
     "compressed_bytes": 11384256,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "086956fe197b16f2382187d462845b2e8aefc621fc1d8bec2f6a40aeaa30952b",
     "date": "2026-06-07",
     "delta_window_end_utc": "2026-06-07T00:00:00Z",
     "delta_window_start_utc": "2026-06-06T00:00:00Z",
@@ -682,10 +829,13 @@
     "state_as_of_utc": "2026-06-07T00:00:00Z"
   },
   {
+    "annotations_sha256": "119e4efdd8e15cfa6ed5d4656a0c56c8c9e04bf17bb43a87ffab5632b4ac8be2",
     "archived_at": "2026-06-08T05:04:21.629788+00:00",
     "base_snapshot_date": "2026-06-07",
     "base_snapshot_sha256": "d35dfd6ba531b98dbf5feb8cb787848b06dcc297ef5a36f88a93107ee97d36e3",
     "compressed_bytes": 11388944,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "6da11fe361442a6dab4d4bcd916a1ba2de88eeea16e2bfcc5620a835301fd3b1",
     "date": "2026-06-08",
     "delta_window_end_utc": "2026-06-08T00:00:00Z",
     "delta_window_start_utc": "2026-06-07T00:00:00Z",
@@ -696,10 +846,13 @@
     "state_as_of_utc": "2026-06-08T00:00:00Z"
   },
   {
+    "annotations_sha256": "2df485f7df581445173fc3272ccb6e781344379d9b6dc91f8f0fdc2fec7e7a82",
     "archived_at": "2026-06-09T04:36:59.154479+00:00",
     "base_snapshot_date": "2026-06-08",
     "base_snapshot_sha256": "96a07ef20b970a00f32a4f63d138dda4d4531a8eac511e2953be33a8033ffb39",
     "compressed_bytes": 11347977,
+    "content_schema": "rso-core-v2",
+    "content_sha256": "32f1fc3c886cffb71df31c443e9a1cbce56f78f59d7047df69d78b5fe4c2cc22",
     "date": "2026-06-09",
     "delta_window_end_utc": "2026-06-09T00:00:00Z",
     "delta_window_start_utc": "2026-06-08T00:00:00Z",
