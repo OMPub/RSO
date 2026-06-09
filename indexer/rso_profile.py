@@ -61,6 +61,9 @@ def build_static_index(
     direct_witnesses: Mapping[str, object] | None = None,
     direct_witnesses_by_date: Mapping[str, object] | None = None,
     indexed_at: str | None = None,
+    doc_chain_id: str = RSO_DOC_CHAIN_ID,
+    profile_uri: str = RSO_PROFILE_URI,
+    chain_profile: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
     """Build the RSO static index by decorating the generic Doc Chain index."""
     index = build_docchain_index(
@@ -68,8 +71,8 @@ def build_static_index(
         network=network,
         chain_id=chain_id,
         contract_address=contract_address,
-        doc_chain_id=RSO_DOC_CHAIN_ID,
-        profile_uri=RSO_PROFILE_URI,
+        doc_chain_id=doc_chain_id,
+        profile_uri=profile_uri,
         from_block=from_block,
         to_block=to_block,
         latest_chain_block=latest_chain_block,
@@ -78,6 +81,8 @@ def build_static_index(
     )
     index["schema"] = "rso-docchain-index-v1"
     index["chunkSize"] = chunk_size
+    if chain_profile is not None:
+        index["chainProfile"] = dict(chain_profile)
     if operator_backing is not None:
         index["operatorBacking"] = dict(sorted(operator_backing.items()))
     index["sweeperVerifiedClaimCount"] = len(normalize_verified_claims(verified_claims))
@@ -664,12 +669,15 @@ def normalize_identity_backing(raw: object) -> dict[str, int]:
     return normalize_operator_backing(raw)
 
 
-def filter_rso_events(events: Iterable[DocAttested]) -> list[DocAttested]:
-    """Return only events for the RSO document chain."""
+def filter_rso_events(
+    events: Iterable[DocAttested],
+    doc_chain_id: str = RSO_DOC_CHAIN_ID,
+) -> list[DocAttested]:
+    """Return only events for the requested RSO document chain."""
     return [
         event
         for event in events
-        if normalize_hex(event.doc_chain_id) == RSO_DOC_CHAIN_ID.lower()
+        if normalize_hex(event.doc_chain_id) == doc_chain_id.lower()
     ]
 
 
