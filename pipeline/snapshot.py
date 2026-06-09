@@ -1516,11 +1516,26 @@ def process_rebuild_v2(args):
         previous_records = json.loads(read_catalog_bytes(previous_date_value))
 
     rebuilt = 0
+    skipped = 0
     for day in days:
         manifest_path = snapshot_dir(day) / "manifest.json"
         manifest = read_json_if_exists(manifest_path)
         if manifest is None:
             raise SnapshotError(f"{day}: no committed manifest; cannot rebuild an unarchived day")
+
+        if (
+            manifest.get("content_schema") == CONTENT_SCHEMA_V2
+            and "annotations_sha256" in manifest
+            and (snapshot_dir(day) / "annotations.json").exists()
+            and not getattr(args, "force", False)
+        ):
+            # Idempotent: hydrated or previously rebuilt days keep their exact
+            # artifacts (re-deriving annotations would change rebuilt_at and
+            # break byte-identity with the published bundle).
+            print(f"  {day}: already carries {CONTENT_SCHEMA_V2} fields; skipping")
+            skipped += 1
+            previous_records = json.loads(read_catalog_bytes(day))
+            continue
 
         records = json.loads(read_catalog_bytes(day))
         canonical = canonicalize(records)
@@ -1564,7 +1579,10 @@ def process_rebuild_v2(args):
         )
         previous_records = records
 
-    print(f"\nRebuild complete: {rebuilt} days now carry {CONTENT_SCHEMA_V2} content fields")
+    print(
+        f"\nRebuild complete: {rebuilt} days now carry {CONTENT_SCHEMA_V2} content fields"
+        + (f"; {skipped} already current" if skipped else "")
+    )
 
 
 def compare_record_sets(replay_records, current_gp_records, sample_size=25):
@@ -2231,6 +2249,12 @@ def build_v2_backfill_bundle(current_date_str, output_dir=None, min_count=MIN_OB
     receipt_path = storage_receipt_path(current_date_str)
     if receipt_path.exists():
         receipt = load_storage_receipt(current_date_str)
+        if receipt.get("verified_from_upstream"):
+            raise SnapshotError(
+                f"{current_date_str}: day was adopted from "
+                f"{receipt['verified_from_upstream']}; it is already published there "
+                "(attest the shared locations instead of re-publishing)"
+            )
         v1_receipt_path = receipt_path.with_name("storage-v1.json")
         if (
             receipt.get("asset_name") == release_asset_name(current_date_str)
@@ -3737,6 +3761,11 @@ def main():
     )
     rebuild_v2_parser.add_argument("--start", required=True, help="Start date (YYYY-MM-DD)")
     rebuild_v2_parser.add_argument("--end", required=True, help="End date inclusive (YYYY-MM-DD)")
+    rebuild_v2_parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Re-derive v2 fields even for days that already carry them",
+    )
 
     validate_parser = subparsers.add_parser(
         "validate", help="Validate every committed archive artifact without network access"

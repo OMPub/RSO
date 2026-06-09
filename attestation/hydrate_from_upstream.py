@@ -61,10 +61,21 @@ def main() -> int:
     try:
         args = parse_args()
         hydrated = 0
+        kept = 0
         for snapshot_date in date_range(args.start, args.end):
+            manifest_file = snapshot_dir(snapshot_date) / "manifest.json"
+            if manifest_file.exists() and not args.overwrite:
+                # A node's own capture is its observation record; hydration
+                # fills gaps, it never replaces local archive days.
+                print(f"  {snapshot_date}: local archive day exists; keeping own capture")
+                kept += 1
+                continue
             hydrate_day(args, snapshot_date)
             hydrated += 1
-        print(f"\nHydrated and verified {hydrated} days from {args.upstream}")
+        print(
+            f"\nHydrated and verified {hydrated} days from {args.upstream}"
+            + (f"; kept {kept} local days" if kept else "")
+        )
         return 0
     except (OSError, KeyError, ValueError) as exc:
         print(f"hydrate_from_upstream.py: {exc}", file=sys.stderr)
@@ -238,6 +249,11 @@ def parse_args() -> argparse.Namespace:
         help="Upstream branch carrying the archive data (default: node).",
     )
     parser.add_argument("--timeout", type=float, default=60.0)
+    parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Replace local archive days with the verified upstream copies.",
+    )
     return parser.parse_args()
 
 
