@@ -98,7 +98,8 @@
     .pager i { width: 4px; height: 4px; border-radius: 50%; background: rgba(164,174,255,0.22); transition: background 0.2s, box-shadow 0.2s; }
     .pager i.on { background: var(--accent); box-shadow: 0 0 6px rgba(154,169,255,0.7); }
 
-    .witness { position: absolute; right: calc(var(--safe-right) + 18px); bottom: calc(var(--safe-bottom) + 18px); width: min(290px, 36vw); padding-top: 7px; border-top: 1px solid var(--line); text-align: right; }
+    .witness { position: absolute; right: calc(var(--safe-right) + 18px); bottom: calc(var(--safe-bottom) + 18px); width: min(290px, 36vw); padding-top: 7px; border-top: 1px solid var(--line); text-align: right;
+      text-shadow: 0 1px 10px rgba(2,5,6,0.9), 0 0 22px rgba(2,5,6,0.8); }  /* legible over the bright limb */
     .witness-state { margin-top: 6px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; transition: color 220ms ease; }
     .witness-state.attested { color: var(--seal); }
     .witness-hash { margin-top: 5px; color: var(--dim); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 8px; word-break: break-all; }
@@ -176,8 +177,39 @@
     body.zen .hud { opacity: 0; pointer-events: none; transition: opacity 400ms ease; }
 
     @keyframes blink { 50% { opacity: 0.35; } }
-    @media (max-width: 760px) { .brand-sub, .witness { display: none; } .record-date { top: calc(var(--safe-top) + 60px); width: 82vw; } }
+    @media (max-width: 760px) { .brand-sub { display: none; } .record-date { top: calc(var(--safe-top) + 60px); width: 82vw; } }
+    /* the agreement line is the soul of the piece — keep it down to phone width,
+       where it would collide with the readout column */
+    @media (max-width: 520px) { .witness { display: none; } }
     @media (prefers-reduced-motion: reduce) { .scanlines { display: none; } }
+
+    /* ── responsive HUD: the field always fills the viewport; the chrome adapts ── */
+    /* compact — small windows, landing-page embeds, large NFT frames */
+    @media (max-width: 640px), (max-height: 540px) {
+      .corner { width: 24px; height: 24px; }
+      .record-date { width: min(76vw, 480px); }
+      .date { font-size: clamp(19px, 6vw, 34px); }
+      .brand-sub, .hint { display: none; }
+      /* keep the column width — the prism faces are a fixed-height 3D box (82px);
+         narrowing the column wraps their text taller than the box and they collide */
+      .readout { gap: 14px; }
+      .readout-value { font-size: clamp(13px, 2vh, 17px); }
+      .lens-legend { gap: 5px; }
+      .lg-row { font-size: 8px; }
+      .witness { max-width: 38vw; }
+    }
+    /* tiny — NFT grid tiles: the piece reads as pure visual; chrome to a whisper.
+       The fullscreen button stays — it's the escape hatch to the full experience. */
+    @media (max-width: 420px), (max-height: 380px) {
+      .readout, .witness, .lens-legend, .status-label, .date-index,
+      #download-btn, #settings-btn { display: none; }
+      .corner { width: 14px; height: 14px; }
+      .date { font-size: clamp(14px, 7.5vw, 22px); margin-top: 4px; }
+      .brand-name { font-size: 9px; }
+      .brand-mark { width: 7px; height: 7px; margin-top: 2px; }
+      .inspector { width: min(88vw, 300px); bottom: calc(var(--safe-bottom) + 40px); }
+      .mode-toast { font-size: 9px; }
+    }
   </style>
 </head>
 <body>
@@ -202,6 +234,9 @@
 
     <div class="status">
       <span class="status-light loading" id="status-light"></span><span class="status-label" id="status-label">Entering orbit</span>
+      <button class="icon-btn" id="fullscreen-btn" title="Fullscreen" aria-label="Toggle fullscreen">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5"/></svg>
+      </button>
       <button class="icon-btn" id="download-btn" title="Download this frame (PNG)" aria-label="Download frame">
         <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/></svg>
       </button>
@@ -1075,6 +1110,10 @@
     }
     (function setupTilt() {
       const D = window.DeviceOrientationEvent;
+      // sandboxed NFT iframes rarely delegate motion sensors — probe the permissions
+      // policy first so blocked hosts get silence, not console violations
+      const policy = document.permissionsPolicy || document.featurePolicy;
+      if (policy && policy.allowsFeature && !policy.allowsFeature("accelerometer")) return;
       if (D && typeof D.requestPermission === "function") {       // iOS — needs a tap
         const chip = $("tilt-chip"); chip.style.display = "block";
         chip.addEventListener("click", () => D.requestPermission().then((s) => { if (s === "granted") { enableTilt(); chip.classList.add("gone"); } }).catch(() => {}));
@@ -1089,6 +1128,18 @@
       a.href = renderer.domElement.toDataURL("image/png"); a.click();
     });
     const settings = $("settings");
+    // Fullscreen — hidden where the embedder doesn't delegate it (sandboxed NFT iframes
+    // without allow="fullscreen"), so the button never promises what the host forbids.
+    const fsBtn = $("fullscreen-btn");
+    if (!document.fullscreenEnabled) fsBtn.style.display = "none";
+    fsBtn.addEventListener("click", () => {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else document.documentElement.requestFullscreen().catch(() => {});
+    });
+    document.addEventListener("fullscreenchange", () => {
+      fsBtn.title = document.fullscreenElement ? "Exit fullscreen" : "Fullscreen";
+    });
+
     $("settings-btn").addEventListener("click", () => settings.classList.add("open"));
     $("settings-close").addEventListener("click", () => settings.classList.remove("open"));
     settings.addEventListener("click", (e) => { if (e.target === settings) settings.classList.remove("open"); });
@@ -1231,7 +1282,7 @@
 
       renderer.render(scene, camera);
     }
-    function resize() { renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5)); renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); pointMat.uniforms.uPixel.value = renderer.getPixelRatio(); }
+    function resize() { renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5)); renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.fov = innerWidth <= 760 ? 80 : 72; camera.updateProjectionMatrix(); pointMat.uniforms.uPixel.value = renderer.getPixelRatio(); }
     addEventListener("resize", resize);
 
     // ── tap-to-rotate 4-sided data prism: each tap is a real 90° quarter-turn forward.
@@ -1247,7 +1298,12 @@
     setupPrism("prism-obj"); setupPrism("prism-fp");
 
     loadSettings(); applyEthRank(); applyOpSource(); document.body.classList.toggle("zen", state.lens === ZEN); populateLegend();
-    addEarth(); addStars(); assignField([]); renderer.setAnimationLoop(animate); boot();
+    addEarth(); addStars(); assignField([]); renderer.setAnimationLoop(animate);
+    // after boot, let an embedding host (gallery, marketplace, test harness) know the piece
+    // is alive and on live data — fire-and-forget, never assumes a listener
+    boot().then(() => {
+      try { if (parent !== window) parent.postMessage({ rso: "ready", latest: CONFIG.latest }, "*"); } catch (e) {}
+    });
     window.__RSO_CARD__ = { state, setTarget, recordMeta, isoFor, get TOTAL() { return TOTAL; }, camera, O };
   </script>
 </body>

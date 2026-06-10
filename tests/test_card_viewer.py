@@ -108,6 +108,21 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn("__HOLD_OVER__", self.html)
         self.assertRegex(self.html, r"reduced \? 0\s*:\s*smooth\(")
 
+    def test_embed_readiness(self):
+        # fullscreen never promises what a sandboxed host forbids
+        self.assertIn('id="fullscreen-btn"', self.html)
+        self.assertIn("document.fullscreenEnabled", self.html)
+        # motion sensors are probed via permissions policy → no console violations
+        self.assertIn('allowsFeature("accelerometer")', self.html)
+        # responsive HUD: compact + whisper breakpoints exist
+        self.assertIn("@media (max-width: 640px), (max-height: 540px)", self.html)
+        self.assertIn("@media (max-width: 420px), (max-height: 380px)", self.html)
+        # boot beacon for embedding hosts
+        self.assertIn('parent.postMessage({ rso: "ready"', self.html)
+        # the embed test kit ships with the card
+        self.assertTrue((CARD.parent / "nft-preview.html").is_file())
+        self.assertTrue((CARD.parent / "serve.py").is_file())
+
     def test_lenses_end_with_zen(self):
         lenses = re.search(r"const LENSES = \[(.*?)\];", self.html)
         self.assertIsNotNone(lenses)
