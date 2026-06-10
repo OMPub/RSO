@@ -44,7 +44,7 @@ from vendor.docchain.attestation import (  # noqa: E402
     subprocess_error_detail,
 )
 from vendor.docchain.indexer import EthereumRpc, RpcError  # noqa: E402
-from pipeline.snapshot import CONTENT_SCHEMA, core_content_sha256  # noqa: E402
+from pipeline.snapshot import CONTENT_PROJECTIONS, core_content_sha256  # noqa: E402
 
 
 ARWEAVE_GATEWAY = "https://arweave.net"
@@ -919,7 +919,7 @@ def validate_release_bundle(bundle_bytes: bytes, expected_content_hash: str, con
         raise SweeperError("release bundle is missing catalog.json.gz")
     catalog_bytes = gzip_decompress_limited(catalog_gz, config.max_catalog_bytes)
 
-    if manifest.get("content_schema") == CONTENT_SCHEMA:
+    if manifest.get("content_schema") in CONTENT_PROJECTIONS:
         # v2: the attestation binds the deterministic core projection. Verify
         # the raw-artifact integrity chain, then independently re-derive the
         # core hash from the catalog bytes -- the sweeper does not trust the
@@ -937,7 +937,7 @@ def validate_release_bundle(bundle_bytes: bytes, expected_content_hash: str, con
             records = json.loads(catalog_bytes)
         except ValueError as exc:
             raise SweeperError(f"catalog bytes are not valid JSON: {exc}") from exc
-        if core_content_sha256(records) != expected_sha:
+        if core_content_sha256(records, str(manifest["content_schema"])) != expected_sha:
             raise SweeperError("re-derived core projection does not match attestation")
         expected_annotations_sha = manifest.get("annotations_sha256")
         if isinstance(expected_annotations_sha, str) and expected_annotations_sha:
