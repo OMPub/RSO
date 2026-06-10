@@ -30,6 +30,12 @@
     .warpwash { z-index: 1; opacity: 0; transition: opacity 200ms ease;
       background: radial-gradient(circle at 50% 50%, rgba(154,169,255,0) 26%, rgba(154,169,255,0.05) 55%, rgba(120,150,255,0.18) 100%); }
     body.warping .warpwash { opacity: 1; }
+    /* overdrive — a LONG jump: deeper wash, harder tunnel-vision, the date burns */
+    body.overdrive .warpwash { opacity: 1;
+      background: radial-gradient(circle at 50% 50%, rgba(154,169,255,0) 16%, rgba(154,169,255,0.11) 46%, rgba(120,150,255,0.36) 100%); }
+    body.overdrive .vignette { box-shadow: inset 0 0 42vmin rgba(0,0,0,0.93), inset 0 0 12vmin rgba(154,169,255,0.22); }
+    .jump-date { transition: letter-spacing 320ms ease, text-shadow 320ms ease; }
+    body.overdrive .jump-date { letter-spacing: 0.15em; text-shadow: 0 0 28px rgba(154,169,255,0.9), 0 2px 30px #020506; }
 
     .hud { z-index: 3; }
     .corner { position: absolute; width: 40px; height: 40px; border-color: rgba(164,174,255,0.4); border-style: solid; }
@@ -136,6 +142,9 @@
     .lg-title { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; text-transform: uppercase; letter-spacing: 0.12em; font-size: 8px; color: var(--accent); margin-bottom: 3px; }
     .lg-row { display: flex; align-items: center; justify-content: flex-end; gap: 7px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 9px; color: var(--muted); white-space: nowrap; }
     .lg-row i { width: 7px; height: 7px; border-radius: 50%; box-shadow: 0 0 6px currentColor; }
+    .lg-row i.sh-pill { border-radius: 999px; transform: rotate(-30deg) scaleX(1.9) scaleY(0.6); }
+    .lg-row i.sh-shard { border-radius: 1px; transform: rotate(22deg) skewX(-14deg) scale(0.92); }
+    .lg-row i.sh-ring { background: transparent !important; border: 1.5px solid currentColor; }
     .lg-grad { width: 116px; height: 7px; border-radius: 3px; background: linear-gradient(90deg, rgb(107,77,217), rgb(64,204,235), rgb(255,209,102)); }
     .lg-years { display: flex; justify-content: space-between; width: 116px; font-family: ui-monospace, monospace; font-size: 8px; color: var(--dim); margin-top: 2px; }
     .lg-note { font-family: ui-monospace, monospace; font-size: 8px; color: var(--dim); margin-top: 3px; text-align: right; }
@@ -341,14 +350,14 @@
     };
     const PROP = { bands: { LEO: 0.905, MEO: 0.066, GEO: 0.029 } };
     const COLORS = {                                  // distinct hues that survive the brightness clip
-      payload: [0.34, 0.48, 1.0],   // deeper blue — stays blue (not white) when bright/near
-      rocket:  [1.0, 0.62, 0.24],   // amber / orange
-      debris:  [0.96, 0.44, 0.62],  // rose-magenta (now clearly ≠ payload)
-      unknown: [0.50, 0.74, 0.66],  // teal
-      tba:     [0.45, 0.52, 0.52],
+      payload: [0.30, 0.52, 1.0],   // blue — stays blue (not white) when bright/near
+      rocket:  [1.0, 0.58, 0.16],   // hot orange
+      debris:  [1.0, 0.36, 0.68],   // magenta-pink (clearly ≠ payload AND ≠ rocket)
+      unknown: [0.38, 0.92, 0.60],  // green (was teal — too close to payload when bright)
+      tba:     [0.55, 0.58, 0.62],
       ghost:   [0.40, 0.44, 0.52],  // dim grey — already decayed / re-entered (no longer up there)
       newObj:  [0.55, 1.0, 0.86],   // cyan — launched this day
-      decayed: [1.0, 0.40, 0.22],   // re-entry red — decay reported this day
+      decayed: [1.0, 0.30, 0.10],   // re-entry fire — decay reported this day
       seal:    [0.6, 1.0, 0.84]
     };
     // scene geometry: camera orbits the Earth; objects sweep curved arcs around EC.
@@ -386,7 +395,7 @@
 
     const state = {
       cursor: TOTAL, target: TOTAL, shownDay: -1,
-      time: 0, warp: 0, warpBlend: 0, vel: 0, spin: 0,
+      time: 0, warp: 0, warpBlend: 0, vel: 0, spin: 0, over: 0,
       flickVel: 0, timeDir: 1, lastWheel: 0,
       attested: false, pulseY: 0, pulseStr: 0,
       maxSpeed: reduced ? 6 : 24, accel: 30,
@@ -411,7 +420,7 @@
 
     // ── field: CPU positions → points (dots) + line segments (real motion-blur) ──
     const O = [];                                  // object render records
-    const pPos = new Float32Array(FIELD * 3), pCol = new Float32Array(FIELD * 3), pAlpha = new Float32Array(FIELD), pSize = new Float32Array(FIELD), pFocus = new Float32Array(FIELD);
+    const pPos = new Float32Array(FIELD * 3), pCol = new Float32Array(FIELD * 3), pAlpha = new Float32Array(FIELD), pSize = new Float32Array(FIELD), pFocus = new Float32Array(FIELD), pShape = new Float32Array(FIELD);
     const lPos = new Float32Array(FIELD * 2 * 3), lCol = new Float32Array(FIELD * 2 * 3);
 
     const pointGeo = new THREE.BufferGeometry();
@@ -420,11 +429,12 @@
     pointGeo.setAttribute("aAlpha", new THREE.BufferAttribute(pAlpha, 1));
     pointGeo.setAttribute("aSize", new THREE.BufferAttribute(pSize, 1));
     pointGeo.setAttribute("aFocus", new THREE.BufferAttribute(pFocus, 1));
+    pointGeo.setAttribute("aShape", new THREE.BufferAttribute(pShape, 1));
     const pointMat = new THREE.ShaderMaterial({
       transparent: true, depthTest: true, depthWrite: false, blending: THREE.AdditiveBlending, vertexColors: true,
       uniforms: { uPixel: { value: renderer.getPixelRatio() } },
       vertexShader: `
-        attribute float aAlpha, aSize, aFocus; uniform float uPixel; varying vec3 vColor; varying float vAlpha; varying float vFocus;
+        attribute float aAlpha, aSize, aFocus, aShape; uniform float uPixel; varying vec3 vColor; varying float vAlpha; varying float vFocus; varying float vShape;
         void main(){
           vec4 mv = modelViewMatrix * vec4(position,1.0);
           vec4 clip = projectionMatrix * mv;
@@ -437,17 +447,37 @@
           float nearness = 1.0 - smoothstep(26.0, 250.0, dist);          // 0 far (pinpoint) … 1 right on top of you
           float swell    = nearness * central * 4.2;
           float base     = aSize * (40.0/dist + 0.55) * uPixel;
-          gl_PointSize = clamp(base * (1.0 + swell), 1.0, 19.0);
-          vColor = color; vAlpha = aAlpha; vFocus = aFocus;
+          // non-disc silhouettes carve pixels away — give them a little more canvas
+          float sb = 1.0 + 0.30 * step(0.5, aShape);
+          gl_PointSize = clamp(base * (1.0 + swell) * sb, 1.0, 21.0);
+          vColor = color; vAlpha = aAlpha; vFocus = aFocus; vShape = aShape;
         }`,
-      // near objects render as a crisp, bright, defined disc (looming); far ones stay soft pinpoints
+      // near objects render crisp, bright and DEFINED (looming); far ones stay soft pinpoints.
+      // Each class has its own silhouette — payload disc, rocket-body pill, debris shard,
+      // unknown ring — which only resolves once an object is close enough to read.
       fragmentShader: `
-        varying vec3 vColor; varying float vAlpha; varying float vFocus;
-        void main(){ vec2 q = gl_PointCoord - 0.5; float d = length(q); if(d>0.5) discard;
-          float edge = mix(0.03, 0.40, vFocus);              // focus 0 → soft gradient; focus 1 → filled crisp disc
+        varying vec3 vColor; varying float vAlpha; varying float vFocus; varying float vShape;
+        void main(){
+          vec2 q = gl_PointCoord - 0.5;
+          float d;
+          if (vShape < 0.5) {                                  // payload — disc
+            d = length(q);
+          } else if (vShape < 1.5) {                           // rocket body — tilted pill
+            vec2 r = mat2(0.866, -0.5, 0.5, 0.866) * q;        // 30° tilt
+            r.x *= 2.6;
+            d = length(r);
+          } else if (vShape < 2.5) {                           // debris — angular shard
+            vec2 r = mat2(0.92388, -0.38268, 0.38268, 0.92388) * q;
+            d = abs(r.x) * 1.30 + abs(r.y) * 0.62;             // skewed rhombus
+          } else {                                             // unknown — hollow ring
+            d = abs(length(q) - 0.26) * 1.55 + 0.13;
+          }
+          if (d > 0.55) discard;
+          float edge = mix(0.03, 0.40, vFocus);                // focus 0 → soft glow; focus 1 → filled crisp form
           float core = smoothstep(0.5, edge, d);
           float halo = smoothstep(0.5, 0.12, d) * (0.42 - vFocus*0.3);
-          vec3 c = vColor * (0.55 + core*0.82 + vFocus*0.33); // keep brightness off the white-clip so hue survives
+          vec3 c = vColor * (0.55 + core*0.62 + vFocus*0.25);  // keep brightness off the white-clip so hue survives
+          c = mix(c, vec3(1.0), core * vFocus * 0.18);         // only the crisp near core warms toward white
           gl_FragColor = vec4(c, (core + halo) * vAlpha); }`
     });
     const points = new THREE.Points(pointGeo, pointMat); points.frustumCulled = false; scene.add(points);
@@ -474,10 +504,10 @@
       let z = EC.z + o.R * sb;
       const wb = state.warpBlend;                 // 0 = orbital arcs, 1 = radial wormhole
       if (wb > 0.001) {
-        const prox = t;
-        const fanT = 0.55 + prox * prox * 3.4;
+        const prox = t, ov = state.over;
+        const fanT = (0.55 + prox * prox * 3.4) * (1 - ov * 0.34);   // overdrive pinches the throat
         const tx = Math.cos(o.ta) * o.tr * fanT, ty = Math.sin(o.ta) * o.tr * fanT;
-        const tz = NEARZ - (1 - t) * CORRIDOR;
+        const tz = NEARZ - (1 - t) * CORRIDOR * (1 + ov * 0.9);      // …and stretches the corridor
         x = x * (1 - wb) + tx * wb;
         y = y * (1 - wb) + (CAM.y + ty) * wb;
         z = z * (1 - wb) + tz * wb;
@@ -510,10 +540,12 @@
         o.klass = klass; o.status = src ? src.status : "carried"; o.meta = src; o.baseSize = baseSize;
         o.reentered = !!(src && src.reentered);
         o.anno = src ? src.anno || null : null;
+        pShape[i] = klass === 0 ? 0 : klass === 1 ? 1 : klass === 2 ? 2 : 3;  // disc / pill / shard / ring
         o.country = src ? (src.country || "—") : "—";
         o.launchYear = src && src.launch ? parseInt(src.launch.slice(0, 4)) || 0 : 0;
         o.hasPrev = false;
       }
+      pointGeo.attributes.aShape.needsUpdate = true;
       recolor();
     }
     function pickClass(i) { const r = hashUnit(`c${i}`); return r < 0.363 ? 0 : r < 0.46 ? 1 : r < 0.968 ? 2 : r < 0.998 ? 3 : 4; }
@@ -525,14 +557,14 @@
     const OBS_DECAY = [1.0, 0.42, 0.22], OBS_NAME = [0.55, 1.0, 0.86], OBS_EDIT = [1.0, 0.78, 0.30], OBS_DIM = [0.30, 0.34, 0.42];
     const TYPE_COLS = [COLORS.payload, COLORS.rocket, COLORS.debris, COLORS.unknown, COLORS.tba];
     const OPERATORS = [
-      { code: "US",  name: "United States",  col: [0.36, 0.55, 1.0] },
-      { code: "CIS", name: "Russia / CIS",   col: [1.0, 0.40, 0.36] },
-      { code: "PRC", name: "China",          col: [1.0, 0.80, 0.28] },
-      { code: "ESA", name: "Europe / ESA",   col: [0.36, 0.95, 0.82] },
-      { code: "JPN", name: "Japan",          col: [1.0, 0.55, 0.85] },
-      { code: "IND", name: "India",          col: [0.55, 0.90, 0.45] },
-      { code: "FR",  name: "France",         col: [0.62, 0.72, 1.0] },
-      { code: "UK",  name: "United Kingdom", col: [0.80, 0.60, 1.0] }
+      { code: "US",  name: "United States",  col: [0.30, 0.55, 1.0] },   // blue
+      { code: "CIS", name: "Russia / CIS",   col: [1.0, 0.34, 0.28] },   // red
+      { code: "PRC", name: "China",          col: [1.0, 0.82, 0.20] },   // gold
+      { code: "ESA", name: "Europe / ESA",   col: [0.30, 0.95, 0.85] },  // teal
+      { code: "JPN", name: "Japan",          col: [1.0, 0.45, 0.80] },   // pink
+      { code: "IND", name: "India",          col: [0.45, 0.95, 0.35] },  // green
+      { code: "FR",  name: "France",         col: [0.55, 0.82, 1.0] },   // sky (clearly lighter than US blue)
+      { code: "UK",  name: "United Kingdom", col: [0.78, 0.45, 1.0] }    // violet
     ];
     const OP_MAP = Object.fromEntries(OPERATORS.map((o) => [o.code, o.col]));
     const OTHER_COL = [0.52, 0.54, 0.58], STATUS_ONORBIT = [0.55, 0.70, 1.0], STATUS_REENT = [0.95, 0.42, 0.40];
@@ -561,8 +593,8 @@
         } else if (lens === 4) {          // observations — what the archive learned this doc-day
           if (o.anno) {
             col = o.anno.kind === "decay" ? OBS_DECAY : o.anno.kind === "name" ? OBS_NAME : OBS_EDIT;
-            size = Math.max(size, 3.0); aMul = 1.5;
-          } else { col = OBS_DIM; aMul = 0.22; }              // the unremarked-on field recedes
+            size = Math.max(size, 3.8); aMul = 2.1;
+          } else { col = OBS_DIM; aMul = 0.16; }              // the unremarked-on field recedes
         } else {                          // object type (default + zen)
           col = TYPE_COLS[o.klass]; aMul = o.klass === 2 ? 0.74 : 1.0;
           if (o.status === "new") { col = COLORS.newObj; size = Math.max(size, 3.2); aMul = 1.4; }
@@ -575,8 +607,8 @@
     }
 
     function updateField(dt) {
-      const warpC = Math.min(1, state.warp);
-      const flow = 20.8 + state.warp * 760 * state.timeDir;   // ambient drift at 80%; backward time reverses the stream
+      const warpC = Math.min(1, state.warp), over = state.over;
+      const flow = 20.8 + state.warp * 760 * (1 + over * 0.8) * state.timeDir;   // ambient drift at 80%; backward time reverses the stream
       const twBase = state.time * 1.4;
       const showLines = state.warp > 0.02; lines.visible = showLines;   // streaks only during travel
       const cpx = camera.position.x, cpy = camera.position.y, cpz = camera.position.z;
@@ -604,19 +636,23 @@
             pCol[i3] += (0.6 - pCol[i3]) * bb; pCol[i3 + 1] += (1.0 - pCol[i3 + 1]) * bb; pCol[i3 + 2] += (0.84 - pCol[i3 + 2]) * bb;
             pAlpha[i] = Math.min(1, pAlpha[i] + bb * 0.5); }
         }
-        // motion-blur line: previous world pos → current (real displacement = streak length)
+        // motion-blur line: previous world pos → current (real displacement = streak length).
+        // Overdrive extrapolates the tail backwards along the displacement → light-lines.
         if (showLines) {
           const v0 = i * 6;
           if (o.hasPrev && Math.abs(t - o.pt) < 0.5) {
-            lPos[v0] = o.px; lPos[v0 + 1] = o.py; lPos[v0 + 2] = o.pz;
+            const ex = over * 1.9;
+            lPos[v0] = o.px + (o.px - _v.x) * ex; lPos[v0 + 1] = o.py + (o.py - _v.y) * ex; lPos[v0 + 2] = o.pz + (o.pz - _v.z) * ex;
             lPos[v0 + 3] = _v.x; lPos[v0 + 4] = _v.y; lPos[v0 + 5] = _v.z;
           } else { // wrapped or first frame → no streak
             lPos[v0] = _v.x; lPos[v0 + 1] = _v.y; lPos[v0 + 2] = _v.z;
             lPos[v0 + 3] = _v.x; lPos[v0 + 4] = _v.y; lPos[v0 + 5] = _v.z;
           }
-          const lb = warpC * fadeFar;
-          // forward in time → blue-white (approach / blue-shift); backward → amber (recede / red-shift)
-          const cr = 1.0 - 0.32 * fwd, cg = 0.7 + 0.1 * fwd, cb = 0.42 + 0.58 * fwd;
+          const lb = warpC * fadeFar * (1 + over * 0.45);
+          // forward in time → blue-white (approach / blue-shift); backward → amber (recede / red-shift);
+          // overdrive pushes the shift harder toward the pure doppler colour
+          const dop = 1 + over * 0.35;
+          const cr = 1.0 - 0.32 * fwd * dop, cg = 0.7 + 0.1 * fwd, cb = 0.42 + 0.58 * fwd * dop;
           lCol[v0] = lCol[v0 + 1] = lCol[v0 + 2] = 0;             // tail dark
           lCol[v0 + 3] = cr * lb; lCol[v0 + 4] = cg * lb; lCol[v0 + 5] = cb * lb; // head bright
         }
@@ -670,13 +706,15 @@
       atmo.onBeforeRender = () => atmo.material.uniforms.uCam.value.copy(camera.position);
       scene.add(atmo);
     }
+    let starMat = null;
     function addStars() {
       const n = mobile ? 1400 : 2800; const pos = new Float32Array(n * 3), col = new Float32Array(n * 3);
       for (let i = 0; i < n; i++) { const r = 500 + hashUnit(`st${i}`) * 700, th = hashUnit(`sa${i}`) * 6.283, ph = (hashUnit(`sp${i}`) - 0.3) * 2.4;
         pos[i*3]=Math.cos(th)*Math.cos(ph)*r; pos[i*3+1]=Math.sin(ph)*r*0.7+120; pos[i*3+2]=Math.sin(th)*Math.cos(ph)*r-200;
         const s = 0.4 + hashUnit(`sc${i}`) * 0.6; col[i*3]=s*0.72; col[i*3+1]=s*0.85; col[i*3+2]=s; }
       const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.BufferAttribute(pos, 3)); g.setAttribute("color", new THREE.BufferAttribute(col, 3));
-      scene.add(new THREE.Points(g, new THREE.PointsMaterial({ size: 1.0, vertexColors: true, transparent: true, opacity: 0.5, sizeAttenuation: true, depthWrite: false })));
+      starMat = new THREE.PointsMaterial({ size: 1.0, vertexColors: true, transparent: true, opacity: 0.5, sizeAttenuation: true, depthWrite: false });
+      scene.add(new THREE.Points(g, starMat));
     }
 
     // ════════════════════════════════════════════════════════════════════
@@ -802,6 +840,10 @@
       return sampled;
     }
     function sampleByBand(objs, limit, date) {
+      // The field shows what's UP THERE. Long-gone re-entered objects don't fly past the
+      // camera — they exist in the record (counts, inspector via observations) but not in
+      // the sky. Keep only today's decay events and freshly-observed objects from that set.
+      objs = objs.filter((o) => !o.reentered || o.status === "decayed" || o.anno);
       if (objs.length <= limit) return objs;
       const groups = [[], [], []]; objs.forEach((o) => groups[o.band].push(o));
       const quotas = groups.map((g) => Math.floor(limit * g.length / objs.length));
@@ -920,9 +962,9 @@
     function populateLegend() {
       const el = $("lens-legend"), lens = state.lens;
       if (lens === ZEN) { el.innerHTML = ""; return; }
-      const sw = (c, label) => `<div class="lg-row"><i style="background:${rgbStr(c)};color:${rgbStr(c)}"></i>${label}</div>`;
+      const sw = (c, label, shape) => `<div class="lg-row"><i class="${shape || ""}" style="background:${rgbStr(c)};color:${rgbStr(c)}"></i>${label}</div>`;
       let rows = "";
-      if (lens === 0) rows = sw(TYPE_COLS[0], "Payload") + sw(TYPE_COLS[1], "Rocket body") + sw(TYPE_COLS[2], "Debris") + sw(TYPE_COLS[3], "Unknown");
+      if (lens === 0) rows = sw(TYPE_COLS[0], "Payload") + sw(TYPE_COLS[1], "Rocket body", "sh-pill") + sw(TYPE_COLS[2], "Debris", "sh-shard") + sw(TYPE_COLS[3], "Unknown", "sh-ring");
       else if (lens === 1) rows = OPERATORS.map((o) => sw(o.col, o.name)).join("") + sw(OTHER_COL, "Other");
       else if (lens === 2) rows = `<div class="lg-grad"></div><div class="lg-years"><span>1958</span><span>2026</span></div>`;
       else if (lens === 3) rows = sw(STATUS_ONORBIT, "On orbit") + sw(STATUS_REENT, "Re-entered") + sw(COLORS.newObj, "Launched") + sw(COLORS.decayed, "Decayed today");
@@ -1104,9 +1146,16 @@
       const warpT = window.__HOLD_WARP__ != null ? window.__HOLD_WARP__ : Math.min(reduced ? 0.2 : 1.4, speed / 11);
       state.warp += (warpT - state.warp) * Math.min(1, dt * (warpT > state.warp ? 5 : 2.4)); // ease OUT slowly → soft, un-abrupt stop
       state.warpBlend = smooth(0.28, 0.92, Math.min(1, state.warp));
+      // OVERDRIVE — only a genuinely long jump earns it: sustained top speed with distance
+      // still to cover. The tunnel pinches, streaks stretch, the stars fall away. It eases
+      // off as the destination approaches, so arrival stays soft.
+      const overT = window.__HOLD_OVER__ != null ? window.__HOLD_OVER__
+        : (reduced ? 0 : smooth(13, 23, speed) * smooth(2.5, 14, adist + speed * 0.4));
+      state.over += (overT - state.over) * Math.min(1, dt * 3.2);
+      document.body.classList.toggle("overdrive", state.over > 0.45);
       // a subtle directional roll tied DIRECTLY to warp → it returns to zero AS the warp
       // decelerates, so there's no accumulated twist to unwind at the end of a jump
-      const spinTarget = state.warp * 0.11 * (state.timeDir >= 0 ? 1 : -1);
+      const spinTarget = state.warp * 0.11 * (1 + state.over * 1.6) * (state.timeDir >= 0 ? 1 : -1);
       state.spin += (spinTarget - state.spin) * Math.min(1, dt * 3);
       // witness pulse: a cyan wavefront rises through the field on attested days
       if (state.attested && state.warp < 0.2) { const pp = (state.time % 6.5) / 6.5; state.pulseY = -95 + pp * 200; state.pulseStr = Math.pow(1 - pp, 1.4); }
@@ -1127,7 +1176,8 @@
       // camera: gentle look + directional dolly (forward time pushes in, backward pulls out)
       state.yaw += (state.yawT - state.yaw) * Math.min(1, dt * 4);
       state.pitch += (state.pitchT - state.pitch) * Math.min(1, dt * 4);
-      camera.position.set(CAM.x + Math.sin(state.time * 0.13) * 0.4, CAM.y + Math.cos(state.time * 0.11) * 0.3, CAM.z - state.warp * 8 * state.timeDir);
+      camera.position.set(CAM.x + Math.sin(state.time * 0.13) * 0.4, CAM.y + Math.cos(state.time * 0.11) * 0.3, CAM.z - state.warp * (8 + state.over * 11) * state.timeDir);
+      if (starMat) starMat.opacity = Math.max(0.06, 0.5 - state.warp * 0.18 - state.over * 0.24);  // leave the fixed stars behind
       camera.rotation.set(-0.02 + state.pitch + Math.sin(state.time * 0.09) * 0.004, state.yaw, Math.sin(state.time * 0.06) * 0.003 + state.spin * 0.045);
 
       document.body.classList.toggle("warping", state.warp > 0.1);
