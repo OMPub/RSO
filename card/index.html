@@ -103,6 +103,11 @@
     .witness-state { margin-top: 6px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; transition: color 220ms ease; }
     .witness-state.attested { color: var(--seal); }
     .witness-hash { margin-top: 5px; color: var(--dim); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 8px; word-break: break-all; }
+    /* permanence: how many independent forever-copies of this day exist */
+    .witness-perm { margin-top: 5px; color: var(--dim); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 9px; letter-spacing: 0.06em; }
+    .witness-perm:empty { display: none; }
+    .witness-perm.one { color: var(--muted); }
+    .witness-perm.strong { color: var(--seal); text-shadow: 0 0 10px rgba(154,255,214,0.35); }
 
     .timebar { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: rgba(164,174,255,0.10); }
     .timebar-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: linear-gradient(90deg, rgba(154,169,255,0.5), var(--seal)); box-shadow: 0 0 10px rgba(154,255,214,0.6); }
@@ -320,6 +325,7 @@
       <div class="readout-label">Public witness</div>
       <div class="witness-state" id="witness-state">Awaiting index</div>
       <div class="witness-hash" id="witness-hash">&nbsp;</div>
+      <div class="witness-perm" id="witness-perm"></div>
     </section>
 
     <section class="inspector" id="inspector">
@@ -851,6 +857,12 @@
       if (dest.arweave?.transaction_url) {
         try { const r = await fetch(dest.arweave.transaction_url, { cache: "force-cache" }); if (r.ok) { ab = await r.arrayBuffer(); isTar = true; } } catch (e) { /* fall through */ }
       }
+      // any witness's signed publication locations (from the attestation index) are fair
+      // mirrors — the bytes prove themselves against the ledger hash, not the address
+      for (const u of (attestByDate.get(date) || {}).ar || []) {
+        if (ab) break;
+        try { const r = await fetch(u, { cache: "force-cache" }); if (r.ok) { ab = await r.arrayBuffer(); isTar = true; } } catch (e) { /* try next */ }
+      }
       if (!ab) {
         try { const r = await fetch(`${base}/catalog.json.gz`, { cache: "force-cache" }); if (r.ok) ab = await r.arrayBuffer(); } catch (e) { /* fall through */ }
       }
@@ -987,6 +999,12 @@
         $("witness-state").textContent = rec.verified ? "Snapshot verified · not yet attested" : "Not yet attested";
         $("witness-state").classList.remove("attested"); $("witness-hash").innerHTML = "&nbsp;";
       }
+      // permanence — independent forever-copies this day's witnesses have published
+      const arN = attest ? (attest.ar || []).length : 0;
+      const perm = $("witness-perm");
+      perm.textContent = arN >= 2 ? `⛁ ${arN} independent permanent copies · Arweave`
+        : arN === 1 ? "⛁ 1 permanent copy · Arweave" : "";
+      perm.className = `witness-perm${arN >= 2 ? " strong" : arN === 1 ? " one" : ""}`;
       $("timebar-fill").style.width = `${(TOTAL ? Math.round(state.cursor) / TOTAL : 1) * 100}%`;
     }
 
@@ -1158,7 +1176,12 @@
         for (const [ref, rec] of Object.entries(idx.docRefs || {})) {
           const groups = rec.agreementGroups || [];
           const strongest = groups.slice().sort((a, b) => (b.combinedSupportTdh || 0) - (a.combinedSupportTdh || 0))[0];
-          if (strongest) attestByDate.set(rec.date, { blockHash: (rec.blockHashes || [strongest.blockHash])[0], tdh: strongest.combinedSupportTdh || 0, attesters: (strongest.attesters || []).length });
+          if (strongest) {
+            // permanence: each node signs its publication locations into its attestation —
+            // distinct Arweave locators = independent pay-once-store-forever copies
+            const ar = [...new Set((strongest.locations || []).map(String).filter((u) => /^ar:\/\/|arweave\.(net|dev)\//i.test(u)))];
+            attestByDate.set(rec.date, { blockHash: (rec.blockHashes || [strongest.blockHash])[0], tdh: strongest.combinedSupportTdh || 0, attesters: (strongest.attesters || []).length, ar });
+          }
         }
       } catch (e) { console.info("index source unreachable:", src.id); }
       if (state.shownDay >= 0) applyHud(recordMeta(isoFor(state.shownDay)));

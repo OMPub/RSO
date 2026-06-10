@@ -108,6 +108,15 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn("__HOLD_OVER__", self.html)
         self.assertRegex(self.html, r"reduced \? 0\s*:\s*smooth\(")
 
+    def test_permanence_reads_signed_publication_locations(self):
+        # each witness signs its publication locations into its attestation; the
+        # card counts distinct Arweave locators as independent permanent copies
+        self.assertIn('id="witness-perm"', self.html)
+        self.assertIn("independent permanent copies", self.html)
+        self.assertIn(r"arweave\.(net|dev)", self.html)
+        # declared locations also serve as verified download mirrors
+        self.assertIn("(attestByDate.get(date) || {}).ar", self.html)
+
     def test_embed_readiness(self):
         # fullscreen never promises what a sandboxed host forbids
         self.assertIn('id="fullscreen-btn"', self.html)
