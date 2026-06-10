@@ -897,7 +897,7 @@
       $("d-new").textContent = d ? fmtNum(d.new) : "—";
       $("d-dec").textContent = d ? fmtNum(d.decayed) : "—";
       const an = annoByDate.get(rec.date);
-      $("d-obs").textContent = an ? ` · ${fmtNum(an.decayNotices)} decay notices` : "";
+      $("d-obs").textContent = an && an.decayNotices ? ` · ${fmtNum(an.decayNotices)} decay notices` : "";
       // ── fingerprint prism ──
       $("fingerprint").textContent = shortHex(rec.sha);
       const r = rec.raw;
@@ -942,8 +942,17 @@
         setStatus("ready", "Live record"); applyHud(recordMeta(date)); populateLegend();
       } catch (e) {
         if (token !== state.loadToken) return;
-        console.info("archive bundle not reachable; showing representative field", date);
+        console.info("archive bundle not reachable; field stays representative", date);
+        // Another day's catalog stays a fine stand-in for the FIELD (mostly the same
+        // objects), but its day-specific decorations — launches, decay flashes, fresh
+        // observations — would lie about THIS day. Strip them; keep the bodies.
+        if (state.catalogDate && state.catalogDate !== date) {
+          state.objects = state.objects.map((o) => ({ ...o, status: "carried", anno: null }));
+          state.catalogDate = null;                  // a later stop on this day retries the download
+          assignField(state.objects);
+        }
         setStatus("ready", "Live record");
+        applyHud(recordMeta(date)); populateLegend(); // annotations may have loaded even without the bundle
       }
     }
 
