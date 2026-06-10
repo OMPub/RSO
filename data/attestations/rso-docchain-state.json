@@ -953,10 +953,28 @@
       "submissionStatus": "signed",
       "updatedAt": "2026-06-10T03:10:45Z",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJlMjJkYzAzOWEyNjk0OTIyNjYzMzQ0NDJiYWY1ZDlkY2FiZDNkZWJjYzMxZWM4Y2JkZTc5YjQzNGIyNGIzMjQ2IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0xMC9yc28tYXJjaGl2ZS0yMDI2LTA2LTEwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0="
+    },
+    {
+      "artifactId": "210950fac38bcbdb4217d72359cf326ebd838c186c6b369247e2e99d8b7f5861",
+      "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
+      "blockHash": "0x798b9f69c010ce04df8a6eb8f5f7efc5ea958742772172b2a987385650240d5b",
+      "chainId": 11155111,
+      "contentHash": "0xc9b50187fd74988ff935435ed3a8645ebe3461a0284c007f8d892ec2796d0754",
+      "contractAddress": "0x867fcc4f0339009043e9f6e554dd516bcf1bcaa9",
+      "date": "2026-06-10",
+      "docRef": 20260610000000,
+      "latestSignedPath": "data/attestations/signed/2026-06-10.json",
+      "onBehalfOf": "0x0000000000000000000000000000000000000000",
+      "parentHash": "0x06c958fd38fa8bffce8591fa3ec4aadfd63c4679710e0f0a6d50d14bc0f36574",
+      "signature": "0x7b322d4d39db6e113d8eb6660d1b697719ad943d862b5c0f7733d01b1c8bb4f32b13497bd3e5e2de8bfb15dfce0d70483a30a1d17eb8fa3ef27df7818a8977641b",
+      "signedPath": "data/attestations/signed/2026-06-10/210950fac38bcbdb4217d72359cf326ebd838c186c6b369247e2e99d8b7f5861.json",
+      "submissionStatus": "signed",
+      "updatedAt": "2026-06-10T03:13:58Z",
+      "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI1YTMxOWIyNTFjZDMxZjkwZDg5YjdmOTU4YzliZjZlZDA0NzlmY2FjYzY0MDY3OWE2ZjllNzRjYWExYzBmZmI2IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0xMC9yc28tYXJjaGl2ZS0yMDI2LTA2LTEwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0="
     }
   ],
   "latest": {
-    "artifactId": "89bb7ba41de3738b267b8994f38269802f68b6ce1f746e1f8c379427e3297dc2",
+    "artifactId": "210950fac38bcbdb4217d72359cf326ebd838c186c6b369247e2e99d8b7f5861",
     "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
     "blockHash": "0x798b9f69c010ce04df8a6eb8f5f7efc5ea958742772172b2a987385650240d5b",
     "chainId": 11155111,
@@ -967,12 +985,12 @@
     "latestSignedPath": "data/attestations/signed/2026-06-10.json",
     "onBehalfOf": "0x0000000000000000000000000000000000000000",
     "parentHash": "0x06c958fd38fa8bffce8591fa3ec4aadfd63c4679710e0f0a6d50d14bc0f36574",
-    "signature": "0x60fdb4034f7d60ed446675b0a88ee614ec8ce9c0e9a09837e8b6e61b3898e8fd420b5c5461e7f308e24dab67041a0b76c17bb582cf6e3e4cfd9b56b3653645ff1c",
-    "signedPath": "data/attestations/signed/2026-06-10/89bb7ba41de3738b267b8994f38269802f68b6ce1f746e1f8c379427e3297dc2.json",
+    "signature": "0x7b322d4d39db6e113d8eb6660d1b697719ad943d862b5c0f7733d01b1c8bb4f32b13497bd3e5e2de8bfb15dfce0d70483a30a1d17eb8fa3ef27df7818a8977641b",
+    "signedPath": "data/attestations/signed/2026-06-10/210950fac38bcbdb4217d72359cf326ebd838c186c6b369247e2e99d8b7f5861.json",
     "submissionStatus": "signed",
-    "updatedAt": "2026-06-10T03:10:45Z",
-    "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJlMjJkYzAzOWEyNjk0OTIyNjYzMzQ0NDJiYWY1ZDlkY2FiZDNkZWJjYzMxZWM4Y2JkZTc5YjQzNGIyNGIzMjQ2IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0xMC9yc28tYXJjaGl2ZS0yMDI2LTA2LTEwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0="
+    "updatedAt": "2026-06-10T03:13:58Z",
+    "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI1YTMxOWIyNTFjZDMxZjkwZDg5YjdmOTU4YzliZjZlZDA0NzlmY2FjYzY0MDY3OWE2ZjllNzRjYWExYzBmZmI2IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0xMC9yc28tYXJjaGl2ZS0yMDI2LTA2LTEwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0="
   },
   "schema": "rso-docchain-node-state-v1",
-  "updatedAt": "2026-06-10T03:10:45Z"
+  "updatedAt": "2026-06-10T03:13:58Z"
 }
