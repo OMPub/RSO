@@ -1,7 +1,7 @@
 {
-  "asset_name": "rso-archive-2026-06-07-v2.tar.gz",
-  "bundle_bytes": 11270526,
-  "bundle_sha256": "a292d176826ee8e0b81851c82f324c4eafd8b2e3a6fd12c05ad0c50944d7acd3",
+  "asset_name": "rso-archive-2026-06-07.tar.gz",
+  "bundle_bytes": 11270529,
+  "bundle_sha256": "f15552660f33b53fac90817f6e76e40494e900557eee974c17764b90e781db09",
   "catalog_sha256": "d35dfd6ba531b98dbf5feb8cb787848b06dcc297ef5a36f88a93107ee97d36e3",
   "date": "2026-06-07",
   "destinations": {
@@ -12,14 +12,14 @@
       "status": "failed"
     },
     "github_release": {
-      "asset_name": "rso-archive-2026-06-07-v2.tar.gz",
-      "asset_url": "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-06-07/rso-archive-2026-06-07-v2.tar.gz",
+      "asset_name": "rso-archive-2026-06-07.tar.gz",
+      "asset_url": "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-06-07/rso-archive-2026-06-07.tar.gz",
       "release_url": "https://github.com/OMPub/RSO/releases/tag/rso-archive-2026-06-07",
       "repo": "OMPub/RSO",
       "status": "uploaded",
       "tag": "rso-archive-2026-06-07"
     }
   },
-  "manifest_sha256": "af905b20788a3fa3073354d81cf42ee5b0100daf4b8a6c6d178331b654a7e653",
-  "updated_at": "2026-06-09T22:52:44Z"
+  "manifest_sha256": "dc694614bcd840d52ffec954bf979e78ff16daf7ccb3f550b3bfebbe740ea161",
+  "updated_at": "2026-06-10T01:28:08Z"
 }
