@@ -655,9 +655,13 @@ def query_annotation_observations(client, previous_cutoff, current_cutoff):
     satcat_rows = validate_annotation_rows(
         client.query(satcat_path), context="satcat_change response"
     )
+    # Historical messages record confirmed reentries -- the knowledge the
+    # observation plane exists to capture. Prediction messages are a rolling
+    # forecast for most of the catalog (tens of thousands per day, reissued
+    # continually) and are deliberately excluded.
     decay_path = build_query_path(
         "decay",
-        [("MSG_EPOCH", window), ("orderby", "MSG_EPOCH asc")],
+        [("MSG_EPOCH", window), ("MSG_TYPE", "Historical"), ("orderby", "MSG_EPOCH asc")],
     )
     decay_rows = validate_annotation_rows(client.query(decay_path), context="decay response")
     return satcat_rows, decay_rows, [satcat_path, decay_path]
