@@ -1,6 +1,6 @@
 {
   "date": "2026-06-07",
-  "finishedAt": "2026-06-09T23:26:42Z",
+  "finishedAt": "2026-06-10T03:19:30Z",
   "firstStartedAt": "2026-06-07T08:08:02Z",
   "operatorSource": "github-forks:OMPub/RSO",
   "operators": [
@@ -223,6 +223,37 @@
         "checkedAt": "2026-06-09T05:16:59Z",
         "nodeId": "github:brookr/rso",
         "rank": 2,
+        "scheme": "rso-tdh-support-snapshot",
+        "snapshotDate": "2026-06-07",
+        "status": "eligible",
+        "tdhBoundary": "daily"
+      },
+      "status": "duplicate"
+    },
+    {
+      "attestationAttester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
+      "authorizationStatus": "verified",
+      "bundleSha256": "f15552660f33b53fac90817f6e76e40494e900557eee974c17764b90e781db09",
+      "claimFingerprint": "8ed8df3492974054cbfc0578cb192077d09e0a86ad3334a8201193893a07962b",
+      "claimedNodeId": "github:ompub/rso",
+      "contentHash": "0x086956fe197b16f2382187d462845b2e8aefc621fc1d8bec2f6a40aeaa30952b",
+      "declarationSha256": "301adffde019298c3782209b3ffb20eb566d8992925d6160a70c2a640bb6ca11",
+      "declarationUrl": "https://raw.githubusercontent.com/OMPub/RSO/node/data/attestations/signed/2026-06-07.json",
+      "declaredAttester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
+      "locations": [
+        "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-06-07/rso-archive-2026-06-07.tar.gz"
+      ],
+      "nodeBindingStatus": "verified",
+      "nodeId": "github:ompub/rso",
+      "observedAt": "2026-06-10T03:19:26Z",
+      "operator": "OMPub/RSO",
+      "publicationStatus": "verified",
+      "sponsorship": {
+        "backerCount": 1,
+        "cardSpecificTdhBacking": 1,
+        "checkedAt": "2026-06-10T03:19:24Z",
+        "nodeId": "github:ompub/rso",
+        "rank": 1,
         "scheme": "rso-tdh-support-snapshot",
         "snapshotDate": "2026-06-07",
         "status": "eligible",
@@ -516,9 +547,59 @@
       "operator": "brookr/RSO",
       "publicationStatus": "pending",
       "status": "candidate"
+    },
+    {
+      "attestationAttester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
+      "authorizationStatus": "pending_signature",
+      "backing": {
+        "backerCount": 1,
+        "cardSpecificTdhBacking": 1,
+        "nodeId": "github:ompub/rso",
+        "rank": 1,
+        "snapshotDate": "2026-06-07"
+      },
+      "claimFingerprint": "8ed8df3492974054cbfc0578cb192077d09e0a86ad3334a8201193893a07962b",
+      "claimedNodeId": "github:ompub/rso",
+      "declarationSha256": "301adffde019298c3782209b3ffb20eb566d8992925d6160a70c2a640bb6ca11",
+      "declarationUrl": "https://raw.githubusercontent.com/OMPub/RSO/node/data/attestations/signed/2026-06-07.json",
+      "declaredAttester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
+      "nodeBindingStatus": "aligned",
+      "nodeId": "github:ompub/rso",
+      "observedAt": "2026-06-10T03:19:24Z",
+      "operator": "OMPub/RSO",
+      "publicationStatus": "pending",
+      "status": "candidate"
+    },
+    {
+      "attestationAttester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
+      "authorizationStatus": "pending_signature",
+      "backing": {
+        "backerCount": 1,
+        "cardSpecificTdhBacking": 1,
+        "nodeId": "github:brookr/rso",
+        "rank": 2,
+        "snapshotDate": "2026-06-07"
+      },
+      "claimFingerprint": "46de3f9e4ef7eac84b08c8b50c33f9e7a2eaefe2835725e743a067b026aadea2",
+      "claimedNodeId": "github:brookr/rso",
+      "declarationSha256": "fb3959aee5215df26a59e0fcbb28dcc514a64299833085032fe84de93e3f9c4a",
+      "declarationUrl": "https://raw.githubusercontent.com/brookr/RSO/node/data/attestations/signed/2026-06-07.json",
+      "declaredAttester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
+      "nodeBindingStatus": "aligned",
+      "nodeId": "github:brookr/rso",
+      "observedAt": "2026-06-10T03:19:24Z",
+      "operator": "brookr/RSO",
+      "publicationStatus": "pending",
+      "status": "candidate"
+    },
+    {
+      "error": "release manifest catalog fingerprint does not match attestation",
+      "nodeId": "github:brookr/rso",
+      "operator": "brookr/RSO",
+      "status": "deferred"
     }
   ],
   "schema": "rso-sweeper-date-report-v1",
-  "startedAt": "2026-06-09T23:26:42Z",
+  "startedAt": "2026-06-10T03:19:24Z",
   "status": "checked"
 }
