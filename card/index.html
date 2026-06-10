@@ -256,7 +256,7 @@
             <div class="pager"><i class="on"></i><i></i><i></i><i></i></div>
             <div class="readout-label">Catalog fingerprint</div>
             <div class="readout-value" id="fingerprint">—</div>
-            <div class="readout-note">SHA-256</div>
+            <div class="readout-note" id="fp-sha-note">SHA-256</div>
           </div>
           <div class="face">
             <div class="pager"><i></i><i class="on"></i><i></i><i></i></div>
@@ -388,6 +388,7 @@
     const orbitByDate = new Map();      // date -> {onOrbit, reentered, total}
     const deltaByDate = new Map();      // date -> {updated,new,decayed,carried}
     const annoByDate = new Map();       // date -> {decayNotices, edits, renames, byId:Map(norad -> note)}
+    const integrityByDate = new Map();  // date -> true: downloaded catalog bytes hash to the ledger sha256
     const attestByDate = new Map();   // date -> {blockHash, contentHash, tdh, attesters}
     // first4…last4, the way eth hashes/addresses are usually shown (0x-aware)
     const shortHex = (h) => { if (!h) return "—"; const x = h.startsWith("0x") ? h.slice(2) : h; return (h.startsWith("0x") ? "0x" : "") + x.slice(0, 4) + "…" + x.slice(-4); };
@@ -758,6 +759,25 @@
       return null;
     }
     const catalogCache = new Map();
+    // Don't trust the mirror — check it. The ledger's sha256 is the hash of the canonical
+    // catalog bytes, which is exactly what we hold after gunzip: one digest proves the
+    // download IS the attested record. (WebCrypto needs a secure context; absent that, or a
+    // ledgerless day, we simply make no claim.)
+    async function verifyCatalogBytes(date, bytes) {
+      const led = ledgerByDate.get(date);
+      if (!led || !led.sha || !crypto.subtle) return;
+      try {
+        const digest = await crypto.subtle.digest("SHA-256", bytes);
+        const hex = Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("");
+        const ok = hex === led.sha;
+        integrityByDate.set(date, ok);
+        if (!ok) console.warn("catalog hash mismatch", date, hex, "≠", led.sha);
+        if (state.shownDay >= 0 && isoFor(state.shownDay) === date) {
+          applyHud(recordMeta(date));
+          if (state.catalogDate === date) setStatus("ready", ok ? "Live record · verified" : "Live record");
+        }
+      } catch (e) { /* digest unavailable — no claim */ }
+    }
     // Distil a day's annotations.json (the observation plane: what the archive LEARNED about
     // already-published objects this doc-day) into HUD counts + a per-object note for the
     // inspector and the Observations lens.
@@ -802,7 +822,9 @@
       if (!ab) throw new Error("no bundle mirror reachable");
       const cgz = isTar ? untar(await gunzip(ab), "catalog.json.gz") : ab;
       if (!cgz) throw new Error("catalog missing");
-      const cat = JSON.parse(new TextDecoder().decode(await gunzip(cgz)));
+      const catBytes = await gunzip(cgz);
+      verifyCatalogBytes(date, catBytes);              // fire-and-forget: HUD updates when it lands
+      const cat = JSON.parse(new TextDecoder().decode(catBytes));
       const list = Array.isArray(cat) ? cat : cat?.data || [];
       const newIds = new Set((delta?.new_norad_cat_ids || []).map(String));
       const objs = list.map((row) => {
@@ -870,7 +892,8 @@
       const delta = deltaByDate.get(date) || (raw && (raw.delta || raw.delta_summary)) || null;
       const orbit = orbitByDate.get(date) || (raw && raw.on_orbit_count != null
         ? { onOrbit: raw.on_orbit_count, reentered: raw.reentered_count ?? raw.decayed_count ?? 0, total: count } : null);
-      return { date, count, sha, bands, types, delta, orbit, raw, verified: !!led, attest: attestByDate.get(date) || null };
+      return { date, count, sha, bands, types, delta, orbit, raw, verified: !!led,
+        integrity: integrityByDate.get(date), attest: attestByDate.get(date) || null };
     }
     function applyHud(rec) {
       const attest = rec.attest && (rec.attest.tdh || 0) >= state.ethRank ? rec.attest : null; // honour the ETH-rank threshold
@@ -900,6 +923,8 @@
       $("d-obs").textContent = an && an.decayNotices ? ` · ${fmtNum(an.decayNotices)} decay notices` : "";
       // ── fingerprint prism ──
       $("fingerprint").textContent = shortHex(rec.sha);
+      $("fp-sha-note").textContent = rec.integrity === true ? "SHA-256 · verified on this device"
+        : rec.integrity === false ? "SHA-256 · DOES NOT MATCH DOWNLOAD" : "SHA-256";
       const r = rec.raw;
       $("fp-prov").textContent = r ? titleize(r.provenance || r.query_strategy) : "—";
       $("fp-src").textContent = r ? (r.source || "space-track.org") : "—";
@@ -939,7 +964,8 @@
         const objs = await loadCatalog(date);
         if (token !== state.loadToken) return;
         state.catalogDate = date; assignField(objs);
-        setStatus("ready", "Live record"); applyHud(recordMeta(date)); populateLegend();
+        setStatus("ready", integrityByDate.get(date) ? "Live record · verified" : "Live record");
+        applyHud(recordMeta(date)); populateLegend();
       } catch (e) {
         if (token !== state.loadToken) return;
         console.info("archive bundle not reachable; field stays representative", date);
@@ -1198,7 +1224,7 @@
       if (!state.wasTraveling && traveling) setStatus("loading", "Scanning the chain…");  // moving through days — no download yet
       if (state.wasTraveling && !traveling) {                                             // arrived on a day → only now fetch it
         const d = isoFor(shown);
-        if (state.catalogDate === d) setStatus("ready", "Live record");                    // already have this day
+        if (state.catalogDate === d) setStatus("ready", integrityByDate.get(d) ? "Live record · verified" : "Live record"); // already have this day
         else loadDayCatalog(d);                                                            // download just this one
       }
       state.wasTraveling = traveling;

@@ -69,6 +69,16 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIsNotNone(slider)
         self.assertIn('value="0"', slider.group(0))
 
+    def test_downloads_are_verified_on_device(self):
+        # the ledger sha256 hashes the canonical catalog bytes — exactly what
+        # the viewer holds after gunzip, so one digest proves the download is
+        # the attested record
+        self.assertIn('crypto.subtle.digest("SHA-256", bytes)', self.html)
+        self.assertIn("verifyCatalogBytes(date, catBytes)", self.html)
+        self.assertIn("hex === led.sha", self.html)
+        self.assertIn("verified on this device", self.html)
+        self.assertIn("DOES NOT MATCH DOWNLOAD", self.html)
+
     def test_attested_core_face_shows_consensus_hash(self):
         self.assertIn('id="fp-core"', self.html)
         self.assertIn("content_sha256", self.html)
