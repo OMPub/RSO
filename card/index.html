@@ -111,6 +111,11 @@
     .insp-label { color: var(--accent); font-size: 8px; }
     .insp-name { margin-top: 5px; font-size: 14px; line-height: 1.1; }
     .insp-meta { margin-top: 6px; color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .insp-obs { margin-top: 5px; color: var(--seal, #8cffd0); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 9px; letter-spacing: 0.05em; }
+    .insp-obs:empty { display: none; }
+    /* clickable line inside a rotating prism (e.g. the contract address) */
+    .prism-link { pointer-events: auto; color: var(--muted); text-decoration: none; border-bottom: 1px dotted rgba(154,169,255,0.45); transition: color 150ms, border-color 150ms; }
+    .prism-link:hover { color: var(--ink); border-color: var(--accent); }
 
     .jump { position: fixed; inset: 0; z-index: 4; display: grid; place-items: center; pointer-events: none; opacity: 0; transition: opacity 160ms ease; }
     .jump.active { opacity: 1; }
@@ -133,6 +138,7 @@
     .lg-row i { width: 7px; height: 7px; border-radius: 50%; box-shadow: 0 0 6px currentColor; }
     .lg-grad { width: 116px; height: 7px; border-radius: 3px; background: linear-gradient(90deg, rgb(107,77,217), rgb(64,204,235), rgb(255,209,102)); }
     .lg-years { display: flex; justify-content: space-between; width: 116px; font-family: ui-monospace, monospace; font-size: 8px; color: var(--dim); margin-top: 2px; }
+    .lg-note { font-family: ui-monospace, monospace; font-size: 8px; color: var(--dim); margin-top: 3px; text-align: right; }
     /* mode toast (centre, brief) */
     .mode-toast { position: fixed; left: 50%; top: 22%; transform: translate(-50%, 6px); z-index: 6; pointer-events: none;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; text-transform: uppercase; letter-spacing: 0.28em; font-size: 12px; color: var(--ink);
@@ -230,7 +236,7 @@
             <div class="pager"><i></i><i></i><i></i><i class="on"></i></div>
             <div class="readout-label">Updated this doc-day</div>
             <div class="readout-value" id="d-upd">—</div>
-            <div class="readout-note"><b id="d-new">—</b> launched · <b id="d-dec">—</b> re-entered</div>
+            <div class="readout-note"><b id="d-new">—</b> launched · <b id="d-dec">—</b> re-entered<span id="d-obs"></span></div>
           </div>
         </div>
       </div>
@@ -251,15 +257,16 @@
           </div>
           <div class="face">
             <div class="pager"><i></i><i></i><i class="on"></i><i></i></div>
-            <div class="readout-label">Archive bundle</div>
-            <div class="readout-value sm" id="fp-size">—</div>
-            <div class="readout-note" id="fp-fmt">—</div>
+            <div class="readout-label">Attested core</div>
+            <div class="readout-value sm" id="fp-core">—</div>
+            <div class="readout-note" id="fp-core-note">consensus hash</div>
           </div>
           <div class="face">
             <div class="pager"><i></i><i></i><i></i><i class="on"></i></div>
             <div class="readout-label">On-chain block</div>
             <div class="readout-value sm" id="fp-block">—</div>
             <div class="readout-note" id="fp-blocknote">—</div>
+            <div class="readout-note"><a id="fp-contract" class="prism-link" target="_blank" rel="noopener" title="Open the DocChain contract">—</a></div>
           </div>
         </div>
       </div>
@@ -275,6 +282,7 @@
       <div class="insp-label" id="insp-label">Tracked object</div>
       <div class="insp-name" id="insp-name">—</div>
       <div class="insp-meta" id="insp-meta">—</div>
+      <div class="insp-obs" id="insp-obs"></div>
     </section>
 
     <div class="timebar"><div class="timebar-fill" id="timebar-fill"></div></div>
@@ -290,7 +298,7 @@
     <div class="settings-panel">
       <div class="settings-head"><span>Witness settings</span><button class="settings-close" id="settings-close" aria-label="Close">×</button></div>
       <div class="set-row">
-        <div class="set-label">Ethereum attestation rank <b id="set-eth-val">≥ 1 TDH</b></div>
+        <div class="set-label">Ethereum attestation rank <b id="set-eth-val">any witness</b></div>
         <input type="range" id="set-eth" min="0" max="6" step="1" value="0">
         <div class="set-note">minimum on-chain TDH backing to count a day as attested</div>
       </div>
@@ -370,10 +378,10 @@
     const typeCountsByDate = new Map(); // date -> {payload,rocket,debris,unknown,tba}  (on-orbit)
     const orbitByDate = new Map();      // date -> {onOrbit, reentered, total}
     const deltaByDate = new Map();      // date -> {updated,new,decayed,carried}
+    const annoByDate = new Map();       // date -> {decayNotices, edits, renames, byId:Map(norad -> note)}
     const attestByDate = new Map();   // date -> {blockHash, contentHash, tdh, attesters}
     // first4…last4, the way eth hashes/addresses are usually shown (0x-aware)
     const shortHex = (h) => { if (!h) return "—"; const x = h.startsWith("0x") ? h.slice(2) : h; return (h.startsWith("0x") ? "0x" : "") + x.slice(0, 4) + "…" + x.slice(-4); };
-    const mb = (b) => b ? (b / 1048576).toFixed(1) + " MB" : "—";
     const titleize = (s) => s ? String(s).replace(/_/g, " ") : "—";
 
     const state = {
@@ -385,7 +393,8 @@
       yaw: 0, pitch: 0, yawT: 0, pitchT: 0, wasTraveling: false,
       pointer: null, loadToken: 0,
       lens: 0, keys: new Set(), tilt: null,   // tilt = {base:{b,g}} once enabled
-      ethRank: 1, opSource: 0,                // witness settings
+      ethRank: 0, opSource: 0,                // witness settings (rank 0 = any sweeper-accepted witness)
+      chainMeta: null,                        // {contractAddress, chainId} from the attestation index
       objects: [], catalogDate: null
     };
     const LOOK_YAW = 0.5, LOOK_PITCH = 0.28;   // a few degrees of freedom — the gentle range we like
@@ -500,6 +509,7 @@
         o.ta = rand2(i, 53) * 6.2832; o.tr = 7 + Math.pow(rand2(i, 59), 0.7) * 44; // wormhole angle/radius
         o.klass = klass; o.status = src ? src.status : "carried"; o.meta = src; o.baseSize = baseSize;
         o.reentered = !!(src && src.reentered);
+        o.anno = src ? src.anno || null : null;
         o.country = src ? (src.country || "—") : "—";
         o.launchYear = src && src.launch ? parseInt(src.launch.slice(0, 4)) || 0 : 0;
         o.hasPrev = false;
@@ -509,7 +519,10 @@
     function pickClass(i) { const r = hashUnit(`c${i}`); return r < 0.363 ? 0 : r < 0.46 ? 1 : r < 0.968 ? 2 : r < 0.998 ? 3 : 4; }
 
     // ── colour lenses ───────────────────────────────────────────────────
-    const LENSES = ["Object type", "Operator", "Launch age", "Status", "Zen"];
+    const LENSES = ["Object type", "Operator", "Launch age", "Status", "Observations", "Zen"];
+    const ZEN = LENSES.indexOf("Zen");
+    // Observations lens: what the archive LEARNED this doc-day (the observation plane)
+    const OBS_DECAY = [1.0, 0.42, 0.22], OBS_NAME = [0.55, 1.0, 0.86], OBS_EDIT = [1.0, 0.78, 0.30], OBS_DIM = [0.30, 0.34, 0.42];
     const TYPE_COLS = [COLORS.payload, COLORS.rocket, COLORS.debris, COLORS.unknown, COLORS.tba];
     const OPERATORS = [
       { code: "US",  name: "United States",  col: [0.36, 0.55, 1.0] },
@@ -545,6 +558,11 @@
           else if (o.status === "decayed") { col = COLORS.decayed; size = Math.max(size, 2.9); aMul = 1.4; }
           else if (re) { col = STATUS_REENT; aMul = 0.5; }   // came down — shown red (not hidden)
           else { col = STATUS_ONORBIT; aMul = 1; }            // still up there
+        } else if (lens === 4) {          // observations — what the archive learned this doc-day
+          if (o.anno) {
+            col = o.anno.kind === "decay" ? OBS_DECAY : o.anno.kind === "name" ? OBS_NAME : OBS_EDIT;
+            size = Math.max(size, 3.0); aMul = 1.5;
+          } else { col = OBS_DIM; aMul = 0.22; }              // the unremarked-on field recedes
         } else {                          // object type (default + zen)
           col = TYPE_COLS[o.klass]; aMul = o.klass === 2 ? 0.74 : 1.0;
           if (o.status === "new") { col = COLORS.newObj; size = Math.max(size, 3.2); aMul = 1.4; }
@@ -702,23 +720,50 @@
       return null;
     }
     const catalogCache = new Map();
+    // Distil a day's annotations.json (the observation plane: what the archive LEARNED about
+    // already-published objects this doc-day) into HUD counts + a per-object note for the
+    // inspector and the Observations lens.
+    function digestAnnotations(anno) {
+      if (!anno) return null;
+      const byId = new Map();
+      const note = (id, kind, text) => { const k = String(id); if (!byId.has(k)) byId.set(k, { kind, text }); };
+      let renames = 0;
+      for (const c of anno.catalog_changes || []) {
+        const isName = c.field === "OBJECT_NAME" || c.field === "OBJECT_ID";
+        if (isName) renames++;
+        note(c.norad_cat_id, isName ? "name" : "edit",
+          `${c.field}: ${c.previous ?? "—"} → ${c.current ?? "—"}${c.first_observation ? " · first observation" : ""}`);
+      }
+      for (const d of anno.decay_messages || []) {
+        const ep = String(d.DECAY_EPOCH || "").slice(0, 10);
+        note(d.NORAD_CAT_ID ?? d.OBJECT_NUMBER, "decay", `decay reported${ep ? " · epoch " + ep : ""}`);
+      }
+      return { decayNotices: (anno.decay_messages || []).length, edits: (anno.catalog_changes || []).length,
+        renames, observedAt: anno.observed_at_utc || null, byId };
+    }
     async function loadCatalog(date) {
       if (catalogCache.has(date)) return catalogCache.get(date);
       const path = date.replaceAll("-", "/");
       const base = `https://raw.githubusercontent.com/${CONFIG.repo}/${CONFIG.branch}/data/${path}`;
-      const [storage, delta] = await Promise.all([fetchJson(`${base}/storage.json`, true), fetchJson(`${base}/delta.json`, true)]);
+      const [storage, delta, anno] = await Promise.all([
+        fetchJson(`${base}/storage.json`, true), fetchJson(`${base}/delta.json`, true), fetchJson(`${base}/annotations.json`, true)]);
+      const annoSum = digestAnnotations(anno);
+      if (annoSum) annoByDate.set(date, annoSum);
       const dest = storage?.destinations || {};
-      // Prefer Arweave (CORS-friendly, permanent). Only fall back to the GitHub release if there
-      // is NO arweave mirror at all — GitHub release downloads CORS-fail in the browser and would
-      // spam the console with errors, so we don't attempt them when arweave exists.
-      const urls = [];
-      if (dest.arweave?.transaction_url) urls.push(dest.arweave.transaction_url);
-      else if (dest.github_release?.asset_url) urls.push(dest.github_release.asset_url);
-      let ab = null;
-      for (const u of urls) { try { const r = await fetch(u, { cache: "force-cache" }); if (r.ok) { ab = await r.arrayBuffer(); break; } } catch (e) { /* try next mirror */ } }
+      // Bundle mirrors, in trust/permanence order. The GitHub RELEASE asset is never tried:
+      // its redirect target sends no CORS headers, so a browser can never read it. The raw
+      // node-branch catalog.json.gz IS CORS-friendly and serves as the live mirror until the
+      // day lands on Arweave.
+      let ab = null, isTar = false;
+      if (dest.arweave?.transaction_url) {
+        try { const r = await fetch(dest.arweave.transaction_url, { cache: "force-cache" }); if (r.ok) { ab = await r.arrayBuffer(); isTar = true; } } catch (e) { /* fall through */ }
+      }
+      if (!ab) {
+        try { const r = await fetch(`${base}/catalog.json.gz`, { cache: "force-cache" }); if (r.ok) ab = await r.arrayBuffer(); } catch (e) { /* fall through */ }
+      }
       if (!ab) throw new Error("no bundle mirror reachable");
-      const tar = await gunzip(ab);
-      const cgz = untar(tar, "catalog.json.gz"); if (!cgz) throw new Error("catalog missing");
+      const cgz = isTar ? untar(await gunzip(ab), "catalog.json.gz") : ab;
+      if (!cgz) throw new Error("catalog missing");
       const cat = JSON.parse(new TextDecoder().decode(await gunzip(cgz)));
       const list = Array.isArray(cat) ? cat : cat?.data || [];
       const newIds = new Set((delta?.new_norad_cat_ids || []).map(String));
@@ -729,7 +774,8 @@
         const status = newIds.has(id) ? "new" : decay === date ? "decayed" : "carried";
         return { id, name: row.OBJECT_NAME || `NORAD ${id}`, type: row.OBJECT_TYPE || "UNKNOWN",
           band: bandFromMM(row.MEAN_MOTION), klass: klassFromType(row.OBJECT_TYPE), status, reentered,
-          country: row.COUNTRY_CODE || "—", launch: String(row.LAUNCH_DATE || "").slice(0, 10), decay };
+          country: row.COUNTRY_CODE || "—", launch: String(row.LAUNCH_DATE || "").slice(0, 10), decay,
+          anno: annoSum ? annoSum.byId.get(id) || null : null };
       });
       // breakdowns of WHAT'S STILL UP THERE (on-orbit); decayed objects are recorded but counted apart
       const bc = { leo: 0, meo: 0, geo: 0 };
@@ -761,8 +807,10 @@
       const quotas = groups.map((g) => Math.floor(limit * g.length / objs.length));
       let s = quotas.reduce((a, b) => a + b, 0); let bi = 0; while (s < limit) { quotas[bi % 3]++; s++; bi++; }
       return groups.flatMap((g, b) => {
-        const rare = g.filter((o) => o.status === "new" || o.status === "decayed");
-        const rest = g.filter((o) => o.status === "carried").sort((a, x) => hashUnit(`${a.id}:${date}`) - hashUnit(`${x.id}:${date}`));
+        // launches, decay events and annotated objects (fresh observations) are guaranteed a slot
+        const rare = g.filter((o) => o.status === "new" || o.status === "decayed" || o.anno);
+        const rest = g.filter((o) => !(o.status === "new" || o.status === "decayed" || o.anno))
+          .sort((a, x) => hashUnit(`${a.id}:${date}`) - hashUnit(`${x.id}:${date}`));
         return rare.concat(rest).slice(0, quotas[b]);
       });
     }
@@ -806,20 +854,30 @@
       $("d-upd").textContent = d ? fmtNum(d.updated) : "—";
       $("d-new").textContent = d ? fmtNum(d.new) : "—";
       $("d-dec").textContent = d ? fmtNum(d.decayed) : "—";
+      const an = annoByDate.get(rec.date);
+      $("d-obs").textContent = an ? ` · ${fmtNum(an.decayNotices)} decay notices` : "";
       // ── fingerprint prism ──
       $("fingerprint").textContent = shortHex(rec.sha);
       const r = rec.raw;
       $("fp-prov").textContent = r ? titleize(r.provenance || r.query_strategy) : "—";
       $("fp-src").textContent = r ? (r.source || "space-track.org") : "—";
-      $("fp-size").textContent = r ? mb(r.compressed_bytes) : "—";
-      $("fp-fmt").textContent = r ? `${r.format || "OMM/JSON"} · gzip` : "—";
-      if (attest) { $("fp-block").textContent = shortHex(attest.blockHash); $("fp-blocknote").textContent = `Ethereum · TDH ${attest.tdh}`; }
+      // the consensus hash: the catalog projected through the day's content schema — this,
+      // not the raw-capture fingerprint, is what the nodes agree on and put on chain
+      const core = r && (r.content_sha256 || null);
+      $("fp-core").textContent = core ? shortHex(core) : "—";
+      $("fp-core-note").textContent = core ? `${r.content_schema || "core"} · consensus hash` : "awaiting record";
+      if (attest) { $("fp-block").textContent = shortHex(attest.blockHash); $("fp-blocknote").textContent = attest.tdh > 0 ? `Ethereum · TDH ${attest.tdh}` : "Ethereum"; }
       else { $("fp-block").textContent = "—"; $("fp-blocknote").textContent = "awaiting attestation"; }
+      const cm = state.chainMeta, ca = $("fp-contract");
+      if (cm && cm.contractAddress) {
+        ca.textContent = `${shortHex(cm.contractAddress)} ↗`;
+        ca.href = `${cm.chainId === 1 ? "https://etherscan.io" : "https://sepolia.etherscan.io"}/address/${cm.contractAddress}`;
+      } else { ca.textContent = "—"; ca.removeAttribute("href"); }
       // ── attestation (one place: the witness panel + the eyebrow flag) ──
       const es = $("record-state");
       if (attest) {
         es.textContent = "Publicly attested"; es.classList.add("attested");
-        $("witness-state").textContent = `Agreement · TDH ${attest.tdh} · ${attest.attesters} node${attest.attesters === 1 ? "" : "s"}`;
+        $("witness-state").textContent = `Agreement · ${attest.attesters} node${attest.attesters === 1 ? "" : "s"}${attest.tdh > 0 ? ` · TDH ${attest.tdh}` : ""}`;
         $("witness-state").classList.add("attested");
         $("witness-hash").textContent = `block ${shortHex(attest.blockHash)}`;
       } else {
@@ -839,7 +897,7 @@
         const objs = await loadCatalog(date);
         if (token !== state.loadToken) return;
         state.catalogDate = date; assignField(objs);
-        setStatus("ready", "Live record"); applyHud(recordMeta(date));
+        setStatus("ready", "Live record"); applyHud(recordMeta(date)); populateLegend();
       } catch (e) {
         if (token !== state.loadToken) return;
         console.info("archive bundle not reachable; showing representative field", date);
@@ -856,18 +914,24 @@
     // ── view modes / colour lenses: swipe left/right + spacebar ──
     let modeAt = 0;
     function cycleMode(dir) { const now = performance.now(); if (now - modeAt < 320) return; modeAt = now; state.lens = (state.lens + dir + LENSES.length) % LENSES.length; applyMode(); }
-    function applyMode() { document.body.classList.toggle("zen", state.lens === 4); recolor(); populateLegend(); flashMode(LENSES[state.lens]); }
+    function applyMode() { document.body.classList.toggle("zen", state.lens === ZEN); recolor(); populateLegend(); flashMode(LENSES[state.lens]); }
     function flashMode(name) { const t = $("mode-toast"); t.textContent = name; t.classList.add("show"); clearTimeout(flashMode.t); flashMode.t = setTimeout(() => t.classList.remove("show"), 1100); }
     const rgbStr = (c) => `rgb(${Math.round(c[0]*255)},${Math.round(c[1]*255)},${Math.round(c[2]*255)})`;
     function populateLegend() {
       const el = $("lens-legend"), lens = state.lens;
-      if (lens === 4) { el.innerHTML = ""; return; }
+      if (lens === ZEN) { el.innerHTML = ""; return; }
       const sw = (c, label) => `<div class="lg-row"><i style="background:${rgbStr(c)};color:${rgbStr(c)}"></i>${label}</div>`;
       let rows = "";
       if (lens === 0) rows = sw(TYPE_COLS[0], "Payload") + sw(TYPE_COLS[1], "Rocket body") + sw(TYPE_COLS[2], "Debris") + sw(TYPE_COLS[3], "Unknown");
       else if (lens === 1) rows = OPERATORS.map((o) => sw(o.col, o.name)).join("") + sw(OTHER_COL, "Other");
       else if (lens === 2) rows = `<div class="lg-grad"></div><div class="lg-years"><span>1958</span><span>2026</span></div>`;
       else if (lens === 3) rows = sw(STATUS_ONORBIT, "On orbit") + sw(STATUS_REENT, "Re-entered") + sw(COLORS.newObj, "Launched") + sw(COLORS.decayed, "Decayed today");
+      else if (lens === 4) {
+        const a = annoByDate.get(isoFor(state.shownDay));
+        rows = sw(OBS_DECAY, "Decay reported") + sw(OBS_NAME, "Named / designated") + sw(OBS_EDIT, "Record amended")
+          + (a ? `<div class="lg-note">${fmtNum(a.decayNotices)} decay notices · ${fmtNum(a.edits)} edits</div>`
+               : `<div class="lg-note">stop on a day to load</div>`);
+      }
       el.innerHTML = `<div class="lg-title">${LENSES[lens]}</div>${rows}`;
     }
 
@@ -962,6 +1026,7 @@
       const src = OP_SOURCES[state.opSource]; attestByDate.clear();
       try {
         const idx = await fetchJson(`https://raw.githubusercontent.com/${src.repo}/${src.branch}/indexer/generated/sepolia/rso-docchain-index.json`);
+        if (idx.contractAddress) state.chainMeta = { contractAddress: idx.contractAddress, chainId: idx.chainId || 11155111 };
         for (const [ref, rec] of Object.entries(idx.docRefs || {})) {
           const groups = rec.agreementGroups || [];
           const strongest = groups.slice().sort((a, b) => (b.combinedSupportTdh || 0) - (a.combinedSupportTdh || 0))[0];
@@ -970,7 +1035,7 @@
       } catch (e) { console.info("index source unreachable:", src.id); }
       if (state.shownDay >= 0) applyHud(recordMeta(isoFor(state.shownDay)));
     }
-    function applyEthRank() { $("set-eth-val").textContent = `≥ ${state.ethRank} TDH`; if (state.shownDay >= 0) applyHud(recordMeta(isoFor(state.shownDay))); }
+    function applyEthRank() { $("set-eth-val").textContent = state.ethRank ? `≥ ${state.ethRank} TDH` : "any witness"; if (state.shownDay >= 0) applyHud(recordMeta(isoFor(state.shownDay))); }
     function applyOpSource() { $("set-op-val").textContent = OP_SOURCES[state.opSource].id; }
     $("set-eth").addEventListener("input", (e) => { state.ethRank = +e.target.value; applyEthRank(); persistSettings(); });
     $("set-op").addEventListener("input", (e) => { state.opSource = +e.target.value; applyOpSource(); fetchIndex(); persistSettings(); });
@@ -981,7 +1046,7 @@
     function loadSettings() {
       try {
         const s = JSON.parse(localStorage.getItem("rso-settings") || "null");
-        if (s) { state.ethRank = s.ethRank ?? 1; state.opSource = s.opSource ?? 0; state.lens = s.lens ?? 0;
+        if (s) { state.ethRank = s.ethRank ?? 0; state.opSource = s.opSource ?? 0; state.lens = s.lens ?? 0;
           $("set-eth").value = state.ethRank; $("set-op").value = state.opSource; }
       } catch (e) {}
     }
@@ -1006,6 +1071,8 @@
       $("insp-meta").textContent = m
         ? `NORAD ${m.id} · ${bandName} · ${m.type}${m.country && m.country !== "—" ? " · " + m.country : ""}${m.launch ? " · ↑" + m.launch : ""}`
         : `${bandName} · ${["payload", "rocket body", "debris", "unknown", "tba"][pickClass(best)]}`;
+      // the observation plane: what the archive learned about THIS object this doc-day
+      $("insp-obs").textContent = o.anno ? `◉ observed · ${o.anno.text}` : "";
       $("inspector").classList.add("visible");
       clearTimeout(inspectAt.timer); inspectAt.timer = setTimeout(() => $("inspector").classList.remove("visible"), 5200);
     }
@@ -1087,11 +1154,14 @@
     function setupPrism(prismId) {
       const prism = $(prismId), inner = prism.querySelector(".prism-inner");
       let turns = 0;
-      prism.addEventListener("click", () => { turns += 1; inner.style.transform = `rotateX(${-turns * 90}deg)`; });
+      prism.addEventListener("click", (e) => {
+        if (e.target.closest("a")) return;            // links inside a face open; they don't rotate it
+        turns += 1; inner.style.transform = `rotateX(${-turns * 90}deg)`;
+      });
     }
     setupPrism("prism-obj"); setupPrism("prism-fp");
 
-    loadSettings(); applyEthRank(); applyOpSource(); document.body.classList.toggle("zen", state.lens === 4); populateLegend();
+    loadSettings(); applyEthRank(); applyOpSource(); document.body.classList.toggle("zen", state.lens === ZEN); populateLegend();
     addEarth(); addStars(); assignField([]); renderer.setAnimationLoop(animate); boot();
     window.__RSO_CARD__ = { state, setTarget, recordMeta, isoFor, get TOTAL() { return TOTAL; }, camera, O };
   </script>
