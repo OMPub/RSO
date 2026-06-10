@@ -1,7 +1,7 @@
 {
   "asset_name": "rso-archive-2026-06-10.tar.gz",
-  "bundle_bytes": 11991506,
-  "bundle_sha256": "e22dc039a269492266334442baf5d9dcabd3debcc31ec8cbde79b434b24b3246",
+  "bundle_bytes": 11294482,
+  "bundle_sha256": "5a319b251cd31f90d89b7f958c9bf6ed0479fcacc640679a6f9e74caa1c0ffb6",
   "catalog_sha256": "6c9be27fae31c850ba47d8a7b73a5f64423824216560804b6eedd81cfddf64a2",
   "date": "2026-06-10",
   "destinations": {
@@ -20,6 +20,6 @@
       "tag": "rso-archive-2026-06-10"
     }
   },
-  "manifest_sha256": "a476604cbe4047561907014eb27168c47486b09dc3c7a3f612a637ba79fd80ba",
-  "updated_at": "2026-06-10T03:10:10Z"
+  "manifest_sha256": "b6ecc6619ebe58af08026950b5e09d1ea00374ce112274261e24fee096b4b461",
+  "updated_at": "2026-06-10T03:12:54Z"
 }

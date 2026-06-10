@@ -863,7 +863,7 @@
     "state_as_of_utc": "2026-06-09T00:00:00Z"
   },
   {
-    "annotations_sha256": "dcec0ce1eda6cb4cf99c2c75ae5583e7a39ecb7e54ef690c618610211e0c7bc9",
+    "annotations_sha256": "3ea71663e5da82fb090a9e555ed3b52bd0fc2d31739086d00ca8a8dd7677e0b0",
     "archived_at": "2026-06-10T03:01:53.525901+00:00",
     "base_snapshot_date": "2026-06-09",
     "base_snapshot_sha256": "69ffcbf4b4f3f0d45514021e9ab029af4f967c2aed16e574ccb9fa9f11ac4c7b",
