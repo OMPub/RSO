@@ -1,7 +1,7 @@
 # RSO Doc Chain Profile
 
 **Profile URI (permanent protocol id):** `https://om.pub/rso/doc-chain`
-**Profile revision:** 1 — 2026-06-10
+**Profile revision:** 2 — 2026-06-10
 **Canonical source:** this file (`docs/profile.md`) in the OMPub/RSO repository;
 the page served at the profile URI mirrors the current revision.
 
@@ -95,8 +95,15 @@ registry row, one constants entry, and one effective date.
   `bundleSha256` (the exact release-bundle fingerprint), `locations` (URLs
   where those bytes are served — GitHub release asset, `ar://` transaction),
   and `nodeId` (the attesting node's identity, e.g. `github:ompub/rso`). The
-  uri is inside the signature; locations are commitments. Hash-only
-  attestations (empty uri) are valid but are not sweeper-sponsored.
+  uri is inside the signature; locations are commitments.
+- **Hash-only attestations** (empty uri) are valid and sweeper-sponsored when
+  the operator holds card-specific TDH backing for the date and its
+  attester-to-node binding verifies against the node declaration. They carry
+  no publication locator, so data custody cannot be checked: the index counts
+  them in agreement and attaches their backing, but marks them
+  `publicationVerification: "hash_only"` so consumers can distinguish
+  custody-verified witnesses (`"verified"`) from signature-only agreement.
+  Operators that also publish bundles get the stronger tier automatically.
 - **Observation plane.** Each day each node also publishes `annotations.json`
   (schema `rso-annotations-v1`): per-object changes of the excluded fields
   between consecutive captures, plus the window's `satcat_change` rows and
@@ -120,3 +127,9 @@ of the chain reproduced from a fresh capture. Runbook: `docs/late-join.md`.
 **Continuously:** the weekly drift audit re-queries archived windows and fails
 loudly on any non-excluded-field mutation or selection drift — the empirical
 claims in section 3 are under permanent test.
+
+---
+
+**Revisions.** r1 (2026-06-10): initial profile. r2 (2026-06-10): hash-only
+attestations from TDH-backed, authorization-verified nodes are sponsored and
+indexed with the `hash_only` publication tier.

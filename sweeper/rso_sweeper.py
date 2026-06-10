@@ -66,7 +66,7 @@ class SweeperConfig:
     private_key_env: str = "RSO_SWEEPER_PRIVATE_KEY"
     cast: str | None = None
     dry_run: bool = False
-    require_uri: bool = True
+    require_uri: bool = False
     max_bundle_bytes: int = 100 * 1024 * 1024
     max_catalog_bytes: int = 200 * 1024 * 1024
     max_json_bytes: int = 2 * 1024 * 1024
@@ -90,7 +90,7 @@ def config_from_env() -> SweeperConfig:
         private_key_env=os.environ.get("RSO_SWEEPER_PRIVATE_KEY_ENV", "RSO_SWEEPER_PRIVATE_KEY"),
         cast=os.environ.get("CAST"),
         dry_run=env_bool("RSO_SWEEPER_DRY_RUN", False),
-        require_uri=not env_bool("RSO_ALLOW_HASH_ONLY_ATTESTATIONS", False),
+        require_uri=env_bool("RSO_REQUIRE_PUBLICATION_URI", False),
         max_bundle_bytes=int(os.environ.get("RSO_SWEEPER_MAX_BUNDLE_BYTES", str(100 * 1024 * 1024))),
         max_catalog_bytes=int(os.environ.get("RSO_SWEEPER_MAX_CATALOG_BYTES", str(200 * 1024 * 1024))),
         max_json_bytes=int(os.environ.get("RSO_SWEEPER_MAX_JSON_BYTES", str(2 * 1024 * 1024))),
@@ -699,13 +699,23 @@ def validate_uri(
     if len(uri.encode("utf-8")) > MAX_ATTESTATION_URI_BYTES:
         raise SweeperError("attestation URI exceeds contract size limit")
     if not uri:
-        if config.require_uri or expected_node_id:
+        # Hash-only claims carry no publication locator. They are sponsorable
+        # because every claim the sweeper processes already passed the two
+        # gates that remain verifiable without one: the operator holds
+        # card-specific TDH backing for the date (eligible_operators), and the
+        # attester<->node binding checked out against the node declaration
+        # (validate_node_authorization). What cannot be verified is data
+        # custody, so the claim is recorded as hash_only and the index
+        # displays it as a witness without publication.
+        if config.require_uri:
             raise SweeperError("sweeper sponsorship requires a verifiable publication URI")
+        doc_block = attestation["docBlock"]
+        assert isinstance(doc_block, Mapping)
         return {
-            "publicationStatus": "not_required",
+            "publicationStatus": "hash_only",
             "nodeId": "",
             "bundleSha256": "",
-            "contentHash": "",
+            "contentHash": normalize_bytes32(doc_block["contentHash"]),
             "locations": [],
         }
     doc_block = attestation["docBlock"]
