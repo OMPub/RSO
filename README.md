@@ -28,7 +28,7 @@ and publish evidence anyone can verify.
 | Operator and sweeper model | [docs/operator.md](docs/operator.md) |
 | Understand the architecture | [docs/architecture.md](docs/architecture.md) |
 | Understand the snapshot rules | [docs/snapshot-spec.md](docs/snapshot-spec.md) |
-| The v2 chain: consensus core + observation log | [docs/chain-v2.md](docs/chain-v2.md) |
+| The chain: consensus core + observation log | [docs/chain.md](docs/chain.md) |
 | Join late and attest from genesis in one tx | [docs/late-join.md](docs/late-join.md) |
 | Build attestations | [docs/attestation-design.md](docs/attestation-design.md) |
 | Verify a daily archive | [docs/verification.md](docs/verification.md) |
@@ -118,7 +118,7 @@ SHA-256 of the canonical catalog with the nine mutable object-directory fields
 excluded, because Space-Track back-patches those in place on published rows.
 The raw catalog (all 39 fields, exactly as returned) stays the archival
 artifact, and `annotations.json` records what the node learned about the
-mutable fields and when. See [docs/chain-v2.md](docs/chain-v2.md) for the
+mutable fields and when. See [docs/chain.md](docs/chain.md) for the
 measurements behind the split. The release URL, storage URI, and Arweave
 transaction ID are never part of consensus; attestations sign the exact bundle
 SHA-256 so mirrors can be checked byte-for-byte.

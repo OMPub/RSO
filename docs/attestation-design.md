@@ -1,10 +1,9 @@
 # RSO DocChain Attestation Design
 
-> **v2 note:** attestations sign `manifest.content_sha256` on the v2
-> chain (docChainId `keccak256("https://om.pub/rso/doc-chain/v2")`,
-> DocChain contract release 2 with `attestBatch`). The v2 genesis
-> parentHash is the agreed v1 head block. See [chain-v2.md](chain-v2.md)
-> and [late-join.md](late-join.md).
+> **Note:** attestations sign `manifest.content_sha256` (docChainId
+> `keccak256("https://om.pub/rso/doc-chain")`; the DocChain contract
+> supports single and batch submission). See [chain.md](chain.md) and
+> [late-join.md](late-join.md).
 
 RSO uses the generic DocChain contract as an append-only witness log. Operator
 nodes sign daily archive claims with disposable no-funds EOAs. A separate
