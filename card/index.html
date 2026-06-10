@@ -304,7 +304,12 @@
   </div>
 
   <script type="module">
-    import * as THREE from "./three.module.js";
+    // Resolve the vendored module against the directory we're mounted at, even when the
+    // page is served at a slashless path (om.pub/rso/live, Arweave gateway paths, …) where
+    // a bare relative import would resolve against the parent directory.
+    const MOUNT = new URL(location.href);
+    if (!/\/$|\.html?$/.test(MOUNT.pathname)) MOUNT.pathname += "/";
+    const THREE = await import(new URL("./three.module.js", MOUNT).href);
 
     // ════════════════════════════════════════════════════════════════════
     // CONFIG — live sources + tunable feel
