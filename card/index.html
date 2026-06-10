@@ -389,6 +389,10 @@
       1: { r0: 432, r1: 478, speed: 1.0,  name: "MEO" }, // straddles the camera radius → crosses your plane, grazes you
       2: { r0: 500, r1: 720, speed: 0.42, name: "GEO" }  // R ≫ → high overhead, slow, sparse
     };
+    // At rest, every object completes exactly one pass per hour: spot something in the
+    // stream and it returns 60 minutes later, like clockwork. (Band speeds above only
+    // flavour the WARP rush, where the river becomes a torrent.)
+    const LAP_SECONDS = 3600;
     const PROP = { bands: { LEO: 0.905, MEO: 0.066, GEO: 0.029 } };
     const COLORS = {                                  // distinct hues that survive the brightness clip
       payload: [0.30, 0.52, 1.0],   // blue — stays blue (not white) when bright/near
@@ -494,8 +498,8 @@
           float nearness = 1.0 - smoothstep(26.0, 250.0, dist);          // 0 far (pinpoint) … 1 right on top of you
           float swell    = nearness * central * 4.2;
           float base     = aSize * (40.0/dist + 0.55) * uPixel;
-          // non-disc silhouettes carve pixels away — give them a little more canvas
-          float sb = 1.0 + 0.30 * step(0.5, aShape);
+          // every silhouette carves pixels away from the quad — give them all more canvas
+          float sb = 1.30;
           gl_PointSize = clamp(base * (1.0 + swell) * sb, 1.0, 21.0);
           // orientation: nose-first along the REAL screen-space motion when moving;
           // at rest, a seeded attitude that tumbles at the object's own rate.
@@ -526,29 +530,39 @@
           float s1 = vSeed.x, s2 = vSeed.y;
           float lod = smoothstep(7.5, 13.0, vPx);              // form resolves only as it looms
           float d;
-          if (vShape < 0.5) {                                  // payload — round bus + solar wings
-            float a = mix(0.11, 0.17, f1(s1, 3.7));            // disc body: satellites gleam round at distance
+          if (vShape < 0.5) {                                  // payload (generic) — bus + 1..6 fanned panels
+            float a = mix(0.10, 0.15, f1(s1, 3.7));            // disc bus: satellites gleam round at distance
             d = length(q) - a;
-            float wc = mix(0.18, 0.28, f1(s1, 7.3));           // wing centre
-            float wl = min(mix(0.08, 0.17, f1(s2, 9.7)), 0.46 - wc);
-            float ww = mix(0.06, 0.10, f1(s2, 12.9));          // wing chord
-            d = min(d, sdBox(vec2(abs(q.x) - wc, q.y), vec2(wl, ww)));
-            if (f1(s1, 11.3) > 0.62)                           // some carry a dish
-              d = min(d, length(q - vec2(0.0, mix(0.18, 0.26, f1(s2, 13.1)))) - 0.05);
-          } else if (vShape < 1.5) {                           // rocket body — stage + nozzle bell
-            float L = mix(0.26, 0.36, f1(s1, 4.1));
-            float w = mix(0.075, 0.115, f1(s2, 3.3));
-            d = length(vec2(max(abs(q.x) - L, 0.0), q.y)) - w;
-            float nz = mix(0.05, 0.09, f1(s1, 6.7));
-            d = min(d, length(q - vec2(-L - nz * 0.6, 0.0)) - nz);
-            d = max(d, -sdBox(q - vec2(L * mix(0.1, 0.5, f1(s2, 8.9)), 0.0), vec2(0.014, w + 0.02))); // stage seam
+            float cnt = floor(1.0 + 5.99 * f1(s1, 17.9));      // 1..6 solar panels
+            float ax  = f1(s2, 15.3) * 3.1416;                 // first panel axis
+            float fan = mix(0.55, 1.05, f1(s1, 19.7));         // fan step between pairs
+            float wc = mix(0.17, 0.26, f1(s1, 7.3));
+            float wl = min(mix(0.08, 0.15, f1(s2, 9.7)), 0.45 - wc);
+            float ww = mix(0.05, 0.085, f1(s2, 12.9));
+            for (int k = 0; k < 3; k++) {
+              float fk = float(k);
+              if (cnt > 2.0 * fk) {
+                float aa = ax + fk * fan;
+                vec2 dirk = vec2(cos(aa), sin(aa));
+                vec2 qq = vec2(dot(q, dirk), dot(q, vec2(-dirk.y, dirk.x)));
+                d = min(d, sdBox(vec2(qq.x - wc, qq.y), vec2(wl, ww)));
+                if (cnt > 2.0 * fk + 1.0) d = min(d, sdBox(vec2(-qq.x - wc, qq.y), vec2(wl, ww)));
+              }
+            }
+          } else if (vShape < 1.5) {                           // rocket body — flat-ended barrel + nozzle bell
+            float L = mix(0.20, 0.30, f1(s1, 4.1));
+            float w = mix(0.10, 0.145, f1(s2, 3.3));
+            d = sdBox(q, vec2(L, w)) - 0.02;                   // a tank, not a torpedo
+            float nz = mix(0.05, 0.085, f1(s1, 6.7));
+            d = min(d, length(q - vec2(-L - nz * 0.55, 0.0)) - nz);
+            d = max(d, -sdBox(q - vec2(L * mix(0.0, 0.45, f1(s2, 8.9)), 0.0), vec2(0.013, w + 0.03))); // stage seam
           } else if (vShape < 2.5) {                           // debris — every shard fractured its own way
             d = length(q) - mix(0.26, 0.36, f1(s1, 2.9));
             float a1 = f1(s1, 5.3) * 6.2832, a2 = a1 + 1.7 + f1(s2, 7.1) * 2.2, a3 = a2 + 1.6 + f1(s1, 9.3) * 2.1;
             d = max(d, dot(q, vec2(cos(a1), sin(a1))) - mix(0.04, 0.20, f1(s2, 4.7)));
             d = max(d, dot(q, vec2(cos(a2), sin(a2))) - mix(0.05, 0.22, f1(s1, 6.1)));
             d = max(d, dot(q, vec2(cos(a3), sin(a3))) - mix(0.06, 0.24, f1(s2, 8.3)));
-          } else {                                             // unknown — ring, seeded gauge, some horseshoed
+          } else if (vShape < 3.5) {                           // unknown — ring, seeded gauge, some horseshoed
             float rr = mix(0.19, 0.30, f1(s1, 3.1));
             d = abs(length(q) - rr) - mix(0.035, 0.075, f1(s2, 4.3));
             if (f1(s1, 8.7) > 0.55) {
@@ -556,6 +570,33 @@
               float dg = abs(mod(atan(q.y, q.x) - ga + 3.14159, 6.28318) - 3.14159);
               d = max(d, gw - dg);                             // carve the gap
             }
+          } else if (vShape < 4.5) {                           // STARLINK — flat slab + one broad sail
+            d = sdBox(q, vec2(0.16, 0.045)) - 0.012;
+            vec2 qs = q - vec2(0.0, mix(0.20, 0.26, f1(s1, 5.1)));
+            d = min(d, sdBox(qs, vec2(mix(0.10, 0.13, f1(s2, 7.7)), mix(0.13, 0.18, f1(s1, 9.1)))));
+          } else if (vShape < 5.5) {                           // GEO comsat — long symmetric wings + dish
+            float a = mix(0.09, 0.12, f1(s1, 3.7));
+            d = sdBox(q, vec2(a, a)) - 0.02;
+            float wl = 0.42 - a;
+            d = min(d, sdBox(vec2(abs(q.x) - (a + wl * 0.5 + 0.02), q.y), vec2(wl * 0.5, mix(0.04, 0.055, f1(s2, 5.5)))));
+            d = min(d, length(q - vec2(0.0, a + 0.08)) - mix(0.05, 0.07, f1(s2, 11.1)));
+          } else if (vShape < 6.5) {                           // cubesat — tiny slab, sometimes stub panels
+            d = sdBox(q, vec2(mix(0.05, 0.09, f1(s1, 3.3)), mix(0.045, 0.075, f1(s2, 4.4)))) - 0.012;
+            if (f1(s1, 6.6) > 0.45)
+              d = min(d, sdBox(vec2(abs(q.x) - mix(0.13, 0.17, f1(s2, 8.8)), q.y), vec2(0.07, 0.032)));
+          } else if (vShape < 7.5) {                           // navsat — bus + two wings + nav dish
+            float a = mix(0.10, 0.13, f1(s1, 3.9));
+            d = sdBox(q, vec2(a * 1.1, a)) - 0.02;
+            d = min(d, sdBox(vec2(abs(q.x) - (a + 0.17), q.y), vec2(0.12, mix(0.05, 0.07, f1(s2, 5.9)))));
+            d = min(d, length(q - vec2(0.0, a + 0.07)) - 0.05);
+          } else if (vShape < 8.5) {                           // ONEWEB — box-wing: small bus, two long narrow arrays
+            d = sdBox(q, vec2(0.07, 0.085)) - 0.015;
+            d = min(d, sdBox(vec2(abs(q.x) - 0.26, q.y), vec2(0.17, mix(0.03, 0.042, f1(s2, 6.1)))));
+          } else {                                             // IRIDIUM — two wings + the big canted antenna
+            d = sdBox(q, vec2(0.10, 0.08)) - 0.015;
+            d = min(d, sdBox(vec2(abs(q.x) - 0.22, q.y), vec2(0.10, 0.05)));
+            vec2 qa = mat2(0.94, -0.34, 0.34, 0.94) * (q - vec2(0.0, -0.17));
+            d = min(d, sdBox(qa, vec2(0.085, 0.115)));
           }
           d = mix(length(q0), d, lod);                         // tiny = plain dot; near = its own machine
           if (d > 0.55 || d != d) discard;                     // d!=d traps any NaN before it paints the quad
@@ -612,6 +653,19 @@
       return out;
     }
 
+    // Name-keyed payload archetypes: the famous constellations get their real silhouettes,
+    // so a watcher learns to spot a Starlink slab or a GEO comsat's long wings in the stream.
+    function payloadShape(meta, band) {
+      if (!meta) return 0;
+      const n = (meta.name || "").toUpperCase();
+      if (n.startsWith("STARLINK")) return 4;                       // flat slab + one broad sail
+      if (n.startsWith("ONEWEB")) return 8;                         // box-wing: small bus, two long narrow arrays
+      if (n.includes("IRIDIUM")) return 9;                          // two wings + the big canted antenna panel
+      if (/^(NAVSTAR|GPS |GLONASS|GALILEO|BEIDOU|QZS|IRNSS|NVS)/.test(n)) return 7;  // navsat: bus + wings + dish
+      if (/^(FLOCK|LEMUR|SPACEBEE|DOVE )/.test(n) || meta.rcs === "SMALL") return 6; // cubesat-tiny
+      if (band === 2 || /(INTELSAT|EUTELSAT|ECHOSTAR|DIRECTV|TDRS|INMARSAT|ASTRA |ANIK|YAMAL|EXPRESS-|TURKSAT|ARABSAT|NIMIQ|SES-|AMC-|SKYNET|GALAXY )/ .test(n)) return 5; // GEO comsat
+      return 0;                                                     // generic: seeded 1–6 panels
+    }
     function assignField(objects) {
       state.objects = objects;
       for (let i = 0; i < FIELD; i++) {
@@ -645,13 +699,14 @@
         // eccentricity breathes the orbit radius — HEO objects visibly dive and climb
         o.eccV = src ? Math.min(0.5, src.ecc * 1.8) : 0;
         o.ep = rand2(nid, 103) * 6.2832;
-        o.spd = B.speed * (0.82 + rand2(nid, 31) * 0.36);
+        o.wj = B.speed * (0.82 + rand2(nid, 31) * 0.36);   // per-object character for the WARP rush only
         o.phase = rand2(i, 47); o.pt = o.phase % 1;
         o.ta = rand2(i, 53) * 6.2832; o.tr = 7 + Math.pow(rand2(i, 59), 0.7) * 44; // wormhole angle/radius
         o.klass = klass; o.status = src ? src.status : "carried"; o.meta = src; o.baseSize = baseSize;
         o.reentered = !!(src && src.reentered);
         o.anno = src ? src.anno || null : null;
-        pShape[i] = klass === 0 ? 0 : klass === 1 ? 1 : klass === 2 ? 2 : 3;  // disc / pill / shard / ring
+        o.shape = klass === 0 ? payloadShape(src, band) : klass === 1 ? 1 : klass === 2 ? 2 : 3;
+        pShape[i] = o.shape;
         // silhouette seeds + tumble: debris spins hard, unknowns drift, hardware holds attitude
         const tum = (klass === 2 ? 0.5 + 1.6 * rand2(nid, 97) : klass >= 3 ? 0.25 + 0.7 * rand2(nid, 97) : 0.05 + 0.08 * rand2(nid, 97))
           * (rand2(nid, 109) < 0.5 ? -1 : 1);
@@ -724,14 +779,17 @@
 
     function updateField(dt) {
       const warpC = Math.min(1, state.warp), over = state.over;
-      const flow = 20.8 + state.warp * 760 * (1 + over * 0.8) * state.timeDir;   // ambient drift at 80%; backward time reverses the stream
+      // at rest every object laps in exactly LAP_SECONDS; during warp the river becomes
+      // the old banded torrent (backward time reverses the stream)
+      const restRate = 1 / LAP_SECONDS;
+      const warpFlow = state.warp * 760 * (1 + over * 0.8) * state.timeDir * 0.0016;
       const twBase = state.time * 1.4;
       const showLines = state.warp > 0.02; lines.visible = showLines;   // streaks only during travel
       const cpx = camera.position.x, cpy = camera.position.y, cpz = camera.position.z;
       const fwd = (state.timeDir + 1) * 0.5;                 // 0 = receding (back), 1 = approaching (forward)
       for (let i = 0; i < FIELD; i++) {
         const o = O[i]; if (!o) continue;
-        o.phase += o.spd * flow * 0.0016 * dt;
+        o.phase += (restRate + warpFlow * o.wj) * dt;
         const t = o.phase - Math.floor(o.phase);
         worldPos(o, t, _v);
         const i3 = i * 3;
@@ -1302,21 +1360,64 @@
       const add = (geom, mat, x = 0, y = 0, z = 0, rx = 0, ry = 0, rz = 0) => {
         const m = new THREE.Mesh(geom, mat); m.position.set(x, y, z); m.rotation.set(rx, ry, rz); g.add(m); return m;
       };
-      if (o.klass === 0) {                                   // payload: bus + wings (+ dish)
-        const bw = 0.34 + R(71) * 0.22, bh = 0.30 + R(83) * 0.26, bd = 0.30 + R(89) * 0.2;
-        add(new THREE.BoxGeometry(bw, bh, bd), vigMat(0));
-        const span = 0.55 + R(7) * 0.5, chord = 0.26 + R(9) * 0.22, tilt = (R(13) - 0.5) * 0.5;
-        const wing = new THREE.BoxGeometry(span, chord, 0.02);
-        add(wing, vigMat(0, true),  bw / 2 + span / 2 + 0.04, 0, 0, tilt, 0, 0);
-        add(wing, vigMat(0, true), -bw / 2 - span / 2 - 0.04, 0, 0, -tilt, 0, 0);
-        if (R(11) > 0.62) add(new THREE.SphereGeometry(0.11 + R(15) * 0.06, 8, 6), vigMat(0), 0, bh / 2 + 0.12, 0);
-        if (R(17) > 0.5) add(new THREE.CylinderGeometry(0.012, 0.012, 0.5, 5), vigMat(0, true), 0, -bh / 2 - 0.22, 0);
-      } else if (o.klass === 1) {                            // rocket body: stage + bell
-        const len = 0.9 + R(41) * 0.5, r = 0.14 + R(33) * 0.07;
-        add(new THREE.CylinderGeometry(r, r, len, 12), vigMat(1), 0, 0, 0, 0, 0, Math.PI / 2);
-        add(new THREE.CylinderGeometry(r * 0.45, r * (1.2 + R(67) * 0.5), 0.22 + R(67) * 0.12, 10), vigMat(1, true),
-          -(len / 2 + 0.1), 0, 0, 0, 0, Math.PI / 2);
-        add(new THREE.ConeGeometry(r * 0.98, 0.2 + R(53) * 0.14, 10), vigMat(1), len / 2 + 0.1, 0, 0, 0, 0, -Math.PI / 2);
+      if (o.klass === 0) {                                   // payload: archetype-keyed, like the field
+        const shape = o.shape || 0;
+        if (shape === 4) {                                   // STARLINK — flat chassis + one broad sail
+          add(new THREE.BoxGeometry(0.80, 0.05, 0.40), vigMat(0));
+          add(new THREE.BoxGeometry(0.55, 0.02, 0.9 + R(9) * 0.2), vigMat(0, true), 0, 0.32, -0.22, -0.55, 0, 0);
+        } else if (shape === 5) {                            // GEO comsat — long symmetric wings + dish
+          add(new THREE.BoxGeometry(0.36, 0.32, 0.30), vigMat(0));
+          const wing = new THREE.BoxGeometry(0.95 + R(7) * 0.2, 0.015, 0.26);
+          add(wing, vigMat(0, true),  0.68, 0, 0);
+          add(wing, vigMat(0, true), -0.68, 0, 0);
+          const dish = add(new THREE.CylinderGeometry(0.03, 0.20 + R(15) * 0.05, 0.13, 12), vigMat(0), 0, 0.05, 0.26, Math.PI / 2, 0, 0);
+          dish.scale.y = 0.8;
+        } else if (shape === 6) {                            // cubesat — tiny box, stub panels
+          add(new THREE.BoxGeometry(0.22, 0.22 + R(83) * 0.2, 0.22), vigMat(0));
+          if (R(11) > 0.45) {
+            const stub = new THREE.BoxGeometry(0.34, 0.012, 0.2);
+            add(stub, vigMat(0, true),  0.30, 0, 0);
+            add(stub, vigMat(0, true), -0.30, 0, 0);
+          }
+        } else if (shape === 7) {                            // navsat — bus + wings + nav dish
+          add(new THREE.BoxGeometry(0.40, 0.34, 0.32), vigMat(0));
+          const wing = new THREE.BoxGeometry(0.62, 0.015, 0.30);
+          add(wing, vigMat(0, true),  0.55, 0, 0);
+          add(wing, vigMat(0, true), -0.55, 0, 0);
+          add(new THREE.CylinderGeometry(0.02, 0.13, 0.10, 10), vigMat(0), 0, 0.04, 0.24, Math.PI / 2, 0, 0);
+        } else if (shape === 8) {                            // ONEWEB — box-wing
+          add(new THREE.BoxGeometry(0.30, 0.36, 0.30), vigMat(0));
+          const arr = new THREE.BoxGeometry(0.85, 0.015, 0.20);
+          add(arr, vigMat(0, true),  0.60, 0, 0);
+          add(arr, vigMat(0, true), -0.60, 0, 0);
+        } else if (shape === 9) {                            // IRIDIUM — wings + the big canted antenna
+          add(new THREE.BoxGeometry(0.34, 0.40, 0.30), vigMat(0));
+          const wing = new THREE.BoxGeometry(0.55, 0.015, 0.28);
+          add(wing, vigMat(0, true),  0.50, 0, 0);
+          add(wing, vigMat(0, true), -0.50, 0, 0);
+          add(new THREE.BoxGeometry(0.34, 0.015, 0.62), vigMat(0, true), 0, -0.28, 0.18, -0.65, 0, 0);
+        } else {                                             // generic — bus + 1..6 panels, fanned
+          const bw = 0.32 + R(71) * 0.18, bh = 0.30 + R(83) * 0.2;
+          add(new THREE.BoxGeometry(bw, bh, 0.30 + R(89) * 0.16), vigMat(0));
+          const cnt = 1 + Math.floor(R(17) * 5.999);
+          const span = 0.42 + R(7) * 0.3, chord = 0.22 + R(9) * 0.16;
+          const ax = R(15) * Math.PI, fan = 0.55 + R(19) * 0.5, dy = bh / 2 + span / 2 + 0.05;
+          for (let p = 0; p < cnt; p++) {
+            const roll = ax + (p >> 1) * fan + (p & 1 ? Math.PI : 0);
+            add(new THREE.BoxGeometry(0.018, span, chord), vigMat(0, true),
+              (R(21) - 0.5) * bw * 0.4, Math.cos(roll) * dy, Math.sin(roll) * dy, roll, 0, 0);
+          }
+          if (R(11) > 0.62) add(new THREE.CylinderGeometry(0.02, 0.12, 0.09, 10), vigMat(0), 0, 0, bh * 0.62, Math.PI / 2, 0, 0);
+        }
+      } else if (o.klass === 1) {                            // rocket body: a barrel, not a torpedo
+        const len = 0.68 + R(41) * 0.4, r = 0.17 + R(33) * 0.07;
+        add(new THREE.CylinderGeometry(r, r, len, 14), vigMat(1), 0, 0, 0, 0, 0, Math.PI / 2);
+        const dome = add(new THREE.SphereGeometry(r * 0.99, 12, 8), vigMat(1), len / 2, 0, 0);
+        dome.scale.x = 0.22;                                 // shallow flat-ish dome cap
+        add(new THREE.CylinderGeometry(r * 0.5, r * 1.22, 0.18 + R(67) * 0.08, 12), vigMat(1, true),
+          -(len / 2 + 0.08), 0, 0, 0, 0, Math.PI / 2);
+        const band = add(new THREE.TorusGeometry(r * 1.02, 0.013, 6, 20), vigMat(1, true), (R(53) - 0.5) * len * 0.6, 0, 0);
+        band.rotation.y = Math.PI / 2;
       } else if (o.klass === 2) {                            // debris: a faceted shard all its own
         const geo = new THREE.IcosahedronGeometry(0.46, 0);
         const pos = geo.getAttribute("position");
@@ -1379,8 +1480,7 @@
       // the observation plane: what the archive learned about THIS object this doc-day
       $("insp-obs").textContent = o.anno ? `◉ observed · ${o.anno.text}` : "";
       $("inspector").classList.add("visible");
-      vigShow(o);
-      clearTimeout(inspectAt.timer); inspectAt.timer = setTimeout(() => { $("inspector").classList.remove("visible"); vigHide(); }, 5200);
+      vigShow(o);   // stays up until another object — or blank space — is tapped
     }
 
     // ── loop ──
@@ -1451,7 +1551,10 @@
 
       const shown = Math.round(state.cursor);
       if (shown !== state.shownDay) { state.shownDay = shown; showDay(isoFor(shown)); }
-      if (!state.wasTraveling && traveling) setStatus("loading", "Scanning the chain…");  // moving through days — no download yet
+      if (!state.wasTraveling && traveling) {                                             // moving through days — no download yet
+        setStatus("loading", "Scanning the chain…");
+        $("inspector").classList.remove("visible"); vigHide();                            // the inspected object is leaving with its day
+      }
       if (state.wasTraveling && !traveling) {                                             // arrived on a day → only now fetch it
         const d = isoFor(shown);
         if (state.catalogDate === d) setStatus("ready", integrityByDate.get(d) ? "Live record · verified" : "Live record"); // already have this day

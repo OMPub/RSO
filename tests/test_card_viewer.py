@@ -100,9 +100,26 @@ class CardArtifactTest(unittest.TestCase):
 
     def test_per_type_silhouettes(self):
         self.assertIn("aShape", self.html)
-        for marker in ("payload — round bus + solar wings", "rocket body — stage + nozzle bell",
+        for marker in ("payload (generic) — bus + 1..6 fanned panels",
+                       "rocket body — flat-ended barrel + nozzle bell",
                        "debris — every shard fractured its own way", "unknown — ring, seeded gauge"):
             self.assertIn(marker, self.html)
+
+    def test_constellation_archetypes_are_name_keyed(self):
+        # the famous constellations get their real silhouettes, in field and vignette alike
+        self.assertIn("function payloadShape(", self.html)
+        for marker in ('n.startsWith("STARLINK")', 'n.startsWith("ONEWEB")',
+                       'n.includes("IRIDIUM")', "STARLINK — flat slab + one broad sail",
+                       "ONEWEB — box-wing", "IRIDIUM — two wings + the big canted antenna",
+                       "GEO comsat — long symmetric wings + dish"):
+            self.assertIn(marker, self.html)
+
+    def test_hourly_lap_and_persistent_inspector(self):
+        # at rest, every object laps in exactly one hour — spot it, see it again
+        self.assertIn("const LAP_SECONDS = 3600", self.html)
+        self.assertIn("restRate + warpFlow * o.wj", self.html)
+        # the inspector stays up until another tap or blank space — no auto-hide timer
+        self.assertNotIn("5200", self.html)
 
     def test_generative_identity_is_norad_seeded_and_guarded(self):
         # identity seeds key to the NORAD id → same silhouette everywhere, forever
