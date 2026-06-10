@@ -250,6 +250,7 @@ class AnnotationsTest(unittest.TestCase):
         decay_paths = [p for p in captured if "/class/decay/" in p]
         self.assertEqual(len(decay_paths), 1)
         self.assertIn("/MSG_TYPE/Historical/", decay_paths[0])
+        self.assertIn("/DECAY_EPOCH/2026-05-10--2026-06-17/", decay_paths[0])
 
     def test_validate_annotation_rows_rejects_non_string_values(self):
         with self.assertRaises(snapshot.SnapshotError):
