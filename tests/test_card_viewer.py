@@ -114,6 +114,14 @@ class CardArtifactTest(unittest.TestCase):
                        "GEO comsat — long symmetric wings + dish"):
             self.assertIn(marker, self.html)
 
+    def test_rcs_is_the_size_family(self):
+        # radar cross-section dominates rendered size: tiers spaced 2.5x apart with
+        # jitter too small to cross them, echoed in the vignette scale and meta line
+        self.assertIn('rcs === "LARGE" ? 1.55 : rcs === "MEDIUM" ? 1.0 : rcs === "SMALL" ? 0.62', self.html)
+        self.assertIn("0.92 + rand2(nid, 89) * 0.16", self.html)
+        self.assertIn('rcs === "LARGE" ? 1.28', self.html)   # vignette presence
+        self.assertIn("` · rcs ${m.rcs.toLowerCase()}`", self.html)
+
     def test_hourly_lap_and_persistent_inspector(self):
         # at rest, every object laps in exactly one hour — spot it, see it again
         self.assertIn("const LAP_SECONDS = 3600", self.html)

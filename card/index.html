@@ -500,7 +500,7 @@
           float base     = aSize * (40.0/dist + 0.55) * uPixel;
           // every silhouette carves pixels away from the quad — give them all more canvas
           float sb = 1.30;
-          gl_PointSize = clamp(base * (1.0 + swell) * sb, 1.0, 21.0);
+          gl_PointSize = clamp(base * (1.0 + swell) * sb, 1.0, 24.0);   // ceiling high enough that LARGE still out-looms
           // orientation: nose-first along the REAL screen-space motion when moving;
           // at rest, a seeded attitude that tumbles at the object's own rate.
           // Guard the near-plane: as w→0 the projected delta blows up to inf/NaN and a
@@ -679,10 +679,12 @@
         const s1 = rand2(nid, 71), s2 = rand2(nid, 83);
         let baseSize = klass === 0 ? 2.0 : klass === 1 ? 1.9 : klass === 2 ? 1.25 : 1.6;
         baseSize *= band === 2 ? 1.7 : band === 1 ? 1.4 : 0.95;   // GEO & MEO read larger
-        // radar cross-section class sets the physical size family when known
+        // radar cross-section is the size family — the most data-true thing we can show.
+        // The tiers are spaced 2.5× apart and the jitter is too small to cross them, so
+        // LARGE / MEDIUM / SMALL read at a glance in the stream.
         const rcs = src ? src.rcs : "";
-        baseSize *= (rcs === "LARGE" ? 1.32 : rcs === "MEDIUM" ? 1.05 : rcs === "SMALL" ? 0.78 : 0.95)
-          * (0.85 + rand2(nid, 89) * 0.3);
+        baseSize *= (rcs === "LARGE" ? 1.55 : rcs === "MEDIUM" ? 1.0 : rcs === "SMALL" ? 0.62 : 0.9)
+          * (0.92 + rand2(nid, 89) * 0.16);
         const o = O[i] || (O[i] = {});
         o.band = band;
         o.R = B.r0 + (B.r1 - B.r0) * rand2(nid, 11);          // orbit radius within the shell
@@ -1446,6 +1448,10 @@
       vigHide();
       vig.group = buildVigShape(o);
       vig.group.rotation.set(0.42, rand2(parseInt(o.meta?.id || 1, 10) || 1, 119) * 6.28, 0);
+      // radar cross-section sets the model's presence in the frame too:
+      // a LARGE fills it, a SMALL sits dainty in the same box
+      const rcs = o.meta ? o.meta.rcs : "";
+      vig.group.scale.setScalar(rcs === "LARGE" ? 1.28 : rcs === "MEDIUM" ? 1.0 : rcs === "SMALL" ? 0.66 : 0.9);
       vig.scene.add(vig.group);
       vig.active = true;
     }
@@ -1475,7 +1481,7 @@
       $("insp-name").textContent = m ? m.name : "Archive object";
       $("insp-meta").textContent = m
         ? `NORAD ${m.id} · ${bandName} · ${m.type}${m.country && m.country !== "—" ? " · " + m.country : ""}${m.launch ? " · ↑" + m.launch : ""}`
-          + `${m.inc ? ` · i ${m.inc.toFixed(1)}°` : ""}${m.ecc > 0.1 ? ` · e ${m.ecc.toFixed(2)}` : ""}${m.rcs ? ` · ${m.rcs.toLowerCase()}` : ""}`
+          + `${m.inc ? ` · i ${m.inc.toFixed(1)}°` : ""}${m.ecc > 0.1 ? ` · e ${m.ecc.toFixed(2)}` : ""}${m.rcs ? ` · rcs ${m.rcs.toLowerCase()}` : ""}`
         : `${bandName} · ${["payload", "rocket body", "debris", "unknown", "tba"][pickClass(best)]}`;
       // the observation plane: what the archive learned about THIS object this doc-day
       $("insp-obs").textContent = o.anno ? `◉ observed · ${o.anno.text}` : "";
