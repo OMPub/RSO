@@ -463,6 +463,7 @@
     // ── field: CPU positions → points (dots) + line segments (real motion-blur) ──
     const O = [];                                  // object render records
     const pPos = new Float32Array(FIELD * 3), pCol = new Float32Array(FIELD * 3), pAlpha = new Float32Array(FIELD), pSize = new Float32Array(FIELD), pFocus = new Float32Array(FIELD), pShape = new Float32Array(FIELD);
+    const pSeed = new Float32Array(FIELD * 3), pPrev = new Float32Array(FIELD * 3);
     const lPos = new Float32Array(FIELD * 2 * 3), lCol = new Float32Array(FIELD * 2 * 3);
 
     const pointGeo = new THREE.BufferGeometry();
@@ -472,11 +473,15 @@
     pointGeo.setAttribute("aSize", new THREE.BufferAttribute(pSize, 1));
     pointGeo.setAttribute("aFocus", new THREE.BufferAttribute(pFocus, 1));
     pointGeo.setAttribute("aShape", new THREE.BufferAttribute(pShape, 1));
+    pointGeo.setAttribute("aSeed", new THREE.BufferAttribute(pSeed, 3));   // s1, s2, tumble rate
+    pointGeo.setAttribute("aPrev", new THREE.BufferAttribute(pPrev, 3));   // last frame's position → motion direction
     const pointMat = new THREE.ShaderMaterial({
       transparent: true, depthTest: true, depthWrite: false, blending: THREE.AdditiveBlending, vertexColors: true,
-      uniforms: { uPixel: { value: renderer.getPixelRatio() } },
+      uniforms: { uPixel: { value: renderer.getPixelRatio() }, uTime: { value: 0 }, uAspect: { value: innerWidth / innerHeight } },
       vertexShader: `
-        attribute float aAlpha, aSize, aFocus, aShape; uniform float uPixel; varying vec3 vColor; varying float vAlpha; varying float vFocus; varying float vShape;
+        attribute float aAlpha, aSize, aFocus, aShape; attribute vec3 aSeed, aPrev;
+        uniform float uPixel, uTime, uAspect;
+        varying vec3 vColor; varying float vAlpha; varying float vFocus; varying float vShape; varying float vAng; varying float vPx; varying vec2 vSeed;
         void main(){
           vec4 mv = modelViewMatrix * vec4(position,1.0);
           vec4 clip = projectionMatrix * mv;
@@ -492,33 +497,76 @@
           // non-disc silhouettes carve pixels away — give them a little more canvas
           float sb = 1.0 + 0.30 * step(0.5, aShape);
           gl_PointSize = clamp(base * (1.0 + swell) * sb, 1.0, 21.0);
-          vColor = color; vAlpha = aAlpha; vFocus = aFocus; vShape = aShape;
+          // orientation: nose-first along the REAL screen-space motion when moving;
+          // at rest, a seeded attitude that tumbles at the object's own rate.
+          // Guard the near-plane: as w→0 the projected delta blows up to inf/NaN and a
+          // NaN distance field paints the whole sprite quad.
+          vec4 clipP = projectionMatrix * modelViewMatrix * vec4(aPrev, 1.0);
+          float wOK = step(0.05, clip.w) * step(0.05, clipP.w);
+          vec2 dscr = (ndc - clipP.xy / max(0.05, clipP.w)) * vec2(uAspect, 1.0);
+          float sp = length(dscr) * wOK;
+          float restAng = aSeed.x * 6.2832 + uTime * aSeed.z;
+          vec2 dir = mix(vec2(cos(restAng), sin(restAng)), dscr / max(sp, 1e-6), smoothstep(0.0006, 0.0035, sp) * wOK);
+          vAng = atan(dir.y, dir.x + 1e-6);
+          vPx = gl_PointSize / uPixel;
+          vColor = color; vAlpha = aAlpha; vFocus = aFocus; vShape = aShape; vSeed = aSeed.xy;
         }`,
       // near objects render crisp, bright and DEFINED (looming); far ones stay soft pinpoints.
-      // Each class has its own silhouette — payload disc, rocket-body pill, debris shard,
-      // unknown ring — which only resolves once an object is close enough to read.
+      // Each class is a parametric FAMILY — bus + solar wings, stage + nozzle, fractured
+      // shard, gauged ring — and every object draws its own proportions from its NORAD-seeded
+      // identity, so no two resolve alike. Tiny dots stay dots (distance LOD).
       fragmentShader: `
-        varying vec3 vColor; varying float vAlpha; varying float vFocus; varying float vShape;
+        varying vec3 vColor; varying float vAlpha; varying float vFocus; varying float vShape; varying float vAng; varying float vPx; varying vec2 vSeed;
+        float sdBox(vec2 p, vec2 b){ vec2 q = abs(p) - b; return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0); }
+        float f1(float s, float k){ return fract(s * k + 0.137); }   // decorrelated parameter channels
         void main(){
-          vec2 q = gl_PointCoord - 0.5;
+          vec2 q0 = gl_PointCoord - 0.5;
+          float ca = cos(vAng), sa = sin(vAng);
+          vec2 q = mat2(ca, sa, -sa, ca) * q0;                 // +x = nose / direction of travel
+          float s1 = vSeed.x, s2 = vSeed.y;
+          float lod = smoothstep(7.5, 13.0, vPx);              // form resolves only as it looms
           float d;
-          if (vShape < 0.5) {                                  // payload — disc
-            d = length(q);
-          } else if (vShape < 1.5) {                           // rocket body — tilted pill
-            vec2 r = mat2(0.866, -0.5, 0.5, 0.866) * q;        // 30° tilt
-            r.x *= 2.6;
-            d = length(r);
-          } else if (vShape < 2.5) {                           // debris — angular shard
-            vec2 r = mat2(0.92388, -0.38268, 0.38268, 0.92388) * q;
-            d = abs(r.x) * 1.30 + abs(r.y) * 0.62;             // skewed rhombus
-          } else {                                             // unknown — hollow ring
-            d = abs(length(q) - 0.26) * 1.55 + 0.13;
+          if (vShape < 0.5) {                                  // payload — round bus + solar wings
+            float a = mix(0.11, 0.17, f1(s1, 3.7));            // disc body: satellites gleam round at distance
+            d = length(q) - a;
+            float wc = mix(0.18, 0.28, f1(s1, 7.3));           // wing centre
+            float wl = min(mix(0.08, 0.17, f1(s2, 9.7)), 0.46 - wc);
+            float ww = mix(0.06, 0.10, f1(s2, 12.9));          // wing chord
+            d = min(d, sdBox(vec2(abs(q.x) - wc, q.y), vec2(wl, ww)));
+            if (f1(s1, 11.3) > 0.62)                           // some carry a dish
+              d = min(d, length(q - vec2(0.0, mix(0.18, 0.26, f1(s2, 13.1)))) - 0.05);
+          } else if (vShape < 1.5) {                           // rocket body — stage + nozzle bell
+            float L = mix(0.26, 0.36, f1(s1, 4.1));
+            float w = mix(0.075, 0.115, f1(s2, 3.3));
+            d = length(vec2(max(abs(q.x) - L, 0.0), q.y)) - w;
+            float nz = mix(0.05, 0.09, f1(s1, 6.7));
+            d = min(d, length(q - vec2(-L - nz * 0.6, 0.0)) - nz);
+            d = max(d, -sdBox(q - vec2(L * mix(0.1, 0.5, f1(s2, 8.9)), 0.0), vec2(0.014, w + 0.02))); // stage seam
+          } else if (vShape < 2.5) {                           // debris — every shard fractured its own way
+            d = length(q) - mix(0.26, 0.36, f1(s1, 2.9));
+            float a1 = f1(s1, 5.3) * 6.2832, a2 = a1 + 1.7 + f1(s2, 7.1) * 2.2, a3 = a2 + 1.6 + f1(s1, 9.3) * 2.1;
+            d = max(d, dot(q, vec2(cos(a1), sin(a1))) - mix(0.04, 0.20, f1(s2, 4.7)));
+            d = max(d, dot(q, vec2(cos(a2), sin(a2))) - mix(0.05, 0.22, f1(s1, 6.1)));
+            d = max(d, dot(q, vec2(cos(a3), sin(a3))) - mix(0.06, 0.24, f1(s2, 8.3)));
+          } else {                                             // unknown — ring, seeded gauge, some horseshoed
+            float rr = mix(0.19, 0.30, f1(s1, 3.1));
+            d = abs(length(q) - rr) - mix(0.035, 0.075, f1(s2, 4.3));
+            if (f1(s1, 8.7) > 0.55) {
+              float ga = f1(s2, 6.9) * 6.2832, gw = mix(0.35, 0.95, f1(s1, 5.7));
+              float dg = abs(mod(atan(q.y, q.x) - ga + 3.14159, 6.28318) - 3.14159);
+              d = max(d, gw - dg);                             // carve the gap
+            }
           }
-          if (d > 0.55) discard;
+          d = mix(length(q0), d, lod);                         // tiny = plain dot; near = its own machine
+          if (d > 0.55 || d != d) discard;                     // d!=d traps any NaN before it paints the quad
           float edge = mix(0.03, 0.40, vFocus);                // focus 0 → soft glow; focus 1 → filled crisp form
           float core = smoothstep(0.5, edge, d);
           float halo = smoothstep(0.5, 0.12, d) * (0.42 - vFocus*0.3);
           vec3 c = vColor * (0.55 + core*0.62 + vFocus*0.25);  // keep brightness off the white-clip so hue survives
+          // one-light shading from the SDF gradient — only once the sprite is large enough
+          // that 2x2-quad derivatives read smooth (smaller, they quantize into blocks)
+          vec2 g = vec2(dFdx(d), dFdy(d));
+          c *= 1.0 + 0.26 * smoothstep(12.0, 16.0, vPx) * vFocus * clamp(dot(normalize(g + vec2(1e-5)), vec2(-0.55, 0.83)), -1.0, 1.0);
           c = mix(c, vec3(1.0), core * vFocus * 0.18);         // only the crisp near core warms toward white
           gl_FragColor = vec4(c, (core + halo) * vAlpha); }`
     });
@@ -538,12 +586,15 @@
     function worldPos(o, t, out) {
       const beta = BETA0 + t * BETA_SPAN;
       const cb = Math.cos(beta), sb = Math.sin(beta);
-      const yArc = o.R * cb;                       // height along the orbital arc
+      // eccentric orbits breathe: the radius swells and dips along the arc, so HEO
+      // objects visibly dive through the river and climb back out
+      const Rr = o.eccV ? o.R + o.eccV * 26 * Math.sin(beta + o.ep) : o.R;
+      const yArc = Rr * cb;                        // height along the orbital arc
       // cross-track tilt (o.cg/o.sg) fans the arcs around the flight axis so they DON'T
       // converge at the apex — objects rise over the limb across the whole view and pass under.
       let x = -yArc * o.sg;
       let y = EC.y + yArc * o.cg;
-      let z = EC.z + o.R * sb;
+      let z = EC.z + Rr * sb;
       const wb = state.warpBlend;                 // 0 = orbital arcs, 1 = radial wormhole
       if (wb > 0.001) {
         const prox = t, ov = state.over;
@@ -568,26 +619,49 @@
         const band = src ? src.band : (hashUnit(`b${i}`) < PROP.bands.LEO ? 0 : hashUnit(`b${i}`) < PROP.bands.LEO + PROP.bands.MEO ? 1 : 2);
         const B = BAND[band];
         const klass = src ? src.klass : pickClass(i);
+        // identity seeds: keyed to the NORAD id, so every object renders as ITSELF —
+        // same silhouette on every device, every day, forever
+        const nid = src ? (parseInt(src.id, 10) || i) : i;
+        const s1 = rand2(nid, 71), s2 = rand2(nid, 83);
         let baseSize = klass === 0 ? 2.0 : klass === 1 ? 1.9 : klass === 2 ? 1.25 : 1.6;
         baseSize *= band === 2 ? 1.7 : band === 1 ? 1.4 : 0.95;   // GEO & MEO read larger
-        baseSize *= 0.8 + hashUnit(`z${i}`) * 0.6;
+        // radar cross-section class sets the physical size family when known
+        const rcs = src ? src.rcs : "";
+        baseSize *= (rcs === "LARGE" ? 1.32 : rcs === "MEDIUM" ? 1.05 : rcs === "SMALL" ? 0.78 : 0.95)
+          * (0.85 + rand2(nid, 89) * 0.3);
         const o = O[i] || (O[i] = {});
         o.band = band;
-        o.R = B.r0 + (B.r1 - B.r0) * rand2(i, 11);            // orbit radius within the shell
-        const g = (rand2(i, 23) - 0.5) * (band === 0 ? 1.5 : 2.1); // cross-track tilt → spread across the view
+        o.R = B.r0 + (B.r1 - B.r0) * rand2(nid, 11);          // orbit radius within the shell
+        // cross-track plane from the REAL inclination when we have it: sun-sync, Starlink
+        // shells and retrograde birds weave at their own angles through the river
+        let g;
+        if (src && src.inc) {
+          g = ((src.inc - 65) / 65) * (band === 0 ? 1.1 : 1.5) + (rand2(nid, 23) - 0.5) * 0.45;
+          g = Math.max(-2.0, Math.min(2.0, g));
+        } else {
+          g = (rand2(nid, 23) - 0.5) * (band === 0 ? 1.5 : 2.1);
+        }
         o.cg = Math.cos(g); o.sg = Math.sin(g);
-        o.spd = B.speed * (0.82 + rand2(i, 31) * 0.36);
+        // eccentricity breathes the orbit radius — HEO objects visibly dive and climb
+        o.eccV = src ? Math.min(0.5, src.ecc * 1.8) : 0;
+        o.ep = rand2(nid, 103) * 6.2832;
+        o.spd = B.speed * (0.82 + rand2(nid, 31) * 0.36);
         o.phase = rand2(i, 47); o.pt = o.phase % 1;
         o.ta = rand2(i, 53) * 6.2832; o.tr = 7 + Math.pow(rand2(i, 59), 0.7) * 44; // wormhole angle/radius
         o.klass = klass; o.status = src ? src.status : "carried"; o.meta = src; o.baseSize = baseSize;
         o.reentered = !!(src && src.reentered);
         o.anno = src ? src.anno || null : null;
         pShape[i] = klass === 0 ? 0 : klass === 1 ? 1 : klass === 2 ? 2 : 3;  // disc / pill / shard / ring
+        // silhouette seeds + tumble: debris spins hard, unknowns drift, hardware holds attitude
+        const tum = (klass === 2 ? 0.5 + 1.6 * rand2(nid, 97) : klass >= 3 ? 0.25 + 0.7 * rand2(nid, 97) : 0.05 + 0.08 * rand2(nid, 97))
+          * (rand2(nid, 109) < 0.5 ? -1 : 1);
+        pSeed[i * 3] = s1; pSeed[i * 3 + 1] = s2; pSeed[i * 3 + 2] = tum;
         o.country = src ? (src.country || "—") : "—";
         o.launchYear = src && src.launch ? parseInt(src.launch.slice(0, 4)) || 0 : 0;
         o.hasPrev = false;
       }
       pointGeo.attributes.aShape.needsUpdate = true;
+      pointGeo.attributes.aSeed.needsUpdate = true;
       recolor();
     }
     function pickClass(i) { const r = hashUnit(`c${i}`); return r < 0.363 ? 0 : r < 0.46 ? 1 : r < 0.968 ? 2 : r < 0.998 ? 3 : 4; }
@@ -661,6 +735,10 @@
         const t = o.phase - Math.floor(o.phase);
         worldPos(o, t, _v);
         const i3 = i * 3;
+        // last frame's position rides along as an attribute → the shader derives each
+        // object's true direction of travel for nose-first orientation
+        if (o.hasPrev) { pPrev[i3] = o.px; pPrev[i3 + 1] = o.py; pPrev[i3 + 2] = o.pz; }
+        else { pPrev[i3] = _v.x; pPrev[i3 + 1] = _v.y; pPrev[i3 + 2] = _v.z; }
         pPos[i3] = _v.x; pPos[i3 + 1] = _v.y; pPos[i3 + 2] = _v.z;
         const ddx = _v.x - cpx, ddy = _v.y - cpy, ddz = _v.z - cpz;
         const dist = Math.sqrt(ddx * ddx + ddy * ddy + ddz * ddz);
@@ -705,6 +783,7 @@
       pointGeo.attributes.aAlpha.needsUpdate = true;
       pointGeo.attributes.aSize.needsUpdate = true;
       pointGeo.attributes.aFocus.needsUpdate = true;
+      pointGeo.attributes.aPrev.needsUpdate = true;
       if (showLines) { lineGeo.attributes.position.needsUpdate = true; lineGeo.attributes.color.needsUpdate = true; }
     }
     function smooth(a, b, x) { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); }
@@ -882,6 +961,9 @@
         return { id, name: row.OBJECT_NAME || `NORAD ${id}`, type: row.OBJECT_TYPE || "UNKNOWN",
           band: bandFromMM(row.MEAN_MOTION), klass: klassFromType(row.OBJECT_TYPE), status, reentered,
           country: row.COUNTRY_CODE || "—", launch: String(row.LAUNCH_DATE || "").slice(0, 10), decay,
+          // orbital elements that shape each object's identity in the field
+          inc: Number(row.INCLINATION) || 0, ecc: Number(row.ECCENTRICITY) || 0,
+          rcs: row.RCS_SIZE || "", bstar: Math.abs(Number(row.BSTAR)) || 0,
           anno: annoSum ? annoSum.byId.get(id) || null : null };
       });
       // breakdowns of WHAT'S STILL UP THERE (on-orbit); decayed objects are recorded but counted apart
@@ -1202,6 +1284,77 @@
       } catch (e) {}
     }
 
+    // ── inspector vignette: the tapped object's generative 3D self, rendered in a
+    //    scissored corner of the SAME context (no second canvas — grids punish those).
+    //    Same NORAD seeds as the field silhouettes → the shape in the box IS the dot
+    //    you tapped, grown to full form. ──
+    const vig = { active: false, scene: null, camera: null, group: null };
+    function vigColor(klass) { const c = TYPE_COLS[klass] || TYPE_COLS[3]; return new THREE.Color(c[0], c[1], c[2]); }
+    function vigMat(klass, dim) {
+      const col = vigColor(klass);
+      return new THREE.MeshPhongMaterial({ color: col, flatShading: true, shininess: 24,
+        emissive: col.clone().multiplyScalar(dim ? 0.05 : 0.14) });
+    }
+    function buildVigShape(o) {
+      const nid = o.meta ? (parseInt(o.meta.id, 10) || 1) : 1;
+      const R = (salt) => rand2(nid, salt);
+      const g = new THREE.Group();
+      const add = (geom, mat, x = 0, y = 0, z = 0, rx = 0, ry = 0, rz = 0) => {
+        const m = new THREE.Mesh(geom, mat); m.position.set(x, y, z); m.rotation.set(rx, ry, rz); g.add(m); return m;
+      };
+      if (o.klass === 0) {                                   // payload: bus + wings (+ dish)
+        const bw = 0.34 + R(71) * 0.22, bh = 0.30 + R(83) * 0.26, bd = 0.30 + R(89) * 0.2;
+        add(new THREE.BoxGeometry(bw, bh, bd), vigMat(0));
+        const span = 0.55 + R(7) * 0.5, chord = 0.26 + R(9) * 0.22, tilt = (R(13) - 0.5) * 0.5;
+        const wing = new THREE.BoxGeometry(span, chord, 0.02);
+        add(wing, vigMat(0, true),  bw / 2 + span / 2 + 0.04, 0, 0, tilt, 0, 0);
+        add(wing, vigMat(0, true), -bw / 2 - span / 2 - 0.04, 0, 0, -tilt, 0, 0);
+        if (R(11) > 0.62) add(new THREE.SphereGeometry(0.11 + R(15) * 0.06, 8, 6), vigMat(0), 0, bh / 2 + 0.12, 0);
+        if (R(17) > 0.5) add(new THREE.CylinderGeometry(0.012, 0.012, 0.5, 5), vigMat(0, true), 0, -bh / 2 - 0.22, 0);
+      } else if (o.klass === 1) {                            // rocket body: stage + bell
+        const len = 0.9 + R(41) * 0.5, r = 0.14 + R(33) * 0.07;
+        add(new THREE.CylinderGeometry(r, r, len, 12), vigMat(1), 0, 0, 0, 0, 0, Math.PI / 2);
+        add(new THREE.CylinderGeometry(r * 0.45, r * (1.2 + R(67) * 0.5), 0.22 + R(67) * 0.12, 10), vigMat(1, true),
+          -(len / 2 + 0.1), 0, 0, 0, 0, Math.PI / 2);
+        add(new THREE.ConeGeometry(r * 0.98, 0.2 + R(53) * 0.14, 10), vigMat(1), len / 2 + 0.1, 0, 0, 0, 0, -Math.PI / 2);
+      } else if (o.klass === 2) {                            // debris: a faceted shard all its own
+        const geo = new THREE.IcosahedronGeometry(0.46, 0);
+        const pos = geo.getAttribute("position");
+        for (let v = 0; v < pos.count; v++) {
+          const k = 0.62 + rand2(nid, 200 + (v % 12)) * 0.85;   // displace by shared-vertex hash → stays watertight
+          pos.setXYZ(v, pos.getX(v) * k, pos.getY(v) * k, pos.getZ(v) * k);
+        }
+        geo.computeVertexNormals();
+        add(geo, vigMat(2));
+      } else {                                               // unknown: gauged ring (some horseshoed)
+        const rr = 0.34 + R(31) * 0.12, tube = 0.05 + R(43) * 0.05;
+        const arc = R(87) > 0.55 ? Math.PI * (1.25 + R(57) * 0.55) : Math.PI * 2;
+        add(new THREE.TorusGeometry(rr, tube, 6, 18, arc), vigMat(3));
+        if (R(19) > 0.6) add(new THREE.BoxGeometry(0.16, 0.16, 0.16), vigMat(3, true));
+      }
+      return g;
+    }
+    function vigShow(o) {
+      if (!vig.scene) {
+        vig.scene = new THREE.Scene();
+        vig.camera = new THREE.PerspectiveCamera(35, 1, 0.1, 50);
+        vig.camera.position.set(0, 0.25, 3.1); vig.camera.lookAt(0, 0, 0);
+        const sun = new THREE.DirectionalLight(0xffffff, 2.4); sun.position.set(2.2, 3.0, 4.0);
+        vig.scene.add(sun, new THREE.AmbientLight(0x8896c8, 0.55));
+      }
+      vigHide();
+      vig.group = buildVigShape(o);
+      vig.group.rotation.set(0.42, rand2(parseInt(o.meta?.id || 1, 10) || 1, 119) * 6.28, 0);
+      vig.scene.add(vig.group);
+      vig.active = true;
+    }
+    function vigHide() {
+      if (!vig.group) { vig.active = false; return; }
+      vig.scene.remove(vig.group);
+      vig.group.traverse((m) => { if (m.isMesh) { m.geometry.dispose(); m.material.dispose(); } });
+      vig.group = null; vig.active = false;
+    }
+
     // ── click to inspect: nearest projected object to the tap ──
     const _proj = new THREE.Vector3();
     function inspectAt(cx, cy) {
@@ -1214,18 +1367,20 @@
         const d = (sx - cx) * (sx - cx) + (sy - cy) * (sy - cy);
         if (d < bestD) { bestD = d; best = i; }
       }
-      if (best < 0) { $("inspector").classList.remove("visible"); return; }
+      if (best < 0) { $("inspector").classList.remove("visible"); vigHide(); return; }
       const o = O[best], m = o.meta;
       const bandName = BAND[o.band].name;
       $("insp-label").textContent = o.status === "new" ? "Launched this day" : o.status === "decayed" ? "Decay reported" : "Tracked object";
       $("insp-name").textContent = m ? m.name : "Archive object";
       $("insp-meta").textContent = m
         ? `NORAD ${m.id} · ${bandName} · ${m.type}${m.country && m.country !== "—" ? " · " + m.country : ""}${m.launch ? " · ↑" + m.launch : ""}`
+          + `${m.inc ? ` · i ${m.inc.toFixed(1)}°` : ""}${m.ecc > 0.1 ? ` · e ${m.ecc.toFixed(2)}` : ""}${m.rcs ? ` · ${m.rcs.toLowerCase()}` : ""}`
         : `${bandName} · ${["payload", "rocket body", "debris", "unknown", "tba"][pickClass(best)]}`;
       // the observation plane: what the archive learned about THIS object this doc-day
       $("insp-obs").textContent = o.anno ? `◉ observed · ${o.anno.text}` : "";
       $("inspector").classList.add("visible");
-      clearTimeout(inspectAt.timer); inspectAt.timer = setTimeout(() => $("inspector").classList.remove("visible"), 5200);
+      vigShow(o);
+      clearTimeout(inspectAt.timer); inspectAt.timer = setTimeout(() => { $("inspector").classList.remove("visible"); vigHide(); }, 5200);
     }
 
     // ── loop ──
@@ -1270,6 +1425,7 @@
       if (state.attested && state.warp < 0.2) { const pp = (state.time % 6.5) / 6.5; state.pulseY = -95 + pp * 200; state.pulseStr = Math.pow(1 - pp, 1.4); }
       else state.pulseStr = 0;
 
+      pointMat.uniforms.uTime.value = state.time;
       updateField(dt);
 
       // keyboard look (arrows + WASD steer a few degrees)
@@ -1304,8 +1460,23 @@
       state.wasTraveling = traveling;
 
       renderer.render(scene, camera);
+
+      // the tapped object's generative self, slowly turning above the inspector —
+      // one extra scissored draw only while the panel is open
+      if (vig.active && vig.group) {
+        vig.group.rotation.y += dt * (reduced ? 0.22 : 0.7);
+        const r = $("inspector").getBoundingClientRect();
+        const sz = 92, vx = r.left + r.width / 2 - sz / 2, vy = innerHeight - r.top + 6;
+        renderer.autoClear = false;
+        renderer.setScissorTest(true);
+        renderer.setViewport(vx, vy, sz, sz); renderer.setScissor(vx, vy, sz, sz);
+        renderer.render(vig.scene, vig.camera);
+        renderer.setScissorTest(false);
+        renderer.setViewport(0, 0, innerWidth, innerHeight);
+        renderer.autoClear = true;
+      }
     }
-    function resize() { renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5)); renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.fov = innerWidth <= 760 ? 80 : 72; camera.updateProjectionMatrix(); pointMat.uniforms.uPixel.value = renderer.getPixelRatio(); }
+    function resize() { renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5)); renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.fov = innerWidth <= 760 ? 80 : 72; camera.updateProjectionMatrix(); pointMat.uniforms.uPixel.value = renderer.getPixelRatio(); pointMat.uniforms.uAspect.value = innerWidth / innerHeight; }
     addEventListener("resize", resize);
 
     // ── tap-to-rotate 4-sided data prism: each tap is a real 90° quarter-turn forward.
@@ -1327,7 +1498,7 @@
     boot().then(() => {
       try { if (parent !== window) parent.postMessage({ rso: "ready", latest: CONFIG.latest }, "*"); } catch (e) {}
     });
-    window.__RSO_CARD__ = { state, setTarget, recordMeta, isoFor, get TOTAL() { return TOTAL; }, camera, O };
+    window.__RSO_CARD__ = { state, setTarget, recordMeta, isoFor, get TOTAL() { return TOTAL; }, camera, O, pointMat };
   </script>
 </body>
 </html>

@@ -100,9 +100,29 @@ class CardArtifactTest(unittest.TestCase):
 
     def test_per_type_silhouettes(self):
         self.assertIn("aShape", self.html)
-        for marker in ("payload — disc", "rocket body — tilted pill",
-                       "debris — angular shard", "unknown — hollow ring"):
+        for marker in ("payload — round bus + solar wings", "rocket body — stage + nozzle bell",
+                       "debris — every shard fractured its own way", "unknown — ring, seeded gauge"):
             self.assertIn(marker, self.html)
+
+    def test_generative_identity_is_norad_seeded_and_guarded(self):
+        # identity seeds key to the NORAD id → same silhouette everywhere, forever
+        self.assertIn("rand2(nid, 71)", self.html)
+        self.assertIn('pointGeo.setAttribute("aSeed"', self.html)
+        # orientation derives from real motion (previous position attribute)…
+        self.assertIn('pointGeo.setAttribute("aPrev"', self.html)
+        # …with the near-plane guarded and NaNs trapped before they paint the quad
+        self.assertIn("step(0.05, clip.w) * step(0.05, clipP.w)", self.html)
+        self.assertIn("d != d) discard", self.html)
+        # real elements drive placement: inclination weave + eccentric breathing
+        self.assertIn("Number(row.INCLINATION)", self.html)
+        self.assertIn("o.eccV", self.html)
+
+    def test_inspector_vignette_shares_context_and_seeds(self):
+        self.assertIn("buildVigShape", self.html)
+        self.assertIn("setScissorTest(true)", self.html)
+        self.assertNotIn("new THREE.WebGLRenderer({ canvas: ", self.html.replace(
+            'new THREE.WebGLRenderer({ canvas, antialias', ""))  # exactly one renderer/context
+        self.assertIn("geometry.dispose()", self.html)
 
     def test_overdrive_respects_reduced_motion(self):
         self.assertIn("__HOLD_OVER__", self.html)
