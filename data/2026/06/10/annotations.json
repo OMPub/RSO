@@ -1,7 +1,7 @@
 {
   "api_query_paths": [
     "/class/satcat_change/CHANGE_MADE/2026-06-09T00:00:00--2026-06-10T00:00:00/orderby/CHANGE_MADE%20asc/format/json",
-    "/class/decay/MSG_EPOCH/2026-06-09T00:00:00--2026-06-10T00:00:00/orderby/MSG_EPOCH%20asc/format/json"
+    "/class/decay/MSG_EPOCH/2026-06-09T00:00:00--2026-06-10T00:00:00/MSG_TYPE/Historical/orderby/MSG_EPOCH%20asc/format/json"
   ],
   "baseline": false,
   "catalog_changes": [
@@ -311,81 +311,6 @@
   "decay_messages": [
     {
       "COUNTRY": "US",
-      "DECAY_EPOCH": "2026-06-09 3:37:00",
-      "INTLDES": "2022-101AJ",
-      "MSG_EPOCH": "2026-06-09 01:48:00",
-      "MSG_TYPE": "Prediction",
-      "NORAD_CAT_ID": "53559",
-      "OBJECT_ID": "2022-101AJ",
-      "OBJECT_NAME": "STARLINK-4508",
-      "OBJECT_NUMBER": "53559",
-      "PRECEDENCE": "3",
-      "RCS": "0",
-      "RCS_SIZE": "LARGE",
-      "SOURCE": "TIP_msg"
-    },
-    {
-      "COUNTRY": "US",
-      "DECAY_EPOCH": "2026-06-09 3:37:00",
-      "INTLDES": "2022-101AJ",
-      "MSG_EPOCH": "2026-06-09 01:54:00",
-      "MSG_TYPE": "Prediction",
-      "NORAD_CAT_ID": "53559",
-      "OBJECT_ID": "2022-101AJ",
-      "OBJECT_NAME": "STARLINK-4508",
-      "OBJECT_NUMBER": "53559",
-      "PRECEDENCE": "3",
-      "RCS": "0",
-      "RCS_SIZE": "LARGE",
-      "SOURCE": "TIP_msg"
-    },
-    {
-      "COUNTRY": "US",
-      "DECAY_EPOCH": "2026-06-13 4:52:00",
-      "INTLDES": "2021-059B",
-      "MSG_EPOCH": "2026-06-09 04:06:00",
-      "MSG_TYPE": "Prediction",
-      "NORAD_CAT_ID": "48880",
-      "OBJECT_ID": "2021-059B",
-      "OBJECT_NAME": "STARLINK-3004",
-      "OBJECT_NUMBER": "48880",
-      "PRECEDENCE": "3",
-      "RCS": "0",
-      "RCS_SIZE": "LARGE",
-      "SOURCE": "TIP_msg"
-    },
-    {
-      "COUNTRY": "US",
-      "DECAY_EPOCH": "2026-06-09 16:13:00",
-      "INTLDES": "2020-025AQ",
-      "MSG_EPOCH": "2026-06-09 06:13:00",
-      "MSG_TYPE": "Prediction",
-      "NORAD_CAT_ID": "45569",
-      "OBJECT_ID": "2020-025AQ",
-      "OBJECT_NAME": "STARLINK-1366",
-      "OBJECT_NUMBER": "45569",
-      "PRECEDENCE": "3",
-      "RCS": "0",
-      "RCS_SIZE": "LARGE",
-      "SOURCE": "TIP_msg"
-    },
-    {
-      "COUNTRY": "US",
-      "DECAY_EPOCH": "2026-06-09 4:30:00",
-      "INTLDES": "2022-101AJ",
-      "MSG_EPOCH": "2026-06-09 09:06:00",
-      "MSG_TYPE": "Prediction",
-      "NORAD_CAT_ID": "53559",
-      "OBJECT_ID": "2022-101AJ",
-      "OBJECT_NAME": "STARLINK-4508",
-      "OBJECT_NUMBER": "53559",
-      "PRECEDENCE": "3",
-      "RCS": "0",
-      "RCS_SIZE": "LARGE",
-      "SOURCE": "TIP_msg"
-    },
-    {
-      "COUNTRY": "US",
       "DECAY_EPOCH": "2026-06-09 0:00:00",
       "INTLDES": "2022-101AJ",
       "MSG_EPOCH": "2026-06-09 09:21:00",
@@ -398,66 +323,6 @@
       "RCS": "0",
       "RCS_SIZE": "LARGE",
       "SOURCE": "decay_msg"
-    },
-    {
-      "COUNTRY": "US",
-      "DECAY_EPOCH": "2026-06-09 16:14:00",
-      "INTLDES": "2020-025AQ",
-      "MSG_EPOCH": "2026-06-09 10:27:00",
-      "MSG_TYPE": "Prediction",
-      "NORAD_CAT_ID": "45569",
-      "OBJECT_ID": "2020-025AQ",
-      "OBJECT_NAME": "STARLINK-1366",
-      "OBJECT_NUMBER": "45569",
-      "PRECEDENCE": "3",
-      "RCS": "0",
-      "RCS_SIZE": "LARGE",
-      "SOURCE": "TIP_msg"
-    },
-    {
-      "COUNTRY": "US",
-      "DECAY_EPOCH": "2026-06-10 9:13:00",
-      "INTLDES": "2025-052T",
-      "MSG_EPOCH": "2026-06-09 10:53:00",
-      "MSG_TYPE": "Prediction",
-      "NORAD_CAT_ID": "63227",
-      "OBJECT_ID": "2025-052T",
-      "OBJECT_NAME": "CLARITY-1",
-      "OBJECT_NUMBER": "63227",
-      "PRECEDENCE": "3",
-      "RCS": "0",
-      "RCS_SIZE": "LARGE",
-      "SOURCE": "TIP_msg"
-    },
-    {
-      "COUNTRY": "US",
-      "DECAY_EPOCH": "2026-06-09 16:16:00",
-      "INTLDES": "2020-025AQ",
-      "MSG_EPOCH": "2026-06-09 14:41:00",
-      "MSG_TYPE": "Prediction",
-      "NORAD_CAT_ID": "45569",
-      "OBJECT_ID": "2020-025AQ",
-      "OBJECT_NAME": "STARLINK-1366",
-      "OBJECT_NUMBER": "45569",
-      "PRECEDENCE": "3",
-      "RCS": "0",
-      "RCS_SIZE": "LARGE",
-      "SOURCE": "TIP_msg"
-    },
-    {
-      "COUNTRY": "US",
-      "DECAY_EPOCH": "2026-06-13 14:43:00",
-      "INTLDES": "2021-012BE",
-      "MSG_EPOCH": "2026-06-09 15:11:00",
-      "MSG_TYPE": "Prediction",
-      "NORAD_CAT_ID": "47672",
-      "OBJECT_ID": "2021-012BE",
-      "OBJECT_NAME": "STARLINK-2065",
-      "OBJECT_NUMBER": "47672",
-      "PRECEDENCE": "3",
-      "RCS": "0",
-      "RCS_SIZE": "LARGE",
-      "SOURCE": "TIP_msg"
     },
     {
       "COUNTRY": "PRC",
@@ -528581,21 +528446,6 @@
     },
     {
       "COUNTRY": "US",
-      "DECAY_EPOCH": "2026-06-09 16:28:00",
-      "INTLDES": "2020-025AQ",
-      "MSG_EPOCH": "2026-06-09 19:40:00",
-      "MSG_TYPE": "Prediction",
-      "NORAD_CAT_ID": "45569",
-      "OBJECT_ID": "2020-025AQ",
-      "OBJECT_NAME": "STARLINK-1366",
-      "OBJECT_NUMBER": "45569",
-      "PRECEDENCE": "3",
-      "RCS": "0",
-      "RCS_SIZE": "LARGE",
-      "SOURCE": "TIP_msg"
-    },
-    {
-      "COUNTRY": "US",
       "DECAY_EPOCH": "2026-06-09 0:00:00",
       "INTLDES": "2020-025AQ",
       "MSG_EPOCH": "2026-06-09 19:42:00",
@@ -528608,21 +528458,6 @@
       "RCS": "0",
       "RCS_SIZE": "LARGE",
       "SOURCE": "decay_msg"
-    },
-    {
-      "COUNTRY": "US",
-      "DECAY_EPOCH": "2026-06-10 7:44:00",
-      "INTLDES": "2025-052T",
-      "MSG_EPOCH": "2026-06-09 20:08:00",
-      "MSG_TYPE": "Prediction",
-      "NORAD_CAT_ID": "63227",
-      "OBJECT_ID": "2025-052T",
-      "OBJECT_NAME": "CLARITY-1",
-      "OBJECT_NUMBER": "63227",
-      "PRECEDENCE": "3",
-      "RCS": "0",
-      "RCS_SIZE": "LARGE",
-      "SOURCE": "TIP_msg"
     }
   ],
   "fields": [
@@ -528636,7 +528471,7 @@
     "SITE",
     "TLE_LINE0"
   ],
-  "observed_at_utc": "2026-06-10T03:01:23Z",
+  "observed_at_utc": "2026-06-10T03:10:03Z",
   "satcat_changes": [
     {
       "CHANGE_MADE": "2026-06-09 19:31:23",
