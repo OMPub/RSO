@@ -109,7 +109,7 @@ class CardArtifactTest(unittest.TestCase):
         # the famous constellations get their real silhouettes, in field and vignette alike
         self.assertIn("function payloadShape(", self.html)
         for marker in ('n.startsWith("STARLINK")', 'n.startsWith("ONEWEB")',
-                       'n.includes("IRIDIUM")', "STARLINK — flat slab + one broad sail",
+                       'n.includes("IRIDIUM")', "STARLINK — flat bus, one LONG array off one end",
                        "ONEWEB — box-wing", "IRIDIUM — two wings + the big canted antenna",
                        "GEO comsat — long symmetric wings + dish"):
             self.assertIn(marker, self.html)
@@ -120,14 +120,31 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn('rcs === "LARGE" ? 1.55 : rcs === "MEDIUM" ? 1.0 : rcs === "SMALL" ? 0.62', self.html)
         self.assertIn("0.92 + rand2(nid, 89) * 0.16", self.html)
         self.assertIn('rcs === "LARGE" ? 1.28', self.html)   # vignette presence
-        self.assertIn("` · rcs ${m.rcs.toLowerCase()}`", self.html)
+        self.assertIn('tip(m.rcs.toLowerCase(), "radar cross-section class")', self.html)
 
-    def test_hourly_lap_and_persistent_inspector(self):
-        # at rest, every object laps in exactly one hour — spot it, see it again
-        self.assertIn("const LAP_SECONDS = 3600", self.html)
-        self.assertIn("restRate + warpFlow * o.wj", self.html)
+    def test_band_clocks_and_persistent_selection(self):
+        # each band returns on its own clean clock: LEO 5 min, MEO 12, GEO 36
+        self.assertIn("const LAP_BY_BAND = [300, 720, 2160]", self.html)
+        self.assertIn("o.lapRate + warpFlow * o.wj", self.html)
         # the inspector stays up until another tap or blank space — no auto-hide timer
         self.assertNotIn("5200", self.html)
+        # selection: halo rides the chosen object; hyperspace clears it
+        self.assertIn("RingGeometry", self.html)
+        self.assertIn("state.selIdx = -1;                                                                // hyperspace clears the selection", self.html)
+
+    def test_full_population_flies(self):
+        # desktop flies EVERY on-orbit object — buffers at the ceiling, draw range live
+        self.assertIn("const MAXF = mobile ? 9000 : 36000", self.html)
+        self.assertIn("pointGeo.setDrawRange(0, FIELD_N)", self.html)
+        self.assertIn("sampleByBand(objs, MAXF, date)", self.html)
+
+    def test_tier2_solids_and_tooltips(self):
+        # nearest objects fly as real lit solids; sprites dim to an aura behind them
+        self.assertIn("const MESH_POOL", self.html)
+        self.assertIn("updateMeshPool(meshCand)", self.html)
+        self.assertIn("pAlpha[s.idx] *= 0.22", self.html)
+        # inspector values are bare, each explained by a hover/tap tooltip
+        self.assertIn('`<span title="${why}">', self.html)
 
     def test_generative_identity_is_norad_seeded_and_guarded(self):
         # identity seeds key to the NORAD id → same silhouette everywhere, forever
