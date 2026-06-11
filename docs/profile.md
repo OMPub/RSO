@@ -1,7 +1,7 @@
 # RSO Doc Chain Profile
 
 **Profile URI (permanent protocol id):** `https://om.pub/rso/doc-chain`
-**Profile revision:** 2 — 2026-06-10
+**Profile revision:** 3 — 2026-06-11
 **Canonical source:** this file (`docs/profile.md`) in the OMPub/RSO repository;
 the page served at the profile URI mirrors the current revision.
 
@@ -105,12 +105,17 @@ registry row, one constants entry, and one effective date.
   custody-verified witnesses (`"verified"`) from signature-only agreement.
   Operators that also publish bundles get the stronger tier automatically.
 - **Observation plane.** Each day each node also publishes `annotations.json`
-  (schema `rso-annotations-v1`): per-object changes of the excluded fields
-  between consecutive captures, plus the window's `satcat_change` rows and
+  (schema `rso-annotations-v2`): per-object changes of the excluded fields
+  between consecutive captures, plus the window's `satcat_change` rows,
   recent-reentry `decay` messages (`MSG_TYPE=Historical`, `DECAY_EPOCH` within
-  window −30d…+7d), each with `observed_at_utc`. Annotations are per-node,
-  eventually consistent, fingerprinted by `manifest.annotations_sha256`, and
-  chain-committed through the node's locator — never part of contentHash.
+  window −30d…+7d), and `tip` reentry predictions (Tracking and Impact
+  Prediction messages, windowed on `MSG_EPOCH` with `DECAY_EPOCH` within
+  window −30d…+60d — the forecast that precedes the `decay` postmortem), each
+  with `observed_at_utc`. Annotations are per-node, eventually consistent,
+  fingerprinted by `manifest.annotations_sha256`, and chain-committed through
+  the node's locator — never part of contentHash. Days archived before r3
+  keep their `rso-annotations-v1` files (no `tip_messages` section); the
+  fingerprint, not the schema name, is what verification checks.
 
 ## 6. Verification
 
@@ -132,4 +137,5 @@ claims in section 3 are under permanent test.
 
 **Revisions.** r1 (2026-06-10): initial profile. r2 (2026-06-10): hash-only
 attestations from TDH-backed, authorization-verified nodes are sponsored and
-indexed with the `hash_only` publication tier.
+indexed with the `hash_only` publication tier. r3 (2026-06-11): annotations
+schema `rso-annotations-v2` adds `tip_messages` (reentry predictions).

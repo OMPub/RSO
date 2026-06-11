@@ -65,12 +65,17 @@ CONTENT_EXCLUDED_FIELDS = (
 CONTENT_PROJECTIONS = {
     "rso-core-v1": CONTENT_EXCLUDED_FIELDS,
 }
-ANNOTATIONS_SCHEMA = "rso-annotations-v1"
+# v2 added tip_messages (reentry predictions); v1 files on days archived
+# before profile r3 remain valid history.
+ANNOTATIONS_SCHEMA = "rso-annotations-v2"
 # Decay feed recency bounds: reentries up to this many days before the window
 # (covers stamping lag, measured median 1 day / 0-3 typical) and slightly after
 # it (messages for reentries inside the window dated by a later orbit fix).
 DECAY_EPOCH_LOOKBACK_DAYS = 30
 DECAY_EPOCH_LOOKAHEAD_DAYS = 7
+# TIP predictions look farther ahead: a forecast's DECAY_EPOCH may sit days
+# past the message window, unlike a Historical decay's settled epoch.
+TIP_DECAY_EPOCH_LOOKAHEAD_DAYS = 60
 
 SPACETRACK_BASE = "https://www.space-track.org"
 SPACETRACK_LOGIN = f"{SPACETRACK_BASE}/ajaxauth/login"
@@ -664,7 +669,9 @@ def query_annotation_observations(client, previous_cutoff, current_cutoff):
 
     satcat_change (windowed on CHANGE_MADE) records catalog directory edits as
     previous->current transitions; decay (windowed on MSG_EPOCH) records decay
-    messages. Both catch knowledge that never reaches the gp window capture:
+    messages; tip (windowed on MSG_EPOCH) records Tracking and Impact
+    Prediction messages -- the forecast channel for the reentries the decay
+    feed later confirms. All catch knowledge that never reaches the gp capture:
     a decayed object publishes no further elsets, so a DECAY_DATE stamped onto
     an already-captured row would otherwise stay invisible (measured: the gp
     capture alone saw 2 of 118 decay stamps over 50 days). These rows are
@@ -702,7 +709,25 @@ def query_annotation_observations(client, previous_cutoff, current_cutoff):
         ],
     )
     decay_rows = validate_annotation_rows(client.query(decay_path), context="decay response")
-    return satcat_rows, decay_rows, [satcat_path, decay_path]
+    # TIP messages carry the predicted reentry epoch, window, and ground track
+    # for objects in terminal decay, revised repeatedly over the final days.
+    # Same flood guard as the decay feed, but with a longer look-ahead: a
+    # TIP's DECAY_EPOCH is a forecast that may sit days past the message
+    # window, while a bulk reissue of old predictions stays excluded.
+    tip_epoch_ceiling = (
+        datetime.strptime(current_cutoff[:10], "%Y-%m-%d")
+        + timedelta(days=TIP_DECAY_EPOCH_LOOKAHEAD_DAYS)
+    ).strftime("%Y-%m-%d")
+    tip_path = build_query_path(
+        "tip",
+        [
+            ("MSG_EPOCH", window),
+            ("DECAY_EPOCH", f"{decay_epoch_floor}--{tip_epoch_ceiling}"),
+            ("orderby", "MSG_EPOCH asc"),
+        ],
+    )
+    tip_rows = validate_annotation_rows(client.query(tip_path), context="tip response")
+    return satcat_rows, decay_rows, tip_rows, [satcat_path, decay_path, tip_path]
 
 
 def build_annotations(
@@ -715,6 +740,7 @@ def build_annotations(
     window_end_utc=None,
     satcat_changes=None,
     decay_messages=None,
+    tip_messages=None,
     query_paths=None,
     baseline=False,
 ):
@@ -722,8 +748,8 @@ def build_annotations(
 
     Records, with the time of recording, everything the node learned about the
     mutable object-directory fields: the per-object changes visible between the
-    prior and current raw catalogs, plus Space-Track's own satcat_change/decay
-    feeds for the window. The consensus core never includes these fields, so
+    prior and current raw catalogs, plus Space-Track's own
+    satcat_change/decay/tip feeds for the window. The consensus core never includes these fields, so
     two nodes may legitimately hold different annotations for the same day.
     """
     changes = []
@@ -762,6 +788,7 @@ def build_annotations(
         "catalog_changes": changes,
         "satcat_changes": satcat_changes if satcat_changes is not None else [],
         "decay_messages": decay_messages if decay_messages is not None else [],
+        "tip_messages": tip_messages if tip_messages is not None else [],
     }
     if window_start_utc is not None:
         annotations["window_start_utc"] = window_start_utc
@@ -1449,7 +1476,7 @@ def process_daily(args, client):
         range_size=args.range_size,
     )
     observed_at_utc = utc_stamp()
-    satcat_rows, decay_rows, annotation_paths = query_annotation_observations(
+    satcat_rows, decay_rows, tip_rows, annotation_paths = query_annotation_observations(
         client,
         normalize_utc_for_filter(delta["window_start_utc"]),
         normalize_utc_for_filter(delta["window_end_utc"]),
@@ -1463,6 +1490,7 @@ def process_daily(args, client):
         window_end_utc=delta["window_end_utc"],
         satcat_changes=satcat_rows,
         decay_messages=decay_rows,
+        tip_messages=tip_rows,
         query_paths=annotation_paths,
     )
     audit = None
@@ -1555,7 +1583,7 @@ def process_roll_forward(args, client):
             range_size=args.range_size,
         )
         observed_at_utc = utc_stamp()
-        satcat_rows, decay_rows, annotation_paths = query_annotation_observations(
+        satcat_rows, decay_rows, tip_rows, annotation_paths = query_annotation_observations(
             client,
             normalize_utc_for_filter(delta["window_start_utc"]),
             normalize_utc_for_filter(delta["window_end_utc"]),
@@ -1569,6 +1597,7 @@ def process_roll_forward(args, client):
             window_end_utc=delta["window_end_utc"],
             satcat_changes=satcat_rows,
             decay_messages=decay_rows,
+            tip_messages=tip_rows,
             query_paths=annotation_paths,
         )
         manifest = archive_snapshot(

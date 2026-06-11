@@ -72,6 +72,12 @@ mutable fields, with the time of recording:
 - `decay_messages`: the `decay` class for the window (windowed on
   `MSG_EPOCH`). Reentries reach the archive the next day even though decayed
   objects publish no elsets.
+- `tip_messages`: the `tip` class for the window (windowed on `MSG_EPOCH`) --
+  Tracking and Impact Prediction messages: predicted reentry time, window,
+  and ground track for objects in terminal decay, revised as the prediction
+  tightens. The forecast channel for the reentries `decay_messages` later
+  confirms, so one reentry leaves a full arc: prediction, event, directory
+  stamp -- each with its own observation time.
 
 Annotations are per-node and eventually consistent -- two honest nodes may
 hold different observations for the same day. They are signed into each node's

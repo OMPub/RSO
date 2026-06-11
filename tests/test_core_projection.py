@@ -149,7 +149,7 @@ class AnnotationsTest(unittest.TestCase):
             window_end_utc="2026-06-08T00:00:00Z",
         )
 
-        self.assertEqual(annotations["schema"], "rso-annotations-v1")
+        self.assertEqual(annotations["schema"], "rso-annotations-v2")
         self.assertEqual(annotations["date"], "2026-06-08")
         self.assertEqual(annotations["observed_at_utc"], "2026-06-08T01:00:00Z")
         self.assertEqual(annotations["fields"], list(snapshot.CONTENT_EXCLUDED_FIELDS))
@@ -219,10 +219,22 @@ class AnnotationsTest(unittest.TestCase):
         )
         self.assertTrue(annotations["baseline"])
         self.assertEqual(annotations["catalog_changes"], [])
+        self.assertEqual(annotations["tip_messages"], [])
 
-    def test_satcat_and_decay_sections_pass_through(self):
+    def test_satcat_decay_and_tip_sections_pass_through(self):
         satcat = [{"NORAD_CAT_ID": "69179", "PREVIOUS_DECAY": None, "CURRENT_DECAY": "2026-06-07"}]
         decay = [{"NORAD_CAT_ID": "69179", "MSG_EPOCH": "2026-06-07 03:14:00", "MSG_TYPE": "Historical"}]
+        tip = [
+            {
+                "NORAD_CAT_ID": "53559",
+                "MSG_EPOCH": "2026-06-09 01:48:00",
+                "DECAY_EPOCH": "2026-06-09 03:37:00",
+                "WINDOW": "50",
+                "LAT": "-29.4",
+                "LON": "11.9",
+                "HIGH_INTEREST": "N",
+            }
+        ]
         annotations = snapshot.build_annotations(
             "2026-06-08",
             [gp_record()],
@@ -230,11 +242,13 @@ class AnnotationsTest(unittest.TestCase):
             observed_at_utc="2026-06-08T01:00:00Z",
             satcat_changes=satcat,
             decay_messages=decay,
-            query_paths=["/class/satcat_change/...", "/class/decay/..."],
+            tip_messages=tip,
+            query_paths=["/class/satcat_change/...", "/class/decay/...", "/class/tip/..."],
         )
         self.assertEqual(annotations["satcat_changes"], satcat)
         self.assertEqual(annotations["decay_messages"], decay)
-        self.assertEqual(len(annotations["api_query_paths"]), 2)
+        self.assertEqual(annotations["tip_messages"], tip)
+        self.assertEqual(len(annotations["api_query_paths"]), 3)
 
     def test_decay_feed_queries_historical_messages_only(self):
         captured = []
@@ -251,6 +265,25 @@ class AnnotationsTest(unittest.TestCase):
         self.assertEqual(len(decay_paths), 1)
         self.assertIn("/MSG_TYPE/Historical/", decay_paths[0])
         self.assertIn("/DECAY_EPOCH/2026-05-10--2026-06-17/", decay_paths[0])
+
+    def test_tip_feed_is_windowed_and_epoch_bounded(self):
+        captured = []
+
+        class Client:
+            def query(self, path):
+                captured.append(path)
+                return []
+
+        satcat_rows, decay_rows, tip_rows, paths = snapshot.query_annotation_observations(
+            Client(), "2026-06-09T00:00:00", "2026-06-10T00:00:00"
+        )
+        tip_paths = [p for p in captured if "/class/tip/" in p]
+        self.assertEqual(len(tip_paths), 1)
+        self.assertIn("/MSG_EPOCH/2026-06-09T00:00:00--2026-06-10T00:00:00/", tip_paths[0])
+        # same flood floor as decay, 60-day forecast ceiling
+        self.assertIn("/DECAY_EPOCH/2026-05-10--2026-08-09/", tip_paths[0])
+        self.assertEqual((satcat_rows, decay_rows, tip_rows), ([], [], []))
+        self.assertEqual(paths, captured)
 
     def test_validate_annotation_rows_rejects_non_string_values(self):
         with self.assertRaises(snapshot.SnapshotError):
