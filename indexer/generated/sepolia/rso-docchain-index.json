@@ -74,6 +74,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI3M2E0MjNjOTlkYTFlNDQzODkxMDBhNjg1MGZmZGFlYjZlYTViNmU2NjA5ZjM5ZTgzNmZkZjBhNzVmNDZkMjBiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yMC9yc28tYXJjaGl2ZS0yMDI2LTA0LTIwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -106,6 +107,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI3M2E0MjNjOTlkYTFlNDQzODkxMDBhNjg1MGZmZGFlYjZlYTViNmU2NjA5ZjM5ZTgzNmZkZjBhNzVmNDZkMjBiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yMC9yc28tYXJjaGl2ZS0yMDI2LTA0LTIwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -202,6 +204,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjNjBiM2FmNDJjNzQyYzQyNWFlYTY5OTVkYzU5OTJkNmY1YmU0MTY1NzI2YjhlYTkwMzQzMTY0ZmM5NmZhMmU5IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yMS9yc28tYXJjaGl2ZS0yMDI2LTA0LTIxLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -234,6 +237,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjNjBiM2FmNDJjNzQyYzQyNWFlYTY5OTVkYzU5OTJkNmY1YmU0MTY1NzI2YjhlYTkwMzQzMTY0ZmM5NmZhMmU5IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yMS9yc28tYXJjaGl2ZS0yMDI2LTA0LTIxLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -330,6 +334,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIwNDI4MDVmZmMxZjk2OGQ4ZjI1YjU0ZDkzMzhjODgyNDA0YTI2YTU1NDEzYzUyN2FiNGNlMDMzNGI4MzkyZTQ3IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yMi9yc28tYXJjaGl2ZS0yMDI2LTA0LTIyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -362,6 +367,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIwNDI4MDVmZmMxZjk2OGQ4ZjI1YjU0ZDkzMzhjODgyNDA0YTI2YTU1NDEzYzUyN2FiNGNlMDMzNGI4MzkyZTQ3IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yMi9yc28tYXJjaGl2ZS0yMDI2LTA0LTIyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -458,6 +464,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJlY2E2NWMxNjAyMDMzYTVkMTA4YTViY2IyZTYxYWNiOTc5MWI5M2ZiYWI3MTFkOGVjZTU1OGQ5ZGJhNjZlNWUwIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yMy9yc28tYXJjaGl2ZS0yMDI2LTA0LTIzLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -490,6 +497,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJlY2E2NWMxNjAyMDMzYTVkMTA4YTViY2IyZTYxYWNiOTc5MWI5M2ZiYWI3MTFkOGVjZTU1OGQ5ZGJhNjZlNWUwIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yMy9yc28tYXJjaGl2ZS0yMDI2LTA0LTIzLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -586,6 +594,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJhNmZlY2MxOTYwZWIzMmM5NzQyZDJjMDFmZTllOTliMjg3NmIzYmU5NzEzZDRhOGNmYTNlMjE5ZDZjM2QyOWRhIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yNC9yc28tYXJjaGl2ZS0yMDI2LTA0LTI0LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -618,6 +627,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJhNmZlY2MxOTYwZWIzMmM5NzQyZDJjMDFmZTllOTliMjg3NmIzYmU5NzEzZDRhOGNmYTNlMjE5ZDZjM2QyOWRhIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yNC9yc28tYXJjaGl2ZS0yMDI2LTA0LTI0LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -714,6 +724,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI5ODQ0YzU3NjZiZDdiNTFmYjg0MThkZDljNDU5ZDlmZDI4YTc3NWE2NjVkZDEzOTdjMGU5Y2FjN2UwNWMxMzhjIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yNS9yc28tYXJjaGl2ZS0yMDI2LTA0LTI1LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -746,6 +757,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI5ODQ0YzU3NjZiZDdiNTFmYjg0MThkZDljNDU5ZDlmZDI4YTc3NWE2NjVkZDEzOTdjMGU5Y2FjN2UwNWMxMzhjIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yNS9yc28tYXJjaGl2ZS0yMDI2LTA0LTI1LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -842,6 +854,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJiYzk4NjJlOWFhNWI1MGRlZDEyMzFhNDZjNzU1NWQ2ZTA3NzIxYzgwZjNlMmE0N2NhNzhmZGIxMGRlZGNjMjkyIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yNi9yc28tYXJjaGl2ZS0yMDI2LTA0LTI2LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -874,6 +887,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJiYzk4NjJlOWFhNWI1MGRlZDEyMzFhNDZjNzU1NWQ2ZTA3NzIxYzgwZjNlMmE0N2NhNzhmZGIxMGRlZGNjMjkyIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yNi9yc28tYXJjaGl2ZS0yMDI2LTA0LTI2LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -970,6 +984,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJmMWE5YzlmYjkwMjdmMzhhMWNmZDgzZmFjMjViMGJiZDlmNmNkMjRlMDYyYzhjNDQxMzM0NDc3MTQ1YWNmNzY3IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yNy9yc28tYXJjaGl2ZS0yMDI2LTA0LTI3LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -1002,6 +1017,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJmMWE5YzlmYjkwMjdmMzhhMWNmZDgzZmFjMjViMGJiZDlmNmNkMjRlMDYyYzhjNDQxMzM0NDc3MTQ1YWNmNzY3IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yNy9yc28tYXJjaGl2ZS0yMDI2LTA0LTI3LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -1098,6 +1114,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI1MjA2OTBkZmQ0YzQ0YzUxNzRjNDg1YWY3MzgzMmE0NDk3ZTQwMjU1ZWE4Njk4MWRhOWNmNDQzNWQzOTlhMTJiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yOC9yc28tYXJjaGl2ZS0yMDI2LTA0LTI4LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -1130,6 +1147,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI1MjA2OTBkZmQ0YzQ0YzUxNzRjNDg1YWY3MzgzMmE0NDk3ZTQwMjU1ZWE4Njk4MWRhOWNmNDQzNWQzOTlhMTJiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yOC9yc28tYXJjaGl2ZS0yMDI2LTA0LTI4LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -1226,6 +1244,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIyYWQ3M2I5NjI3ZTc5YzdjZjg0NmQzYWEwYmZhNDE2ZWQyYWEyMjZkZGZhMzg3ZWVmN2RmNGU3MmE3YjRhNWEzIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yOS9yc28tYXJjaGl2ZS0yMDI2LTA0LTI5LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -1258,6 +1277,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIyYWQ3M2I5NjI3ZTc5YzdjZjg0NmQzYWEwYmZhNDE2ZWQyYWEyMjZkZGZhMzg3ZWVmN2RmNGU3MmE3YjRhNWEzIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yOS9yc28tYXJjaGl2ZS0yMDI2LTA0LTI5LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -1354,6 +1374,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI1MWVlZGJlZWNhMTlhZmRlNGUwZWQxOWIwNTU0YTQ4NjkzN2M4ZTNkZDRkOTQyM2JhZmQ1MjVjNWZkNzIxNTIwIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0zMC9yc28tYXJjaGl2ZS0yMDI2LTA0LTMwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -1386,6 +1407,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI1MWVlZGJlZWNhMTlhZmRlNGUwZWQxOWIwNTU0YTQ4NjkzN2M4ZTNkZDRkOTQyM2JhZmQ1MjVjNWZkNzIxNTIwIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0zMC9yc28tYXJjaGl2ZS0yMDI2LTA0LTMwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -1482,6 +1504,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI2MzBmMDRlZGFjNjljNDZjZGY0OGZjMDVkNDM0NGM1OWY5YWY2YzY2ODhiMzViZjQyMDcwNTczMzRkNzJiYmRiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wMS9yc28tYXJjaGl2ZS0yMDI2LTA1LTAxLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -1514,6 +1537,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI2MzBmMDRlZGFjNjljNDZjZGY0OGZjMDVkNDM0NGM1OWY5YWY2YzY2ODhiMzViZjQyMDcwNTczMzRkNzJiYmRiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wMS9yc28tYXJjaGl2ZS0yMDI2LTA1LTAxLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -1610,6 +1634,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjNDViZmY2ZTQwMzAxOWQ1NWVlOWU0YWRmOWRlOGE2NGQ2MmNlNmVkNTFlY2VkMTE5NDE1NWVhMTkzZDBkNTUyIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wMi9yc28tYXJjaGl2ZS0yMDI2LTA1LTAyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -1642,6 +1667,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjNDViZmY2ZTQwMzAxOWQ1NWVlOWU0YWRmOWRlOGE2NGQ2MmNlNmVkNTFlY2VkMTE5NDE1NWVhMTkzZDBkNTUyIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wMi9yc28tYXJjaGl2ZS0yMDI2LTA1LTAyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -1738,6 +1764,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJhZDUwYWU5NjcxMDJjNTBjZWY4ZDNlOTcxMTI4YzE3ZWZkMjQ4YmJlZTY0MzE1N2RjZGYxMWVmODE2ZjhkY2I5IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wMy9yc28tYXJjaGl2ZS0yMDI2LTA1LTAzLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -1770,6 +1797,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJhZDUwYWU5NjcxMDJjNTBjZWY4ZDNlOTcxMTI4YzE3ZWZkMjQ4YmJlZTY0MzE1N2RjZGYxMWVmODE2ZjhkY2I5IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wMy9yc28tYXJjaGl2ZS0yMDI2LTA1LTAzLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -1866,6 +1894,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjY2VkZmIzNTFjMDU2YTY0N2I1ZjFhM2MzZjU1ZTY5YzgyZWU4MmYxMTRjMDA1ZjQ1NjZhYjk2Mjk5NGFhNzlmIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wNC9yc28tYXJjaGl2ZS0yMDI2LTA1LTA0LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -1898,6 +1927,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjY2VkZmIzNTFjMDU2YTY0N2I1ZjFhM2MzZjU1ZTY5YzgyZWU4MmYxMTRjMDA1ZjQ1NjZhYjk2Mjk5NGFhNzlmIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wNC9yc28tYXJjaGl2ZS0yMDI2LTA1LTA0LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -1994,6 +2024,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI5OTM0ZjQ4MGQzMjgzNDAyZDRjZWI3MjZiYzcyNjc3NzkwYjYxZTQwYzZkM2JkMTZmOTRlNjI3NGFmNjI0MTQ2IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wNS9yc28tYXJjaGl2ZS0yMDI2LTA1LTA1LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -2026,6 +2057,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI5OTM0ZjQ4MGQzMjgzNDAyZDRjZWI3MjZiYzcyNjc3NzkwYjYxZTQwYzZkM2JkMTZmOTRlNjI3NGFmNjI0MTQ2IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wNS9yc28tYXJjaGl2ZS0yMDI2LTA1LTA1LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -2122,6 +2154,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjNjQ3NjY2ZGIwMTk1MmEzZmNiNTcxZGVhMGE2ODUzMjU0MDhmYWExMjY3MzM2NTY4MmExYjRiZTZlODY5OTY1IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wNi9yc28tYXJjaGl2ZS0yMDI2LTA1LTA2LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -2154,6 +2187,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjNjQ3NjY2ZGIwMTk1MmEzZmNiNTcxZGVhMGE2ODUzMjU0MDhmYWExMjY3MzM2NTY4MmExYjRiZTZlODY5OTY1IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wNi9yc28tYXJjaGl2ZS0yMDI2LTA1LTA2LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -2250,6 +2284,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIxNzcyMGY5Y2ViZGYxZGViYTQ2OWNlYjIxZDUxNjlmZGNmMDE2ZDIwZDE3M2M0NjRiODdiOWIxOWU1NmE4MTJmIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wNy9yc28tYXJjaGl2ZS0yMDI2LTA1LTA3LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -2282,6 +2317,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIxNzcyMGY5Y2ViZGYxZGViYTQ2OWNlYjIxZDUxNjlmZGNmMDE2ZDIwZDE3M2M0NjRiODdiOWIxOWU1NmE4MTJmIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wNy9yc28tYXJjaGl2ZS0yMDI2LTA1LTA3LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -2378,6 +2414,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI0ODBhYzcyMDE2NWJmMWM4N2VkYmEzOGQxNjkzYmZhOWZlYTNmN2RiZDdhZDNiNmU2ZjUzOWI2NWE3NmFkNDE0IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wOC9yc28tYXJjaGl2ZS0yMDI2LTA1LTA4LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -2410,6 +2447,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI0ODBhYzcyMDE2NWJmMWM4N2VkYmEzOGQxNjkzYmZhOWZlYTNmN2RiZDdhZDNiNmU2ZjUzOWI2NWE3NmFkNDE0IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wOC9yc28tYXJjaGl2ZS0yMDI2LTA1LTA4LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -2506,6 +2544,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI2NDU2OTg2ZWE5MGRiOWM5MTNlNjk2ZWM4NzFjMmM3OGY3NWMxMzUyY2FiOWMwMzMwMDI4YmNlMDJiZjZmYWRjIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wOS9yc28tYXJjaGl2ZS0yMDI2LTA1LTA5LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -2538,6 +2577,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI2NDU2OTg2ZWE5MGRiOWM5MTNlNjk2ZWM4NzFjMmM3OGY3NWMxMzUyY2FiOWMwMzMwMDI4YmNlMDJiZjZmYWRjIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wOS9yc28tYXJjaGl2ZS0yMDI2LTA1LTA5LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -2634,6 +2674,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjNGZjY2U3NjBkYmEyN2U5YjQ5MTk2ZDE0ZDEwYTgzNjVhNDIyMjdhNzk1NmFjOWNkYWI1MDkzMjVlZDQ4OTU4IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xMC9yc28tYXJjaGl2ZS0yMDI2LTA1LTEwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -2666,6 +2707,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjNGZjY2U3NjBkYmEyN2U5YjQ5MTk2ZDE0ZDEwYTgzNjVhNDIyMjdhNzk1NmFjOWNkYWI1MDkzMjVlZDQ4OTU4IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xMC9yc28tYXJjaGl2ZS0yMDI2LTA1LTEwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -2762,6 +2804,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIzNjNjOWZlMTI2ZmVhOTc4YWQzZmQ4MThhYmIyMDk2M2NkNzAwMTMwMzY5YjU2Zjk4OTA4YWI1MzU4ZTExYzcxIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xMS9yc28tYXJjaGl2ZS0yMDI2LTA1LTExLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -2794,6 +2837,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIzNjNjOWZlMTI2ZmVhOTc4YWQzZmQ4MThhYmIyMDk2M2NkNzAwMTMwMzY5YjU2Zjk4OTA4YWI1MzU4ZTExYzcxIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xMS9yc28tYXJjaGl2ZS0yMDI2LTA1LTExLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -2890,6 +2934,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJkNTU4NmVkZDA0NDlmODZlNzExMjhkNzFjYzQ2Yjc4MjA3YmJiNmJlZmJjZDgxNzRlNGNjOTUyYzlkMjgwNTU1IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xMi9yc28tYXJjaGl2ZS0yMDI2LTA1LTEyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -2922,6 +2967,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJkNTU4NmVkZDA0NDlmODZlNzExMjhkNzFjYzQ2Yjc4MjA3YmJiNmJlZmJjZDgxNzRlNGNjOTUyYzlkMjgwNTU1IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xMi9yc28tYXJjaGl2ZS0yMDI2LTA1LTEyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -3018,6 +3064,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI2Yzk1Y2ZkMGM3NjI5NGE0MjAyNzU5ODdjODgyNTcxNDMwYjYyOTE0NTE5MmFkZmNlMGYzODQ1OTE3MTJlM2NmIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xMy9yc28tYXJjaGl2ZS0yMDI2LTA1LTEzLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -3050,6 +3097,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI2Yzk1Y2ZkMGM3NjI5NGE0MjAyNzU5ODdjODgyNTcxNDMwYjYyOTE0NTE5MmFkZmNlMGYzODQ1OTE3MTJlM2NmIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xMy9yc28tYXJjaGl2ZS0yMDI2LTA1LTEzLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -3146,6 +3194,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI5MDViMTk4MTM5ODRjZTdhNGUyYjdkNzY5NzRmYzU2ZGM0Yzk4NGZkZDZmMjFiYWM0YzExOWRiNWIwMDE1MDM3IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xNC9yc28tYXJjaGl2ZS0yMDI2LTA1LTE0LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -3178,6 +3227,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI5MDViMTk4MTM5ODRjZTdhNGUyYjdkNzY5NzRmYzU2ZGM0Yzk4NGZkZDZmMjFiYWM0YzExOWRiNWIwMDE1MDM3IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xNC9yc28tYXJjaGl2ZS0yMDI2LTA1LTE0LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -3274,6 +3324,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjZjRiNTZiYjBiZmViOTJjMGMwZmFlMTY2YTRlNjc0YmM3NjU3YTc4NjY0ZWM0MDA1OGNmNjBkNjlhZTg1YTU0IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xNS9yc28tYXJjaGl2ZS0yMDI2LTA1LTE1LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -3306,6 +3357,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjZjRiNTZiYjBiZmViOTJjMGMwZmFlMTY2YTRlNjc0YmM3NjU3YTc4NjY0ZWM0MDA1OGNmNjBkNjlhZTg1YTU0IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xNS9yc28tYXJjaGl2ZS0yMDI2LTA1LTE1LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -3402,6 +3454,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJhNmZlZjlhOTlkODc3MTI1M2JkN2M1YzRkN2NmZWJmYmFkOTQ3OTA3YzA5MzM5YTdhZjg5Y2IwYmU3MTA0NThhIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xNi9yc28tYXJjaGl2ZS0yMDI2LTA1LTE2LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -3434,6 +3487,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJhNmZlZjlhOTlkODc3MTI1M2JkN2M1YzRkN2NmZWJmYmFkOTQ3OTA3YzA5MzM5YTdhZjg5Y2IwYmU3MTA0NThhIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xNi9yc28tYXJjaGl2ZS0yMDI2LTA1LTE2LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -3530,6 +3584,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIxYzJmYTYxZDJlNDVmNzgzYTNkNzk0NDlkM2JkOGQ3ZmVlMzc0ZTQ5MGVjYjI5ZjlhOTFmODA0NjE5ZWQ5Yjk2IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xNy9yc28tYXJjaGl2ZS0yMDI2LTA1LTE3LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -3562,6 +3617,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIxYzJmYTYxZDJlNDVmNzgzYTNkNzk0NDlkM2JkOGQ3ZmVlMzc0ZTQ5MGVjYjI5ZjlhOTFmODA0NjE5ZWQ5Yjk2IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xNy9yc28tYXJjaGl2ZS0yMDI2LTA1LTE3LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -3658,6 +3714,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJkMGFmNjI3Y2QyYjJiNDA5YWNkYmQxNjliNTcwYTE3MmRmYjU4Yjk5Y2U1MDJjZjg5YjhiMWNlNzI0NjZjZTNlIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xOC9yc28tYXJjaGl2ZS0yMDI2LTA1LTE4LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -3690,6 +3747,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJkMGFmNjI3Y2QyYjJiNDA5YWNkYmQxNjliNTcwYTE3MmRmYjU4Yjk5Y2U1MDJjZjg5YjhiMWNlNzI0NjZjZTNlIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xOC9yc28tYXJjaGl2ZS0yMDI2LTA1LTE4LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -3786,6 +3844,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI2ZGVjMDYyMGY5YTVkY2U2OWFhNTEyY2MyYmUxMTVhNDAxOGNjNDIyYjY1ODI3Y2Y0Mjk3M2UzMmJhZGFhNTUyIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xOS9yc28tYXJjaGl2ZS0yMDI2LTA1LTE5LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -3818,6 +3877,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI2ZGVjMDYyMGY5YTVkY2U2OWFhNTEyY2MyYmUxMTVhNDAxOGNjNDIyYjY1ODI3Y2Y0Mjk3M2UzMmJhZGFhNTUyIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xOS9yc28tYXJjaGl2ZS0yMDI2LTA1LTE5LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -3914,6 +3974,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIxOTlmYzZlMzk2ZjQyNTM2MDM4MTg4Y2FmYWI2ODlhYjRhYzNkOTJmNjE0N2FlMmRiMzZhODRiOTQxMzE4ODVjIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yMC9yc28tYXJjaGl2ZS0yMDI2LTA1LTIwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -3946,6 +4007,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIxOTlmYzZlMzk2ZjQyNTM2MDM4MTg4Y2FmYWI2ODlhYjRhYzNkOTJmNjE0N2FlMmRiMzZhODRiOTQxMzE4ODVjIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yMC9yc28tYXJjaGl2ZS0yMDI2LTA1LTIwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -4042,6 +4104,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJmN2U0MjVkZGYxYzMwNTVjZjNjNTdhM2Q4MjE1MzU3MjcwMTNkM2IzM2JkNTY5YjIxMDAxMDA1NWY2MjMzNmE1IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yMS9yc28tYXJjaGl2ZS0yMDI2LTA1LTIxLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -4074,6 +4137,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJmN2U0MjVkZGYxYzMwNTVjZjNjNTdhM2Q4MjE1MzU3MjcwMTNkM2IzM2JkNTY5YjIxMDAxMDA1NWY2MjMzNmE1IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yMS9yc28tYXJjaGl2ZS0yMDI2LTA1LTIxLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -4170,6 +4234,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIyOGE4ZDE5MGMyNjBkMzU5ZTA2M2YyM2ZiYmUxZmYyNDM3MjA4YTAyZDRjNmEwMGY2ZWZjYzk4NDY3MWMwYThhIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yMi9yc28tYXJjaGl2ZS0yMDI2LTA1LTIyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -4202,6 +4267,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIyOGE4ZDE5MGMyNjBkMzU5ZTA2M2YyM2ZiYmUxZmYyNDM3MjA4YTAyZDRjNmEwMGY2ZWZjYzk4NDY3MWMwYThhIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yMi9yc28tYXJjaGl2ZS0yMDI2LTA1LTIyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -4298,6 +4364,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJhZjA5ZGU1Zjk5NjIzNDVmODFjNzJhZWJmNjdiNWEwYTA5M2U3ZTVmNWY4MzRjMjY2MzAxYTJkMmE2YjAzMzQ0IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yMy9yc28tYXJjaGl2ZS0yMDI2LTA1LTIzLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -4330,6 +4397,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJhZjA5ZGU1Zjk5NjIzNDVmODFjNzJhZWJmNjdiNWEwYTA5M2U3ZTVmNWY4MzRjMjY2MzAxYTJkMmE2YjAzMzQ0IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yMy9yc28tYXJjaGl2ZS0yMDI2LTA1LTIzLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -4426,6 +4494,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI2OGVlZjMwMjkwZTMwZTkwNjJjNTY5ZGI3NGJhYTU4ZTZiOGM5MmQ4NmIwN2NiNzg1MmM0MGY2NDc5ODI1ZWY3IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yNC9yc28tYXJjaGl2ZS0yMDI2LTA1LTI0LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -4458,6 +4527,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI2OGVlZjMwMjkwZTMwZTkwNjJjNTY5ZGI3NGJhYTU4ZTZiOGM5MmQ4NmIwN2NiNzg1MmM0MGY2NDc5ODI1ZWY3IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yNC9yc28tYXJjaGl2ZS0yMDI2LTA1LTI0LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -4554,6 +4624,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjMDI1Yzg0M2ViNDA4OTE2NDJjNDkwNDBlNDcxMDJmNmQxMzRkM2ViMDYxZTRjZTgzMWUwMGQ4NjE3YTk4ZWI1IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yNS9yc28tYXJjaGl2ZS0yMDI2LTA1LTI1LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -4586,6 +4657,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjMDI1Yzg0M2ViNDA4OTE2NDJjNDkwNDBlNDcxMDJmNmQxMzRkM2ViMDYxZTRjZTgzMWUwMGQ4NjE3YTk4ZWI1IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yNS9yc28tYXJjaGl2ZS0yMDI2LTA1LTI1LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -4682,6 +4754,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJlZTc4ZDAwNTVmNDFmMTFhNWVmNTk3NGE0ZTZhNGJhZmMwYjU1NjgzNjQ5NzliZDExYjFmZTE3ZDQ2YTQ0ODNkIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yNi9yc28tYXJjaGl2ZS0yMDI2LTA1LTI2LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -4714,6 +4787,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJlZTc4ZDAwNTVmNDFmMTFhNWVmNTk3NGE0ZTZhNGJhZmMwYjU1NjgzNjQ5NzliZDExYjFmZTE3ZDQ2YTQ0ODNkIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yNi9yc28tYXJjaGl2ZS0yMDI2LTA1LTI2LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -4810,6 +4884,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjYWIwMDJjNzljYzFmNTkyZDRmMzgxNjFkMzY0MDFmMGRjZDhlZDNiMTAyZGI3MzE0Y2U4YWRiODJmMDMxNDEwIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yNy9yc28tYXJjaGl2ZS0yMDI2LTA1LTI3LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -4842,6 +4917,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjYWIwMDJjNzljYzFmNTkyZDRmMzgxNjFkMzY0MDFmMGRjZDhlZDNiMTAyZGI3MzE0Y2U4YWRiODJmMDMxNDEwIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yNy9yc28tYXJjaGl2ZS0yMDI2LTA1LTI3LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -4938,6 +5014,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJlYzk0MDVmYmVkZDQxYWFlNGYyMWEzMjEwODM4MTQzOTRmZDVlM2IwYTM3ZTlkMDcyZjVjOTA0NjFmMDQ0MDFiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yOC9yc28tYXJjaGl2ZS0yMDI2LTA1LTI4LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -4970,6 +5047,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJlYzk0MDVmYmVkZDQxYWFlNGYyMWEzMjEwODM4MTQzOTRmZDVlM2IwYTM3ZTlkMDcyZjVjOTA0NjFmMDQ0MDFiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yOC9yc28tYXJjaGl2ZS0yMDI2LTA1LTI4LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -5066,6 +5144,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI0NjdkYWZmNDI1NzU1MGFiNGI1MDAwNThkOWRmODg4YjdiMDEyM2M0YzU1NmJmMjQ2NWJjNDk3MTcwZjdmNjFkIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yOS9yc28tYXJjaGl2ZS0yMDI2LTA1LTI5LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -5098,6 +5177,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI0NjdkYWZmNDI1NzU1MGFiNGI1MDAwNThkOWRmODg4YjdiMDEyM2M0YzU1NmJmMjQ2NWJjNDk3MTcwZjdmNjFkIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yOS9yc28tYXJjaGl2ZS0yMDI2LTA1LTI5LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -5194,6 +5274,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI1ZmQwMGJjYjUyZWUyMjc1NDhlYzdmYjExYjRmODczZDlmNGU0YjU2OTNhZmYyMTVjMGFiOWNkNmJiNTBlZjQ4IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0zMC9yc28tYXJjaGl2ZS0yMDI2LTA1LTMwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -5226,6 +5307,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI1ZmQwMGJjYjUyZWUyMjc1NDhlYzdmYjExYjRmODczZDlmNGU0YjU2OTNhZmYyMTVjMGFiOWNkNmJiNTBlZjQ4IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0zMC9yc28tYXJjaGl2ZS0yMDI2LTA1LTMwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -5322,6 +5404,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIxYmY2NWJmOTllZDcyMDBjZjhiOTJmYTcwODdjMmNmNTUwZDM1YmFkMmM3MzMyZmZhNGE1ZDE0ZjJhZWMxNzJiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0zMS9yc28tYXJjaGl2ZS0yMDI2LTA1LTMxLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -5354,6 +5437,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIxYmY2NWJmOTllZDcyMDBjZjhiOTJmYTcwODdjMmNmNTUwZDM1YmFkMmM3MzMyZmZhNGE1ZDE0ZjJhZWMxNzJiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0zMS9yc28tYXJjaGl2ZS0yMDI2LTA1LTMxLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -5450,6 +5534,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI0ODM1MmMyYjA0M2MyNmY2MjRmNTJjMzQzOGQ4Y2IwZDRjYTY4NDc4YzMxMDU0ODU4MjIxNDk5OWI1NzA0ODBiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wMS9yc28tYXJjaGl2ZS0yMDI2LTA2LTAxLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -5482,6 +5567,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI0ODM1MmMyYjA0M2MyNmY2MjRmNTJjMzQzOGQ4Y2IwZDRjYTY4NDc4YzMxMDU0ODU4MjIxNDk5OWI1NzA0ODBiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wMS9yc28tYXJjaGl2ZS0yMDI2LTA2LTAxLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -5578,6 +5664,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI5ZmMxYThhYjFjZWY4MjAxOGEyN2JiYjMzZjk5Yzg4NjAzMWE1MTEwMTY5MzBhNmFlNzRmNGFlMTQxZWRlODhjIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wMi9yc28tYXJjaGl2ZS0yMDI2LTA2LTAyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -5610,6 +5697,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI5ZmMxYThhYjFjZWY4MjAxOGEyN2JiYjMzZjk5Yzg4NjAzMWE1MTEwMTY5MzBhNmFlNzRmNGFlMTQxZWRlODhjIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wMi9yc28tYXJjaGl2ZS0yMDI2LTA2LTAyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -5706,6 +5794,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIyYjc4NzRmMGNiZjdmYzRmYTA5MzRjOWJkN2NiOTEyMzFhMDk3OGE1OWFlODg1ZGRlNzM0MjY0YTg3NzgyZmQyIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wMy9yc28tYXJjaGl2ZS0yMDI2LTA2LTAzLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -5738,6 +5827,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIyYjc4NzRmMGNiZjdmYzRmYTA5MzRjOWJkN2NiOTEyMzFhMDk3OGE1OWFlODg1ZGRlNzM0MjY0YTg3NzgyZmQyIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wMy9yc28tYXJjaGl2ZS0yMDI2LTA2LTAzLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -5834,6 +5924,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI3YWMyMWI2NTYxNjdkMjc0MmNhM2FhMWNjYTBkNDMzOGFkMmQ5MTY5N2NkY2U2Yjc5MjhhODI2MTIyZDExYTAzIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wNC9yc28tYXJjaGl2ZS0yMDI2LTA2LTA0LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -5866,6 +5957,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI3YWMyMWI2NTYxNjdkMjc0MmNhM2FhMWNjYTBkNDMzOGFkMmQ5MTY5N2NkY2U2Yjc5MjhhODI2MTIyZDExYTAzIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wNC9yc28tYXJjaGl2ZS0yMDI2LTA2LTA0LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -5962,6 +6054,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJlMjNkN2NkYTZiZWNlODIwZGU4YjZlMTMwYTFjZmRiZTk0YzQ0YTA4NTMwYzA3YjYyYjNkOWVkMDI3ZGJiNTk5IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wNS9yc28tYXJjaGl2ZS0yMDI2LTA2LTA1LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -5994,6 +6087,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJlMjNkN2NkYTZiZWNlODIwZGU4YjZlMTMwYTFjZmRiZTk0YzQ0YTA4NTMwYzA3YjYyYjNkOWVkMDI3ZGJiNTk5IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wNS9yc28tYXJjaGl2ZS0yMDI2LTA2LTA1LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -6092,6 +6186,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJhNWY1NWFmNjI1MDE0ODY3NjI4NGYxNjkzZWVmZDdiN2M5ZWMyMDRmM2VhOWJlYWQyOGFmYjA3YzYzYzk5MzE4IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wNi9yc28tYXJjaGl2ZS0yMDI2LTA2LTA2LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -6124,6 +6219,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIzMWQyYzRhZjY0ZThjZGRhMjliMDc1ZjAzYWYzNjdmODA4ZDY5NmZhZTJlNDY2MTM0ZWMyZWY2OGZlZGY1OWZmIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9icm9va3IvUlNPL3JlbGVhc2VzL2Rvd25sb2FkL3Jzby1hcmNoaXZlLTIwMjYtMDYtMDYvcnNvLWFyY2hpdmUtMjAyNi0wNi0wNi12Mi50YXIuZ3oiXSwibm9kZUlkIjoiZ2l0aHViOmJyb29rci9yc28ifQ==",
@@ -6163,15 +6259,13 @@
             "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
             "0x226db9fe9ed3eb91baeccb081f4505a799e4e376"
           ],
-          "backedNodeIds": [
-            "github:ompub/rso"
-          ],
+          "backedNodeIds": [],
           "blockHash": "0x65db01610ee89979f47778515b1311be5331fa0e311eee2cd9a7d8efd573f068",
           "bundleFingerprints": [
             "2a606b730b6a4d1b517cefa5040786738ce2270711e364a2263f6165646f7a6f",
             "f15552660f33b53fac90817f6e76e40494e900557eee974c17764b90e781db09"
           ],
-          "combinedSupportTdh": 1,
+          "combinedSupportTdh": 0,
           "contentHash": "0x086956fe197b16f2382187d462845b2e8aefc621fc1d8bec2f6a40aeaa30952b",
           "directWitnessIdentities": [],
           "directWitnessTdh": 0,
@@ -6181,7 +6275,7 @@
             "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-06-07/rso-archive-2026-06-07.tar.gz",
             "https://github.com/brookr/RSO/releases/download/rso-archive-2026-06-07/rso-archive-2026-06-07-v2.tar.gz"
           ],
-          "nodeBackingTdh": 1
+          "nodeBackingTdh": 0
         }
       ],
       "blockFingerprints": [
@@ -6204,7 +6298,7 @@
           "blockHash": "0x65db01610ee89979f47778515b1311be5331fa0e311eee2cd9a7d8efd573f068",
           "claimFingerprint": "8ed8df3492974054cbfc0578cb192077d09e0a86ad3334a8201193893a07962b",
           "claimedNodeId": "github:ompub/rso",
-          "combinedSupportTdh": 1,
+          "combinedSupportTdh": 0,
           "contentHash": "0x086956fe197b16f2382187d462845b2e8aefc621fc1d8bec2f6a40aeaa30952b",
           "date": "2026-06-07",
           "directWitnessIdentity": "",
@@ -6214,9 +6308,9 @@
           "ethereumBlock": 11026788,
           "ethereumBlockHash": "0x8de430933d0f6a9a38880c5fc6f967ed951bfbf3254805f69f30f80f1a58b901",
           "logIndex": 778,
-          "nodeAuthorizationStatus": "verified",
-          "nodeBackingTdh": 1,
-          "nodeId": "github:ompub/rso",
+          "nodeAuthorizationStatus": "unverified",
+          "nodeBackingTdh": 0,
+          "nodeId": "",
           "onBehalfOf": "0x0000000000000000000000000000000000000000",
           "parentHash": "0x4fcf0ac19aee184905b1e4affb5a837c5b4b5c768e56fb991b86fd86ff54bc10",
           "publication": {
@@ -6226,6 +6320,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJmMTU1NTI2NjBmMzNiNTNmYWM5MDgxN2Y2ZTc2ZTQwNDk0ZTkwMDU1N2VlZTk3NGMxNzc2NGI5MGU3ODFkYjA5IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wNy9yc28tYXJjaGl2ZS0yMDI2LTA2LTA3LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -6258,6 +6353,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIyYTYwNmI3MzBiNmE0ZDFiNTE3Y2VmYTUwNDA3ODY3MzhjZTIyNzA3MTFlMzY0YTIyNjNmNjE2NTY0NmY3YTZmIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9icm9va3IvUlNPL3JlbGVhc2VzL2Rvd25sb2FkL3Jzby1hcmNoaXZlLTIwMjYtMDYtMDcvcnNvLWFyY2hpdmUtMjAyNi0wNi0wNy12Mi50YXIuZ3oiXSwibm9kZUlkIjoiZ2l0aHViOmJyb29rci9yc28ifQ==",
@@ -6270,15 +6366,13 @@
           "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "0x226db9fe9ed3eb91baeccb081f4505a799e4e376"
         ],
-        "backedNodeIds": [
-          "github:ompub/rso"
-        ],
+        "backedNodeIds": [],
         "blockHash": "0x65db01610ee89979f47778515b1311be5331fa0e311eee2cd9a7d8efd573f068",
         "bundleFingerprints": [
           "2a606b730b6a4d1b517cefa5040786738ce2270711e364a2263f6165646f7a6f",
           "f15552660f33b53fac90817f6e76e40494e900557eee974c17764b90e781db09"
         ],
-        "combinedSupportTdh": 1,
+        "combinedSupportTdh": 0,
         "contentHash": "0x086956fe197b16f2382187d462845b2e8aefc621fc1d8bec2f6a40aeaa30952b",
         "directWitnessIdentities": [],
         "directWitnessTdh": 0,
@@ -6288,7 +6382,7 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-06-07/rso-archive-2026-06-07.tar.gz",
           "https://github.com/brookr/RSO/releases/download/rso-archive-2026-06-07/rso-archive-2026-06-07-v2.tar.gz"
         ],
-        "nodeBackingTdh": 1
+        "nodeBackingTdh": 0
       }
     },
     "20260608000000": {
@@ -6360,6 +6454,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI1ODUyODZiMjNmNGFkZTdiOTIzZjNjMjQ5Y2NhMWVmM2I5NmNmM2NhMjEwZDFmNzk2YmMwNGZmYzdmNmU5MzA3IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wOC9yc28tYXJjaGl2ZS0yMDI2LTA2LTA4LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -6392,6 +6487,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJkN2JjZjYxY2NhMDA0NDZjZjJkOWZiNzFkNDA1NzI1ZmY1MDkwNmU2MmFlZGZjYjhiMDRlM2VlZGZjMjA4ZWUwIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9icm9va3IvUlNPL3JlbGVhc2VzL2Rvd25sb2FkL3Jzby1hcmNoaXZlLTIwMjYtMDYtMDgvcnNvLWFyY2hpdmUtMjAyNi0wNi0wOC12Mi50YXIuZ3oiXSwibm9kZUlkIjoiZ2l0aHViOmJyb29rci9yc28ifQ==",
@@ -6492,6 +6588,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI1YzZhMmQyODc3NDNiNTc2Y2U3NWZmYzRmNDhhZjQ0NTZlODQ5YjBmNTljZThkMTNjZjE2MzgyNzU1ZWEwZGNjIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wOS9yc28tYXJjaGl2ZS0yMDI2LTA2LTA5LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -6524,6 +6621,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI2NzhiZjhhN2NjMTQzNTQ5YjU2NjQ1N2RhMDYzNjM1M2EyMjllNmM2ZmRkNWJlN2I1NGM4MTI3YTI4ZTJhZDcyIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9icm9va3IvUlNPL3JlbGVhc2VzL2Rvd25sb2FkL3Jzby1hcmNoaXZlLTIwMjYtMDYtMDkvcnNvLWFyY2hpdmUtMjAyNi0wNi0wOS12Mi50YXIuZ3oiXSwibm9kZUlkIjoiZ2l0aHViOmJyb29rci9yc28ifQ==",
@@ -6624,6 +6722,7 @@
             ],
             "nodeId": "github:ompub/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xea41996ae6da743a97e76a365a8681e97c10f21c44df9493af4e031763ead05f",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI1YTMxOWIyNTFjZDMxZjkwZDg5YjdmOTU4YzliZjZlZDA0NzlmY2FjYzY0MDY3OWE2ZjllNzRjYWExYzBmZmI2IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0xMC9yc28tYXJjaGl2ZS0yMDI2LTA2LTEwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -6656,6 +6755,7 @@
             ],
             "nodeId": "github:brookr/rso"
           },
+          "publicationVerification": "",
           "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
           "transactionHash": "0xaf649d454b929fc45b6bb199b7a9df8aae1fbc65137a65ce4c072c0a603e9ad1",
           "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJkMDJkYmE4NjlhNTNjZDZiNWYxNDMyZWFkNThhZGEyZGZlNTAyZjMwMDU1ZTIzMjBjN2NhMWZiY2ZlZDNiOGFiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9icm9va3IvUlNPL3JlbGVhc2VzL2Rvd25sb2FkL3Jzby1hcmNoaXZlLTIwMjYtMDYtMTAvcnNvLWFyY2hpdmUtMjAyNi0wNi0xMC50YXIuZ3oiXSwibm9kZUlkIjoiZ2l0aHViOmJyb29rci9yc28ifQ==",
@@ -6717,6 +6817,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI3M2E0MjNjOTlkYTFlNDQzODkxMDBhNjg1MGZmZGFlYjZlYTViNmU2NjA5ZjM5ZTgzNmZkZjBhNzVmNDZkMjBiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yMC9yc28tYXJjaGl2ZS0yMDI2LTA0LTIwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -6749,6 +6850,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI3M2E0MjNjOTlkYTFlNDQzODkxMDBhNjg1MGZmZGFlYjZlYTViNmU2NjA5ZjM5ZTgzNmZkZjBhNzVmNDZkMjBiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yMC9yc28tYXJjaGl2ZS0yMDI2LTA0LTIwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -6781,6 +6883,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjNjBiM2FmNDJjNzQyYzQyNWFlYTY5OTVkYzU5OTJkNmY1YmU0MTY1NzI2YjhlYTkwMzQzMTY0ZmM5NmZhMmU5IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yMS9yc28tYXJjaGl2ZS0yMDI2LTA0LTIxLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -6813,6 +6916,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjNjBiM2FmNDJjNzQyYzQyNWFlYTY5OTVkYzU5OTJkNmY1YmU0MTY1NzI2YjhlYTkwMzQzMTY0ZmM5NmZhMmU5IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yMS9yc28tYXJjaGl2ZS0yMDI2LTA0LTIxLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -6845,6 +6949,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIwNDI4MDVmZmMxZjk2OGQ4ZjI1YjU0ZDkzMzhjODgyNDA0YTI2YTU1NDEzYzUyN2FiNGNlMDMzNGI4MzkyZTQ3IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yMi9yc28tYXJjaGl2ZS0yMDI2LTA0LTIyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -6877,6 +6982,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIwNDI4MDVmZmMxZjk2OGQ4ZjI1YjU0ZDkzMzhjODgyNDA0YTI2YTU1NDEzYzUyN2FiNGNlMDMzNGI4MzkyZTQ3IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yMi9yc28tYXJjaGl2ZS0yMDI2LTA0LTIyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -6909,6 +7015,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJlY2E2NWMxNjAyMDMzYTVkMTA4YTViY2IyZTYxYWNiOTc5MWI5M2ZiYWI3MTFkOGVjZTU1OGQ5ZGJhNjZlNWUwIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yMy9yc28tYXJjaGl2ZS0yMDI2LTA0LTIzLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -6941,6 +7048,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJlY2E2NWMxNjAyMDMzYTVkMTA4YTViY2IyZTYxYWNiOTc5MWI5M2ZiYWI3MTFkOGVjZTU1OGQ5ZGJhNjZlNWUwIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yMy9yc28tYXJjaGl2ZS0yMDI2LTA0LTIzLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -6973,6 +7081,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJhNmZlY2MxOTYwZWIzMmM5NzQyZDJjMDFmZTllOTliMjg3NmIzYmU5NzEzZDRhOGNmYTNlMjE5ZDZjM2QyOWRhIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yNC9yc28tYXJjaGl2ZS0yMDI2LTA0LTI0LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -7005,6 +7114,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJhNmZlY2MxOTYwZWIzMmM5NzQyZDJjMDFmZTllOTliMjg3NmIzYmU5NzEzZDRhOGNmYTNlMjE5ZDZjM2QyOWRhIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yNC9yc28tYXJjaGl2ZS0yMDI2LTA0LTI0LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -7037,6 +7147,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI5ODQ0YzU3NjZiZDdiNTFmYjg0MThkZDljNDU5ZDlmZDI4YTc3NWE2NjVkZDEzOTdjMGU5Y2FjN2UwNWMxMzhjIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yNS9yc28tYXJjaGl2ZS0yMDI2LTA0LTI1LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -7069,6 +7180,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI5ODQ0YzU3NjZiZDdiNTFmYjg0MThkZDljNDU5ZDlmZDI4YTc3NWE2NjVkZDEzOTdjMGU5Y2FjN2UwNWMxMzhjIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yNS9yc28tYXJjaGl2ZS0yMDI2LTA0LTI1LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -7101,6 +7213,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJiYzk4NjJlOWFhNWI1MGRlZDEyMzFhNDZjNzU1NWQ2ZTA3NzIxYzgwZjNlMmE0N2NhNzhmZGIxMGRlZGNjMjkyIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yNi9yc28tYXJjaGl2ZS0yMDI2LTA0LTI2LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -7133,6 +7246,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJiYzk4NjJlOWFhNWI1MGRlZDEyMzFhNDZjNzU1NWQ2ZTA3NzIxYzgwZjNlMmE0N2NhNzhmZGIxMGRlZGNjMjkyIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yNi9yc28tYXJjaGl2ZS0yMDI2LTA0LTI2LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -7165,6 +7279,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJmMWE5YzlmYjkwMjdmMzhhMWNmZDgzZmFjMjViMGJiZDlmNmNkMjRlMDYyYzhjNDQxMzM0NDc3MTQ1YWNmNzY3IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yNy9yc28tYXJjaGl2ZS0yMDI2LTA0LTI3LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -7197,6 +7312,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJmMWE5YzlmYjkwMjdmMzhhMWNmZDgzZmFjMjViMGJiZDlmNmNkMjRlMDYyYzhjNDQxMzM0NDc3MTQ1YWNmNzY3IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yNy9yc28tYXJjaGl2ZS0yMDI2LTA0LTI3LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -7229,6 +7345,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI1MjA2OTBkZmQ0YzQ0YzUxNzRjNDg1YWY3MzgzMmE0NDk3ZTQwMjU1ZWE4Njk4MWRhOWNmNDQzNWQzOTlhMTJiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yOC9yc28tYXJjaGl2ZS0yMDI2LTA0LTI4LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -7261,6 +7378,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI1MjA2OTBkZmQ0YzQ0YzUxNzRjNDg1YWY3MzgzMmE0NDk3ZTQwMjU1ZWE4Njk4MWRhOWNmNDQzNWQzOTlhMTJiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yOC9yc28tYXJjaGl2ZS0yMDI2LTA0LTI4LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -7293,6 +7411,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIyYWQ3M2I5NjI3ZTc5YzdjZjg0NmQzYWEwYmZhNDE2ZWQyYWEyMjZkZGZhMzg3ZWVmN2RmNGU3MmE3YjRhNWEzIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yOS9yc28tYXJjaGl2ZS0yMDI2LTA0LTI5LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -7325,6 +7444,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIyYWQ3M2I5NjI3ZTc5YzdjZjg0NmQzYWEwYmZhNDE2ZWQyYWEyMjZkZGZhMzg3ZWVmN2RmNGU3MmE3YjRhNWEzIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0yOS9yc28tYXJjaGl2ZS0yMDI2LTA0LTI5LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -7357,6 +7477,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI1MWVlZGJlZWNhMTlhZmRlNGUwZWQxOWIwNTU0YTQ4NjkzN2M4ZTNkZDRkOTQyM2JhZmQ1MjVjNWZkNzIxNTIwIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0zMC9yc28tYXJjaGl2ZS0yMDI2LTA0LTMwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -7389,6 +7510,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI1MWVlZGJlZWNhMTlhZmRlNGUwZWQxOWIwNTU0YTQ4NjkzN2M4ZTNkZDRkOTQyM2JhZmQ1MjVjNWZkNzIxNTIwIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNC0zMC9yc28tYXJjaGl2ZS0yMDI2LTA0LTMwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -7421,6 +7543,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI2MzBmMDRlZGFjNjljNDZjZGY0OGZjMDVkNDM0NGM1OWY5YWY2YzY2ODhiMzViZjQyMDcwNTczMzRkNzJiYmRiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wMS9yc28tYXJjaGl2ZS0yMDI2LTA1LTAxLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -7453,6 +7576,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI2MzBmMDRlZGFjNjljNDZjZGY0OGZjMDVkNDM0NGM1OWY5YWY2YzY2ODhiMzViZjQyMDcwNTczMzRkNzJiYmRiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wMS9yc28tYXJjaGl2ZS0yMDI2LTA1LTAxLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -7485,6 +7609,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjNDViZmY2ZTQwMzAxOWQ1NWVlOWU0YWRmOWRlOGE2NGQ2MmNlNmVkNTFlY2VkMTE5NDE1NWVhMTkzZDBkNTUyIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wMi9yc28tYXJjaGl2ZS0yMDI2LTA1LTAyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -7517,6 +7642,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjNDViZmY2ZTQwMzAxOWQ1NWVlOWU0YWRmOWRlOGE2NGQ2MmNlNmVkNTFlY2VkMTE5NDE1NWVhMTkzZDBkNTUyIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wMi9yc28tYXJjaGl2ZS0yMDI2LTA1LTAyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -7549,6 +7675,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJhZDUwYWU5NjcxMDJjNTBjZWY4ZDNlOTcxMTI4YzE3ZWZkMjQ4YmJlZTY0MzE1N2RjZGYxMWVmODE2ZjhkY2I5IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wMy9yc28tYXJjaGl2ZS0yMDI2LTA1LTAzLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -7581,6 +7708,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJhZDUwYWU5NjcxMDJjNTBjZWY4ZDNlOTcxMTI4YzE3ZWZkMjQ4YmJlZTY0MzE1N2RjZGYxMWVmODE2ZjhkY2I5IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wMy9yc28tYXJjaGl2ZS0yMDI2LTA1LTAzLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -7613,6 +7741,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjY2VkZmIzNTFjMDU2YTY0N2I1ZjFhM2MzZjU1ZTY5YzgyZWU4MmYxMTRjMDA1ZjQ1NjZhYjk2Mjk5NGFhNzlmIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wNC9yc28tYXJjaGl2ZS0yMDI2LTA1LTA0LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -7645,6 +7774,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjY2VkZmIzNTFjMDU2YTY0N2I1ZjFhM2MzZjU1ZTY5YzgyZWU4MmYxMTRjMDA1ZjQ1NjZhYjk2Mjk5NGFhNzlmIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wNC9yc28tYXJjaGl2ZS0yMDI2LTA1LTA0LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -7677,6 +7807,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI5OTM0ZjQ4MGQzMjgzNDAyZDRjZWI3MjZiYzcyNjc3NzkwYjYxZTQwYzZkM2JkMTZmOTRlNjI3NGFmNjI0MTQ2IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wNS9yc28tYXJjaGl2ZS0yMDI2LTA1LTA1LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -7709,6 +7840,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI5OTM0ZjQ4MGQzMjgzNDAyZDRjZWI3MjZiYzcyNjc3NzkwYjYxZTQwYzZkM2JkMTZmOTRlNjI3NGFmNjI0MTQ2IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wNS9yc28tYXJjaGl2ZS0yMDI2LTA1LTA1LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -7741,6 +7873,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjNjQ3NjY2ZGIwMTk1MmEzZmNiNTcxZGVhMGE2ODUzMjU0MDhmYWExMjY3MzM2NTY4MmExYjRiZTZlODY5OTY1IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wNi9yc28tYXJjaGl2ZS0yMDI2LTA1LTA2LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -7773,6 +7906,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjNjQ3NjY2ZGIwMTk1MmEzZmNiNTcxZGVhMGE2ODUzMjU0MDhmYWExMjY3MzM2NTY4MmExYjRiZTZlODY5OTY1IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wNi9yc28tYXJjaGl2ZS0yMDI2LTA1LTA2LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -7805,6 +7939,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIxNzcyMGY5Y2ViZGYxZGViYTQ2OWNlYjIxZDUxNjlmZGNmMDE2ZDIwZDE3M2M0NjRiODdiOWIxOWU1NmE4MTJmIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wNy9yc28tYXJjaGl2ZS0yMDI2LTA1LTA3LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -7837,6 +7972,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIxNzcyMGY5Y2ViZGYxZGViYTQ2OWNlYjIxZDUxNjlmZGNmMDE2ZDIwZDE3M2M0NjRiODdiOWIxOWU1NmE4MTJmIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wNy9yc28tYXJjaGl2ZS0yMDI2LTA1LTA3LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -7869,6 +8005,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI0ODBhYzcyMDE2NWJmMWM4N2VkYmEzOGQxNjkzYmZhOWZlYTNmN2RiZDdhZDNiNmU2ZjUzOWI2NWE3NmFkNDE0IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wOC9yc28tYXJjaGl2ZS0yMDI2LTA1LTA4LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -7901,6 +8038,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI0ODBhYzcyMDE2NWJmMWM4N2VkYmEzOGQxNjkzYmZhOWZlYTNmN2RiZDdhZDNiNmU2ZjUzOWI2NWE3NmFkNDE0IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wOC9yc28tYXJjaGl2ZS0yMDI2LTA1LTA4LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -7933,6 +8071,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI2NDU2OTg2ZWE5MGRiOWM5MTNlNjk2ZWM4NzFjMmM3OGY3NWMxMzUyY2FiOWMwMzMwMDI4YmNlMDJiZjZmYWRjIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wOS9yc28tYXJjaGl2ZS0yMDI2LTA1LTA5LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -7965,6 +8104,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI2NDU2OTg2ZWE5MGRiOWM5MTNlNjk2ZWM4NzFjMmM3OGY3NWMxMzUyY2FiOWMwMzMwMDI4YmNlMDJiZjZmYWRjIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0wOS9yc28tYXJjaGl2ZS0yMDI2LTA1LTA5LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -7997,6 +8137,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjNGZjY2U3NjBkYmEyN2U5YjQ5MTk2ZDE0ZDEwYTgzNjVhNDIyMjdhNzk1NmFjOWNkYWI1MDkzMjVlZDQ4OTU4IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xMC9yc28tYXJjaGl2ZS0yMDI2LTA1LTEwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -8029,6 +8170,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjNGZjY2U3NjBkYmEyN2U5YjQ5MTk2ZDE0ZDEwYTgzNjVhNDIyMjdhNzk1NmFjOWNkYWI1MDkzMjVlZDQ4OTU4IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xMC9yc28tYXJjaGl2ZS0yMDI2LTA1LTEwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -8061,6 +8203,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIzNjNjOWZlMTI2ZmVhOTc4YWQzZmQ4MThhYmIyMDk2M2NkNzAwMTMwMzY5YjU2Zjk4OTA4YWI1MzU4ZTExYzcxIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xMS9yc28tYXJjaGl2ZS0yMDI2LTA1LTExLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -8093,6 +8236,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIzNjNjOWZlMTI2ZmVhOTc4YWQzZmQ4MThhYmIyMDk2M2NkNzAwMTMwMzY5YjU2Zjk4OTA4YWI1MzU4ZTExYzcxIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xMS9yc28tYXJjaGl2ZS0yMDI2LTA1LTExLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -8125,6 +8269,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJkNTU4NmVkZDA0NDlmODZlNzExMjhkNzFjYzQ2Yjc4MjA3YmJiNmJlZmJjZDgxNzRlNGNjOTUyYzlkMjgwNTU1IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xMi9yc28tYXJjaGl2ZS0yMDI2LTA1LTEyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -8157,6 +8302,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJkNTU4NmVkZDA0NDlmODZlNzExMjhkNzFjYzQ2Yjc4MjA3YmJiNmJlZmJjZDgxNzRlNGNjOTUyYzlkMjgwNTU1IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xMi9yc28tYXJjaGl2ZS0yMDI2LTA1LTEyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -8189,6 +8335,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI2Yzk1Y2ZkMGM3NjI5NGE0MjAyNzU5ODdjODgyNTcxNDMwYjYyOTE0NTE5MmFkZmNlMGYzODQ1OTE3MTJlM2NmIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xMy9yc28tYXJjaGl2ZS0yMDI2LTA1LTEzLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -8221,6 +8368,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI2Yzk1Y2ZkMGM3NjI5NGE0MjAyNzU5ODdjODgyNTcxNDMwYjYyOTE0NTE5MmFkZmNlMGYzODQ1OTE3MTJlM2NmIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xMy9yc28tYXJjaGl2ZS0yMDI2LTA1LTEzLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -8253,6 +8401,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI5MDViMTk4MTM5ODRjZTdhNGUyYjdkNzY5NzRmYzU2ZGM0Yzk4NGZkZDZmMjFiYWM0YzExOWRiNWIwMDE1MDM3IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xNC9yc28tYXJjaGl2ZS0yMDI2LTA1LTE0LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -8285,6 +8434,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI5MDViMTk4MTM5ODRjZTdhNGUyYjdkNzY5NzRmYzU2ZGM0Yzk4NGZkZDZmMjFiYWM0YzExOWRiNWIwMDE1MDM3IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xNC9yc28tYXJjaGl2ZS0yMDI2LTA1LTE0LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -8317,6 +8467,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjZjRiNTZiYjBiZmViOTJjMGMwZmFlMTY2YTRlNjc0YmM3NjU3YTc4NjY0ZWM0MDA1OGNmNjBkNjlhZTg1YTU0IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xNS9yc28tYXJjaGl2ZS0yMDI2LTA1LTE1LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -8349,6 +8500,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjZjRiNTZiYjBiZmViOTJjMGMwZmFlMTY2YTRlNjc0YmM3NjU3YTc4NjY0ZWM0MDA1OGNmNjBkNjlhZTg1YTU0IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xNS9yc28tYXJjaGl2ZS0yMDI2LTA1LTE1LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -8381,6 +8533,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJhNmZlZjlhOTlkODc3MTI1M2JkN2M1YzRkN2NmZWJmYmFkOTQ3OTA3YzA5MzM5YTdhZjg5Y2IwYmU3MTA0NThhIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xNi9yc28tYXJjaGl2ZS0yMDI2LTA1LTE2LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -8413,6 +8566,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJhNmZlZjlhOTlkODc3MTI1M2JkN2M1YzRkN2NmZWJmYmFkOTQ3OTA3YzA5MzM5YTdhZjg5Y2IwYmU3MTA0NThhIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xNi9yc28tYXJjaGl2ZS0yMDI2LTA1LTE2LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -8445,6 +8599,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIxYzJmYTYxZDJlNDVmNzgzYTNkNzk0NDlkM2JkOGQ3ZmVlMzc0ZTQ5MGVjYjI5ZjlhOTFmODA0NjE5ZWQ5Yjk2IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xNy9yc28tYXJjaGl2ZS0yMDI2LTA1LTE3LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -8477,6 +8632,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIxYzJmYTYxZDJlNDVmNzgzYTNkNzk0NDlkM2JkOGQ3ZmVlMzc0ZTQ5MGVjYjI5ZjlhOTFmODA0NjE5ZWQ5Yjk2IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xNy9yc28tYXJjaGl2ZS0yMDI2LTA1LTE3LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -8509,6 +8665,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJkMGFmNjI3Y2QyYjJiNDA5YWNkYmQxNjliNTcwYTE3MmRmYjU4Yjk5Y2U1MDJjZjg5YjhiMWNlNzI0NjZjZTNlIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xOC9yc28tYXJjaGl2ZS0yMDI2LTA1LTE4LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -8541,6 +8698,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJkMGFmNjI3Y2QyYjJiNDA5YWNkYmQxNjliNTcwYTE3MmRmYjU4Yjk5Y2U1MDJjZjg5YjhiMWNlNzI0NjZjZTNlIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xOC9yc28tYXJjaGl2ZS0yMDI2LTA1LTE4LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -8573,6 +8731,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI2ZGVjMDYyMGY5YTVkY2U2OWFhNTEyY2MyYmUxMTVhNDAxOGNjNDIyYjY1ODI3Y2Y0Mjk3M2UzMmJhZGFhNTUyIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xOS9yc28tYXJjaGl2ZS0yMDI2LTA1LTE5LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -8605,6 +8764,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI2ZGVjMDYyMGY5YTVkY2U2OWFhNTEyY2MyYmUxMTVhNDAxOGNjNDIyYjY1ODI3Y2Y0Mjk3M2UzMmJhZGFhNTUyIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0xOS9yc28tYXJjaGl2ZS0yMDI2LTA1LTE5LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -8637,6 +8797,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIxOTlmYzZlMzk2ZjQyNTM2MDM4MTg4Y2FmYWI2ODlhYjRhYzNkOTJmNjE0N2FlMmRiMzZhODRiOTQxMzE4ODVjIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yMC9yc28tYXJjaGl2ZS0yMDI2LTA1LTIwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -8669,6 +8830,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIxOTlmYzZlMzk2ZjQyNTM2MDM4MTg4Y2FmYWI2ODlhYjRhYzNkOTJmNjE0N2FlMmRiMzZhODRiOTQxMzE4ODVjIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yMC9yc28tYXJjaGl2ZS0yMDI2LTA1LTIwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -8701,6 +8863,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJmN2U0MjVkZGYxYzMwNTVjZjNjNTdhM2Q4MjE1MzU3MjcwMTNkM2IzM2JkNTY5YjIxMDAxMDA1NWY2MjMzNmE1IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yMS9yc28tYXJjaGl2ZS0yMDI2LTA1LTIxLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -8733,6 +8896,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJmN2U0MjVkZGYxYzMwNTVjZjNjNTdhM2Q4MjE1MzU3MjcwMTNkM2IzM2JkNTY5YjIxMDAxMDA1NWY2MjMzNmE1IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yMS9yc28tYXJjaGl2ZS0yMDI2LTA1LTIxLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -8765,6 +8929,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIyOGE4ZDE5MGMyNjBkMzU5ZTA2M2YyM2ZiYmUxZmYyNDM3MjA4YTAyZDRjNmEwMGY2ZWZjYzk4NDY3MWMwYThhIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yMi9yc28tYXJjaGl2ZS0yMDI2LTA1LTIyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -8797,6 +8962,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIyOGE4ZDE5MGMyNjBkMzU5ZTA2M2YyM2ZiYmUxZmYyNDM3MjA4YTAyZDRjNmEwMGY2ZWZjYzk4NDY3MWMwYThhIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yMi9yc28tYXJjaGl2ZS0yMDI2LTA1LTIyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -8829,6 +8995,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJhZjA5ZGU1Zjk5NjIzNDVmODFjNzJhZWJmNjdiNWEwYTA5M2U3ZTVmNWY4MzRjMjY2MzAxYTJkMmE2YjAzMzQ0IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yMy9yc28tYXJjaGl2ZS0yMDI2LTA1LTIzLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -8861,6 +9028,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJhZjA5ZGU1Zjk5NjIzNDVmODFjNzJhZWJmNjdiNWEwYTA5M2U3ZTVmNWY4MzRjMjY2MzAxYTJkMmE2YjAzMzQ0IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yMy9yc28tYXJjaGl2ZS0yMDI2LTA1LTIzLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -8893,6 +9061,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI2OGVlZjMwMjkwZTMwZTkwNjJjNTY5ZGI3NGJhYTU4ZTZiOGM5MmQ4NmIwN2NiNzg1MmM0MGY2NDc5ODI1ZWY3IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yNC9yc28tYXJjaGl2ZS0yMDI2LTA1LTI0LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -8925,6 +9094,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI2OGVlZjMwMjkwZTMwZTkwNjJjNTY5ZGI3NGJhYTU4ZTZiOGM5MmQ4NmIwN2NiNzg1MmM0MGY2NDc5ODI1ZWY3IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yNC9yc28tYXJjaGl2ZS0yMDI2LTA1LTI0LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -8957,6 +9127,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjMDI1Yzg0M2ViNDA4OTE2NDJjNDkwNDBlNDcxMDJmNmQxMzRkM2ViMDYxZTRjZTgzMWUwMGQ4NjE3YTk4ZWI1IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yNS9yc28tYXJjaGl2ZS0yMDI2LTA1LTI1LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -8989,6 +9160,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjMDI1Yzg0M2ViNDA4OTE2NDJjNDkwNDBlNDcxMDJmNmQxMzRkM2ViMDYxZTRjZTgzMWUwMGQ4NjE3YTk4ZWI1IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yNS9yc28tYXJjaGl2ZS0yMDI2LTA1LTI1LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -9021,6 +9193,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJlZTc4ZDAwNTVmNDFmMTFhNWVmNTk3NGE0ZTZhNGJhZmMwYjU1NjgzNjQ5NzliZDExYjFmZTE3ZDQ2YTQ0ODNkIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yNi9yc28tYXJjaGl2ZS0yMDI2LTA1LTI2LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -9053,6 +9226,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJlZTc4ZDAwNTVmNDFmMTFhNWVmNTk3NGE0ZTZhNGJhZmMwYjU1NjgzNjQ5NzliZDExYjFmZTE3ZDQ2YTQ0ODNkIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yNi9yc28tYXJjaGl2ZS0yMDI2LTA1LTI2LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -9085,6 +9259,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjYWIwMDJjNzljYzFmNTkyZDRmMzgxNjFkMzY0MDFmMGRjZDhlZDNiMTAyZGI3MzE0Y2U4YWRiODJmMDMxNDEwIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yNy9yc28tYXJjaGl2ZS0yMDI2LTA1LTI3LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -9117,6 +9292,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJjYWIwMDJjNzljYzFmNTkyZDRmMzgxNjFkMzY0MDFmMGRjZDhlZDNiMTAyZGI3MzE0Y2U4YWRiODJmMDMxNDEwIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yNy9yc28tYXJjaGl2ZS0yMDI2LTA1LTI3LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -9149,6 +9325,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJlYzk0MDVmYmVkZDQxYWFlNGYyMWEzMjEwODM4MTQzOTRmZDVlM2IwYTM3ZTlkMDcyZjVjOTA0NjFmMDQ0MDFiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yOC9yc28tYXJjaGl2ZS0yMDI2LTA1LTI4LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -9181,6 +9358,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJlYzk0MDVmYmVkZDQxYWFlNGYyMWEzMjEwODM4MTQzOTRmZDVlM2IwYTM3ZTlkMDcyZjVjOTA0NjFmMDQ0MDFiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yOC9yc28tYXJjaGl2ZS0yMDI2LTA1LTI4LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -9213,6 +9391,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI0NjdkYWZmNDI1NzU1MGFiNGI1MDAwNThkOWRmODg4YjdiMDEyM2M0YzU1NmJmMjQ2NWJjNDk3MTcwZjdmNjFkIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yOS9yc28tYXJjaGl2ZS0yMDI2LTA1LTI5LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -9245,6 +9424,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI0NjdkYWZmNDI1NzU1MGFiNGI1MDAwNThkOWRmODg4YjdiMDEyM2M0YzU1NmJmMjQ2NWJjNDk3MTcwZjdmNjFkIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0yOS9yc28tYXJjaGl2ZS0yMDI2LTA1LTI5LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -9277,6 +9457,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI1ZmQwMGJjYjUyZWUyMjc1NDhlYzdmYjExYjRmODczZDlmNGU0YjU2OTNhZmYyMTVjMGFiOWNkNmJiNTBlZjQ4IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0zMC9yc28tYXJjaGl2ZS0yMDI2LTA1LTMwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -9309,6 +9490,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI1ZmQwMGJjYjUyZWUyMjc1NDhlYzdmYjExYjRmODczZDlmNGU0YjU2OTNhZmYyMTVjMGFiOWNkNmJiNTBlZjQ4IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0zMC9yc28tYXJjaGl2ZS0yMDI2LTA1LTMwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -9341,6 +9523,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIxYmY2NWJmOTllZDcyMDBjZjhiOTJmYTcwODdjMmNmNTUwZDM1YmFkMmM3MzMyZmZhNGE1ZDE0ZjJhZWMxNzJiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0zMS9yc28tYXJjaGl2ZS0yMDI2LTA1LTMxLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -9373,6 +9556,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIxYmY2NWJmOTllZDcyMDBjZjhiOTJmYTcwODdjMmNmNTUwZDM1YmFkMmM3MzMyZmZhNGE1ZDE0ZjJhZWMxNzJiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNS0zMS9yc28tYXJjaGl2ZS0yMDI2LTA1LTMxLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -9405,6 +9589,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI0ODM1MmMyYjA0M2MyNmY2MjRmNTJjMzQzOGQ4Y2IwZDRjYTY4NDc4YzMxMDU0ODU4MjIxNDk5OWI1NzA0ODBiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wMS9yc28tYXJjaGl2ZS0yMDI2LTA2LTAxLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -9437,6 +9622,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI0ODM1MmMyYjA0M2MyNmY2MjRmNTJjMzQzOGQ4Y2IwZDRjYTY4NDc4YzMxMDU0ODU4MjIxNDk5OWI1NzA0ODBiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wMS9yc28tYXJjaGl2ZS0yMDI2LTA2LTAxLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -9469,6 +9655,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI5ZmMxYThhYjFjZWY4MjAxOGEyN2JiYjMzZjk5Yzg4NjAzMWE1MTEwMTY5MzBhNmFlNzRmNGFlMTQxZWRlODhjIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wMi9yc28tYXJjaGl2ZS0yMDI2LTA2LTAyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -9501,6 +9688,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI5ZmMxYThhYjFjZWY4MjAxOGEyN2JiYjMzZjk5Yzg4NjAzMWE1MTEwMTY5MzBhNmFlNzRmNGFlMTQxZWRlODhjIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wMi9yc28tYXJjaGl2ZS0yMDI2LTA2LTAyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -9533,6 +9721,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIyYjc4NzRmMGNiZjdmYzRmYTA5MzRjOWJkN2NiOTEyMzFhMDk3OGE1OWFlODg1ZGRlNzM0MjY0YTg3NzgyZmQyIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wMy9yc28tYXJjaGl2ZS0yMDI2LTA2LTAzLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -9565,6 +9754,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIyYjc4NzRmMGNiZjdmYzRmYTA5MzRjOWJkN2NiOTEyMzFhMDk3OGE1OWFlODg1ZGRlNzM0MjY0YTg3NzgyZmQyIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wMy9yc28tYXJjaGl2ZS0yMDI2LTA2LTAzLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -9597,6 +9787,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI3YWMyMWI2NTYxNjdkMjc0MmNhM2FhMWNjYTBkNDMzOGFkMmQ5MTY5N2NkY2U2Yjc5MjhhODI2MTIyZDExYTAzIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wNC9yc28tYXJjaGl2ZS0yMDI2LTA2LTA0LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -9629,6 +9820,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI3YWMyMWI2NTYxNjdkMjc0MmNhM2FhMWNjYTBkNDMzOGFkMmQ5MTY5N2NkY2U2Yjc5MjhhODI2MTIyZDExYTAzIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wNC9yc28tYXJjaGl2ZS0yMDI2LTA2LTA0LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -9661,6 +9853,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJlMjNkN2NkYTZiZWNlODIwZGU4YjZlMTMwYTFjZmRiZTk0YzQ0YTA4NTMwYzA3YjYyYjNkOWVkMDI3ZGJiNTk5IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wNS9yc28tYXJjaGl2ZS0yMDI2LTA2LTA1LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -9693,6 +9886,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJlMjNkN2NkYTZiZWNlODIwZGU4YjZlMTMwYTFjZmRiZTk0YzQ0YTA4NTMwYzA3YjYyYjNkOWVkMDI3ZGJiNTk5IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wNS9yc28tYXJjaGl2ZS0yMDI2LTA2LTA1LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6YnJvb2tyL3JzbyJ9",
@@ -9725,6 +9919,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJhNWY1NWFmNjI1MDE0ODY3NjI4NGYxNjkzZWVmZDdiN2M5ZWMyMDRmM2VhOWJlYWQyOGFmYjA3YzYzYzk5MzE4IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wNi9yc28tYXJjaGl2ZS0yMDI2LTA2LTA2LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -9757,6 +9952,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIzMWQyYzRhZjY0ZThjZGRhMjliMDc1ZjAzYWYzNjdmODA4ZDY5NmZhZTJlNDY2MTM0ZWMyZWY2OGZlZGY1OWZmIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9icm9va3IvUlNPL3JlbGVhc2VzL2Rvd25sb2FkL3Jzby1hcmNoaXZlLTIwMjYtMDYtMDYvcnNvLWFyY2hpdmUtMjAyNi0wNi0wNi12Mi50YXIuZ3oiXSwibm9kZUlkIjoiZ2l0aHViOmJyb29rci9yc28ifQ==",
@@ -9767,7 +9963,7 @@
       "blockHash": "0x65db01610ee89979f47778515b1311be5331fa0e311eee2cd9a7d8efd573f068",
       "claimFingerprint": "8ed8df3492974054cbfc0578cb192077d09e0a86ad3334a8201193893a07962b",
       "claimedNodeId": "github:ompub/rso",
-      "combinedSupportTdh": 1,
+      "combinedSupportTdh": 0,
       "contentHash": "0x086956fe197b16f2382187d462845b2e8aefc621fc1d8bec2f6a40aeaa30952b",
       "date": "2026-06-07",
       "directWitnessIdentity": "",
@@ -9777,9 +9973,9 @@
       "ethereumBlock": 11026788,
       "ethereumBlockHash": "0x8de430933d0f6a9a38880c5fc6f967ed951bfbf3254805f69f30f80f1a58b901",
       "logIndex": 778,
-      "nodeAuthorizationStatus": "verified",
-      "nodeBackingTdh": 1,
-      "nodeId": "github:ompub/rso",
+      "nodeAuthorizationStatus": "unverified",
+      "nodeBackingTdh": 0,
+      "nodeId": "",
       "onBehalfOf": "0x0000000000000000000000000000000000000000",
       "parentHash": "0x4fcf0ac19aee184905b1e4affb5a837c5b4b5c768e56fb991b86fd86ff54bc10",
       "publication": {
@@ -9789,6 +9985,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJmMTU1NTI2NjBmMzNiNTNmYWM5MDgxN2Y2ZTc2ZTQwNDk0ZTkwMDU1N2VlZTk3NGMxNzc2NGI5MGU3ODFkYjA5IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wNy9yc28tYXJjaGl2ZS0yMDI2LTA2LTA3LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -9821,6 +10018,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIyYTYwNmI3MzBiNmE0ZDFiNTE3Y2VmYTUwNDA3ODY3MzhjZTIyNzA3MTFlMzY0YTIyNjNmNjE2NTY0NmY3YTZmIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9icm9va3IvUlNPL3JlbGVhc2VzL2Rvd25sb2FkL3Jzby1hcmNoaXZlLTIwMjYtMDYtMDcvcnNvLWFyY2hpdmUtMjAyNi0wNi0wNy12Mi50YXIuZ3oiXSwibm9kZUlkIjoiZ2l0aHViOmJyb29rci9yc28ifQ==",
@@ -9853,6 +10051,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI1ODUyODZiMjNmNGFkZTdiOTIzZjNjMjQ5Y2NhMWVmM2I5NmNmM2NhMjEwZDFmNzk2YmMwNGZmYzdmNmU5MzA3IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wOC9yc28tYXJjaGl2ZS0yMDI2LTA2LTA4LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -9885,6 +10084,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJkN2JjZjYxY2NhMDA0NDZjZjJkOWZiNzFkNDA1NzI1ZmY1MDkwNmU2MmFlZGZjYjhiMDRlM2VlZGZjMjA4ZWUwIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9icm9va3IvUlNPL3JlbGVhc2VzL2Rvd25sb2FkL3Jzby1hcmNoaXZlLTIwMjYtMDYtMDgvcnNvLWFyY2hpdmUtMjAyNi0wNi0wOC12Mi50YXIuZ3oiXSwibm9kZUlkIjoiZ2l0aHViOmJyb29rci9yc28ifQ==",
@@ -9917,6 +10117,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0x161f6382f4f63d5d3c1ee8167c839497cc9c9ecadab53acb5ddf5f20926c8533",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI1YzZhMmQyODc3NDNiNTc2Y2U3NWZmYzRmNDhhZjQ0NTZlODQ5YjBmNTljZThkMTNjZjE2MzgyNzU1ZWEwZGNjIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0wOS9yc28tYXJjaGl2ZS0yMDI2LTA2LTA5LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -9949,6 +10150,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xb5bcb51fb3825952cf8f0846ac07194332f5f86d3344f63091d647c80ccc0167",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI2NzhiZjhhN2NjMTQzNTQ5YjU2NjQ1N2RhMDYzNjM1M2EyMjllNmM2ZmRkNWJlN2I1NGM4MTI3YTI4ZTJhZDcyIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9icm9va3IvUlNPL3JlbGVhc2VzL2Rvd25sb2FkL3Jzby1hcmNoaXZlLTIwMjYtMDYtMDkvcnNvLWFyY2hpdmUtMjAyNi0wNi0wOS12Mi50YXIuZ3oiXSwibm9kZUlkIjoiZ2l0aHViOmJyb29rci9yc28ifQ==",
@@ -9981,6 +10183,7 @@
         ],
         "nodeId": "github:ompub/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xea41996ae6da743a97e76a365a8681e97c10f21c44df9493af4e031763ead05f",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI1YTMxOWIyNTFjZDMxZjkwZDg5YjdmOTU4YzliZjZlZDA0NzlmY2FjYzY0MDY3OWE2ZjllNzRjYWExYzBmZmI2IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wNi0xMC9yc28tYXJjaGl2ZS0yMDI2LTA2LTEwLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0=",
@@ -10013,6 +10216,7 @@
         ],
         "nodeId": "github:brookr/rso"
       },
+      "publicationVerification": "",
       "submitter": "0x21e753651c9e3655e5deeddabbdd4a99629a2f6e",
       "transactionHash": "0xaf649d454b929fc45b6bb199b7a9df8aae1fbc65137a65ce4c072c0a603e9ad1",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiJkMDJkYmE4NjlhNTNjZDZiNWYxNDMyZWFkNThhZGEyZGZlNTAyZjMwMDU1ZTIzMjBjN2NhMWZiY2ZlZDNiOGFiIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9icm9va3IvUlNPL3JlbGVhc2VzL2Rvd25sb2FkL3Jzby1hcmNoaXZlLTIwMjYtMDYtMTAvcnNvLWFyY2hpdmUtMjAyNi0wNi0xMC50YXIuZ3oiXSwibm9kZUlkIjoiZ2l0aHViOmJyb29rci9yc28ifQ==",
@@ -10020,15 +10224,15 @@
     }
   ],
   "fromBlock": 11026268,
-  "indexedAt": "2026-06-10T04:48:22Z",
-  "latestChainBlock": 11027345,
+  "indexedAt": "2026-06-11T05:04:45Z",
+  "latestChainBlock": 11034584,
   "network": "sepolia",
   "profileURI": "https://om.pub/rso/doc-chain",
   "schema": "rso-docchain-index-v1",
-  "sweeperVerifiedClaimCount": 5,
+  "sweeperVerifiedClaimCount": 2,
   "tdhSupportDates": [
     "2026-06-07",
     "2026-06-08"
   ],
-  "toBlock": 11027333
+  "toBlock": 11034572
 }
