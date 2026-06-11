@@ -542,7 +542,7 @@
           float ca = cos(vAng), sa = sin(vAng);
           vec2 q = mat2(ca, sa, -sa, ca) * q0;                 // +x = nose / direction of travel
           float s1 = vSeed.x, s2 = vSeed.y;
-          float lod = smoothstep(11.0, 15.5, vPx);             // pure round dots until genuinely legible — no boxy mid-blend
+          float lod = smoothstep(8.5, 12.5, vPx);              // silhouettes resolve earlier — crisper focus carries them now
           float d;
           if (vShape < 0.5) {                                  // payload (generic) — bus + 1..6 fanned panels
             float a = mix(0.10, 0.15, f1(s1, 3.7));            // disc bus: satellites gleam round at distance
@@ -653,10 +653,10 @@
 
     // ── tier 2: the nearest objects fly as REAL generated solids — opaque, occluding,
     //    lit — while their sprites dim to a glow aura behind them ──
-    // pool sized to cover its WHOLE radius (measured ~125 objects within 48u, ~72
-    // within 40u): every object inside the shell goes solid — a clean distance
+    // pool sized to cover its WHOLE radius (measured ~125 objects within 48u → ~160
+    // within 52u): every object inside the shell goes solid — a clean distance
     // boundary, never pool luck deciding between equal neighbours
-    const MESH_POOL = mobile ? 28 : 72, MESH_DIST = mobile ? 29 : 40;
+    const MESH_POOL = mobile ? 48 : 160, MESH_DIST = mobile ? 34 : 52;
     const pool = Array.from({ length: MESH_POOL }, () => ({ idx: -1, group: null }));
     // one sun for the whole scene: low over the limb, upper-left — solids take raking
     // light and the atmosphere wears a dawn-bright arc on the same side
@@ -773,12 +773,16 @@
         const o = O[i] || (O[i] = {});
         o.band = band;
         o.R = B.r0 + (B.r1 - B.r0) * rand2(nid, 11);          // orbit radius within the shell
-        // cross-track plane from the REAL inclination when we have it: sun-sync, Starlink
-        // shells and retrograde birds weave at their own angles through the river
+        // cross-track plane from the REAL elements: the ascending node (RAAN) spreads a
+        // shell's planes across the whole fan — exactly its job in orbit, and it keeps a
+        // 10k-sat constellation from parading down one corridor — while inclination tilts
+        // the family; a whisper of jitter breaks exact coincidence
         let g;
-        if (src && src.inc) {
-          g = ((src.inc - 65) / 65) * (band === 0 ? 1.1 : 1.5) + (rand2(nid, 23) - 0.5) * 0.45;
-          g = Math.max(-2.0, Math.min(2.0, g));
+        if (src && (src.raan || src.inc)) {
+          g = ((src.raan || 0) / 360 - 0.5) * (band === 0 ? 2.3 : 2.7)
+            + ((src.inc - 65) / 65) * 0.35
+            + (rand2(nid, 23) - 0.5) * 0.18;
+          g = Math.max(-2.1, Math.min(2.1, g));
         } else {
           g = (rand2(nid, 23) - 0.5) * (band === 0 ? 1.5 : 2.1);
         }
@@ -894,7 +898,7 @@
         const dist = Math.sqrt(ddx * ddx + ddy * ddy + ddz * ddz);
         const fadeBehind = 1 - smooth(6, 46, ddz);          // fade once it slips behind the camera
         const fadeFar = 1 - smooth(560, 780, dist);          // fade into the deep distance
-        const focus = 1 - smooth(32, 170, dist);             // near → crisp point, far → soft glow
+        const focus = 1 - smooth(48, 260, dist);             // crisp much deeper — mid-field shapes read as shapes, not soft cubes
         if (dist < MESH_DIST && o.meta && fadeBehind > 0.25) meshCand.push({ i, d: dist });
         const tw = 0.72 + 0.28 * Math.sin(twBase + o.size * 11.0 + i);
         pAlpha[i] = Math.max(0, fadeBehind * fadeFar * tw * o.aMul * (1 - 0.5 * warpC));
@@ -1119,6 +1123,7 @@
           country: row.COUNTRY_CODE || "—", launch: String(row.LAUNCH_DATE || "").slice(0, 10), decay,
           // orbital elements that shape each object's identity in the field
           inc: Number(row.INCLINATION) || 0, ecc: Number(row.ECCENTRICITY) || 0,
+          raan: Number(row.RA_OF_ASC_NODE) || 0,
           rcs: row.RCS_SIZE || "", bstar: Math.abs(Number(row.BSTAR)) || 0,
           anno: annoSum ? annoSum.byId.get(id) || null : null };
       });
@@ -1573,14 +1578,23 @@
     // ── click to inspect: nearest projected object to the tap ──
     const _proj = new THREE.Vector3();
     function inspectAt(cx, cy) {
-      let best = -1, bestD = 28 * 28;
+      // a tap means "that one, the one I can SEE": within the radius, the nearer and
+      // visually bigger object beats a distant speck that happens to sit pixel-perfect
+      let best = -1, bestScore = Infinity;
+      const R2 = 34 * 34;
+      const solid = new Set(pool.map((s) => s.idx));   // solids stay tappable though their sprite is dimmed
       for (let i = 0; i < FIELD_N; i++) {
-        const o = O[i]; if (!o || pAlpha[i] < 0.08) continue;
+        const o = O[i]; if (!o || (pAlpha[i] < 0.08 && !solid.has(i))) continue;
         _proj.set(pPos[i * 3], pPos[i * 3 + 1], pPos[i * 3 + 2]).project(camera);
         if (_proj.z > 1) continue;
         const sx = (_proj.x * 0.5 + 0.5) * innerWidth, sy = (-_proj.y * 0.5 + 0.5) * innerHeight;
-        const d = (sx - cx) * (sx - cx) + (sy - cy) * (sy - cy);
-        if (d < bestD) { bestD = d; best = i; }
+        const d2 = (sx - cx) * (sx - cx) + (sy - cy) * (sy - cy);
+        if (d2 > R2) continue;
+        const dx = pPos[i * 3] - camera.position.x, dy = pPos[i * 3 + 1] - camera.position.y, dz = pPos[i * 3 + 2] - camera.position.z;
+        // camera distance is the primary key — a dense field always has SOME far speck
+        // a pixel from the tap, and that is never the one you meant
+        const score = Math.sqrt(dx * dx + dy * dy + dz * dz) * (0.6 + 0.4 * d2 / R2);
+        if (score < bestScore) { bestScore = score; best = i; }
       }
       if (best < 0) { state.selIdx = -1; $("inspector").classList.remove("visible"); vigHide(); return; }
       state.selIdx = best;

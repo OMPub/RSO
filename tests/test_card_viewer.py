@@ -142,7 +142,7 @@ class CardArtifactTest(unittest.TestCase):
         # nearest objects fly as real lit solids; sprites dim to an aura behind them.
         # The pool covers its WHOLE radius (full shell, no pool luck) and the model
         # stage lives INSIDE the inspector, left of the text.
-        self.assertIn("const MESH_POOL = mobile ? 28 : 72", self.html)
+        self.assertIn("const MESH_POOL = mobile ? 48 : 160", self.html)
         self.assertIn('id="insp-stage"', self.html)
         self.assertIn("altitude regime: ${BAND_FULL[o.band]}", self.html)
         # one sun for the field and a dawn-bright arc on the sunward limb
@@ -165,9 +165,13 @@ class CardArtifactTest(unittest.TestCase):
         # …with the near-plane guarded and NaNs trapped before they paint the quad
         self.assertIn("step(0.05, clip.w) * step(0.05, clipP.w)", self.html)
         self.assertIn("d != d) discard", self.html)
-        # real elements drive placement: inclination weave + eccentric breathing
+        # real elements drive placement: RAAN spreads the planes, inclination tilts
+        # the family, eccentricity breathes the radius
         self.assertIn("Number(row.INCLINATION)", self.html)
+        self.assertIn("Number(row.RA_OF_ASC_NODE)", self.html)
         self.assertIn("o.eccV", self.html)
+        # taps prefer the near object over a pixel-perfect far speck
+        self.assertIn("camera distance is the primary key", self.html)
 
     def test_inspector_vignette_shares_context_and_seeds(self):
         self.assertIn("buildVigShape", self.html)
