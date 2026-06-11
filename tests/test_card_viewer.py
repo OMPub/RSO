@@ -157,7 +157,7 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn(">= 55000 ? 10 : 4", self.html)
         self.assertIn("STARLINK v2 mini — bus amidships, TWO long arrays", self.html)
         self.assertIn("updateMeshPool(meshCand)", self.html)
-        self.assertIn("pAlpha[s.idx] *= 0.22", self.html)
+        self.assertIn("pAlpha[s.idx] *= 0.25", self.html)
         # inspector values are bare, each explained by a hover/tap tooltip
         self.assertIn('`<span title="${why}">', self.html)
 
