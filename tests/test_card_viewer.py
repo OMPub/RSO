@@ -109,7 +109,7 @@ class CardArtifactTest(unittest.TestCase):
         # the famous constellations get their real silhouettes, in field and vignette alike
         self.assertIn("function payloadShape(", self.html)
         for marker in ('n.startsWith("STARLINK")', 'n.startsWith("ONEWEB")',
-                       'n.includes("IRIDIUM")', "STARLINK — flat bus, one LONG array off one end",
+                       'n.includes("IRIDIUM")', "STARLINK v1 — flat bus, one LONG array off one end",
                        "ONEWEB — box-wing", "IRIDIUM — two wings + the big canted antenna",
                        "GEO comsat — long symmetric wings + dish"):
             self.assertIn(marker, self.html)
@@ -139,8 +139,18 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn("sampleByBand(objs, MAXF, date)", self.html)
 
     def test_tier2_solids_and_tooltips(self):
-        # nearest objects fly as real lit solids; sprites dim to an aura behind them
-        self.assertIn("const MESH_POOL", self.html)
+        # nearest objects fly as real lit solids; sprites dim to an aura behind them.
+        # The pool covers its WHOLE radius (full shell, no pool luck) and the model
+        # stage lives INSIDE the inspector, left of the text.
+        self.assertIn("const MESH_POOL = mobile ? 28 : 72", self.html)
+        self.assertIn('id="insp-stage"', self.html)
+        self.assertIn("altitude regime: ${BAND_FULL[o.band]}", self.html)
+        # one sun for the field and a dawn-bright arc on the sunward limb
+        self.assertIn("const SUN = new THREE.Vector3", self.html)
+        self.assertIn("dawn", self.html)
+        # Starlink generations split by NORAD id; arrays articulate per-sat
+        self.assertIn(">= 55000 ? 10 : 4", self.html)
+        self.assertIn("STARLINK v2 mini — bus amidships, TWO long arrays", self.html)
         self.assertIn("updateMeshPool(meshCand)", self.html)
         self.assertIn("pAlpha[s.idx] *= 0.22", self.html)
         # inspector values are bare, each explained by a hover/tap tooltip

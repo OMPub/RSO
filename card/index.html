@@ -115,19 +115,19 @@
     .hint { position: absolute; left: 50%; bottom: calc(var(--safe-bottom) + 26px); transform: translateX(-50%); color: rgba(219,240,234,0.6); font-size: 8px; text-align: center; transition: opacity 700ms ease; }
     .hint.gone { opacity: 0; }
 
-    /* object inspector */
-    .inspector { position: absolute; left: 50%; bottom: calc(var(--safe-bottom) + 96px); width: min(360px, 80vw); transform: translateX(-50%) translateY(8px);
-      padding: 11px 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; backdrop-filter: blur(7px);
-      text-align: center; opacity: 0; pointer-events: none; transition: opacity 200ms ease, transform 200ms ease; z-index: 3; }
+    /* object inspector — sits under the date; the model stage is a transparent window
+       at the LEFT of the box (the GL vignette renders behind it, on a cleared dark rect) */
+    .inspector { position: absolute; left: 50%; top: calc(var(--safe-top) + 118px); width: min(430px, 92vw); transform: translateX(-50%) translateY(-8px);
+      display: flex; gap: 10px; align-items: stretch;
+      opacity: 0; pointer-events: none; transition: opacity 200ms ease, transform 200ms ease; z-index: 3; }
     .inspector.visible { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }   /* hover/tap tooltips need a live panel */
+    .insp-stage { flex: 0 0 92px; min-height: 92px; border: 1px solid var(--line); border-radius: 4px; }
+    .insp-body { flex: 1; min-width: 0; padding: 11px 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; backdrop-filter: blur(7px); text-align: left; }
     .insp-label { color: var(--accent); font-size: 8px; }
     .insp-name { margin-top: 5px; font-size: 14px; line-height: 1.1; }
     .insp-meta { margin-top: 6px; color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; }
     .insp-obs { margin-top: 5px; color: var(--seal, #8cffd0); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 9px; letter-spacing: 0.05em; }
     .insp-obs:empty { display: none; }
-    /* frame around the GL-rendered vignette stage above the inspector */
-    .vig-chip { position: fixed; z-index: 2; width: 92px; height: 92px; display: none; pointer-events: none;
-      border: 1px solid var(--line); border-radius: 4px; box-shadow: 0 4px 22px rgba(0,0,0,0.5); }
     /* clickable line inside a rotating prism (e.g. the contract address) */
     .prism-link { pointer-events: auto; color: var(--muted); text-decoration: none; border-bottom: 1px dotted rgba(154,169,255,0.45); transition: color 150ms, border-color 150ms; }
     .prism-link:hover { color: var(--ink); border-color: var(--accent); }
@@ -185,7 +185,8 @@
     body.zen .hud { opacity: 0; pointer-events: none; transition: opacity 400ms ease; }
 
     @keyframes blink { 50% { opacity: 0.35; } }
-    @media (max-width: 760px) { .brand-sub { display: none; } .record-date { top: calc(var(--safe-top) + 60px); width: 82vw; } }
+    @media (max-width: 760px) { .brand-sub { display: none; } .record-date { top: calc(var(--safe-top) + 60px); width: 82vw; }
+      .inspector { top: calc(var(--safe-top) + 182px); } }
     /* the agreement line is the soul of the piece — keep it down to phone width,
        where it would collide with the readout column */
     @media (max-width: 520px) { .witness { display: none; } }
@@ -215,7 +216,8 @@
       .date { font-size: clamp(14px, 7.5vw, 22px); margin-top: 4px; }
       .brand-name { font-size: 9px; }
       .brand-mark { width: 7px; height: 7px; margin-top: 2px; }
-      .inspector { width: min(88vw, 300px); bottom: calc(var(--safe-bottom) + 40px); }
+      .inspector { width: 94vw; }
+      .insp-stage { flex-basis: 76px; min-height: 76px; }
       .mode-toast { font-size: 9px; }
     }
   </style>
@@ -332,10 +334,13 @@
     </section>
 
     <section class="inspector" id="inspector">
-      <div class="insp-label" id="insp-label">Tracked object</div>
-      <div class="insp-name" id="insp-name">—</div>
-      <div class="insp-meta" id="insp-meta">—</div>
-      <div class="insp-obs" id="insp-obs"></div>
+      <div class="insp-stage" id="insp-stage"></div>
+      <div class="insp-body">
+        <div class="insp-label" id="insp-label">Tracked object</div>
+        <div class="insp-name" id="insp-name">—</div>
+        <div class="insp-meta" id="insp-meta">—</div>
+        <div class="insp-obs" id="insp-obs"></div>
+      </div>
     </section>
 
     <div class="timebar"><div class="timebar-fill" id="timebar-fill"></div></div>
@@ -344,7 +349,6 @@
   <div class="jump" id="jump"><div class="jump-inner"><div class="jump-date" id="jump-date">—</div><div class="jump-label">Traversing the archive</div></div></div>
 
   <!-- kept outside .hud so they survive Zen mode -->
-  <div class="vig-chip" id="vig-chip"></div>
   <div class="mode-toast" id="mode-toast"></div>
   <button class="tilt-chip" id="tilt-chip">⊕ tilt&nbsp;to&nbsp;look</button>
 
@@ -583,10 +587,13 @@
               float dg = abs(mod(atan(q.y, q.x) - ga + 3.14159, 6.28318) - 3.14159);
               d = max(d, gw - dg);                             // carve the gap
             }
-          } else if (vShape < 4.5) {                           // STARLINK — flat bus, one LONG array off one end (open book, not a roof dish)
+          } else if (vShape < 4.5) {                           // STARLINK v1 — flat bus, one LONG array off one end (open book, not a roof dish)
             d = sdBox(q - vec2(0.0, -0.30), vec2(0.115, 0.045)) - 0.01;
+            float at = (f1(s2, 11.7) - 0.5) * 0.55;            // seeded array articulation — each tracks its own sun
+            float ca2 = cos(at), sa2 = sin(at);
+            vec2 qa = mat2(ca2, sa2, -sa2, ca2) * (q - vec2(0.0, 0.065));
             float aw = mix(0.075, 0.095, f1(s2, 7.7));         // array narrower than the bus, much longer
-            d = min(d, sdBox(q - vec2(0.0, 0.065), vec2(aw, mix(0.30, 0.36, f1(s1, 9.1)))));
+            d = min(d, sdBox(qa, vec2(aw, mix(0.30, 0.36, f1(s1, 9.1)))));
           } else if (vShape < 5.5) {                           // GEO comsat — long symmetric wings + dish
             float a = mix(0.09, 0.12, f1(s1, 3.7));
             d = sdBox(q, vec2(a, a)) - 0.02;
@@ -605,11 +612,17 @@
           } else if (vShape < 8.5) {                           // ONEWEB — box-wing: small bus, two long narrow arrays
             d = sdBox(q, vec2(0.07, 0.085)) - 0.015;
             d = min(d, sdBox(vec2(abs(q.x) - 0.26, q.y), vec2(0.17, mix(0.03, 0.042, f1(s2, 6.1)))));
-          } else {                                             // IRIDIUM — two wings + the big canted antenna
+          } else if (vShape < 9.5) {                           // IRIDIUM — two wings + the big canted antenna
             d = sdBox(q, vec2(0.10, 0.08)) - 0.015;
             d = min(d, sdBox(vec2(abs(q.x) - 0.22, q.y), vec2(0.10, 0.05)));
             vec2 qa = mat2(0.94, -0.34, 0.34, 0.94) * (q - vec2(0.0, -0.17));
             d = min(d, sdBox(qa, vec2(0.085, 0.115)));
+          } else {                                             // STARLINK v2 mini — bus amidships, TWO long arrays
+            d = sdBox(q, vec2(0.13, 0.05)) - 0.012;
+            float at = (f1(s2, 11.7) - 0.5) * 0.45;            // seeded articulation, same sun-tracking story
+            float ca2 = cos(at), sa2 = sin(at);
+            vec2 qq = mat2(ca2, sa2, -sa2, ca2) * q;
+            d = min(d, sdBox(vec2(qq.x, abs(qq.y) - 0.26), vec2(mix(0.06, 0.08, f1(s2, 7.7)), 0.17)));
           }
           d = mix(length(q0), d, lod);                         // tiny = plain dot; near = its own machine
           if (d > 0.55 || d != d) discard;                     // d!=d traps any NaN before it paints the quad
@@ -640,10 +653,16 @@
 
     // ── tier 2: the nearest objects fly as REAL generated solids — opaque, occluding,
     //    lit — while their sprites dim to a glow aura behind them ──
-    const MESH_POOL = mobile ? 6 : 14, MESH_DIST = 64;
+    // pool sized to cover its WHOLE radius (measured ~125 objects within 48u, ~72
+    // within 40u): every object inside the shell goes solid — a clean distance
+    // boundary, never pool luck deciding between equal neighbours
+    const MESH_POOL = mobile ? 28 : 72, MESH_DIST = mobile ? 29 : 40;
     const pool = Array.from({ length: MESH_POOL }, () => ({ idx: -1, group: null }));
+    // one sun for the whole scene: low over the limb, upper-left — solids take raking
+    // light and the atmosphere wears a dawn-bright arc on the same side
+    const SUN = new THREE.Vector3(-0.55, 0.42, -0.72).normalize();
     scene.add(new THREE.AmbientLight(0x46525e, 0.6));
-    const fieldSun = new THREE.DirectionalLight(0xffffff, 1.9); fieldSun.position.set(0.4, 1.0, 0.6); scene.add(fieldSun);
+    const fieldSun = new THREE.DirectionalLight(0xffffff, 1.9); fieldSun.position.copy(SUN).multiplyScalar(10); scene.add(fieldSun);
     const _vel = new THREE.Vector3(), _qroll = new THREE.Quaternion(), _AX = new THREE.Vector3(1, 0, 0);
     function disposeGroup(g) { g.traverse((m) => { if (m.isMesh) { m.geometry.dispose(); m.material.dispose(); } }); scene.remove(g); }
     function updateMeshPool(cands) {
@@ -656,7 +675,7 @@
       for (const wi of want) {
         if (pool.some((s) => s.idx === wi)) continue;
         const free = pool.find((s) => s.idx < 0);
-        if (!free || builds >= 2) continue;                       // spread construction across frames
+        if (!free || builds >= 4) continue;                       // spread construction across frames
         builds++;
         if (free.group) disposeGroup(free.group);
         free.group = buildVigShape(O[wi]);
@@ -673,7 +692,9 @@
         if (_vel.lengthSq() > 1e-10) {
           _vel.normalize();
           s.group.quaternion.setFromUnitVectors(_AX, _vel);
-          if (o.klass >= 2) { _qroll.setFromAxisAngle(_vel, state.time * pSeed[s.idx * 3 + 2]); s.group.quaternion.premultiply(_qroll); }
+          // debris/unknowns tumble; Starlinks roll slowly about their track — the
+          // identical hardware reads distinct by attitude and spin
+          if (o.klass >= 2 || o.shape === 4 || o.shape === 10) { _qroll.setFromAxisAngle(_vel, state.time * pSeed[s.idx * 3 + 2]); s.group.quaternion.premultiply(_qroll); }
         }
         s.group.visible = true;
         pAlpha[s.idx] *= 0.22;                                    // sprite recedes to an aura behind the solid
@@ -719,7 +740,7 @@
     function payloadShape(meta, band) {
       if (!meta) return 0;
       const n = (meta.name || "").toUpperCase();
-      if (n.startsWith("STARLINK")) return 4;                       // flat slab + one broad sail
+      if (n.startsWith("STARLINK")) return (parseInt(meta.id, 10) || 0) >= 55000 ? 10 : 4;  // gen bucket: v2 mini flies two arrays
       if (n.startsWith("ONEWEB")) return 8;                         // box-wing: small bus, two long narrow arrays
       if (n.includes("IRIDIUM")) return 9;                          // two wings + the big canted antenna panel
       if (/^(NAVSTAR|GPS |GLONASS|GALILEO|BEIDOU|QZS|IRNSS|NVS)/.test(n)) return 7;  // navsat: bus + wings + dish
@@ -774,8 +795,12 @@
         o.anno = src ? src.anno || null : null;
         o.shape = klass === 0 ? payloadShape(src, band) : klass === 1 ? 1 : klass === 2 ? 2 : 3;
         pShape[i] = o.shape;
-        // silhouette seeds + tumble: debris spins hard, unknowns drift, hardware holds attitude
-        const tum = (klass === 2 ? 0.5 + 1.6 * rand2(nid, 97) : klass >= 3 ? 0.25 + 0.7 * rand2(nid, 97) : 0.05 + 0.08 * rand2(nid, 97))
+        // silhouette seeds + tumble: debris spins hard, unknowns drift, hardware holds
+        // attitude — except Starlinks, whose identical airframes read distinct by spin
+        const tum = (klass === 2 ? 0.5 + 1.6 * rand2(nid, 97)
+          : klass >= 3 ? 0.25 + 0.7 * rand2(nid, 97)
+          : (o.shape === 4 || o.shape === 10) ? 0.12 + 0.3 * rand2(nid, 97)
+          : 0.05 + 0.08 * rand2(nid, 97))
           * (rand2(nid, 109) < 0.5 ? -1 : 1);
         pSeed[i * 3] = s1; pSeed[i * 3 + 1] = s2; pSeed[i * 3 + 2] = tum;
         o.country = src ? (src.country || "—") : "—";
@@ -935,10 +960,10 @@
       const atmo = new THREE.Mesh(new THREE.SphereGeometry(1000, 48, 32),
         new THREE.ShaderMaterial({
           transparent: true, depthWrite: false, depthTest: true, side: THREE.BackSide, blending: THREE.AdditiveBlending,
-          uniforms: { uCam: { value: new THREE.Vector3() }, uEC: { value: new THREE.Vector3(EC.x, EC.y, EC.z) }, uER: { value: ER }, uTop: { value: ER + ATM_H } },
+          uniforms: { uCam: { value: new THREE.Vector3() }, uEC: { value: new THREE.Vector3(EC.x, EC.y, EC.z) }, uER: { value: ER }, uTop: { value: ER + ATM_H }, uSun: { value: SUN } },
           vertexShader: `varying vec3 vW; void main(){ vW = (modelMatrix*vec4(position,1.0)).xyz; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.0);} `,
           fragmentShader: `
-            uniform vec3 uCam, uEC; uniform float uER, uTop; varying vec3 vW;
+            uniform vec3 uCam, uEC; uniform float uER, uTop; uniform vec3 uSun; varying vec3 vW;
             void main(){
               vec3 rd = normalize(vW - uCam);
               vec3 oc = uEC - uCam;
@@ -947,7 +972,11 @@
               float g = smoothstep(uTop, uER, b) * step(0.0, tca);  // 1 grazing the surface → 0 by the top of atmosphere
               g = pow(g, 1.4);
               vec3 col = mix(vec3(0.28,0.48,0.95), vec3(0.64,0.82,1.0), g);
-              gl_FragColor = vec4(col, g * 0.9);
+              // the same sun that lights the solids: a quiet dawn-bright arc on the
+              // sunward limb, dimming around to the night side
+              vec3 graze = normalize(uCam + rd * max(tca, 0.0) - uEC);
+              float dawn = 0.72 + 0.50 * smoothstep(-0.2, 0.8, dot(graze, uSun));
+              gl_FragColor = vec4(col * dawn, g * 0.9 * (0.82 + 0.18 * dawn));
             }`
         }));
       atmo.frustumCulled = false;
@@ -1431,9 +1460,15 @@
       };
       if (o.klass === 0) {                                   // payload: archetype-keyed, like the field
         const shape = o.shape || 0;
-        if (shape === 4) {                                   // STARLINK — flat bus + one LONG near-coplanar array (open book)
+        if (shape === 4) {                                   // STARLINK v1 — flat bus + one LONG array, seeded sun-tracking fold
           add(new THREE.BoxGeometry(0.40, 0.045, 0.30), vigMat(0), -0.42, 0, 0);
-          add(new THREE.BoxGeometry(0.85 + R(9) * 0.12, 0.016, 0.36), vigMat(0, true), 0.24, 0.035, 0, 0, 0, 0.09);
+          add(new THREE.BoxGeometry(0.85 + R(9) * 0.12, 0.016, 0.36), vigMat(0, true), 0.24, 0.035, 0, 0, 0, 0.06 + R(27) * 0.5);
+        } else if (shape === 10) {                           // STARLINK v2 mini — bus amidships, TWO arrays
+          add(new THREE.BoxGeometry(0.46, 0.05, 0.34), vigMat(0));
+          const fold = 0.05 + R(27) * 0.45;
+          const arr = new THREE.BoxGeometry(0.74, 0.016, 0.36);
+          add(arr, vigMat(0, true),  0.58, 0.03, 0, 0, 0,  fold);
+          add(arr, vigMat(0, true), -0.58, 0.03, 0, 0, 0, -fold);
         } else if (shape === 5) {                            // GEO comsat — long symmetric wings + dish
           add(new THREE.BoxGeometry(0.36, 0.32, 0.30), vigMat(0));
           const wing = new THREE.BoxGeometry(0.95 + R(7) * 0.2, 0.015, 0.26);
@@ -1556,10 +1591,11 @@
       // bare values, each explained by its hover/tap tooltip — no inline labels
       const esc = (s) => String(s).replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c]));
       const tip = (txt, why) => `<span title="${why}">${esc(txt)}</span>`;
+      const BAND_FULL = ["low Earth orbit", "medium Earth orbit", "geosynchronous Earth orbit"];
       $("insp-meta").innerHTML = m
         ? [
             tip(`NORAD ${m.id}`, "NORAD catalog number"),
-            tip(bandName, "altitude regime"),
+            tip(bandName, `altitude regime: ${BAND_FULL[o.band]}`),
             tip(m.type, "object type"),
             m.country && m.country !== "—" ? tip(m.country, "country / operator code") : null,
             m.launch ? tip(m.launch, "launch date") : null,
@@ -1669,22 +1705,21 @@
 
       // the tapped object's generative self, slowly turning above the inspector —
       // one extra scissored draw only while the panel is open
-      const chip = $("vig-chip");
       if (vig.active && vig.group) {
         vig.group.rotation.y += dt * (reduced ? 0.22 : 0.7);
-        const r = $("inspector").getBoundingClientRect();
-        const sz = 92, vx = r.left + r.width / 2 - sz / 2, vy = innerHeight - r.top + 6;
-        chip.style.display = "block";
-        chip.style.left = `${vx}px`; chip.style.top = `${r.top - 6 - sz}px`;
+        // the model renders behind the inspector's transparent stage window, on a
+        // GL-cleared dark rect — never washed out by whatever the field shows there
+        const r = $("insp-stage").getBoundingClientRect();
+        const vx = r.left + 1, vy = innerHeight - r.bottom + 1, sz = Math.max(8, r.width - 2);
         renderer.autoClear = false;
         renderer.setScissorTest(true);
         renderer.setViewport(vx, vy, sz, sz); renderer.setScissor(vx, vy, sz, sz);
-        renderer.clear(true, true);                            // dark stage — the model never washes out against the limb
+        renderer.clear(true, true);
         renderer.render(vig.scene, vig.camera);
         renderer.setScissorTest(false);
         renderer.setViewport(0, 0, innerWidth, innerHeight);
         renderer.autoClear = true;
-      } else if (chip.style.display !== "none") chip.style.display = "none";
+      }
     }
     function resize() { renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5)); renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.fov = innerWidth <= 760 ? 80 : 72; camera.updateProjectionMatrix(); pointMat.uniforms.uPixel.value = renderer.getPixelRatio(); pointMat.uniforms.uAspect.value = innerWidth / innerHeight; }
     addEventListener("resize", resize);
