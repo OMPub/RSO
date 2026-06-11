@@ -655,54 +655,107 @@
 
     // ── tier 2: the nearest objects fly as REAL generated solids — opaque, occluding,
     //    lit — while their sprites dim to a glow aura behind them ──
-    // pool sized to cover its WHOLE radius (measured ~125 objects within 48u → ~160
-    // within 52u): every object inside the shell goes solid — a clean distance
-    // boundary, never pool luck deciding between equal neighbours
-    const MESH_POOL = mobile ? 48 : 160, MESH_DIST = mobile ? 34 : 52;
-    const pool = Array.from({ length: MESH_POOL }, () => ({ idx: -1, group: null }));
+    // EVERY object within the solid shell flies as a real lit body, all of them baked
+    // into ONE BatchedMesh — a single draw call whether 50 solids or 700. The shell is
+    // sized so its expected population fits the slot count (measured ~904 within 100u):
+    // full coverage, clean distance boundary, never pool luck.
+    const MESH_POOL = mobile ? 260 : 720, MESH_DIST = mobile ? 60 : 88;
+    const RES_V = 700, RES_I = 2100;            // uniform per-slot reservations → freed slots refit anything
     // one sun for the whole scene: low over the limb, upper-left — solids take raking
     // light and the atmosphere wears a dawn-bright arc on the same side
     const SUN = new THREE.Vector3(-0.55, 0.42, -0.72).normalize();
     scene.add(new THREE.AmbientLight(0x46525e, 0.6));
     const fieldSun = new THREE.DirectionalLight(0xffffff, 1.9); fieldSun.position.copy(SUN).multiplyScalar(10); scene.add(fieldSun);
-    const _vel = new THREE.Vector3(), _qroll = new THREE.Quaternion(), _AX = new THREE.Vector3(1, 0, 0);
-    function disposeGroup(g) { g.traverse((m) => { if (m.isMesh) { m.geometry.dispose(); m.material.dispose(); } }); scene.remove(g); }
+    const batch = new THREE.BatchedMesh(MESH_POOL, MESH_POOL * RES_V, MESH_POOL * RES_I,
+      new THREE.MeshPhongMaterial({ vertexColors: true, flatShading: true, shininess: 26 }));
+    scene.add(batch);
+    const pool = Array.from({ length: MESH_POOL }, () => ({ idx: -1, bid: -1, iid: -1 }));
+    // r180 never reuses freed buffer RANGES (only optimize() compacts), so churn via
+    // add/delete exhausts the buffer at exactly MESH_POOL adds. Instead: reserve every
+    // slot ONCE against a placeholder, then rewrite contents in place with setGeometryAt.
+    {
+      const ph = new THREE.BufferGeometry();
+      ph.setAttribute("position", new THREE.Float32BufferAttribute([0, 0, 0, 0, 0, 0, 0, 0, 0], 3));
+      ph.setAttribute("normal", new THREE.Float32BufferAttribute([0, 1, 0, 0, 1, 0, 0, 1, 0], 3));
+      ph.setAttribute("color", new THREE.Float32BufferAttribute([0, 0, 0, 0, 0, 0, 0, 0, 0], 3));
+      ph.setIndex([0, 1, 2]);
+      for (const s of pool) s.bid = batch.addGeometry(ph, RES_V, RES_I);
+    }
+    const _vel = new THREE.Vector3(), _qroll = new THREE.Quaternion(), _quat = new THREE.Quaternion(), _AX = new THREE.Vector3(1, 0, 0);
+    const _bm = new THREE.Matrix4(), _bp = new THREE.Vector3(), _bs = new THREE.Vector3(), _nm = new THREE.Matrix3(), _bv = new THREE.Vector3();
+    // bake a generative Group into one vertex-coloured geometry the batch can swallow
+    function bakeSolid(o) {
+      const g = buildVigShape(o);
+      const pos = [], nor = [], col = [], idx = [];
+      let base = 0;
+      g.traverse((m) => {
+        if (!m.isMesh) return;
+        m.updateMatrix();
+        _nm.getNormalMatrix(m.matrix);
+        const p = m.geometry.getAttribute("position"), n = m.geometry.getAttribute("normal");
+        const c = m.material.color;
+        for (let i = 0; i < p.count; i++) {
+          _bv.set(p.getX(i), p.getY(i), p.getZ(i)).applyMatrix4(m.matrix);
+          pos.push(_bv.x, _bv.y, _bv.z);
+          _bv.set(n.getX(i), n.getY(i), n.getZ(i)).applyMatrix3(_nm).normalize();
+          nor.push(_bv.x, _bv.y, _bv.z);
+          col.push(c.r, c.g, c.b);
+        }
+        const ix = m.geometry.index;
+        if (ix) for (let i = 0; i < ix.count; i++) idx.push(base + ix.getX(i));
+        else for (let i = 0; i < p.count; i++) idx.push(base + i);
+        base += p.count;
+        m.geometry.dispose(); m.material.dispose();
+      });
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+      geo.setAttribute("normal", new THREE.Float32BufferAttribute(nor, 3));
+      geo.setAttribute("color", new THREE.Float32BufferAttribute(col, 3));
+      geo.setIndex(idx);
+      return geo;
+    }
     function updateMeshPool(cands) {
-      if (state.warpBlend > 0.25) { for (const s of pool) if (s.group) s.group.visible = false; return; }
+      batch.visible = state.warpBlend <= 0.25;
+      if (!batch.visible) return;
       cands.sort((a, b) => a.d - b.d);
       const want = cands.slice(0, MESH_POOL).map((c) => c.i);
       const wantSet = new Set(want);
-      for (const s of pool) if (s.idx >= 0 && !wantSet.has(s.idx)) {
-        if (s.group) s.group.visible = false;
-        pShape[s.idx] = O[s.idx] ? O[s.idx].shape : 0;            // hand the sprite its silhouette back
-        s.idx = -1;
+      const claimed = new Set();
+      for (const s of pool) {
+        if (s.idx >= 0 && !wantSet.has(s.idx)) {
+          if (s.iid >= 0) batch.deleteInstance(s.iid);
+          pShape[s.idx] = O[s.idx] ? O[s.idx].shape : 0;          // hand the sprite its silhouette back
+          s.idx = -1; s.iid = -1;                                 // the geometry SLOT is permanent — only contents change
+        }
+        if (s.idx >= 0) claimed.add(s.idx);
       }
       let builds = 0;
       for (const wi of want) {
-        if (pool.some((s) => s.idx === wi)) continue;
+        if (claimed.has(wi)) continue;
         const free = pool.find((s) => s.idx < 0);
-        if (!free || builds >= 4) continue;                       // spread construction across frames
+        if (!free || builds >= 6) continue;                       // spread construction across frames
         builds++;
-        if (free.group) disposeGroup(free.group);
-        free.group = buildVigShape(O[wi]);
-        free.group.scale.setScalar(0.42 * O[wi].baseSize);
-        scene.add(free.group);
+        const geo = bakeSolid(O[wi]);
+        if (geo.getAttribute("position").count > RES_V) continue; // never overflow a slot
+        batch.setGeometryAt(free.bid, geo);                       // rewrite the reserved range in place
+        free.iid = batch.addInstance(free.bid);
         free.idx = wi;
       }
       for (const s of pool) {
-        if (s.idx < 0 || !s.group) continue;
+        if (s.idx < 0 || s.iid < 0) continue;
         const i3 = s.idx * 3, o = O[s.idx];
-        s.group.position.set(pPos[i3], pPos[i3 + 1], pPos[i3 + 2]);
-        // nose along the real direction of travel; debris and unknowns roll about it
+        _bp.set(pPos[i3], pPos[i3 + 1], pPos[i3 + 2]);
+        _bs.setScalar(0.42 * o.baseSize);
+        // nose along the real direction of travel; debris and unknowns tumble about it,
+        // Starlinks roll slowly — identical hardware, its own attitude
         _vel.set(pPos[i3] - pPrev[i3], pPos[i3 + 1] - pPrev[i3 + 1], pPos[i3 + 2] - pPrev[i3 + 2]);
         if (_vel.lengthSq() > 1e-10) {
           _vel.normalize();
-          s.group.quaternion.setFromUnitVectors(_AX, _vel);
-          // debris/unknowns tumble; Starlinks roll slowly about their track — the
-          // identical hardware reads distinct by attitude and spin
-          if (o.klass >= 2 || o.shape === 4 || o.shape === 10) { _qroll.setFromAxisAngle(_vel, state.time * pSeed[s.idx * 3 + 2]); s.group.quaternion.premultiply(_qroll); }
+          _quat.setFromUnitVectors(_AX, _vel);
+          if (o.klass >= 2 || o.shape === 4 || o.shape === 10) { _qroll.setFromAxisAngle(_vel, state.time * pSeed[s.idx * 3 + 2]); _quat.premultiply(_qroll); }
         }
-        s.group.visible = true;
+        _bm.compose(_bp, _quat, _bs);
+        batch.setMatrixAt(s.iid, _bm);
         // the sprite behind a solid becomes a small SOFT ROUND glow — shape, focus and
         // size all stripped, so no ghostly silhouette box haunts the model
         pAlpha[s.idx] *= 0.25;
@@ -764,6 +817,9 @@
       FIELD_N = objects.length ? Math.min(objects.length, MAXF) : FIELD;
       pointGeo.setDrawRange(0, FIELD_N);
       lineGeo.setDrawRange(0, FIELD_N * 2);
+      // a new day means new bodies in the slots — flush the solid batch so no stale
+      // shape flies another object's track while the pool rebuilds
+      for (const s of pool) { if (s.iid >= 0) batch.deleteInstance(s.iid); s.idx = -1; s.iid = -1; }
       for (let i = 0; i < FIELD_N; i++) {
         const src = objects.length ? objects[i % objects.length] : null;
         const band = src ? src.band : (hashUnit(`b${i}`) < PROP.bands.LEO ? 0 : hashUnit(`b${i}`) < PROP.bands.LEO + PROP.bands.MEO ? 1 : 2);
