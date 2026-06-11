@@ -542,9 +542,11 @@
           float ca = cos(vAng), sa = sin(vAng);
           vec2 q = mat2(ca, sa, -sa, ca) * q0;                 // +x = nose / direction of travel
           float s1 = vSeed.x, s2 = vSeed.y;
-          float lod = smoothstep(8.5, 12.5, vPx);              // silhouettes resolve earlier — crisper focus carries them now
+          float lod = smoothstep(3.0, 6.0, vPx);               // anything beyond a few pixels IS its shape; only true specks stay dots
           float d;
-          if (vShape < 0.5) {                                  // payload (generic) — bus + 1..6 fanned panels
+          if (vShape < -0.5) {                                 // forced dot — the soft round aura behind a flying solid
+            d = length(q0);
+          } else if (vShape < 0.5) {                           // payload (generic) — bus + 1..6 fanned panels
             float a = mix(0.10, 0.15, f1(s1, 3.7));            // disc bus: satellites gleam round at distance
             d = length(q) - a;
             float cnt = floor(1.0 + 5.99 * f1(s1, 17.9));      // 1..6 solar panels
@@ -670,7 +672,11 @@
       cands.sort((a, b) => a.d - b.d);
       const want = cands.slice(0, MESH_POOL).map((c) => c.i);
       const wantSet = new Set(want);
-      for (const s of pool) if (s.idx >= 0 && !wantSet.has(s.idx)) { if (s.group) s.group.visible = false; s.idx = -1; }
+      for (const s of pool) if (s.idx >= 0 && !wantSet.has(s.idx)) {
+        if (s.group) s.group.visible = false;
+        pShape[s.idx] = O[s.idx] ? O[s.idx].shape : 0;            // hand the sprite its silhouette back
+        s.idx = -1;
+      }
       let builds = 0;
       for (const wi of want) {
         if (pool.some((s) => s.idx === wi)) continue;
@@ -697,7 +703,12 @@
           if (o.klass >= 2 || o.shape === 4 || o.shape === 10) { _qroll.setFromAxisAngle(_vel, state.time * pSeed[s.idx * 3 + 2]); s.group.quaternion.premultiply(_qroll); }
         }
         s.group.visible = true;
-        pAlpha[s.idx] *= 0.22;                                    // sprite recedes to an aura behind the solid
+        // the sprite behind a solid becomes a small SOFT ROUND glow — shape, focus and
+        // size all stripped, so no ghostly silhouette box haunts the model
+        pAlpha[s.idx] *= 0.25;
+        pSize[s.idx] = Math.min(pSize[s.idx], 1.5);
+        pFocus[s.idx] = 0;
+        pShape[s.idx] = -1;
       }
     }
 
@@ -934,6 +945,7 @@
         o.px = _v.x; o.py = _v.y; o.pz = _v.z; o.pt = t; o.hasPrev = true;
       }
       updateMeshPool(meshCand);                              // before upload: solids claim slots, sprites dim
+      pointGeo.attributes.aShape.needsUpdate = true;         // pool membership rewrites shapes (solid slots → dot)
       pointGeo.attributes.position.needsUpdate = true;
       pointGeo.attributes.color.needsUpdate = true;
       pointGeo.attributes.aAlpha.needsUpdate = true;

@@ -143,6 +143,11 @@ class CardArtifactTest(unittest.TestCase):
         # The pool covers its WHOLE radius (full shell, no pool luck) and the model
         # stage lives INSIDE the inspector, left of the text.
         self.assertIn("const MESH_POOL = mobile ? 48 : 160", self.html)
+        # a solid's sprite is forced to a round dot (shape -1) — no ghost silhouette box
+        self.assertIn("forced dot — the soft round aura behind a flying solid", self.html)
+        self.assertIn("pShape[s.idx] = -1", self.html)
+        # silhouettes from a few pixels up — the LOD gate is visual, not a perf saving
+        self.assertIn("anything beyond a few pixels IS its shape", self.html)
         self.assertIn('id="insp-stage"', self.html)
         self.assertIn("altitude regime: ${BAND_FULL[o.band]}", self.html)
         # one sun for the field and a dawn-bright arc on the sunward limb
