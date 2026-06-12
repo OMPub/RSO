@@ -142,7 +142,13 @@ class CardArtifactTest(unittest.TestCase):
         # nearest objects fly as real lit solids; sprites dim to an aura behind them.
         # The pool covers its WHOLE radius (full shell, no pool luck) and the model
         # stage lives INSIDE the inspector, left of the text.
-        self.assertIn("const MESH_POOL = mobile ? 48 : 160", self.html)
+        self.assertIn("const MESH_POOL = mobile ? 260 : 720", self.html)
+        # one draw call for the whole solid fleet: BatchedMesh with permanent reserved
+        # slots rewritten in place (r180 never reuses freed ranges — churn would
+        # exhaust the buffer)
+        self.assertIn("new THREE.BatchedMesh(", self.html)
+        self.assertIn("batch.setGeometryAt(free.bid, geo)", self.html)
+        self.assertIn("s.bid = batch.addGeometry(ph, RES_V, RES_I)", self.html)
         # a solid's sprite is forced to a round dot (shape -1) — no ghost silhouette box
         self.assertIn("forced dot — the soft round aura behind a flying solid", self.html)
         self.assertIn("pShape[s.idx] = -1", self.html)
