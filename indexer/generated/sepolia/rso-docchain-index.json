@@ -48,6 +48,8 @@
       "date": "2026-04-20",
       "events": [
         {
+          "attestationLagDays": 51,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0xe651a58398fe906551be2f4d2ec39bace608e7aa60f3c8c30cd276aac96e103e",
           "claimFingerprint": "0782bd0db624ab61dbd3e95a40953cc7e6339af1b3eb2cfa228eebb9a095868f",
@@ -81,6 +83,8 @@
           "uriHash": "0xde4f7158ea8841a4534d745a67dd967ae378fec63a30e2a7da839896accf1313"
         },
         {
+          "attestationLagDays": 51,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0xe651a58398fe906551be2f4d2ec39bace608e7aa60f3c8c30cd276aac96e103e",
           "claimFingerprint": "f2c6e00a51d432ab09153e0dac0a2ef558ad4e30bfa744ab670228759f7ecf74",
@@ -114,6 +118,7 @@
           "uriHash": "0xad863fbddfb76726b8923ef25f62f7484066117fbd2df2549f3c40b4c64300be"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -135,7 +140,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-04-20/rso-archive-2026-04-20.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 51
     },
     "20260421000000": {
       "agreementGroups": [
@@ -178,6 +184,8 @@
       "date": "2026-04-21",
       "events": [
         {
+          "attestationLagDays": 50,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0xa1006d1e199ec15b56bc3764faeb0bf791764c1abcad2008805fd9b182bf2c3c",
           "claimFingerprint": "b0b987b3a8a55e74b991cb6dd3721d16bf732dd050166d403c9be68c748c6ca0",
@@ -211,6 +219,8 @@
           "uriHash": "0x8f13a6bd554c2030fac00b0b63b4bee3f5ddf6fcb91d6d88337ba74196763901"
         },
         {
+          "attestationLagDays": 50,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0xa1006d1e199ec15b56bc3764faeb0bf791764c1abcad2008805fd9b182bf2c3c",
           "claimFingerprint": "b52a83afee84463334f74c4b2005a7c1b5abf209921297626a633df9f533694c",
@@ -244,6 +254,7 @@
           "uriHash": "0xd91d62dd5f6b4d94c4f7fd92f3be4d6e6e499ecce72733152ef3e35a06e4a16f"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -265,7 +276,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-04-21/rso-archive-2026-04-21.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 50
     },
     "20260422000000": {
       "agreementGroups": [
@@ -308,6 +320,8 @@
       "date": "2026-04-22",
       "events": [
         {
+          "attestationLagDays": 49,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0xa6ae90b4d7ddcfee71d1ca6d7fe55d551c2093f343044ce30445908d0bd4a653",
           "claimFingerprint": "33138c68233913f92a95354f52266887c63b9ebc788feb409e830c0b3b7ec19b",
@@ -341,6 +355,8 @@
           "uriHash": "0xad4535f20765abe31e9e3b23e67923405d70a968bdeba639ebbd1b39d8f64040"
         },
         {
+          "attestationLagDays": 49,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0xa6ae90b4d7ddcfee71d1ca6d7fe55d551c2093f343044ce30445908d0bd4a653",
           "claimFingerprint": "e4e26b3992b8b703db898ce824034c80654b834eb7e717232cb6a6662553bfd8",
@@ -374,6 +390,7 @@
           "uriHash": "0x33e50f424062c40d16aa7e04a0b8c7627234c2f73234bebd626537cadcc0ed86"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -395,7 +412,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-04-22/rso-archive-2026-04-22.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 49
     },
     "20260423000000": {
       "agreementGroups": [
@@ -438,6 +456,8 @@
       "date": "2026-04-23",
       "events": [
         {
+          "attestationLagDays": 48,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x1a7f04542fcb001f75bdf555e9cc93cc5ced14d70405f2fb8313b07567e05d64",
           "claimFingerprint": "54101ff419df72c4570b257b34ae43d804384300759344db943de062b0ded688",
@@ -471,6 +491,8 @@
           "uriHash": "0xeeca683f18ab459d480c59d36f2251444a0daff2acd5204b28e577f35af3069f"
         },
         {
+          "attestationLagDays": 48,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x1a7f04542fcb001f75bdf555e9cc93cc5ced14d70405f2fb8313b07567e05d64",
           "claimFingerprint": "c2d1db8e5321274800ce870318777674949e3fa4544ef715f9c16f9caecbdc12",
@@ -504,6 +526,7 @@
           "uriHash": "0x2cf349057116d8213e801971cc4732d1e1e0c301cba44d7b932f8e230fdcf0df"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -525,7 +548,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-04-23/rso-archive-2026-04-23.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 48
     },
     "20260424000000": {
       "agreementGroups": [
@@ -568,6 +592,8 @@
       "date": "2026-04-24",
       "events": [
         {
+          "attestationLagDays": 47,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x170bf30e136ebbe53ed7a48355a888aea59379729ba92e6119cbcd5fdce21c4a",
           "claimFingerprint": "100c8cd11c621d32d58c2f9ed9645ed0cb8fb9527f67df5faff7c3b0c60c9b8b",
@@ -601,6 +627,8 @@
           "uriHash": "0x1c3e523665673ce54c914145a9f7d1700bc4d2834c204eb7168282ca73b08420"
         },
         {
+          "attestationLagDays": 47,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x170bf30e136ebbe53ed7a48355a888aea59379729ba92e6119cbcd5fdce21c4a",
           "claimFingerprint": "73ab8aae1901be24a3eb7a2b57d65947f794516b92c72aaf9b24a9e6b282b3a6",
@@ -634,6 +662,7 @@
           "uriHash": "0x9b840ebf8f69abda92774fed5917e7b39cb684a0287a2cc88b95acdf3c7e1d57"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -655,7 +684,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-04-24/rso-archive-2026-04-24.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 47
     },
     "20260425000000": {
       "agreementGroups": [
@@ -698,6 +728,8 @@
       "date": "2026-04-25",
       "events": [
         {
+          "attestationLagDays": 46,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x3a5d90075252610e347a4502f641416feb54f2c36924919ed8824c98737d9896",
           "claimFingerprint": "bd923a64bd3539e579c266b5f4ec02218671f00591b93f011fd56357824618c8",
@@ -731,6 +763,8 @@
           "uriHash": "0xcec041fcbb401497ee9c8c94b4c60986bf1fe961d7e0f9d625db9ff65452b12b"
         },
         {
+          "attestationLagDays": 46,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x3a5d90075252610e347a4502f641416feb54f2c36924919ed8824c98737d9896",
           "claimFingerprint": "6d0596cf1405b4ff6419ac52765e67a49328436116594fd5dc9a78926d06ea43",
@@ -764,6 +798,7 @@
           "uriHash": "0xf65506572ec5aa041b8e00db9474f70d14f47b9b81bc5e3b248cad86abcc5e50"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -785,7 +820,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-04-25/rso-archive-2026-04-25.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 46
     },
     "20260426000000": {
       "agreementGroups": [
@@ -828,6 +864,8 @@
       "date": "2026-04-26",
       "events": [
         {
+          "attestationLagDays": 45,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x4451406a40a45aca3880032c9e2982c00ba30f04c3513627721c01e7ed0fe24d",
           "claimFingerprint": "f1082d457d05b9d34ab1934f3f8909a2b3dfb86bcab0d375b06732107106a37f",
@@ -861,6 +899,8 @@
           "uriHash": "0xb767a44225c77c019744b7dace11e5aeadae71e085b07e0734c4dd0d9b5d64ac"
         },
         {
+          "attestationLagDays": 45,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x4451406a40a45aca3880032c9e2982c00ba30f04c3513627721c01e7ed0fe24d",
           "claimFingerprint": "9672bfe7492d4863a83113469237d4a53c98cad03c122da4a5897b3cffd33e40",
@@ -894,6 +934,7 @@
           "uriHash": "0x7a42bcd9e23f7fa97ab51f4bb6d407be2baf73a8f8f125c06c6720d8958a88aa"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -915,7 +956,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-04-26/rso-archive-2026-04-26.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 45
     },
     "20260427000000": {
       "agreementGroups": [
@@ -958,6 +1000,8 @@
       "date": "2026-04-27",
       "events": [
         {
+          "attestationLagDays": 44,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x32cbd838729a0bf1bcb17c8ecda46bc62da94738f40c6727a727a014afa39026",
           "claimFingerprint": "4744d01e129804cdc32bbe76b36fd6de799b771d9f21a6aced37ebfd341f9374",
@@ -991,6 +1035,8 @@
           "uriHash": "0xbc819f084e97a4ac8adf4c97cf23e27c186156f84add9d7643203052613c74ee"
         },
         {
+          "attestationLagDays": 44,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x32cbd838729a0bf1bcb17c8ecda46bc62da94738f40c6727a727a014afa39026",
           "claimFingerprint": "9b24b8e203ab25d043d62ecaf4d1a45142c243c37565769f833e2df5c5cae75a",
@@ -1024,6 +1070,7 @@
           "uriHash": "0x206175b64a95023ca8f9d5b6135eac1b729ac834bba788ba372ea89b5d0e0fa9"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -1045,7 +1092,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-04-27/rso-archive-2026-04-27.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 44
     },
     "20260428000000": {
       "agreementGroups": [
@@ -1088,6 +1136,8 @@
       "date": "2026-04-28",
       "events": [
         {
+          "attestationLagDays": 43,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x54fde370719768ddb6f71209c82fc0dce9ded60169cee3390b860db2d9ee87a0",
           "claimFingerprint": "10cce210340a5360ceedb97fb97d23eaee3c7088e11c9e65e0cf5de3a3821cfc",
@@ -1121,6 +1171,8 @@
           "uriHash": "0xb714311a630b2289b6766795f49f4c6185411af9972d0699f3fcb2394a58e8fc"
         },
         {
+          "attestationLagDays": 43,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x54fde370719768ddb6f71209c82fc0dce9ded60169cee3390b860db2d9ee87a0",
           "claimFingerprint": "e8c19c17dc78f3de0f37f224a7d869ccace4182332a53bc54e310636b35037a8",
@@ -1154,6 +1206,7 @@
           "uriHash": "0x0c1e2a260dd2d935ba05f2cceb45ebcde5bf7a8d6ac0f393cbc2b2338616ede7"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -1175,7 +1228,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-04-28/rso-archive-2026-04-28.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 43
     },
     "20260429000000": {
       "agreementGroups": [
@@ -1218,6 +1272,8 @@
       "date": "2026-04-29",
       "events": [
         {
+          "attestationLagDays": 42,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x2a7742eb8537004ab68c42727b913682618f1e4e210ea4f73490dba8db088956",
           "claimFingerprint": "63ee687a851c04f44b8e483caaa7fb742e09b813cbef0dc3fbfbc9d680ff688b",
@@ -1251,6 +1307,8 @@
           "uriHash": "0xb202d24a16ae30b102605527b12746097ebbb834fc89d988d7339fdb07ff0577"
         },
         {
+          "attestationLagDays": 42,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x2a7742eb8537004ab68c42727b913682618f1e4e210ea4f73490dba8db088956",
           "claimFingerprint": "7ed04efb58ebadc0fe6d2e17263f2db8e4c55e09d2b6950c9cb888582d5ff6d3",
@@ -1284,6 +1342,7 @@
           "uriHash": "0x98f6eec8e24e942ef732439bd130f0043dd9e44cc145a17f345a675108444319"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -1305,7 +1364,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-04-29/rso-archive-2026-04-29.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 42
     },
     "20260430000000": {
       "agreementGroups": [
@@ -1348,6 +1408,8 @@
       "date": "2026-04-30",
       "events": [
         {
+          "attestationLagDays": 41,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x76b5faa7ecc20afe1e90f74f77351795e2e386dd16152262e52c429e8388a903",
           "claimFingerprint": "57eb143a4ed117e7c40bc5b27fe83cd4acf03f0b11b7d382c1e0ab1efab4c3d8",
@@ -1381,6 +1443,8 @@
           "uriHash": "0x6677f394e246da37e0916445a6d92cad61b85415456bbd16455275121d45d0c7"
         },
         {
+          "attestationLagDays": 41,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x76b5faa7ecc20afe1e90f74f77351795e2e386dd16152262e52c429e8388a903",
           "claimFingerprint": "1644fb55416f6f19a93df844bd8d3cabd899033a1b541eadaed3c96b81a42ffc",
@@ -1414,6 +1478,7 @@
           "uriHash": "0xdbb04eb4d1b18bdfee69bf63235736463bc71a2e7454bbd65a340375f4ba8fb6"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -1435,7 +1500,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-04-30/rso-archive-2026-04-30.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 41
     },
     "20260501000000": {
       "agreementGroups": [
@@ -1478,6 +1544,8 @@
       "date": "2026-05-01",
       "events": [
         {
+          "attestationLagDays": 40,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x372b2394dd4c2cdb8770a333a18ad9b1ff30e03093d01edf68e927c27b099c5c",
           "claimFingerprint": "e7e71d89e81033cbead817340331994a258785c960daa87a4a28130d7addafc3",
@@ -1511,6 +1579,8 @@
           "uriHash": "0x99d76e77b6b8064c4c251d2e0d7ddd9af9a837ae389e50b976ed283bf08f4e6a"
         },
         {
+          "attestationLagDays": 40,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x372b2394dd4c2cdb8770a333a18ad9b1ff30e03093d01edf68e927c27b099c5c",
           "claimFingerprint": "92ece981d6279e13e2ab30bf263443028d1bdd1c8870e776b4875da2bb69b648",
@@ -1544,6 +1614,7 @@
           "uriHash": "0xc2a353abbd723175862bedca640f6c8d83c6281fe489085e469f6fcb36c9d43f"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -1565,7 +1636,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-01/rso-archive-2026-05-01.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 40
     },
     "20260502000000": {
       "agreementGroups": [
@@ -1608,6 +1680,8 @@
       "date": "2026-05-02",
       "events": [
         {
+          "attestationLagDays": 39,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x762d59b1dc702e94794b049cc49f757ec493bf78eeb089714e619974abcd6045",
           "claimFingerprint": "ade52fbca69d71215b85eb96399ceaafcdaf2cec2ad46f501b5dff96ecbcdb28",
@@ -1641,6 +1715,8 @@
           "uriHash": "0x1c5156c713af73314eb9ccff3027921ff284d8d54a8fdd2839e4edc423b1321c"
         },
         {
+          "attestationLagDays": 39,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x762d59b1dc702e94794b049cc49f757ec493bf78eeb089714e619974abcd6045",
           "claimFingerprint": "7194ef545734b8ab7ff5eb40579677fd0b2d284436d6dcda54436b554feedb19",
@@ -1674,6 +1750,7 @@
           "uriHash": "0x15f581a9912b62c56959924db7bdaf9ba746d0ab192a237a8b8fffe69e02f7d7"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -1695,7 +1772,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-02/rso-archive-2026-05-02.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 39
     },
     "20260503000000": {
       "agreementGroups": [
@@ -1738,6 +1816,8 @@
       "date": "2026-05-03",
       "events": [
         {
+          "attestationLagDays": 38,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x4de659d1a529139c5e2cf294ba464f5b2293c7238c1a515e959104dd5f24a920",
           "claimFingerprint": "c6d195ac60fa67a5e38e654c774dc927840f7360badbf89af2c2772289cdb464",
@@ -1771,6 +1851,8 @@
           "uriHash": "0xaf4adeb2ef38c08c5a1427eea4afb15ffcb28532a12086ef17301c8fbce5d096"
         },
         {
+          "attestationLagDays": 38,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x4de659d1a529139c5e2cf294ba464f5b2293c7238c1a515e959104dd5f24a920",
           "claimFingerprint": "81a8ee8b6cf81dc93692dea2dbea581c81b029c38116be01d15c77bb6c5015d0",
@@ -1804,6 +1886,7 @@
           "uriHash": "0x30428922102dbed360a74d3731834816bbedd8cc58d24ace14a33c6f8794dfca"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -1825,7 +1908,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-03/rso-archive-2026-05-03.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 38
     },
     "20260504000000": {
       "agreementGroups": [
@@ -1868,6 +1952,8 @@
       "date": "2026-05-04",
       "events": [
         {
+          "attestationLagDays": 37,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x7df63ade68e09e32a9bc992ec4ad454caeeed05f736282786ca3602bb38b0eee",
           "claimFingerprint": "0f2bcba8fc96f94629da5ad42941b3c43bbbd21de4ff353ce8f94a1b95b8063a",
@@ -1901,6 +1987,8 @@
           "uriHash": "0xeed04353ca781b99be77bffa5091387c22071cf37be1bbc0c479cc43a2aecd94"
         },
         {
+          "attestationLagDays": 37,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x7df63ade68e09e32a9bc992ec4ad454caeeed05f736282786ca3602bb38b0eee",
           "claimFingerprint": "3b51565b881059ffcecb9db5b9628941f035c6f567e03654bcfa49eaddaca610",
@@ -1934,6 +2022,7 @@
           "uriHash": "0xa95956158036b1cbddf6e6111f2e08f3304fd1fab70e122283957904ea3aabe8"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -1955,7 +2044,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-04/rso-archive-2026-05-04.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 37
     },
     "20260505000000": {
       "agreementGroups": [
@@ -1998,6 +2088,8 @@
       "date": "2026-05-05",
       "events": [
         {
+          "attestationLagDays": 36,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0xa8c85b0c2d53cc6825e9a798a5ae185e2fdadaab7e292ccb5773bbd8004c0838",
           "claimFingerprint": "93d363f6f440854bd1b6aaf13c42992de565ccefd0614c66ff5e040256981eb0",
@@ -2031,6 +2123,8 @@
           "uriHash": "0xdca9e3594eb1d431f7fd2ea77a40038ccb28e7bd299c522d2caea0e2c8ea22e6"
         },
         {
+          "attestationLagDays": 36,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0xa8c85b0c2d53cc6825e9a798a5ae185e2fdadaab7e292ccb5773bbd8004c0838",
           "claimFingerprint": "3f95ff9bf97333b1a0251baf563dfe1483c0a7ee6ef99696c349965848f1f051",
@@ -2064,6 +2158,7 @@
           "uriHash": "0x2606f6505bd881db95ff1deccf29d24edb153572225fad990777a734a191be6e"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -2085,7 +2180,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-05/rso-archive-2026-05-05.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 36
     },
     "20260506000000": {
       "agreementGroups": [
@@ -2128,6 +2224,8 @@
       "date": "2026-05-06",
       "events": [
         {
+          "attestationLagDays": 35,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0xe8c4bee2a45494b9dc155c1b2dd55260b65b3b5747e521c50c3edbe28cc91d48",
           "claimFingerprint": "9e8a2838b3149794f86394ba3030e5cb715898081ca4960fa107621c394ab90e",
@@ -2161,6 +2259,8 @@
           "uriHash": "0x3f9739d2c0e2d83983123bac9150f94d347dd0ae8d23a01611da8ad2b41591e2"
         },
         {
+          "attestationLagDays": 35,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0xe8c4bee2a45494b9dc155c1b2dd55260b65b3b5747e521c50c3edbe28cc91d48",
           "claimFingerprint": "a0d592372045b33cbab7bd3cfcb0830880e7596c78330c580839badccbb80cfd",
@@ -2194,6 +2294,7 @@
           "uriHash": "0xcb60d22c7293dd24153b9c52719716aaaf67e103364d89429cf16710e688fcb0"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -2215,7 +2316,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-06/rso-archive-2026-05-06.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 35
     },
     "20260507000000": {
       "agreementGroups": [
@@ -2258,6 +2360,8 @@
       "date": "2026-05-07",
       "events": [
         {
+          "attestationLagDays": 34,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0xaecc54b4c142a7fb0cad55a6a18ccaa7e11b6ac6189b76fa022f33c949a8179a",
           "claimFingerprint": "2ceb51ecc7a9f9590eebbe0424993eb38958f8eadfc6b18eaa01c716b794199c",
@@ -2291,6 +2395,8 @@
           "uriHash": "0xf14cdc697c042569278fc7160b14c8a9b33a82ff08e9a67e4a036b5c201a8f65"
         },
         {
+          "attestationLagDays": 34,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0xaecc54b4c142a7fb0cad55a6a18ccaa7e11b6ac6189b76fa022f33c949a8179a",
           "claimFingerprint": "f67bf9efe5095e47129127b096b12b8e8bc31bdfe06eb83c641adfc01f5f7235",
@@ -2324,6 +2430,7 @@
           "uriHash": "0x6098289d22f3070adf6ef7dd6732b44c4ba5837ff67214ac5897c1b20443458d"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -2345,7 +2452,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-07/rso-archive-2026-05-07.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 34
     },
     "20260508000000": {
       "agreementGroups": [
@@ -2388,6 +2496,8 @@
       "date": "2026-05-08",
       "events": [
         {
+          "attestationLagDays": 33,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0xdb1c799f5a73a733d304323eaec0a2a6c16070ef383521f744a4c22ab7257cc5",
           "claimFingerprint": "5dc1ec7172d81612304c68e94d9c08daaa63e17f0c14c087185e95d429494729",
@@ -2421,6 +2531,8 @@
           "uriHash": "0x7aa398cf43786bdd29150d0a90789e9f2e44345182012452a657a46ad54e133f"
         },
         {
+          "attestationLagDays": 33,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0xdb1c799f5a73a733d304323eaec0a2a6c16070ef383521f744a4c22ab7257cc5",
           "claimFingerprint": "b466b414abb913adcf7f8a4eaa0bfed6bec0c0542a9f9574e3e57cb8b5ac9e5f",
@@ -2454,6 +2566,7 @@
           "uriHash": "0x2b1c3fcad6cc6a3a944f1523e46c5f41a4f8a147608549b0c6a2b27c48ac5725"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -2475,7 +2588,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-08/rso-archive-2026-05-08.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 33
     },
     "20260509000000": {
       "agreementGroups": [
@@ -2518,6 +2632,8 @@
       "date": "2026-05-09",
       "events": [
         {
+          "attestationLagDays": 32,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x368af51a894a85b9f5217eb8cc615af9258c9f7122ca22e4991a3ee68baeb567",
           "claimFingerprint": "1f2de94d999b63478925f7ce1611033773101dda3951233f30d07ba41306209d",
@@ -2551,6 +2667,8 @@
           "uriHash": "0xb40e0a246b87cff43e1a6e2698299cf1a4ad87b829a2581f93eb4bfbb2bb0103"
         },
         {
+          "attestationLagDays": 32,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x368af51a894a85b9f5217eb8cc615af9258c9f7122ca22e4991a3ee68baeb567",
           "claimFingerprint": "46371ff29e6dfa5ceb48a3be6b07af70a52abe3350ca7befceae7c19d87629aa",
@@ -2584,6 +2702,7 @@
           "uriHash": "0x19ccfc67e507c25793e9897b39d5b60fcf92eb8cc03b1a8f6ef17f703ecde6c9"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -2605,7 +2724,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-09/rso-archive-2026-05-09.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 32
     },
     "20260510000000": {
       "agreementGroups": [
@@ -2648,6 +2768,8 @@
       "date": "2026-05-10",
       "events": [
         {
+          "attestationLagDays": 31,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x2d8681fea89985c5d6fa9bbbb2b17edb633fe62f27cc684354d54aa4fed5f1b8",
           "claimFingerprint": "e43fe3756d3623a628daded36037aa6492c7aeccfbfcf7fb4e83aa7f40b91714",
@@ -2681,6 +2803,8 @@
           "uriHash": "0x23d1b7202c964ed847e69b6739b16b78fae1630370ae57c359e3be2067ae2b94"
         },
         {
+          "attestationLagDays": 31,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x2d8681fea89985c5d6fa9bbbb2b17edb633fe62f27cc684354d54aa4fed5f1b8",
           "claimFingerprint": "d890a158f56f7848e0c51c2d6ecf10069a6f2929880ca39bcb2f5a46012e4d34",
@@ -2714,6 +2838,7 @@
           "uriHash": "0xb46ae808698d69cc67330ce9ab1e7976a89d9d914238990809a92a28508bbd05"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -2735,7 +2860,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-10/rso-archive-2026-05-10.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 31
     },
     "20260511000000": {
       "agreementGroups": [
@@ -2778,6 +2904,8 @@
       "date": "2026-05-11",
       "events": [
         {
+          "attestationLagDays": 30,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x67800ab59f99c40da3ece923d2652debc472700ef855e14ad635f48ff58450c5",
           "claimFingerprint": "1e2e0692c7dcb8ae61d03a79eacf7affc92981e777cb1841e66ac359ea3459a7",
@@ -2811,6 +2939,8 @@
           "uriHash": "0xe622002c45c5a1f16752cb8a0464ccd25c11047eea747ac5cef444420694f557"
         },
         {
+          "attestationLagDays": 30,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x67800ab59f99c40da3ece923d2652debc472700ef855e14ad635f48ff58450c5",
           "claimFingerprint": "5babadcf4ec2c0ef915ead5aa3ec28b5b66b880c9326c15c710986329959c63c",
@@ -2844,6 +2974,7 @@
           "uriHash": "0x98bb0e50ec993a98c0d0c27722c99b73d922a982bf770a7e1800926edfb44600"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -2865,7 +2996,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-11/rso-archive-2026-05-11.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 30
     },
     "20260512000000": {
       "agreementGroups": [
@@ -2908,6 +3040,8 @@
       "date": "2026-05-12",
       "events": [
         {
+          "attestationLagDays": 29,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0xe894fe42359d674fb38e9f20f6284201116112202a9215993de88cd2790eb7dc",
           "claimFingerprint": "417d0c3337b6448d82fc6cb6eb1cf467185a3ad41f76d2443cb381898d6c50c9",
@@ -2941,6 +3075,8 @@
           "uriHash": "0x5b27f08cc1ef8a0ce69d514d8bcc390018673641488e3edee6585d61c7130e65"
         },
         {
+          "attestationLagDays": 29,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0xe894fe42359d674fb38e9f20f6284201116112202a9215993de88cd2790eb7dc",
           "claimFingerprint": "de463d87b7a0d7de46c2430ba18b2f3338ab5e9ca7fe3d41337dc1599cb32ed7",
@@ -2974,6 +3110,7 @@
           "uriHash": "0x370d0a7c8589e954ec538ec75f02fce26f2eed7ab8cd6ef90627356efaaec2cd"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -2995,7 +3132,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-12/rso-archive-2026-05-12.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 29
     },
     "20260513000000": {
       "agreementGroups": [
@@ -3038,6 +3176,8 @@
       "date": "2026-05-13",
       "events": [
         {
+          "attestationLagDays": 28,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0xb1628f223aa0ce1d30126ddb70cd46eaccc8b68fac79461eea288fcfdb42cd2e",
           "claimFingerprint": "4d1f85ce6b57377c8cfc11a22e2cdad438a6b5d8ace07d6f805a7a760745b707",
@@ -3071,6 +3211,8 @@
           "uriHash": "0x682a82c9a7fd26452d114fe698a09487081c535eab20da0e6a483f727f21668c"
         },
         {
+          "attestationLagDays": 28,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0xb1628f223aa0ce1d30126ddb70cd46eaccc8b68fac79461eea288fcfdb42cd2e",
           "claimFingerprint": "0976a82efc28924db8bc7bb0d9445eae1f2343273b7ddd720e4297b050ec6620",
@@ -3104,6 +3246,7 @@
           "uriHash": "0xe780d21b9344e95fae847c16ed0559e9b43d1881effdb10b70a7a75b240ee881"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -3125,7 +3268,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-13/rso-archive-2026-05-13.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 28
     },
     "20260514000000": {
       "agreementGroups": [
@@ -3168,6 +3312,8 @@
       "date": "2026-05-14",
       "events": [
         {
+          "attestationLagDays": 27,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x584f3e215518999db48c0ce5996144b1dc3674ec8e59a4d26a4caa4123a049f7",
           "claimFingerprint": "6f6a40898d477b48bdea452272b5778aefcd63adb34a38276714692040cd10ac",
@@ -3201,6 +3347,8 @@
           "uriHash": "0x56b8e05ae9f7ff624d52c9a706571f23b0d27f46c0bc588690baf6bc3cab7ee9"
         },
         {
+          "attestationLagDays": 27,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x584f3e215518999db48c0ce5996144b1dc3674ec8e59a4d26a4caa4123a049f7",
           "claimFingerprint": "0772ea7279c98b404ec869b2293c29c04c042b1687abce60f4e2c5934ccb09bc",
@@ -3234,6 +3382,7 @@
           "uriHash": "0x0caf5310302ba48c7c64fa8ceac06d9a4fd768184a53c2a3d7311cbff13f52c2"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -3255,7 +3404,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-14/rso-archive-2026-05-14.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 27
     },
     "20260515000000": {
       "agreementGroups": [
@@ -3298,6 +3448,8 @@
       "date": "2026-05-15",
       "events": [
         {
+          "attestationLagDays": 26,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0xd9f144c93cc6b9dbf2ea0d1d14aa2b8fd9158d5b1e88fa4e09e6c5355becec7f",
           "claimFingerprint": "ab0cb92d704d515f205b64a0280fa5692d12269b461e0150660e73a856df7e7e",
@@ -3331,6 +3483,8 @@
           "uriHash": "0x48ab19513db18fa375335508171d2444631a57c02b7d0a8264eec717a62c9642"
         },
         {
+          "attestationLagDays": 26,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0xd9f144c93cc6b9dbf2ea0d1d14aa2b8fd9158d5b1e88fa4e09e6c5355becec7f",
           "claimFingerprint": "199e2b5060d7650efaf014fe8236b63b9d0b37f5adc75a342ab2ddff22b68e3e",
@@ -3364,6 +3518,7 @@
           "uriHash": "0xb1a13643210a4dfc9dbb1103babc7183473f0df7b8edd90223e8f9affe2d793b"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -3385,7 +3540,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-15/rso-archive-2026-05-15.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 26
     },
     "20260516000000": {
       "agreementGroups": [
@@ -3428,6 +3584,8 @@
       "date": "2026-05-16",
       "events": [
         {
+          "attestationLagDays": 25,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0xfd60086aaa933178c2bdd7ed4d8e591bcea909ca2f9532826241265eca8f251a",
           "claimFingerprint": "50be1298bd3b737fc1101d54ac8635856c17c7cdd3486bdb949f61f19deb81ac",
@@ -3461,6 +3619,8 @@
           "uriHash": "0xffabbc0d1d2eefc35c816443c2dd338e47ce5c844c527a38b72bc80c116fbe61"
         },
         {
+          "attestationLagDays": 25,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0xfd60086aaa933178c2bdd7ed4d8e591bcea909ca2f9532826241265eca8f251a",
           "claimFingerprint": "c5105d676cbd2e41c70ea041034f3e4a75d6db6e6f31ffce1426eabbcf9abcc5",
@@ -3494,6 +3654,7 @@
           "uriHash": "0xc181ef631cfa344811ceaf1f3a88ced4dd31aba84ee4c61a196c8ee315377610"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -3515,7 +3676,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-16/rso-archive-2026-05-16.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 25
     },
     "20260517000000": {
       "agreementGroups": [
@@ -3558,6 +3720,8 @@
       "date": "2026-05-17",
       "events": [
         {
+          "attestationLagDays": 24,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0xd6b2987eb44eddbcb8735b6820106f13ac8dcf7195e22555d115aae17ca0f50f",
           "claimFingerprint": "34822f1641b647bb5ec0ae0089fe1664b227bd50f2faf83bb6eba091898973f1",
@@ -3591,6 +3755,8 @@
           "uriHash": "0xf4dfe898afeeee6dc0ffa49c0c6cf8cd6a87a7e5a36cf3ac5349855fd29e2d09"
         },
         {
+          "attestationLagDays": 24,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0xd6b2987eb44eddbcb8735b6820106f13ac8dcf7195e22555d115aae17ca0f50f",
           "claimFingerprint": "0e0cc5af284667df68f9342355585ad944c3e294b716a7cf78e3d39c2082e8a2",
@@ -3624,6 +3790,7 @@
           "uriHash": "0x2dbd1533c9b32407f4c7f053ddccac0840d87410a36c8e6ebb98373f76348731"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -3645,7 +3812,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-17/rso-archive-2026-05-17.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 24
     },
     "20260518000000": {
       "agreementGroups": [
@@ -3688,6 +3856,8 @@
       "date": "2026-05-18",
       "events": [
         {
+          "attestationLagDays": 23,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0xdc6914bd28b5aaa7f961b608576730e9c8ead963d621d8dcfff352e45e14849b",
           "claimFingerprint": "12f14cf05831b7a914a16f76ca0dc6bb7ef0e50e422f5b23019b1fb91546274f",
@@ -3721,6 +3891,8 @@
           "uriHash": "0xbf9c1dd7fd2061a8a32751a03105947134f0552eced1d84f072cb05db8205a97"
         },
         {
+          "attestationLagDays": 23,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0xdc6914bd28b5aaa7f961b608576730e9c8ead963d621d8dcfff352e45e14849b",
           "claimFingerprint": "d1b07e54c0ddfc202fcb0c5725fd159fd3a6e524e339565763834f962fdc3255",
@@ -3754,6 +3926,7 @@
           "uriHash": "0x651be62a25e7d8ea22c679079ce6b65b131c59ec6897fa0a94dfd3eb22a8682e"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -3775,7 +3948,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-18/rso-archive-2026-05-18.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 23
     },
     "20260519000000": {
       "agreementGroups": [
@@ -3818,6 +3992,8 @@
       "date": "2026-05-19",
       "events": [
         {
+          "attestationLagDays": 22,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x6172f6221ece7eebebece3a1a1be9fd8f5fa3ea1dec540621e8588d8104a76df",
           "claimFingerprint": "a4ef3d09b4ca596ec9b2aa900c6571383b5a0e859903c3904e664b79ad466050",
@@ -3851,6 +4027,8 @@
           "uriHash": "0x44f4806c69bb4db5d70ed4f581a56b6282a13a69e9df3716e4546fc9d3b415bb"
         },
         {
+          "attestationLagDays": 22,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x6172f6221ece7eebebece3a1a1be9fd8f5fa3ea1dec540621e8588d8104a76df",
           "claimFingerprint": "5ca07112897afe6d4d7297eb989a6dd3f51fd78bde70a5610700f0e881fc76a3",
@@ -3884,6 +4062,7 @@
           "uriHash": "0xef34b26f3024ca1d9d4169cd41fd318a6c04de3f3a7ff931dd5a7ba9589b9dcb"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -3905,7 +4084,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-19/rso-archive-2026-05-19.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 22
     },
     "20260520000000": {
       "agreementGroups": [
@@ -3948,6 +4128,8 @@
       "date": "2026-05-20",
       "events": [
         {
+          "attestationLagDays": 21,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0xc09aaceec7d42f48808082770d767365eccd0d4a9a3bdc816d4aec7bae9a8e83",
           "claimFingerprint": "afbf55d2a670a01ba9df2a6dbbd79ca846e459c8dea0d00630b0fba824602e2c",
@@ -3981,6 +4163,8 @@
           "uriHash": "0x740468447ad0af32aa48b6995e569a717e64831c041f08b4cfae955887daf92a"
         },
         {
+          "attestationLagDays": 21,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0xc09aaceec7d42f48808082770d767365eccd0d4a9a3bdc816d4aec7bae9a8e83",
           "claimFingerprint": "3fa14facdaf812e0a1df6c8616ca8b4e1660da0c7464825fd20132501627ce61",
@@ -4014,6 +4198,7 @@
           "uriHash": "0xa92e7a3678382dc60617b1156ba1ce49f7cdb98e4fd4fa73e0394d1c2b5bbf3b"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -4035,7 +4220,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-20/rso-archive-2026-05-20.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 21
     },
     "20260521000000": {
       "agreementGroups": [
@@ -4078,6 +4264,8 @@
       "date": "2026-05-21",
       "events": [
         {
+          "attestationLagDays": 20,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x0e4e7545235058c9d33b16b7c2d1975894b6bc995592c33b86e60e7a35c268b9",
           "claimFingerprint": "b38e35920af773d75a08b20fc4da4117d4474b6ac84292afa24dbb00278fd00d",
@@ -4111,6 +4299,8 @@
           "uriHash": "0x8b852f8e06d91d45bdf6634ee6e910bdb64dc78bba55229b450368033ee01d20"
         },
         {
+          "attestationLagDays": 20,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x0e4e7545235058c9d33b16b7c2d1975894b6bc995592c33b86e60e7a35c268b9",
           "claimFingerprint": "2e1328278cfeab65f871d2fa51d49275181c8df0cc7a56ddabfdd6e144b98715",
@@ -4144,6 +4334,7 @@
           "uriHash": "0x919173c263a3b99a05befdc2162b9f0ea122a1e210f6d8517b383472f8922856"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -4165,7 +4356,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-21/rso-archive-2026-05-21.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 20
     },
     "20260522000000": {
       "agreementGroups": [
@@ -4208,6 +4400,8 @@
       "date": "2026-05-22",
       "events": [
         {
+          "attestationLagDays": 19,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x7c981351dd3e0eaaf39798574e42e6be378d69af647456bc93859e8b4a55140e",
           "claimFingerprint": "08cd7371f4456be052864e429aae3e83fa543f43f113c295c326bfa815a5752d",
@@ -4241,6 +4435,8 @@
           "uriHash": "0x43451ba8a475d061fead41b240fbeac60d75e4eb6ccea107f7c4ed91fcd8c68f"
         },
         {
+          "attestationLagDays": 19,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x7c981351dd3e0eaaf39798574e42e6be378d69af647456bc93859e8b4a55140e",
           "claimFingerprint": "802f3d330099dc89a78a847bb9c9d88eeeb34d0558c3649e5f21c9ec12148ab1",
@@ -4274,6 +4470,7 @@
           "uriHash": "0x132f3aabdd5b8eb7c378d3981eae95bf4f975dcdf09b4e63f826d6f8e1aaece1"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -4295,7 +4492,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-22/rso-archive-2026-05-22.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 19
     },
     "20260523000000": {
       "agreementGroups": [
@@ -4338,6 +4536,8 @@
       "date": "2026-05-23",
       "events": [
         {
+          "attestationLagDays": 18,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x0903011869b1cf3d29b1f02370454d5c3ba3975388d5a0cabd1ac3149efe5b26",
           "claimFingerprint": "c3b3abaf7ddcca6790acb6c20eaf29885e5cf19521a882228a1be15745ab1119",
@@ -4371,6 +4571,8 @@
           "uriHash": "0x50b26eb4cedbd613469caef1100fe519d561c3eec7d8de53e220d6475c296477"
         },
         {
+          "attestationLagDays": 18,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x0903011869b1cf3d29b1f02370454d5c3ba3975388d5a0cabd1ac3149efe5b26",
           "claimFingerprint": "e8c7af012bade54e9995e27256fe1d0434b5b0fd58b41389658c6ccea8be030a",
@@ -4404,6 +4606,7 @@
           "uriHash": "0x23d0537ed29941fa2863aac7f41c0b92e052de58d32423551104d081ec171498"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -4425,7 +4628,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-23/rso-archive-2026-05-23.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 18
     },
     "20260524000000": {
       "agreementGroups": [
@@ -4468,6 +4672,8 @@
       "date": "2026-05-24",
       "events": [
         {
+          "attestationLagDays": 17,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0xea19eecbe3b4155369b42814e9c3cfb43b2983fc20832eaa2208acdf0af72c15",
           "claimFingerprint": "d2034e3e3c501d7f762fb961d5f133f41010f3acbb74a1fc6ca2be19e67ff7d1",
@@ -4501,6 +4707,8 @@
           "uriHash": "0x8535dc5a9f61241cb5badfb624e87bc38d2e8315eb134874e4531f5ebdcbd006"
         },
         {
+          "attestationLagDays": 17,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0xea19eecbe3b4155369b42814e9c3cfb43b2983fc20832eaa2208acdf0af72c15",
           "claimFingerprint": "eb6ecbe2ce7ed1a0cb46a178523c9342f7c8b42f87566ec9c412b41535359cd1",
@@ -4534,6 +4742,7 @@
           "uriHash": "0xf03b30d63b21c5d7ea8387daf206e8c128a6460704e8571381bf25e3e9e1232b"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -4555,7 +4764,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-24/rso-archive-2026-05-24.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 17
     },
     "20260525000000": {
       "agreementGroups": [
@@ -4598,6 +4808,8 @@
       "date": "2026-05-25",
       "events": [
         {
+          "attestationLagDays": 16,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0xabad2fe9bf69a74b37dfaf9d3e10b4aa954e156bd3c131c760df36e2252a9d47",
           "claimFingerprint": "8fd16fb3263731df57a43dfb75816870fb0be5943dd1c6f838abe42560c90823",
@@ -4631,6 +4843,8 @@
           "uriHash": "0x29bf20566184d5c776838d70435f1f5d9da33b955b6672a874c2eb17a177c900"
         },
         {
+          "attestationLagDays": 16,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0xabad2fe9bf69a74b37dfaf9d3e10b4aa954e156bd3c131c760df36e2252a9d47",
           "claimFingerprint": "ed2ddd54b9621d30eb1c7eccd845ae1ae00546fcd0e6c358174fa860cafe104a",
@@ -4664,6 +4878,7 @@
           "uriHash": "0x08c983a8465b7fd80b40cee075e6415c53da0edc1727cd7a7f4962ba99122b3a"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -4685,7 +4900,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-25/rso-archive-2026-05-25.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 16
     },
     "20260526000000": {
       "agreementGroups": [
@@ -4728,6 +4944,8 @@
       "date": "2026-05-26",
       "events": [
         {
+          "attestationLagDays": 15,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x2d39920ad2e2fb60175e7c7cd00b69ef6c98261220629395e2dbe331ce2f713d",
           "claimFingerprint": "41c34852524963fcc7de1877304d5f6d0cefe8aefa485fdddcd961f4a365a071",
@@ -4761,6 +4979,8 @@
           "uriHash": "0x17d4d98cd560d467eead04f0906370455f1a46ad4c2bd1f52ff6055f4f9d67f5"
         },
         {
+          "attestationLagDays": 15,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x2d39920ad2e2fb60175e7c7cd00b69ef6c98261220629395e2dbe331ce2f713d",
           "claimFingerprint": "69feed0c4d11d16eabd18923e6f538b897760e5669a70aa10329a0e5dc73e09a",
@@ -4794,6 +5014,7 @@
           "uriHash": "0x74e3db4c3b57b09ff426d67dd6c42a94ca479e5edf3bdfd8e34a37cae627eb47"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -4815,7 +5036,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-26/rso-archive-2026-05-26.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 15
     },
     "20260527000000": {
       "agreementGroups": [
@@ -4858,6 +5080,8 @@
       "date": "2026-05-27",
       "events": [
         {
+          "attestationLagDays": 14,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0xc298eee124519c191ce7f7c7cac26b190452c206d2cafef1281e9e8a70253b97",
           "claimFingerprint": "2a8b3a6fd0f3685408832c79741aa1d377cb8c2958c311308a4161f0afab7d03",
@@ -4891,6 +5115,8 @@
           "uriHash": "0xef2e40ddc4b968a41814bc07ff8eb0f33a010cd247de7ad7f10cb93ae2f6b194"
         },
         {
+          "attestationLagDays": 14,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0xc298eee124519c191ce7f7c7cac26b190452c206d2cafef1281e9e8a70253b97",
           "claimFingerprint": "a96991d635bc098d6cc85faf516cc9a51ef9c62036f0c5265468c1ef3b31389f",
@@ -4924,6 +5150,7 @@
           "uriHash": "0x236cbc0030a30b01384572465eb0241b741f817eb909decde1934f42ca4aa334"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -4945,7 +5172,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-27/rso-archive-2026-05-27.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 14
     },
     "20260528000000": {
       "agreementGroups": [
@@ -4988,6 +5216,8 @@
       "date": "2026-05-28",
       "events": [
         {
+          "attestationLagDays": 13,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0xd9edc87c59e4ad73ddbfb74840693fae7ce76c3cf9ece46fc0f6fbc64514035e",
           "claimFingerprint": "3039f79228238c757153b07ce96c724cfd5d24852e26ae13fb78310ce3a8f2c2",
@@ -5021,6 +5251,8 @@
           "uriHash": "0x632255ae79c353caf785403e9b50ed805ad13ece7c142af785b1f7ef34a4e6dd"
         },
         {
+          "attestationLagDays": 13,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0xd9edc87c59e4ad73ddbfb74840693fae7ce76c3cf9ece46fc0f6fbc64514035e",
           "claimFingerprint": "72dbe2985a64c51db3f45b8b244c13089bc9d38f2f390a26647ee3f8473f54fa",
@@ -5054,6 +5286,7 @@
           "uriHash": "0x1974dba5fbd48cf8ddc08480386f15fa6db0d9ced232b04a14133787da85b940"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -5075,7 +5308,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-28/rso-archive-2026-05-28.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 13
     },
     "20260529000000": {
       "agreementGroups": [
@@ -5118,6 +5352,8 @@
       "date": "2026-05-29",
       "events": [
         {
+          "attestationLagDays": 12,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0xaa920d497b4b94d240dbc0697fa65acf655d7a09aec1905bbf5de2bb47f30e41",
           "claimFingerprint": "b1278f84678fb645a17dd4538905631a89c287899510ee38ace3b877cbeacc47",
@@ -5151,6 +5387,8 @@
           "uriHash": "0x31de022a3d3391072f587665c682792a406c0755316a869ccf358a1924ffee10"
         },
         {
+          "attestationLagDays": 12,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0xaa920d497b4b94d240dbc0697fa65acf655d7a09aec1905bbf5de2bb47f30e41",
           "claimFingerprint": "aa5ec625688bcfee08014c7d457d4f1e697a751bdeb3c16ac5ce0a859fb4cdf5",
@@ -5184,6 +5422,7 @@
           "uriHash": "0xf94c77eb38dac9c843364ec330dc24ec19d3c7fb76ebb5bad35de2e6e9f6dfdf"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -5205,7 +5444,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-29/rso-archive-2026-05-29.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 12
     },
     "20260530000000": {
       "agreementGroups": [
@@ -5248,6 +5488,8 @@
       "date": "2026-05-30",
       "events": [
         {
+          "attestationLagDays": 11,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x99ee22ab9ca0762ae48cfccbadf461e18ae0f9af607ad78154b40577d17e7a46",
           "claimFingerprint": "8cc54b4d5898f78e5c40f81c02044014afce56fa83d171d19b1488b9568b8760",
@@ -5281,6 +5523,8 @@
           "uriHash": "0x37d76ff28233d67f19d5fc4f183012de3fe9af422da2256c53a9170460440e72"
         },
         {
+          "attestationLagDays": 11,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x99ee22ab9ca0762ae48cfccbadf461e18ae0f9af607ad78154b40577d17e7a46",
           "claimFingerprint": "d70511eedfc0b7440420ce05a703bfeea05cfe8563366b4382c6194d82f922fc",
@@ -5314,6 +5558,7 @@
           "uriHash": "0x57fd812f0192675b899fc0c668b844839fdfe6fb368519a712924d3b1aa260a5"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -5335,7 +5580,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-30/rso-archive-2026-05-30.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 11
     },
     "20260531000000": {
       "agreementGroups": [
@@ -5378,6 +5624,8 @@
       "date": "2026-05-31",
       "events": [
         {
+          "attestationLagDays": 10,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0xeb34cbbaace6dead277f524baa8165fd1279be3ad3d84b067876d64681accdf5",
           "claimFingerprint": "dae394e82d0198889dc592514d1b25d13acda93abfa49cf4702ff4ef102880f9",
@@ -5411,6 +5659,8 @@
           "uriHash": "0x09cfd594711d1d22ac25e152404b8c50d0675f9cfcf3f2d7deac43526c14997d"
         },
         {
+          "attestationLagDays": 10,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0xeb34cbbaace6dead277f524baa8165fd1279be3ad3d84b067876d64681accdf5",
           "claimFingerprint": "4bf1e6b723acdc1ef7e36521783f290fa7d37ebef077177669469b371ace16e7",
@@ -5444,6 +5694,7 @@
           "uriHash": "0x2fc2a91d087522033611a5394b2b95f7ae56532644a4b40b6ea10463c00a5960"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -5465,7 +5716,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-05-31/rso-archive-2026-05-31.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 10
     },
     "20260601000000": {
       "agreementGroups": [
@@ -5508,6 +5760,8 @@
       "date": "2026-06-01",
       "events": [
         {
+          "attestationLagDays": 9,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x691cc5e5af20b6991f4b10df9fa909d936053bda0ab3f51a2551010d132eba30",
           "claimFingerprint": "a937d9ec6813f546bf69d1c18d5321c617cb2a756de5a4649d7292f6524803c1",
@@ -5541,6 +5795,8 @@
           "uriHash": "0xb5b87d3546265f44d06a1b159536a8a83ae392a89715fd121ef89e13e00f2770"
         },
         {
+          "attestationLagDays": 9,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x691cc5e5af20b6991f4b10df9fa909d936053bda0ab3f51a2551010d132eba30",
           "claimFingerprint": "7642572f39b6b1e1f54e350fb0d3231d7683412987206cae7e4504f1ff9643bd",
@@ -5574,6 +5830,7 @@
           "uriHash": "0x0cb819256cda3b5e7e04231119f620258f9fe22199accf7f28d55ca1b68342cb"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -5595,7 +5852,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-06-01/rso-archive-2026-06-01.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 9
     },
     "20260602000000": {
       "agreementGroups": [
@@ -5638,6 +5896,8 @@
       "date": "2026-06-02",
       "events": [
         {
+          "attestationLagDays": 8,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x48e4fd6e871ea981352e899a6cade2eb63a21d2ee72ed1823fc9b0e3e2b54847",
           "claimFingerprint": "89b8d83e4da8337efe5f0013f2545b2f1fb4de41967176d338ad3e7e734d6c20",
@@ -5671,6 +5931,8 @@
           "uriHash": "0x8e9a1dfa2275ca45a41b29a291879f2879639b62a0390659ed52bbb273f011ed"
         },
         {
+          "attestationLagDays": 8,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x48e4fd6e871ea981352e899a6cade2eb63a21d2ee72ed1823fc9b0e3e2b54847",
           "claimFingerprint": "1804ee10272d78b796213b00b57e51dd06f4b16cdf3795a2754689322e50631d",
@@ -5704,6 +5966,7 @@
           "uriHash": "0x60744bbcc478c516a663f5d91bbac6eb4d56401d831e9a9234d0e85bd803b81d"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -5725,7 +5988,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-06-02/rso-archive-2026-06-02.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 8
     },
     "20260603000000": {
       "agreementGroups": [
@@ -5768,6 +6032,8 @@
       "date": "2026-06-03",
       "events": [
         {
+          "attestationLagDays": 7,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x149934aa8289f034c113f243ed739be210be96908de11b6dd6ce05803d61719a",
           "claimFingerprint": "bc60ae56e8ac3291d67925e8313ecfa4bd9e5ed84a9c854b9f2484abbd581c41",
@@ -5801,6 +6067,8 @@
           "uriHash": "0x6c39a32ebae41c4769b294195093e02f7e68ee4e15aec03267c0eca2c06bec19"
         },
         {
+          "attestationLagDays": 7,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x149934aa8289f034c113f243ed739be210be96908de11b6dd6ce05803d61719a",
           "claimFingerprint": "48ade0f956fa60d51383859d0a83bd667f17217bfea3c01733dfaac29886fb89",
@@ -5834,6 +6102,7 @@
           "uriHash": "0xbb7c7a3afa70f4acbf1133817f31ec2e6429e204960112f8338095260177b022"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -5855,7 +6124,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-06-03/rso-archive-2026-06-03.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 7
     },
     "20260604000000": {
       "agreementGroups": [
@@ -5898,6 +6168,8 @@
       "date": "2026-06-04",
       "events": [
         {
+          "attestationLagDays": 6,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0xc3c8b53567ffcdc08e335d517faa81218bf2d65180981d4f5ff8d86dd0700954",
           "claimFingerprint": "fdd100c9d4c257c5377bfa63b74a3e1600ac8a04c6f25bad37a7e4d12e7baec5",
@@ -5931,6 +6203,8 @@
           "uriHash": "0x6f14f8d9f889d6c8e25fd2d42c49b04da805461b47ed2984766f67149fdbcd7f"
         },
         {
+          "attestationLagDays": 6,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0xc3c8b53567ffcdc08e335d517faa81218bf2d65180981d4f5ff8d86dd0700954",
           "claimFingerprint": "413edbab0bbba819bc180a75306e6fe8079f5999aa2de0b90f5addb7b40fb813",
@@ -5964,6 +6238,7 @@
           "uriHash": "0x693efcc391ea3852b650a7234af8ec15d7806393edc45b4fa2077cae8083f0ee"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -5985,7 +6260,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-06-04/rso-archive-2026-06-04.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 6
     },
     "20260605000000": {
       "agreementGroups": [
@@ -6028,6 +6304,8 @@
       "date": "2026-06-05",
       "events": [
         {
+          "attestationLagDays": 5,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0xd6dfae349e33dbd82122a0d58469609469ef50a915f77a4d972d1be7339880f0",
           "claimFingerprint": "a170420de28f9e966161c18fb4d684eaa0f203f37043eb48bfc85ce328d316fa",
@@ -6061,6 +6339,8 @@
           "uriHash": "0x1d9168612d1b56911e901574dca4df6d36177dcf44cd6136140983c9039314d4"
         },
         {
+          "attestationLagDays": 5,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0xd6dfae349e33dbd82122a0d58469609469ef50a915f77a4d972d1be7339880f0",
           "claimFingerprint": "924ab32f5694e0d98a0bfc58b1b3b098b78f127e51577c96f90d91248af3cac0",
@@ -6094,6 +6374,7 @@
           "uriHash": "0xc82037c63da1ca2c82ff4f2f0621bac196cf2bdd940677c20551e3710e4d8079"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -6115,7 +6396,8 @@
           "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-06-05/rso-archive-2026-06-05.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 5
     },
     "20260606000000": {
       "agreementGroups": [
@@ -6160,6 +6442,8 @@
       "date": "2026-06-06",
       "events": [
         {
+          "attestationLagDays": 4,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x4fcf0ac19aee184905b1e4affb5a837c5b4b5c768e56fb991b86fd86ff54bc10",
           "claimFingerprint": "a31503b048587b6ee9f578481d21a1589c3086da111b1c7e120ba2efe4252641",
@@ -6193,6 +6477,8 @@
           "uriHash": "0x962a073eead0da207937380682f6dd823fb66367c426337046596e6e7b91c79a"
         },
         {
+          "attestationLagDays": 4,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x4fcf0ac19aee184905b1e4affb5a837c5b4b5c768e56fb991b86fd86ff54bc10",
           "claimFingerprint": "dd781a0f1f16a97194b8c345d23f3f2cf0905fe763d8df9ea45910fb7d9c8ca3",
@@ -6226,6 +6512,7 @@
           "uriHash": "0x5e33867e7fb3e0479eda7066e6328009dd295c88716e857d086d6cc6f3f83878"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -6249,7 +6536,8 @@
           "https://github.com/brookr/RSO/releases/download/rso-archive-2026-06-06/rso-archive-2026-06-06-v2.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 4
     },
     "20260607000000": {
       "agreementGroups": [
@@ -6294,6 +6582,8 @@
       "date": "2026-06-07",
       "events": [
         {
+          "attestationLagDays": 3,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x65db01610ee89979f47778515b1311be5331fa0e311eee2cd9a7d8efd573f068",
           "claimFingerprint": "8ed8df3492974054cbfc0578cb192077d09e0a86ad3334a8201193893a07962b",
@@ -6327,6 +6617,8 @@
           "uriHash": "0xd09d748c94a6c5feb7f7e69269eb8a239225d23786ae753186accd2fa07a23f5"
         },
         {
+          "attestationLagDays": 3,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x65db01610ee89979f47778515b1311be5331fa0e311eee2cd9a7d8efd573f068",
           "claimFingerprint": "46de3f9e4ef7eac84b08c8b50c33f9e7a2eaefe2835725e743a067b026aadea2",
@@ -6360,6 +6652,7 @@
           "uriHash": "0x09b9cf0c60200ed3712803776c8bd88e110b2118fb3e9946ad48fd116500667a"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -6383,7 +6676,8 @@
           "https://github.com/brookr/RSO/releases/download/rso-archive-2026-06-07/rso-archive-2026-06-07-v2.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 3
     },
     "20260608000000": {
       "agreementGroups": [
@@ -6428,6 +6722,8 @@
       "date": "2026-06-08",
       "events": [
         {
+          "attestationLagDays": 2,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x0ee986879b439ffa4d0ee524e8d76e1490a30f0743638a02518a2a015b87ea24",
           "claimFingerprint": "a67b12154d9c33a7da57dea5e13cb1ab87379273381f436a7ce8e466ccd3a0d6",
@@ -6461,6 +6757,8 @@
           "uriHash": "0xf491675ebf229a945daca38aeb876079e7b968a8974f54374f12bb63c6cc6895"
         },
         {
+          "attestationLagDays": 2,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x0ee986879b439ffa4d0ee524e8d76e1490a30f0743638a02518a2a015b87ea24",
           "claimFingerprint": "d1eef6eb0bfc8e4c2be5c41b5acd7951ad084d78868a08c8308db4029b8e0d75",
@@ -6494,6 +6792,7 @@
           "uriHash": "0x71f506a5b32a89cb66adf5f09983e0911c07068836f5148af4eacb91fbbe5d08"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -6517,7 +6816,8 @@
           "https://github.com/brookr/RSO/releases/download/rso-archive-2026-06-08/rso-archive-2026-06-08-v2.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 2
     },
     "20260609000000": {
       "agreementGroups": [
@@ -6562,6 +6862,8 @@
       "date": "2026-06-09",
       "events": [
         {
+          "attestationLagDays": 1,
+          "attestedAtUtc": "2026-06-10T02:56:24Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x06c958fd38fa8bffce8591fa3ec4aadfd63c4679710e0f0a6d50d14bc0f36574",
           "claimFingerprint": "5c894ef5db4db8c6d06a5cd4b25640eac5ee1e1fd8f22d95cc406d157b1ee06c",
@@ -6595,6 +6897,8 @@
           "uriHash": "0x44a2a17daea7f046601709f010232148e8cddf586c5938c766d7c184354bca72"
         },
         {
+          "attestationLagDays": 1,
+          "attestedAtUtc": "2026-06-10T02:57:24Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x06c958fd38fa8bffce8591fa3ec4aadfd63c4679710e0f0a6d50d14bc0f36574",
           "claimFingerprint": "e81fb97155ca42f8b57b60dd560dbf5bd6bbe3666c20e517f3d0c5bf71703fde",
@@ -6628,6 +6932,7 @@
           "uriHash": "0xda0456af8df832282fa44cc90ad6f3ea17ba34226ced57e65fdb17be1ea0706e"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T02:56:24Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -6651,7 +6956,8 @@
           "https://github.com/brookr/RSO/releases/download/rso-archive-2026-06-09/rso-archive-2026-06-09-v2.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 1
     },
     "20260610000000": {
       "agreementGroups": [
@@ -6696,6 +7002,8 @@
       "date": "2026-06-10",
       "events": [
         {
+          "attestationLagDays": 0,
+          "attestedAtUtc": "2026-06-10T03:14:48Z",
           "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
           "blockHash": "0x798b9f69c010ce04df8a6eb8f5f7efc5ea958742772172b2a987385650240d5b",
           "claimFingerprint": "768fbf3d52e5743ef99009f6a04d0bc6dcb037fce7fe38c7e0670d4519dd0590",
@@ -6729,6 +7037,8 @@
           "uriHash": "0x84912f3d8d4fecc0de4819bd6c98881f793aeb4c2d5aad18802e19fb5c1a8d8a"
         },
         {
+          "attestationLagDays": 0,
+          "attestedAtUtc": "2026-06-10T03:19:00Z",
           "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
           "blockHash": "0x798b9f69c010ce04df8a6eb8f5f7efc5ea958742772172b2a987385650240d5b",
           "claimFingerprint": "4eb623f693262de43cb1e40c2d64b5dabf9ff7dbb8fd02943e1432fd3634192e",
@@ -6762,6 +7072,7 @@
           "uriHash": "0xaad664e049923a7de53b20f650d191f8e995082cc5c41bb18702d1415e6a7333"
         }
       ],
+      "firstAttestedAtUtc": "2026-06-10T03:14:48Z",
       "leadingAgreementGroup": {
         "attestationCount": 2,
         "attesters": [
@@ -6785,12 +7096,15 @@
           "https://github.com/brookr/RSO/releases/download/rso-archive-2026-06-10/rso-archive-2026-06-10.tar.gz"
         ],
         "nodeBackingTdh": 0
-      }
+      },
+      "minAttestationLagDays": 0
     }
   },
   "eventCount": 104,
   "events": [
     {
+      "attestationLagDays": 51,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0xe651a58398fe906551be2f4d2ec39bace608e7aa60f3c8c30cd276aac96e103e",
       "claimFingerprint": "0782bd0db624ab61dbd3e95a40953cc7e6339af1b3eb2cfa228eebb9a095868f",
@@ -6824,6 +7138,8 @@
       "uriHash": "0xde4f7158ea8841a4534d745a67dd967ae378fec63a30e2a7da839896accf1313"
     },
     {
+      "attestationLagDays": 51,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0xe651a58398fe906551be2f4d2ec39bace608e7aa60f3c8c30cd276aac96e103e",
       "claimFingerprint": "f2c6e00a51d432ab09153e0dac0a2ef558ad4e30bfa744ab670228759f7ecf74",
@@ -6857,6 +7173,8 @@
       "uriHash": "0xad863fbddfb76726b8923ef25f62f7484066117fbd2df2549f3c40b4c64300be"
     },
     {
+      "attestationLagDays": 50,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0xa1006d1e199ec15b56bc3764faeb0bf791764c1abcad2008805fd9b182bf2c3c",
       "claimFingerprint": "b0b987b3a8a55e74b991cb6dd3721d16bf732dd050166d403c9be68c748c6ca0",
@@ -6890,6 +7208,8 @@
       "uriHash": "0x8f13a6bd554c2030fac00b0b63b4bee3f5ddf6fcb91d6d88337ba74196763901"
     },
     {
+      "attestationLagDays": 50,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0xa1006d1e199ec15b56bc3764faeb0bf791764c1abcad2008805fd9b182bf2c3c",
       "claimFingerprint": "b52a83afee84463334f74c4b2005a7c1b5abf209921297626a633df9f533694c",
@@ -6923,6 +7243,8 @@
       "uriHash": "0xd91d62dd5f6b4d94c4f7fd92f3be4d6e6e499ecce72733152ef3e35a06e4a16f"
     },
     {
+      "attestationLagDays": 49,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0xa6ae90b4d7ddcfee71d1ca6d7fe55d551c2093f343044ce30445908d0bd4a653",
       "claimFingerprint": "33138c68233913f92a95354f52266887c63b9ebc788feb409e830c0b3b7ec19b",
@@ -6956,6 +7278,8 @@
       "uriHash": "0xad4535f20765abe31e9e3b23e67923405d70a968bdeba639ebbd1b39d8f64040"
     },
     {
+      "attestationLagDays": 49,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0xa6ae90b4d7ddcfee71d1ca6d7fe55d551c2093f343044ce30445908d0bd4a653",
       "claimFingerprint": "e4e26b3992b8b703db898ce824034c80654b834eb7e717232cb6a6662553bfd8",
@@ -6989,6 +7313,8 @@
       "uriHash": "0x33e50f424062c40d16aa7e04a0b8c7627234c2f73234bebd626537cadcc0ed86"
     },
     {
+      "attestationLagDays": 48,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x1a7f04542fcb001f75bdf555e9cc93cc5ced14d70405f2fb8313b07567e05d64",
       "claimFingerprint": "54101ff419df72c4570b257b34ae43d804384300759344db943de062b0ded688",
@@ -7022,6 +7348,8 @@
       "uriHash": "0xeeca683f18ab459d480c59d36f2251444a0daff2acd5204b28e577f35af3069f"
     },
     {
+      "attestationLagDays": 48,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x1a7f04542fcb001f75bdf555e9cc93cc5ced14d70405f2fb8313b07567e05d64",
       "claimFingerprint": "c2d1db8e5321274800ce870318777674949e3fa4544ef715f9c16f9caecbdc12",
@@ -7055,6 +7383,8 @@
       "uriHash": "0x2cf349057116d8213e801971cc4732d1e1e0c301cba44d7b932f8e230fdcf0df"
     },
     {
+      "attestationLagDays": 47,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x170bf30e136ebbe53ed7a48355a888aea59379729ba92e6119cbcd5fdce21c4a",
       "claimFingerprint": "100c8cd11c621d32d58c2f9ed9645ed0cb8fb9527f67df5faff7c3b0c60c9b8b",
@@ -7088,6 +7418,8 @@
       "uriHash": "0x1c3e523665673ce54c914145a9f7d1700bc4d2834c204eb7168282ca73b08420"
     },
     {
+      "attestationLagDays": 47,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x170bf30e136ebbe53ed7a48355a888aea59379729ba92e6119cbcd5fdce21c4a",
       "claimFingerprint": "73ab8aae1901be24a3eb7a2b57d65947f794516b92c72aaf9b24a9e6b282b3a6",
@@ -7121,6 +7453,8 @@
       "uriHash": "0x9b840ebf8f69abda92774fed5917e7b39cb684a0287a2cc88b95acdf3c7e1d57"
     },
     {
+      "attestationLagDays": 46,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x3a5d90075252610e347a4502f641416feb54f2c36924919ed8824c98737d9896",
       "claimFingerprint": "bd923a64bd3539e579c266b5f4ec02218671f00591b93f011fd56357824618c8",
@@ -7154,6 +7488,8 @@
       "uriHash": "0xcec041fcbb401497ee9c8c94b4c60986bf1fe961d7e0f9d625db9ff65452b12b"
     },
     {
+      "attestationLagDays": 46,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x3a5d90075252610e347a4502f641416feb54f2c36924919ed8824c98737d9896",
       "claimFingerprint": "6d0596cf1405b4ff6419ac52765e67a49328436116594fd5dc9a78926d06ea43",
@@ -7187,6 +7523,8 @@
       "uriHash": "0xf65506572ec5aa041b8e00db9474f70d14f47b9b81bc5e3b248cad86abcc5e50"
     },
     {
+      "attestationLagDays": 45,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x4451406a40a45aca3880032c9e2982c00ba30f04c3513627721c01e7ed0fe24d",
       "claimFingerprint": "f1082d457d05b9d34ab1934f3f8909a2b3dfb86bcab0d375b06732107106a37f",
@@ -7220,6 +7558,8 @@
       "uriHash": "0xb767a44225c77c019744b7dace11e5aeadae71e085b07e0734c4dd0d9b5d64ac"
     },
     {
+      "attestationLagDays": 45,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x4451406a40a45aca3880032c9e2982c00ba30f04c3513627721c01e7ed0fe24d",
       "claimFingerprint": "9672bfe7492d4863a83113469237d4a53c98cad03c122da4a5897b3cffd33e40",
@@ -7253,6 +7593,8 @@
       "uriHash": "0x7a42bcd9e23f7fa97ab51f4bb6d407be2baf73a8f8f125c06c6720d8958a88aa"
     },
     {
+      "attestationLagDays": 44,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x32cbd838729a0bf1bcb17c8ecda46bc62da94738f40c6727a727a014afa39026",
       "claimFingerprint": "4744d01e129804cdc32bbe76b36fd6de799b771d9f21a6aced37ebfd341f9374",
@@ -7286,6 +7628,8 @@
       "uriHash": "0xbc819f084e97a4ac8adf4c97cf23e27c186156f84add9d7643203052613c74ee"
     },
     {
+      "attestationLagDays": 44,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x32cbd838729a0bf1bcb17c8ecda46bc62da94738f40c6727a727a014afa39026",
       "claimFingerprint": "9b24b8e203ab25d043d62ecaf4d1a45142c243c37565769f833e2df5c5cae75a",
@@ -7319,6 +7663,8 @@
       "uriHash": "0x206175b64a95023ca8f9d5b6135eac1b729ac834bba788ba372ea89b5d0e0fa9"
     },
     {
+      "attestationLagDays": 43,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x54fde370719768ddb6f71209c82fc0dce9ded60169cee3390b860db2d9ee87a0",
       "claimFingerprint": "10cce210340a5360ceedb97fb97d23eaee3c7088e11c9e65e0cf5de3a3821cfc",
@@ -7352,6 +7698,8 @@
       "uriHash": "0xb714311a630b2289b6766795f49f4c6185411af9972d0699f3fcb2394a58e8fc"
     },
     {
+      "attestationLagDays": 43,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x54fde370719768ddb6f71209c82fc0dce9ded60169cee3390b860db2d9ee87a0",
       "claimFingerprint": "e8c19c17dc78f3de0f37f224a7d869ccace4182332a53bc54e310636b35037a8",
@@ -7385,6 +7733,8 @@
       "uriHash": "0x0c1e2a260dd2d935ba05f2cceb45ebcde5bf7a8d6ac0f393cbc2b2338616ede7"
     },
     {
+      "attestationLagDays": 42,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x2a7742eb8537004ab68c42727b913682618f1e4e210ea4f73490dba8db088956",
       "claimFingerprint": "63ee687a851c04f44b8e483caaa7fb742e09b813cbef0dc3fbfbc9d680ff688b",
@@ -7418,6 +7768,8 @@
       "uriHash": "0xb202d24a16ae30b102605527b12746097ebbb834fc89d988d7339fdb07ff0577"
     },
     {
+      "attestationLagDays": 42,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x2a7742eb8537004ab68c42727b913682618f1e4e210ea4f73490dba8db088956",
       "claimFingerprint": "7ed04efb58ebadc0fe6d2e17263f2db8e4c55e09d2b6950c9cb888582d5ff6d3",
@@ -7451,6 +7803,8 @@
       "uriHash": "0x98f6eec8e24e942ef732439bd130f0043dd9e44cc145a17f345a675108444319"
     },
     {
+      "attestationLagDays": 41,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x76b5faa7ecc20afe1e90f74f77351795e2e386dd16152262e52c429e8388a903",
       "claimFingerprint": "57eb143a4ed117e7c40bc5b27fe83cd4acf03f0b11b7d382c1e0ab1efab4c3d8",
@@ -7484,6 +7838,8 @@
       "uriHash": "0x6677f394e246da37e0916445a6d92cad61b85415456bbd16455275121d45d0c7"
     },
     {
+      "attestationLagDays": 41,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x76b5faa7ecc20afe1e90f74f77351795e2e386dd16152262e52c429e8388a903",
       "claimFingerprint": "1644fb55416f6f19a93df844bd8d3cabd899033a1b541eadaed3c96b81a42ffc",
@@ -7517,6 +7873,8 @@
       "uriHash": "0xdbb04eb4d1b18bdfee69bf63235736463bc71a2e7454bbd65a340375f4ba8fb6"
     },
     {
+      "attestationLagDays": 40,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x372b2394dd4c2cdb8770a333a18ad9b1ff30e03093d01edf68e927c27b099c5c",
       "claimFingerprint": "e7e71d89e81033cbead817340331994a258785c960daa87a4a28130d7addafc3",
@@ -7550,6 +7908,8 @@
       "uriHash": "0x99d76e77b6b8064c4c251d2e0d7ddd9af9a837ae389e50b976ed283bf08f4e6a"
     },
     {
+      "attestationLagDays": 40,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x372b2394dd4c2cdb8770a333a18ad9b1ff30e03093d01edf68e927c27b099c5c",
       "claimFingerprint": "92ece981d6279e13e2ab30bf263443028d1bdd1c8870e776b4875da2bb69b648",
@@ -7583,6 +7943,8 @@
       "uriHash": "0xc2a353abbd723175862bedca640f6c8d83c6281fe489085e469f6fcb36c9d43f"
     },
     {
+      "attestationLagDays": 39,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x762d59b1dc702e94794b049cc49f757ec493bf78eeb089714e619974abcd6045",
       "claimFingerprint": "ade52fbca69d71215b85eb96399ceaafcdaf2cec2ad46f501b5dff96ecbcdb28",
@@ -7616,6 +7978,8 @@
       "uriHash": "0x1c5156c713af73314eb9ccff3027921ff284d8d54a8fdd2839e4edc423b1321c"
     },
     {
+      "attestationLagDays": 39,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x762d59b1dc702e94794b049cc49f757ec493bf78eeb089714e619974abcd6045",
       "claimFingerprint": "7194ef545734b8ab7ff5eb40579677fd0b2d284436d6dcda54436b554feedb19",
@@ -7649,6 +8013,8 @@
       "uriHash": "0x15f581a9912b62c56959924db7bdaf9ba746d0ab192a237a8b8fffe69e02f7d7"
     },
     {
+      "attestationLagDays": 38,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x4de659d1a529139c5e2cf294ba464f5b2293c7238c1a515e959104dd5f24a920",
       "claimFingerprint": "c6d195ac60fa67a5e38e654c774dc927840f7360badbf89af2c2772289cdb464",
@@ -7682,6 +8048,8 @@
       "uriHash": "0xaf4adeb2ef38c08c5a1427eea4afb15ffcb28532a12086ef17301c8fbce5d096"
     },
     {
+      "attestationLagDays": 38,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x4de659d1a529139c5e2cf294ba464f5b2293c7238c1a515e959104dd5f24a920",
       "claimFingerprint": "81a8ee8b6cf81dc93692dea2dbea581c81b029c38116be01d15c77bb6c5015d0",
@@ -7715,6 +8083,8 @@
       "uriHash": "0x30428922102dbed360a74d3731834816bbedd8cc58d24ace14a33c6f8794dfca"
     },
     {
+      "attestationLagDays": 37,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x7df63ade68e09e32a9bc992ec4ad454caeeed05f736282786ca3602bb38b0eee",
       "claimFingerprint": "0f2bcba8fc96f94629da5ad42941b3c43bbbd21de4ff353ce8f94a1b95b8063a",
@@ -7748,6 +8118,8 @@
       "uriHash": "0xeed04353ca781b99be77bffa5091387c22071cf37be1bbc0c479cc43a2aecd94"
     },
     {
+      "attestationLagDays": 37,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x7df63ade68e09e32a9bc992ec4ad454caeeed05f736282786ca3602bb38b0eee",
       "claimFingerprint": "3b51565b881059ffcecb9db5b9628941f035c6f567e03654bcfa49eaddaca610",
@@ -7781,6 +8153,8 @@
       "uriHash": "0xa95956158036b1cbddf6e6111f2e08f3304fd1fab70e122283957904ea3aabe8"
     },
     {
+      "attestationLagDays": 36,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0xa8c85b0c2d53cc6825e9a798a5ae185e2fdadaab7e292ccb5773bbd8004c0838",
       "claimFingerprint": "93d363f6f440854bd1b6aaf13c42992de565ccefd0614c66ff5e040256981eb0",
@@ -7814,6 +8188,8 @@
       "uriHash": "0xdca9e3594eb1d431f7fd2ea77a40038ccb28e7bd299c522d2caea0e2c8ea22e6"
     },
     {
+      "attestationLagDays": 36,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0xa8c85b0c2d53cc6825e9a798a5ae185e2fdadaab7e292ccb5773bbd8004c0838",
       "claimFingerprint": "3f95ff9bf97333b1a0251baf563dfe1483c0a7ee6ef99696c349965848f1f051",
@@ -7847,6 +8223,8 @@
       "uriHash": "0x2606f6505bd881db95ff1deccf29d24edb153572225fad990777a734a191be6e"
     },
     {
+      "attestationLagDays": 35,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0xe8c4bee2a45494b9dc155c1b2dd55260b65b3b5747e521c50c3edbe28cc91d48",
       "claimFingerprint": "9e8a2838b3149794f86394ba3030e5cb715898081ca4960fa107621c394ab90e",
@@ -7880,6 +8258,8 @@
       "uriHash": "0x3f9739d2c0e2d83983123bac9150f94d347dd0ae8d23a01611da8ad2b41591e2"
     },
     {
+      "attestationLagDays": 35,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0xe8c4bee2a45494b9dc155c1b2dd55260b65b3b5747e521c50c3edbe28cc91d48",
       "claimFingerprint": "a0d592372045b33cbab7bd3cfcb0830880e7596c78330c580839badccbb80cfd",
@@ -7913,6 +8293,8 @@
       "uriHash": "0xcb60d22c7293dd24153b9c52719716aaaf67e103364d89429cf16710e688fcb0"
     },
     {
+      "attestationLagDays": 34,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0xaecc54b4c142a7fb0cad55a6a18ccaa7e11b6ac6189b76fa022f33c949a8179a",
       "claimFingerprint": "2ceb51ecc7a9f9590eebbe0424993eb38958f8eadfc6b18eaa01c716b794199c",
@@ -7946,6 +8328,8 @@
       "uriHash": "0xf14cdc697c042569278fc7160b14c8a9b33a82ff08e9a67e4a036b5c201a8f65"
     },
     {
+      "attestationLagDays": 34,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0xaecc54b4c142a7fb0cad55a6a18ccaa7e11b6ac6189b76fa022f33c949a8179a",
       "claimFingerprint": "f67bf9efe5095e47129127b096b12b8e8bc31bdfe06eb83c641adfc01f5f7235",
@@ -7979,6 +8363,8 @@
       "uriHash": "0x6098289d22f3070adf6ef7dd6732b44c4ba5837ff67214ac5897c1b20443458d"
     },
     {
+      "attestationLagDays": 33,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0xdb1c799f5a73a733d304323eaec0a2a6c16070ef383521f744a4c22ab7257cc5",
       "claimFingerprint": "5dc1ec7172d81612304c68e94d9c08daaa63e17f0c14c087185e95d429494729",
@@ -8012,6 +8398,8 @@
       "uriHash": "0x7aa398cf43786bdd29150d0a90789e9f2e44345182012452a657a46ad54e133f"
     },
     {
+      "attestationLagDays": 33,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0xdb1c799f5a73a733d304323eaec0a2a6c16070ef383521f744a4c22ab7257cc5",
       "claimFingerprint": "b466b414abb913adcf7f8a4eaa0bfed6bec0c0542a9f9574e3e57cb8b5ac9e5f",
@@ -8045,6 +8433,8 @@
       "uriHash": "0x2b1c3fcad6cc6a3a944f1523e46c5f41a4f8a147608549b0c6a2b27c48ac5725"
     },
     {
+      "attestationLagDays": 32,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x368af51a894a85b9f5217eb8cc615af9258c9f7122ca22e4991a3ee68baeb567",
       "claimFingerprint": "1f2de94d999b63478925f7ce1611033773101dda3951233f30d07ba41306209d",
@@ -8078,6 +8468,8 @@
       "uriHash": "0xb40e0a246b87cff43e1a6e2698299cf1a4ad87b829a2581f93eb4bfbb2bb0103"
     },
     {
+      "attestationLagDays": 32,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x368af51a894a85b9f5217eb8cc615af9258c9f7122ca22e4991a3ee68baeb567",
       "claimFingerprint": "46371ff29e6dfa5ceb48a3be6b07af70a52abe3350ca7befceae7c19d87629aa",
@@ -8111,6 +8503,8 @@
       "uriHash": "0x19ccfc67e507c25793e9897b39d5b60fcf92eb8cc03b1a8f6ef17f703ecde6c9"
     },
     {
+      "attestationLagDays": 31,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x2d8681fea89985c5d6fa9bbbb2b17edb633fe62f27cc684354d54aa4fed5f1b8",
       "claimFingerprint": "e43fe3756d3623a628daded36037aa6492c7aeccfbfcf7fb4e83aa7f40b91714",
@@ -8144,6 +8538,8 @@
       "uriHash": "0x23d1b7202c964ed847e69b6739b16b78fae1630370ae57c359e3be2067ae2b94"
     },
     {
+      "attestationLagDays": 31,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x2d8681fea89985c5d6fa9bbbb2b17edb633fe62f27cc684354d54aa4fed5f1b8",
       "claimFingerprint": "d890a158f56f7848e0c51c2d6ecf10069a6f2929880ca39bcb2f5a46012e4d34",
@@ -8177,6 +8573,8 @@
       "uriHash": "0xb46ae808698d69cc67330ce9ab1e7976a89d9d914238990809a92a28508bbd05"
     },
     {
+      "attestationLagDays": 30,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x67800ab59f99c40da3ece923d2652debc472700ef855e14ad635f48ff58450c5",
       "claimFingerprint": "1e2e0692c7dcb8ae61d03a79eacf7affc92981e777cb1841e66ac359ea3459a7",
@@ -8210,6 +8608,8 @@
       "uriHash": "0xe622002c45c5a1f16752cb8a0464ccd25c11047eea747ac5cef444420694f557"
     },
     {
+      "attestationLagDays": 30,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x67800ab59f99c40da3ece923d2652debc472700ef855e14ad635f48ff58450c5",
       "claimFingerprint": "5babadcf4ec2c0ef915ead5aa3ec28b5b66b880c9326c15c710986329959c63c",
@@ -8243,6 +8643,8 @@
       "uriHash": "0x98bb0e50ec993a98c0d0c27722c99b73d922a982bf770a7e1800926edfb44600"
     },
     {
+      "attestationLagDays": 29,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0xe894fe42359d674fb38e9f20f6284201116112202a9215993de88cd2790eb7dc",
       "claimFingerprint": "417d0c3337b6448d82fc6cb6eb1cf467185a3ad41f76d2443cb381898d6c50c9",
@@ -8276,6 +8678,8 @@
       "uriHash": "0x5b27f08cc1ef8a0ce69d514d8bcc390018673641488e3edee6585d61c7130e65"
     },
     {
+      "attestationLagDays": 29,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0xe894fe42359d674fb38e9f20f6284201116112202a9215993de88cd2790eb7dc",
       "claimFingerprint": "de463d87b7a0d7de46c2430ba18b2f3338ab5e9ca7fe3d41337dc1599cb32ed7",
@@ -8309,6 +8713,8 @@
       "uriHash": "0x370d0a7c8589e954ec538ec75f02fce26f2eed7ab8cd6ef90627356efaaec2cd"
     },
     {
+      "attestationLagDays": 28,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0xb1628f223aa0ce1d30126ddb70cd46eaccc8b68fac79461eea288fcfdb42cd2e",
       "claimFingerprint": "4d1f85ce6b57377c8cfc11a22e2cdad438a6b5d8ace07d6f805a7a760745b707",
@@ -8342,6 +8748,8 @@
       "uriHash": "0x682a82c9a7fd26452d114fe698a09487081c535eab20da0e6a483f727f21668c"
     },
     {
+      "attestationLagDays": 28,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0xb1628f223aa0ce1d30126ddb70cd46eaccc8b68fac79461eea288fcfdb42cd2e",
       "claimFingerprint": "0976a82efc28924db8bc7bb0d9445eae1f2343273b7ddd720e4297b050ec6620",
@@ -8375,6 +8783,8 @@
       "uriHash": "0xe780d21b9344e95fae847c16ed0559e9b43d1881effdb10b70a7a75b240ee881"
     },
     {
+      "attestationLagDays": 27,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x584f3e215518999db48c0ce5996144b1dc3674ec8e59a4d26a4caa4123a049f7",
       "claimFingerprint": "6f6a40898d477b48bdea452272b5778aefcd63adb34a38276714692040cd10ac",
@@ -8408,6 +8818,8 @@
       "uriHash": "0x56b8e05ae9f7ff624d52c9a706571f23b0d27f46c0bc588690baf6bc3cab7ee9"
     },
     {
+      "attestationLagDays": 27,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x584f3e215518999db48c0ce5996144b1dc3674ec8e59a4d26a4caa4123a049f7",
       "claimFingerprint": "0772ea7279c98b404ec869b2293c29c04c042b1687abce60f4e2c5934ccb09bc",
@@ -8441,6 +8853,8 @@
       "uriHash": "0x0caf5310302ba48c7c64fa8ceac06d9a4fd768184a53c2a3d7311cbff13f52c2"
     },
     {
+      "attestationLagDays": 26,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0xd9f144c93cc6b9dbf2ea0d1d14aa2b8fd9158d5b1e88fa4e09e6c5355becec7f",
       "claimFingerprint": "ab0cb92d704d515f205b64a0280fa5692d12269b461e0150660e73a856df7e7e",
@@ -8474,6 +8888,8 @@
       "uriHash": "0x48ab19513db18fa375335508171d2444631a57c02b7d0a8264eec717a62c9642"
     },
     {
+      "attestationLagDays": 26,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0xd9f144c93cc6b9dbf2ea0d1d14aa2b8fd9158d5b1e88fa4e09e6c5355becec7f",
       "claimFingerprint": "199e2b5060d7650efaf014fe8236b63b9d0b37f5adc75a342ab2ddff22b68e3e",
@@ -8507,6 +8923,8 @@
       "uriHash": "0xb1a13643210a4dfc9dbb1103babc7183473f0df7b8edd90223e8f9affe2d793b"
     },
     {
+      "attestationLagDays": 25,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0xfd60086aaa933178c2bdd7ed4d8e591bcea909ca2f9532826241265eca8f251a",
       "claimFingerprint": "50be1298bd3b737fc1101d54ac8635856c17c7cdd3486bdb949f61f19deb81ac",
@@ -8540,6 +8958,8 @@
       "uriHash": "0xffabbc0d1d2eefc35c816443c2dd338e47ce5c844c527a38b72bc80c116fbe61"
     },
     {
+      "attestationLagDays": 25,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0xfd60086aaa933178c2bdd7ed4d8e591bcea909ca2f9532826241265eca8f251a",
       "claimFingerprint": "c5105d676cbd2e41c70ea041034f3e4a75d6db6e6f31ffce1426eabbcf9abcc5",
@@ -8573,6 +8993,8 @@
       "uriHash": "0xc181ef631cfa344811ceaf1f3a88ced4dd31aba84ee4c61a196c8ee315377610"
     },
     {
+      "attestationLagDays": 24,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0xd6b2987eb44eddbcb8735b6820106f13ac8dcf7195e22555d115aae17ca0f50f",
       "claimFingerprint": "34822f1641b647bb5ec0ae0089fe1664b227bd50f2faf83bb6eba091898973f1",
@@ -8606,6 +9028,8 @@
       "uriHash": "0xf4dfe898afeeee6dc0ffa49c0c6cf8cd6a87a7e5a36cf3ac5349855fd29e2d09"
     },
     {
+      "attestationLagDays": 24,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0xd6b2987eb44eddbcb8735b6820106f13ac8dcf7195e22555d115aae17ca0f50f",
       "claimFingerprint": "0e0cc5af284667df68f9342355585ad944c3e294b716a7cf78e3d39c2082e8a2",
@@ -8639,6 +9063,8 @@
       "uriHash": "0x2dbd1533c9b32407f4c7f053ddccac0840d87410a36c8e6ebb98373f76348731"
     },
     {
+      "attestationLagDays": 23,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0xdc6914bd28b5aaa7f961b608576730e9c8ead963d621d8dcfff352e45e14849b",
       "claimFingerprint": "12f14cf05831b7a914a16f76ca0dc6bb7ef0e50e422f5b23019b1fb91546274f",
@@ -8672,6 +9098,8 @@
       "uriHash": "0xbf9c1dd7fd2061a8a32751a03105947134f0552eced1d84f072cb05db8205a97"
     },
     {
+      "attestationLagDays": 23,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0xdc6914bd28b5aaa7f961b608576730e9c8ead963d621d8dcfff352e45e14849b",
       "claimFingerprint": "d1b07e54c0ddfc202fcb0c5725fd159fd3a6e524e339565763834f962fdc3255",
@@ -8705,6 +9133,8 @@
       "uriHash": "0x651be62a25e7d8ea22c679079ce6b65b131c59ec6897fa0a94dfd3eb22a8682e"
     },
     {
+      "attestationLagDays": 22,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x6172f6221ece7eebebece3a1a1be9fd8f5fa3ea1dec540621e8588d8104a76df",
       "claimFingerprint": "a4ef3d09b4ca596ec9b2aa900c6571383b5a0e859903c3904e664b79ad466050",
@@ -8738,6 +9168,8 @@
       "uriHash": "0x44f4806c69bb4db5d70ed4f581a56b6282a13a69e9df3716e4546fc9d3b415bb"
     },
     {
+      "attestationLagDays": 22,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x6172f6221ece7eebebece3a1a1be9fd8f5fa3ea1dec540621e8588d8104a76df",
       "claimFingerprint": "5ca07112897afe6d4d7297eb989a6dd3f51fd78bde70a5610700f0e881fc76a3",
@@ -8771,6 +9203,8 @@
       "uriHash": "0xef34b26f3024ca1d9d4169cd41fd318a6c04de3f3a7ff931dd5a7ba9589b9dcb"
     },
     {
+      "attestationLagDays": 21,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0xc09aaceec7d42f48808082770d767365eccd0d4a9a3bdc816d4aec7bae9a8e83",
       "claimFingerprint": "afbf55d2a670a01ba9df2a6dbbd79ca846e459c8dea0d00630b0fba824602e2c",
@@ -8804,6 +9238,8 @@
       "uriHash": "0x740468447ad0af32aa48b6995e569a717e64831c041f08b4cfae955887daf92a"
     },
     {
+      "attestationLagDays": 21,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0xc09aaceec7d42f48808082770d767365eccd0d4a9a3bdc816d4aec7bae9a8e83",
       "claimFingerprint": "3fa14facdaf812e0a1df6c8616ca8b4e1660da0c7464825fd20132501627ce61",
@@ -8837,6 +9273,8 @@
       "uriHash": "0xa92e7a3678382dc60617b1156ba1ce49f7cdb98e4fd4fa73e0394d1c2b5bbf3b"
     },
     {
+      "attestationLagDays": 20,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x0e4e7545235058c9d33b16b7c2d1975894b6bc995592c33b86e60e7a35c268b9",
       "claimFingerprint": "b38e35920af773d75a08b20fc4da4117d4474b6ac84292afa24dbb00278fd00d",
@@ -8870,6 +9308,8 @@
       "uriHash": "0x8b852f8e06d91d45bdf6634ee6e910bdb64dc78bba55229b450368033ee01d20"
     },
     {
+      "attestationLagDays": 20,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x0e4e7545235058c9d33b16b7c2d1975894b6bc995592c33b86e60e7a35c268b9",
       "claimFingerprint": "2e1328278cfeab65f871d2fa51d49275181c8df0cc7a56ddabfdd6e144b98715",
@@ -8903,6 +9343,8 @@
       "uriHash": "0x919173c263a3b99a05befdc2162b9f0ea122a1e210f6d8517b383472f8922856"
     },
     {
+      "attestationLagDays": 19,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x7c981351dd3e0eaaf39798574e42e6be378d69af647456bc93859e8b4a55140e",
       "claimFingerprint": "08cd7371f4456be052864e429aae3e83fa543f43f113c295c326bfa815a5752d",
@@ -8936,6 +9378,8 @@
       "uriHash": "0x43451ba8a475d061fead41b240fbeac60d75e4eb6ccea107f7c4ed91fcd8c68f"
     },
     {
+      "attestationLagDays": 19,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x7c981351dd3e0eaaf39798574e42e6be378d69af647456bc93859e8b4a55140e",
       "claimFingerprint": "802f3d330099dc89a78a847bb9c9d88eeeb34d0558c3649e5f21c9ec12148ab1",
@@ -8969,6 +9413,8 @@
       "uriHash": "0x132f3aabdd5b8eb7c378d3981eae95bf4f975dcdf09b4e63f826d6f8e1aaece1"
     },
     {
+      "attestationLagDays": 18,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x0903011869b1cf3d29b1f02370454d5c3ba3975388d5a0cabd1ac3149efe5b26",
       "claimFingerprint": "c3b3abaf7ddcca6790acb6c20eaf29885e5cf19521a882228a1be15745ab1119",
@@ -9002,6 +9448,8 @@
       "uriHash": "0x50b26eb4cedbd613469caef1100fe519d561c3eec7d8de53e220d6475c296477"
     },
     {
+      "attestationLagDays": 18,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x0903011869b1cf3d29b1f02370454d5c3ba3975388d5a0cabd1ac3149efe5b26",
       "claimFingerprint": "e8c7af012bade54e9995e27256fe1d0434b5b0fd58b41389658c6ccea8be030a",
@@ -9035,6 +9483,8 @@
       "uriHash": "0x23d0537ed29941fa2863aac7f41c0b92e052de58d32423551104d081ec171498"
     },
     {
+      "attestationLagDays": 17,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0xea19eecbe3b4155369b42814e9c3cfb43b2983fc20832eaa2208acdf0af72c15",
       "claimFingerprint": "d2034e3e3c501d7f762fb961d5f133f41010f3acbb74a1fc6ca2be19e67ff7d1",
@@ -9068,6 +9518,8 @@
       "uriHash": "0x8535dc5a9f61241cb5badfb624e87bc38d2e8315eb134874e4531f5ebdcbd006"
     },
     {
+      "attestationLagDays": 17,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0xea19eecbe3b4155369b42814e9c3cfb43b2983fc20832eaa2208acdf0af72c15",
       "claimFingerprint": "eb6ecbe2ce7ed1a0cb46a178523c9342f7c8b42f87566ec9c412b41535359cd1",
@@ -9101,6 +9553,8 @@
       "uriHash": "0xf03b30d63b21c5d7ea8387daf206e8c128a6460704e8571381bf25e3e9e1232b"
     },
     {
+      "attestationLagDays": 16,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0xabad2fe9bf69a74b37dfaf9d3e10b4aa954e156bd3c131c760df36e2252a9d47",
       "claimFingerprint": "8fd16fb3263731df57a43dfb75816870fb0be5943dd1c6f838abe42560c90823",
@@ -9134,6 +9588,8 @@
       "uriHash": "0x29bf20566184d5c776838d70435f1f5d9da33b955b6672a874c2eb17a177c900"
     },
     {
+      "attestationLagDays": 16,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0xabad2fe9bf69a74b37dfaf9d3e10b4aa954e156bd3c131c760df36e2252a9d47",
       "claimFingerprint": "ed2ddd54b9621d30eb1c7eccd845ae1ae00546fcd0e6c358174fa860cafe104a",
@@ -9167,6 +9623,8 @@
       "uriHash": "0x08c983a8465b7fd80b40cee075e6415c53da0edc1727cd7a7f4962ba99122b3a"
     },
     {
+      "attestationLagDays": 15,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x2d39920ad2e2fb60175e7c7cd00b69ef6c98261220629395e2dbe331ce2f713d",
       "claimFingerprint": "41c34852524963fcc7de1877304d5f6d0cefe8aefa485fdddcd961f4a365a071",
@@ -9200,6 +9658,8 @@
       "uriHash": "0x17d4d98cd560d467eead04f0906370455f1a46ad4c2bd1f52ff6055f4f9d67f5"
     },
     {
+      "attestationLagDays": 15,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x2d39920ad2e2fb60175e7c7cd00b69ef6c98261220629395e2dbe331ce2f713d",
       "claimFingerprint": "69feed0c4d11d16eabd18923e6f538b897760e5669a70aa10329a0e5dc73e09a",
@@ -9233,6 +9693,8 @@
       "uriHash": "0x74e3db4c3b57b09ff426d67dd6c42a94ca479e5edf3bdfd8e34a37cae627eb47"
     },
     {
+      "attestationLagDays": 14,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0xc298eee124519c191ce7f7c7cac26b190452c206d2cafef1281e9e8a70253b97",
       "claimFingerprint": "2a8b3a6fd0f3685408832c79741aa1d377cb8c2958c311308a4161f0afab7d03",
@@ -9266,6 +9728,8 @@
       "uriHash": "0xef2e40ddc4b968a41814bc07ff8eb0f33a010cd247de7ad7f10cb93ae2f6b194"
     },
     {
+      "attestationLagDays": 14,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0xc298eee124519c191ce7f7c7cac26b190452c206d2cafef1281e9e8a70253b97",
       "claimFingerprint": "a96991d635bc098d6cc85faf516cc9a51ef9c62036f0c5265468c1ef3b31389f",
@@ -9299,6 +9763,8 @@
       "uriHash": "0x236cbc0030a30b01384572465eb0241b741f817eb909decde1934f42ca4aa334"
     },
     {
+      "attestationLagDays": 13,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0xd9edc87c59e4ad73ddbfb74840693fae7ce76c3cf9ece46fc0f6fbc64514035e",
       "claimFingerprint": "3039f79228238c757153b07ce96c724cfd5d24852e26ae13fb78310ce3a8f2c2",
@@ -9332,6 +9798,8 @@
       "uriHash": "0x632255ae79c353caf785403e9b50ed805ad13ece7c142af785b1f7ef34a4e6dd"
     },
     {
+      "attestationLagDays": 13,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0xd9edc87c59e4ad73ddbfb74840693fae7ce76c3cf9ece46fc0f6fbc64514035e",
       "claimFingerprint": "72dbe2985a64c51db3f45b8b244c13089bc9d38f2f390a26647ee3f8473f54fa",
@@ -9365,6 +9833,8 @@
       "uriHash": "0x1974dba5fbd48cf8ddc08480386f15fa6db0d9ced232b04a14133787da85b940"
     },
     {
+      "attestationLagDays": 12,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0xaa920d497b4b94d240dbc0697fa65acf655d7a09aec1905bbf5de2bb47f30e41",
       "claimFingerprint": "b1278f84678fb645a17dd4538905631a89c287899510ee38ace3b877cbeacc47",
@@ -9398,6 +9868,8 @@
       "uriHash": "0x31de022a3d3391072f587665c682792a406c0755316a869ccf358a1924ffee10"
     },
     {
+      "attestationLagDays": 12,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0xaa920d497b4b94d240dbc0697fa65acf655d7a09aec1905bbf5de2bb47f30e41",
       "claimFingerprint": "aa5ec625688bcfee08014c7d457d4f1e697a751bdeb3c16ac5ce0a859fb4cdf5",
@@ -9431,6 +9903,8 @@
       "uriHash": "0xf94c77eb38dac9c843364ec330dc24ec19d3c7fb76ebb5bad35de2e6e9f6dfdf"
     },
     {
+      "attestationLagDays": 11,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x99ee22ab9ca0762ae48cfccbadf461e18ae0f9af607ad78154b40577d17e7a46",
       "claimFingerprint": "8cc54b4d5898f78e5c40f81c02044014afce56fa83d171d19b1488b9568b8760",
@@ -9464,6 +9938,8 @@
       "uriHash": "0x37d76ff28233d67f19d5fc4f183012de3fe9af422da2256c53a9170460440e72"
     },
     {
+      "attestationLagDays": 11,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x99ee22ab9ca0762ae48cfccbadf461e18ae0f9af607ad78154b40577d17e7a46",
       "claimFingerprint": "d70511eedfc0b7440420ce05a703bfeea05cfe8563366b4382c6194d82f922fc",
@@ -9497,6 +9973,8 @@
       "uriHash": "0x57fd812f0192675b899fc0c668b844839fdfe6fb368519a712924d3b1aa260a5"
     },
     {
+      "attestationLagDays": 10,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0xeb34cbbaace6dead277f524baa8165fd1279be3ad3d84b067876d64681accdf5",
       "claimFingerprint": "dae394e82d0198889dc592514d1b25d13acda93abfa49cf4702ff4ef102880f9",
@@ -9530,6 +10008,8 @@
       "uriHash": "0x09cfd594711d1d22ac25e152404b8c50d0675f9cfcf3f2d7deac43526c14997d"
     },
     {
+      "attestationLagDays": 10,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0xeb34cbbaace6dead277f524baa8165fd1279be3ad3d84b067876d64681accdf5",
       "claimFingerprint": "4bf1e6b723acdc1ef7e36521783f290fa7d37ebef077177669469b371ace16e7",
@@ -9563,6 +10043,8 @@
       "uriHash": "0x2fc2a91d087522033611a5394b2b95f7ae56532644a4b40b6ea10463c00a5960"
     },
     {
+      "attestationLagDays": 9,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x691cc5e5af20b6991f4b10df9fa909d936053bda0ab3f51a2551010d132eba30",
       "claimFingerprint": "a937d9ec6813f546bf69d1c18d5321c617cb2a756de5a4649d7292f6524803c1",
@@ -9596,6 +10078,8 @@
       "uriHash": "0xb5b87d3546265f44d06a1b159536a8a83ae392a89715fd121ef89e13e00f2770"
     },
     {
+      "attestationLagDays": 9,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x691cc5e5af20b6991f4b10df9fa909d936053bda0ab3f51a2551010d132eba30",
       "claimFingerprint": "7642572f39b6b1e1f54e350fb0d3231d7683412987206cae7e4504f1ff9643bd",
@@ -9629,6 +10113,8 @@
       "uriHash": "0x0cb819256cda3b5e7e04231119f620258f9fe22199accf7f28d55ca1b68342cb"
     },
     {
+      "attestationLagDays": 8,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x48e4fd6e871ea981352e899a6cade2eb63a21d2ee72ed1823fc9b0e3e2b54847",
       "claimFingerprint": "89b8d83e4da8337efe5f0013f2545b2f1fb4de41967176d338ad3e7e734d6c20",
@@ -9662,6 +10148,8 @@
       "uriHash": "0x8e9a1dfa2275ca45a41b29a291879f2879639b62a0390659ed52bbb273f011ed"
     },
     {
+      "attestationLagDays": 8,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x48e4fd6e871ea981352e899a6cade2eb63a21d2ee72ed1823fc9b0e3e2b54847",
       "claimFingerprint": "1804ee10272d78b796213b00b57e51dd06f4b16cdf3795a2754689322e50631d",
@@ -9695,6 +10183,8 @@
       "uriHash": "0x60744bbcc478c516a663f5d91bbac6eb4d56401d831e9a9234d0e85bd803b81d"
     },
     {
+      "attestationLagDays": 7,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x149934aa8289f034c113f243ed739be210be96908de11b6dd6ce05803d61719a",
       "claimFingerprint": "bc60ae56e8ac3291d67925e8313ecfa4bd9e5ed84a9c854b9f2484abbd581c41",
@@ -9728,6 +10218,8 @@
       "uriHash": "0x6c39a32ebae41c4769b294195093e02f7e68ee4e15aec03267c0eca2c06bec19"
     },
     {
+      "attestationLagDays": 7,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x149934aa8289f034c113f243ed739be210be96908de11b6dd6ce05803d61719a",
       "claimFingerprint": "48ade0f956fa60d51383859d0a83bd667f17217bfea3c01733dfaac29886fb89",
@@ -9761,6 +10253,8 @@
       "uriHash": "0xbb7c7a3afa70f4acbf1133817f31ec2e6429e204960112f8338095260177b022"
     },
     {
+      "attestationLagDays": 6,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0xc3c8b53567ffcdc08e335d517faa81218bf2d65180981d4f5ff8d86dd0700954",
       "claimFingerprint": "fdd100c9d4c257c5377bfa63b74a3e1600ac8a04c6f25bad37a7e4d12e7baec5",
@@ -9794,6 +10288,8 @@
       "uriHash": "0x6f14f8d9f889d6c8e25fd2d42c49b04da805461b47ed2984766f67149fdbcd7f"
     },
     {
+      "attestationLagDays": 6,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0xc3c8b53567ffcdc08e335d517faa81218bf2d65180981d4f5ff8d86dd0700954",
       "claimFingerprint": "413edbab0bbba819bc180a75306e6fe8079f5999aa2de0b90f5addb7b40fb813",
@@ -9827,6 +10323,8 @@
       "uriHash": "0x693efcc391ea3852b650a7234af8ec15d7806393edc45b4fa2077cae8083f0ee"
     },
     {
+      "attestationLagDays": 5,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0xd6dfae349e33dbd82122a0d58469609469ef50a915f77a4d972d1be7339880f0",
       "claimFingerprint": "a170420de28f9e966161c18fb4d684eaa0f203f37043eb48bfc85ce328d316fa",
@@ -9860,6 +10358,8 @@
       "uriHash": "0x1d9168612d1b56911e901574dca4df6d36177dcf44cd6136140983c9039314d4"
     },
     {
+      "attestationLagDays": 5,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0xd6dfae349e33dbd82122a0d58469609469ef50a915f77a4d972d1be7339880f0",
       "claimFingerprint": "924ab32f5694e0d98a0bfc58b1b3b098b78f127e51577c96f90d91248af3cac0",
@@ -9893,6 +10393,8 @@
       "uriHash": "0xc82037c63da1ca2c82ff4f2f0621bac196cf2bdd940677c20551e3710e4d8079"
     },
     {
+      "attestationLagDays": 4,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x4fcf0ac19aee184905b1e4affb5a837c5b4b5c768e56fb991b86fd86ff54bc10",
       "claimFingerprint": "a31503b048587b6ee9f578481d21a1589c3086da111b1c7e120ba2efe4252641",
@@ -9926,6 +10428,8 @@
       "uriHash": "0x962a073eead0da207937380682f6dd823fb66367c426337046596e6e7b91c79a"
     },
     {
+      "attestationLagDays": 4,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x4fcf0ac19aee184905b1e4affb5a837c5b4b5c768e56fb991b86fd86ff54bc10",
       "claimFingerprint": "dd781a0f1f16a97194b8c345d23f3f2cf0905fe763d8df9ea45910fb7d9c8ca3",
@@ -9959,6 +10463,8 @@
       "uriHash": "0x5e33867e7fb3e0479eda7066e6328009dd295c88716e857d086d6cc6f3f83878"
     },
     {
+      "attestationLagDays": 3,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x65db01610ee89979f47778515b1311be5331fa0e311eee2cd9a7d8efd573f068",
       "claimFingerprint": "8ed8df3492974054cbfc0578cb192077d09e0a86ad3334a8201193893a07962b",
@@ -9992,6 +10498,8 @@
       "uriHash": "0xd09d748c94a6c5feb7f7e69269eb8a239225d23786ae753186accd2fa07a23f5"
     },
     {
+      "attestationLagDays": 3,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x65db01610ee89979f47778515b1311be5331fa0e311eee2cd9a7d8efd573f068",
       "claimFingerprint": "46de3f9e4ef7eac84b08c8b50c33f9e7a2eaefe2835725e743a067b026aadea2",
@@ -10025,6 +10533,8 @@
       "uriHash": "0x09b9cf0c60200ed3712803776c8bd88e110b2118fb3e9946ad48fd116500667a"
     },
     {
+      "attestationLagDays": 2,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x0ee986879b439ffa4d0ee524e8d76e1490a30f0743638a02518a2a015b87ea24",
       "claimFingerprint": "a67b12154d9c33a7da57dea5e13cb1ab87379273381f436a7ce8e466ccd3a0d6",
@@ -10058,6 +10568,8 @@
       "uriHash": "0xf491675ebf229a945daca38aeb876079e7b968a8974f54374f12bb63c6cc6895"
     },
     {
+      "attestationLagDays": 2,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x0ee986879b439ffa4d0ee524e8d76e1490a30f0743638a02518a2a015b87ea24",
       "claimFingerprint": "d1eef6eb0bfc8e4c2be5c41b5acd7951ad084d78868a08c8308db4029b8e0d75",
@@ -10091,6 +10603,8 @@
       "uriHash": "0x71f506a5b32a89cb66adf5f09983e0911c07068836f5148af4eacb91fbbe5d08"
     },
     {
+      "attestationLagDays": 1,
+      "attestedAtUtc": "2026-06-10T02:56:24Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x06c958fd38fa8bffce8591fa3ec4aadfd63c4679710e0f0a6d50d14bc0f36574",
       "claimFingerprint": "5c894ef5db4db8c6d06a5cd4b25640eac5ee1e1fd8f22d95cc406d157b1ee06c",
@@ -10124,6 +10638,8 @@
       "uriHash": "0x44a2a17daea7f046601709f010232148e8cddf586c5938c766d7c184354bca72"
     },
     {
+      "attestationLagDays": 1,
+      "attestedAtUtc": "2026-06-10T02:57:24Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x06c958fd38fa8bffce8591fa3ec4aadfd63c4679710e0f0a6d50d14bc0f36574",
       "claimFingerprint": "e81fb97155ca42f8b57b60dd560dbf5bd6bbe3666c20e517f3d0c5bf71703fde",
@@ -10157,6 +10673,8 @@
       "uriHash": "0xda0456af8df832282fa44cc90ad6f3ea17ba34226ced57e65fdb17be1ea0706e"
     },
     {
+      "attestationLagDays": 0,
+      "attestedAtUtc": "2026-06-10T03:14:48Z",
       "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
       "blockHash": "0x798b9f69c010ce04df8a6eb8f5f7efc5ea958742772172b2a987385650240d5b",
       "claimFingerprint": "768fbf3d52e5743ef99009f6a04d0bc6dcb037fce7fe38c7e0670d4519dd0590",
@@ -10190,6 +10708,8 @@
       "uriHash": "0x84912f3d8d4fecc0de4819bd6c98881f793aeb4c2d5aad18802e19fb5c1a8d8a"
     },
     {
+      "attestationLagDays": 0,
+      "attestedAtUtc": "2026-06-10T03:19:00Z",
       "attester": "0x000fdfd22066f6d725a7352cc75e3a261c54ae45",
       "blockHash": "0x798b9f69c010ce04df8a6eb8f5f7efc5ea958742772172b2a987385650240d5b",
       "claimFingerprint": "4eb623f693262de43cb1e40c2d64b5dabf9ff7dbb8fd02943e1432fd3634192e",
@@ -10224,8 +10744,8 @@
     }
   ],
   "fromBlock": 11026268,
-  "indexedAt": "2026-06-11T05:04:45Z",
-  "latestChainBlock": 11034584,
+  "indexedAt": "2026-06-12T05:08:44Z",
+  "latestChainBlock": 11041787,
   "network": "sepolia",
   "profileURI": "https://om.pub/rso/doc-chain",
   "schema": "rso-docchain-index-v1",
@@ -10234,5 +10754,5 @@
     "2026-06-07",
     "2026-06-08"
   ],
-  "toBlock": 11034572
+  "toBlock": 11041775
 }
