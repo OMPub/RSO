@@ -1,7 +1,7 @@
 # RSO Doc Chain Profile
 
 **Profile URI (permanent protocol id):** `https://om.pub/rso/doc-chain`
-**Profile revision:** 3 — 2026-06-11
+**Profile revision:** 4 — 2026-06-11
 **Canonical source:** this file (`docs/profile.md`) in the OMPub/RSO repository;
 the page served at the profile URI mirrors the current revision.
 
@@ -116,6 +116,16 @@ registry row, one constants entry, and one effective date.
   the node's locator — never part of contentHash. Days archived before r3
   keep their `rso-annotations-v1` files (no `tip_messages` section); the
   fingerprint, not the schema name, is what verification checks.
+- **Conjunction capture.** Each day each node also publishes
+  `conjunctions.json` (schema `rso-conjunctions-v1`): every public
+  conjunction data message with `CREATED` in the day's window, exactly as
+  returned, with `TCA` bounded to window −1d…+10d and a small `summary`
+  block. Same observation-plane contract: per-node, fingerprinted by
+  `manifest.conjunctions_sha256`, packed into the bundle, never consensus.
+  The upstream `cdm_public` class is a rolling window — messages age out
+  after closest approach and can never be re-queried — so these captures
+  are the feed's only public archive, and the artifact cannot exist for
+  days before its coverage start (see the registry in §7).
 
 ## 6. Verification
 
@@ -131,7 +141,42 @@ of the chain reproduced from a fresh capture. Runbook: `docs/late-join.md`.
 
 **Continuously:** the weekly drift audit re-queries archived windows and fails
 loudly on any non-excluded-field mutation or selection drift — the empirical
-claims in section 3 are under permanent test.
+claims in section 3 are under permanent test. It also alerts when an
+observation feed returns empty across recent days (a silently discontinued
+upstream feed looks exactly like a quiet sky).
+
+**Commitment time.** The attestation index stamps every event with its block
+timestamp (`attestedAtUtc`) and the distance from the docRef day
+(`attestationLagDays`). Forensic consumers should weigh observation claims by
+commitment time — lag 0 proves the knowledge existed the day it claims; a
+late re-attestation proves only that its bytes existed when it landed. No
+attestation can be backdated: the block timestamp is not the signer's to
+choose.
+
+## 7. Source coverage registry
+
+What this archive holds of everything Space-Track publicly publishes
+(`basicspacedata`), and why. Observation feeds begin at their coverage
+start and cannot be backfilled: `cdm_public` rows are gone once they age
+out, and re-querying the other feeds for the past yields only what
+Space-Track *now* says it said then.
+
+| Class | Treatment | Coverage / reason |
+|---|---|---|
+| `gp`, `gp_history` | consensus core + raw archive | genesis (2026-04-20) → present; capture rule in §2 |
+| `satcat_change` | observation feed (`annotations.satcat_changes`) | live days since 2026-06-10; announced directory edits (5 attributes) |
+| `decay` | observation feed (`annotations.decay_messages`) | live days since 2026-06-10; Historical messages, epoch-bounded |
+| `tip` | observation feed (`annotations.tip_messages`) | since 2026-06-12 (r3); reentry predictions, epoch-bounded |
+| `cdm_public` | per-day artifact (`conjunctions.json`) | since 2026-06-12 (r4); rolling window upstream — capture-or-lose |
+| `launch_site` | vendored reference (`reference/launch_sites.json`) | static decode table, refreshed ad hoc |
+| `satcat` | not consumed | measured 2026-06-11: all 24 columns are covered by `gp` or derived from elsets; no operational-status column exists (that is CelesTrak's enrichment, not Space-Track's) |
+| `satcat_debut` | not consumed | the catalog diff already records `first_observation` |
+| `boxscore` | not consumed | derived aggregate, recomputable from any catalog |
+| `tle`, `tle_latest`, `tle_publish`, `omm` | not consumed | legacy formats of the same data; `gp`/`gp_history` supersede them |
+| `announcement` | not consumed | service notices, not catalog knowledge |
+
+Maneuver histories, covariance, and owner/operator detail are not public
+(SP-restricted); the public picture tops out at this registry.
 
 ---
 
@@ -139,3 +184,6 @@ claims in section 3 are under permanent test.
 attestations from TDH-backed, authorization-verified nodes are sponsored and
 indexed with the `hash_only` publication tier. r3 (2026-06-11): annotations
 schema `rso-annotations-v2` adds `tip_messages` (reentry predictions).
+r4 (2026-06-11): per-day `conjunctions.json` artifact (cdm_public capture),
+the source coverage registry (§7), commitment-time annotation in the index,
+and the feed-liveness canary.

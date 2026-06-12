@@ -76,6 +76,13 @@ DECAY_EPOCH_LOOKAHEAD_DAYS = 7
 # TIP predictions look farther ahead: a forecast's DECAY_EPOCH may sit days
 # past the message window, unlike a Historical decay's settled epoch.
 TIP_DECAY_EPOCH_LOOKAHEAD_DAYS = 60
+CONJUNCTIONS_SCHEMA = "rso-conjunctions-v1"
+# cdm_public serves a rolling window -- messages age out after closest
+# approach, so the daily capture is the retention layer (no re-query, ever).
+# The TCA bound keeps the feed an event log if stale messages are bulk
+# reissued, without touching the ~7-day public screening horizon.
+CDM_TCA_LOOKBACK_DAYS = 1
+CDM_TCA_LOOKAHEAD_DAYS = 10
 
 SPACETRACK_BASE = "https://www.space-track.org"
 SPACETRACK_LOGIN = f"{SPACETRACK_BASE}/ajaxauth/login"
@@ -132,6 +139,7 @@ RELEASE_ARTIFACT_FILENAMES = (
     "catalog.json.gz",
     "manifest.json",
     "annotations.json",
+    "conjunctions.json",
     "delta.json",
     "audit.json",
     "visibility_state.json",
@@ -730,6 +738,99 @@ def query_annotation_observations(client, previous_cutoff, current_cutoff):
     return satcat_rows, decay_rows, tip_rows, [satcat_path, decay_path, tip_path]
 
 
+def query_conjunction_messages(client, previous_cutoff, current_cutoff):
+    """Query the day's public conjunction data messages (CDMs).
+
+    cdm_public is the only consumed feed that cannot be re-queried later:
+    Space-Track serves a rolling window and messages age out after closest
+    approach, so the daily capture is the retention layer. Windowed on
+    CREATED; the TCA bound keeps the feed an event log if stale messages
+    are ever bulk-reissued (close approaches are screened ~7 days out).
+    """
+    window = f"{previous_cutoff}--{current_cutoff}"
+    tca_floor = (
+        datetime.strptime(previous_cutoff[:10], "%Y-%m-%d")
+        - timedelta(days=CDM_TCA_LOOKBACK_DAYS)
+    ).strftime("%Y-%m-%d")
+    tca_ceiling = (
+        datetime.strptime(current_cutoff[:10], "%Y-%m-%d")
+        + timedelta(days=CDM_TCA_LOOKAHEAD_DAYS)
+    ).strftime("%Y-%m-%d")
+    path = build_query_path(
+        "cdm_public",
+        [
+            ("CREATED", window),
+            ("TCA", f"{tca_floor}--{tca_ceiling}"),
+            ("orderby", "CREATED asc"),
+        ],
+    )
+    rows = validate_annotation_rows(client.query(path), context="cdm_public response")
+    return rows, [path]
+
+
+def conjunction_sort_key(row):
+    return (str(row.get("CREATED") or ""), int_string_sort_key(row.get("CDM_ID")))
+
+
+def build_conjunctions(
+    current_date_str,
+    messages,
+    *,
+    observed_at_utc,
+    window_start_utc,
+    window_end_utc,
+    query_paths=None,
+):
+    """Build the day's conjunction artifact.
+
+    Every public CDM created in the window, exactly as returned, plus a
+    small summary so cheap consumers (status page, card) can read the
+    headline without parsing the rows. Observation plane only: per-node,
+    time-of-query dependent, never part of contentHash.
+    """
+    rows = sorted(messages or [], key=conjunction_sort_key)
+    max_pc_row = None
+    max_pc_value = None
+    emergency_count = 0
+    for row in rows:
+        if row.get("EMERGENCY_REPORTABLE") == "Y":
+            emergency_count += 1
+        try:
+            pc = float(row.get("PC"))
+        except (TypeError, ValueError):
+            continue
+        if max_pc_value is None or pc > max_pc_value:
+            max_pc_value = pc
+            max_pc_row = row
+    summary = {
+        "message_count": len(rows),
+        "emergency_reportable_count": emergency_count,
+        "max_pc": max_pc_row.get("PC") if max_pc_row else None,
+    }
+    if max_pc_row is not None:
+        summary["max_pc_event"] = {
+            "sat_1_id": max_pc_row.get("SAT_1_ID"),
+            "sat_1_name": max_pc_row.get("SAT_1_NAME"),
+            "sat_2_id": max_pc_row.get("SAT_2_ID"),
+            "sat_2_name": max_pc_row.get("SAT_2_NAME"),
+            "tca": max_pc_row.get("TCA"),
+            "min_rng": max_pc_row.get("MIN_RNG"),
+        }
+    conjunctions = {
+        "schema": CONJUNCTIONS_SCHEMA,
+        "date": current_date_str,
+        "observed_at_utc": observed_at_utc,
+        "source": "space-track.org",
+        "window_start_utc": window_start_utc,
+        "window_end_utc": window_end_utc,
+        "messages": rows,
+        "summary": summary,
+    }
+    if query_paths:
+        conjunctions["api_query_paths"] = list(query_paths)
+    return conjunctions
+
+
 def build_annotations(
     current_date_str,
     records,
@@ -972,6 +1073,7 @@ def save_snapshot(
     observed_at_utc=None,
     state_as_of_utc=None,
     annotations=None,
+    conjunctions=None,
 ):
     day_dir = snapshot_dir(current_date_str)
     day_dir.mkdir(parents=True, exist_ok=True)
@@ -1027,6 +1129,11 @@ def save_snapshot(
         write_json(annotations_path, annotations)
         manifest["annotations_sha256"] = sha256_path(annotations_path)
 
+    if conjunctions is not None:
+        conjunctions_path = day_dir / "conjunctions.json"
+        write_json(conjunctions_path, conjunctions)
+        manifest["conjunctions_sha256"] = sha256_path(conjunctions_path)
+
     write_json(day_dir / "manifest.json", manifest)
     return manifest
 
@@ -1050,7 +1157,12 @@ def load_annotations(current_date_str):
 
 
 def cleanup_stale_artifacts(
-    current_date_str, delta=None, audit=None, visibility_state=None, annotations=None
+    current_date_str,
+    delta=None,
+    audit=None,
+    visibility_state=None,
+    annotations=None,
+    conjunctions=None,
 ):
     """Remove optional day artifacts that are not produced by the current run."""
     day_dir = snapshot_dir(current_date_str)
@@ -1059,6 +1171,7 @@ def cleanup_stale_artifacts(
         "audit.json": audit,
         "visibility_state.json": visibility_state,
         "annotations.json": annotations,
+        "conjunctions.json": conjunctions,
     }
     for filename, payload in optional_artifacts.items():
         path = day_dir / filename
@@ -1080,6 +1193,7 @@ def ledger_entry_from_manifest(manifest):
         "content_schema",
         "content_sha256",
         "annotations_sha256",
+        "conjunctions_sha256",
         "state_as_of_utc",
         "base_snapshot_date",
         "base_snapshot_sha256",
@@ -1147,7 +1261,7 @@ def write_latest_pointer():
         "object_count": manifest["object_count"],
         "generated_at_utc": utc_stamp(),
     }
-    for key in ("content_schema", "content_sha256", "annotations_sha256"):
+    for key in ("content_schema", "content_sha256", "annotations_sha256", "conjunctions_sha256"):
         if key in manifest:
             pointer[key] = manifest[key]
     pointer.update(publication_fields_from_receipt(load_storage_receipt(date)))
@@ -1203,6 +1317,7 @@ def archive_snapshot(
     audit=None,
     visibility_state=None,
     annotations=None,
+    conjunctions=None,
 ):
     print(f"\n{'=' * 60}")
     print(f"  Date: {current_date_str}")
@@ -1237,6 +1352,7 @@ def archive_snapshot(
         observed_at_utc=observed_at_utc,
         state_as_of_utc=state_as_of_utc,
         annotations=annotations,
+        conjunctions=conjunctions,
     )
     print(f"  Content SHA-256 ({CONTENT_SCHEMA}): {manifest['content_sha256']}")
     cleanup_stale_artifacts(
@@ -1245,6 +1361,7 @@ def archive_snapshot(
         audit=audit,
         visibility_state=visibility_state,
         annotations=annotations,
+        conjunctions=conjunctions,
     )
     save_artifacts(
         current_date_str,
@@ -1493,6 +1610,19 @@ def process_daily(args, client):
         tip_messages=tip_rows,
         query_paths=annotation_paths,
     )
+    conjunction_rows, conjunction_paths = query_conjunction_messages(
+        client,
+        normalize_utc_for_filter(delta["window_start_utc"]),
+        normalize_utc_for_filter(delta["window_end_utc"]),
+    )
+    conjunctions = build_conjunctions(
+        current_date_str,
+        conjunction_rows,
+        observed_at_utc=observed_at_utc,
+        window_start_utc=delta["window_start_utc"],
+        window_end_utc=delta["window_end_utc"],
+        query_paths=conjunction_paths,
+    )
     audit = None
     visibility_state = None
     if not args.no_audit:
@@ -1524,6 +1654,7 @@ def process_daily(args, client):
         audit=audit,
         visibility_state=visibility_state,
         annotations=annotations,
+        conjunctions=conjunctions,
     )
     if manifest:
         print(f"\n  DONE. Hash: {manifest['sha256']}")
@@ -1600,6 +1731,19 @@ def process_roll_forward(args, client):
             tip_messages=tip_rows,
             query_paths=annotation_paths,
         )
+        conjunction_rows, conjunction_paths = query_conjunction_messages(
+            client,
+            normalize_utc_for_filter(delta["window_start_utc"]),
+            normalize_utc_for_filter(delta["window_end_utc"]),
+        )
+        conjunctions = build_conjunctions(
+            current_date_str,
+            conjunction_rows,
+            observed_at_utc=observed_at_utc,
+            window_start_utc=delta["window_start_utc"],
+            window_end_utc=delta["window_end_utc"],
+            query_paths=conjunction_paths,
+        )
         manifest = archive_snapshot(
             current_date_str,
             data,
@@ -1614,6 +1758,7 @@ def process_roll_forward(args, client):
             delta_window_end_utc=delta["window_end_utc"],
             delta=delta,
             annotations=annotations,
+            conjunctions=conjunctions,
         )
         if manifest:
             archived += 1
@@ -3761,6 +3906,28 @@ def validate_snapshot_artifacts(
                             f"{context}: visibility_state missing_objects count does not "
                             "match audit"
                         )
+
+    # Observation artifacts are chain-committed through the locator's bundle
+    # fingerprint; the manifest must agree with the bytes on disk both ways.
+    for artifact_name, manifest_key in (
+        ("annotations.json", "annotations_sha256"),
+        ("conjunctions.json", "conjunctions_sha256"),
+    ):
+        artifact_path = day_dir / artifact_name
+        expected = manifest.get(manifest_key)
+        if expected is not None:
+            if not artifact_path.exists():
+                errors.append(
+                    f"{context}: manifest records {manifest_key} but {artifact_name} is missing"
+                )
+            elif sha256_path(artifact_path) != expected:
+                errors.append(
+                    f"{context}: {artifact_name} does not match manifest {manifest_key}"
+                )
+        elif artifact_path.exists():
+            errors.append(
+                f"{context}: {artifact_name} present but manifest has no {manifest_key}"
+            )
 
     return errors, manifest
 

@@ -290,6 +290,85 @@ class AnnotationsTest(unittest.TestCase):
             snapshot.validate_annotation_rows(
                 [{"NORAD_CAT_ID": 69179}], context="satcat_change response"
             )
+
+
+def cdm_row(cdm_id="1", created="2026-06-10 05:00:00.000000", pc="0.0001", emergency="N"):
+    return {
+        "CDM_ID": cdm_id,
+        "CREATED": created,
+        "EMERGENCY_REPORTABLE": emergency,
+        "TCA": "2026-06-12T01:00:00.000000",
+        "MIN_RNG": "401",
+        "PC": pc,
+        "SAT_1_ID": "50140",
+        "SAT_1_NAME": "ORBCOMM FM 5 DEB",
+        "SAT_2_ID": "60874",
+        "SAT_2_NAME": "CZ-6A DEB",
+    }
+
+
+class ConjunctionsTest(unittest.TestCase):
+    def test_feed_is_created_windowed_and_tca_bounded(self):
+        captured = []
+
+        class Client:
+            def query(self, path):
+                captured.append(path)
+                return []
+
+        rows, paths = snapshot.query_conjunction_messages(
+            Client(), "2026-06-09T00:00:00", "2026-06-10T00:00:00"
+        )
+        self.assertEqual(rows, [])
+        self.assertEqual(len(captured), 1)
+        self.assertIn("/class/cdm_public/", captured[0])
+        self.assertIn("/CREATED/2026-06-09T00:00:00--2026-06-10T00:00:00/", captured[0])
+        # 1-day floor, 10-day forecast ceiling
+        self.assertIn("/TCA/2026-06-08--2026-06-20/", captured[0])
+        self.assertEqual(paths, captured)
+
+    def test_build_conjunctions_sorts_and_summarizes(self):
+        rows = [
+            cdm_row(cdm_id="30", created="2026-06-10 06:00:00.000000", pc="0.002", emergency="Y"),
+            cdm_row(cdm_id="9", created="2026-06-10 05:00:00.000000", pc=None),
+            cdm_row(cdm_id="10", created="2026-06-10 05:00:00.000000", pc="0.0005", emergency="Y"),
+        ]
+        conjunctions = snapshot.build_conjunctions(
+            "2026-06-10",
+            rows,
+            observed_at_utc="2026-06-10T00:20:00Z",
+            window_start_utc="2026-06-09T00:00:00Z",
+            window_end_utc="2026-06-10T00:00:00Z",
+            query_paths=["/class/cdm_public/..."],
+        )
+
+        self.assertEqual(conjunctions["schema"], "rso-conjunctions-v1")
+        self.assertEqual(conjunctions["date"], "2026-06-10")
+        self.assertEqual(conjunctions["window_start_utc"], "2026-06-09T00:00:00Z")
+        self.assertEqual(
+            [row["CDM_ID"] for row in conjunctions["messages"]], ["9", "10", "30"]
+        )
+        summary = conjunctions["summary"]
+        self.assertEqual(summary["message_count"], 3)
+        self.assertEqual(summary["emergency_reportable_count"], 2)
+        self.assertEqual(summary["max_pc"], "0.002")
+        self.assertEqual(summary["max_pc_event"]["sat_1_name"], "ORBCOMM FM 5 DEB")
+        self.assertEqual(len(conjunctions["api_query_paths"]), 1)
+
+    def test_build_conjunctions_empty_window(self):
+        conjunctions = snapshot.build_conjunctions(
+            "2026-06-10",
+            [],
+            observed_at_utc="2026-06-10T00:20:00Z",
+            window_start_utc="2026-06-09T00:00:00Z",
+            window_end_utc="2026-06-10T00:00:00Z",
+        )
+        self.assertEqual(conjunctions["messages"], [])
+        summary = conjunctions["summary"]
+        self.assertEqual(summary["message_count"], 0)
+        self.assertEqual(summary["emergency_reportable_count"], 0)
+        self.assertIsNone(summary["max_pc"])
+        self.assertNotIn("max_pc_event", summary)
         with self.assertRaises(snapshot.SnapshotError):
             snapshot.validate_annotation_rows({"error": "x"}, context="satcat_change response")
         rows = [{"NORAD_CAT_ID": "69179", "CURRENT_DECAY": None}]
