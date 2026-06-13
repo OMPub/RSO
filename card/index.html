@@ -44,7 +44,7 @@
     .corner.bl { bottom: var(--safe-bottom); left: var(--safe-left); border-width: 0 0 1px 1px; }
     .corner.br { right: var(--safe-right); bottom: var(--safe-bottom); border-width: 0 1px 1px 0; }
 
-    .mono, .brand-name, .eyebrow, .readout-label, .status-label, .hint, .insp-label {
+    .mono, .brand-name, .eyebrow, .readout-label, .status-label, .insp-label {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; text-transform: uppercase; letter-spacing: 0.12em; }
 
     .brand-cluster { position: absolute; top: calc(var(--safe-top) + 12px); left: calc(var(--safe-left) + 18px); display: flex; align-items: flex-start; }
@@ -52,7 +52,8 @@
     .brand-name { font-size: 12px; font-weight: 700; line-height: 1; }
     .brand-sub { margin-top: 5px; color: var(--muted); font-size: 9px; line-height: 1; text-transform: uppercase; letter-spacing: 0.18em; }
 
-    .record-date { position: absolute; top: calc(var(--safe-top) + 14px); left: 50%; width: min(60vw, 620px); transform: translateX(-50%); text-align: center; }
+    .record-date { position: absolute; top: calc(var(--safe-top) + 14px); left: 50%; width: min(60vw, 620px); transform: translateX(-50%); text-align: center; transition: opacity 260ms ease; }
+    body.jumping .record-date { opacity: 0; }   /* the centre jump-to date carries the day mid-flight */
     .eyebrow { color: var(--accent); font-size: 9px; line-height: 1; transition: color 220ms ease; }
     .eyebrow.attested { color: var(--seal); }
     .date { margin-top: 7px; font-size: clamp(28px, 4.6vh, 56px); font-weight: 300; line-height: 0.92; text-transform: uppercase; }
@@ -123,8 +124,6 @@
     .timebar { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: rgba(164,174,255,0.10); }
     .timebar-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: linear-gradient(90deg, rgba(154,169,255,0.5), var(--seal)); box-shadow: 0 0 10px rgba(154,255,214,0.6); }
 
-    .hint { position: absolute; left: 50%; bottom: calc(var(--safe-bottom) + 26px); transform: translateX(-50%); color: rgba(219,240,234,0.6); font-size: 8px; text-align: center; transition: opacity 700ms ease; }
-    .hint.gone { opacity: 0; }
 
     /* object inspector — sits under the date; the model stage is a transparent window
        at the LEFT of the box (the GL vignette renders behind it, on a cleared dark rect) */
@@ -138,7 +137,8 @@
     .insp-name { margin-top: 5px; font-size: 14px; line-height: 1.1; }
     .insp-meta { margin-top: 6px; color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; }
     .insp-meta span { position: relative; cursor: help; border-bottom: 1px dotted rgba(154,169,255,0.32); }
-    .insp-meta span.tip-open::after { position: absolute; left: 50%; bottom: calc(100% + 7px); z-index: 8; width: max-content; max-width: min(220px, 72vw);
+    .insp-meta span:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+    .insp-meta span.tip-open::after, .insp-meta span:hover::after, .insp-meta span:focus-visible::after { position: absolute; left: 50%; bottom: calc(100% + 7px); z-index: 8; width: max-content; max-width: min(220px, 72vw);
       padding: 5px 7px; border: 1px solid var(--line); border-radius: 4px; content: attr(data-tip); transform: translateX(-50%);
       color: var(--ink); background: rgba(2,7,8,0.96); box-shadow: 0 4px 18px rgba(0,0,0,0.55); white-space: normal; text-align: center;
       font-size: 8px; line-height: 1.35; letter-spacing: 0.04em; text-transform: none; pointer-events: none; }
@@ -260,7 +260,7 @@
       .corner { width: 24px; height: 24px; }
       .record-date { width: min(76vw, 480px); }
       .date { font-size: clamp(19px, 6vw, 34px); }
-      .brand-sub, .hint { display: none; }
+      .brand-sub { display: none; }
       /* keep the column width — the prism faces are a fixed-height 3D box (82px);
          narrowing the column wraps their text taller than the box and they collide */
       .readout-value { font-size: clamp(13px, 2vh, 17px); }
@@ -436,15 +436,15 @@
   <div class="mode-toast" id="mode-toast"></div>
   <button class="tilt-chip" id="tilt-chip">⊕ tilt&nbsp;to&nbsp;look</button>
 
-  <div class="settings" id="settings" aria-hidden="true">
+  <div class="settings" id="settings" role="dialog" aria-modal="true" aria-labelledby="settings-title" aria-hidden="true">
     <div class="settings-panel">
-      <div class="settings-head"><span>Viewer settings</span><button class="settings-close" id="settings-close" aria-label="Close">×</button></div>
+      <div class="settings-head"><span id="settings-title">Viewer settings</span><button class="settings-close" id="settings-close" aria-label="Close settings">×</button></div>
       <div class="settings-tabs" role="tablist" aria-label="Settings pages">
-        <button class="settings-tab active" data-settings-page="witness" role="tab" aria-selected="true">Witness</button>
-        <button class="settings-tab" data-settings-page="about" role="tab" aria-selected="false">About</button>
-        <button class="settings-tab" data-settings-page="shortcuts" role="tab" aria-selected="false">Shortcuts</button>
+        <button class="settings-tab active" id="tab-witness" data-settings-page="witness" role="tab" aria-selected="true" aria-controls="settings-page-witness" tabindex="0">Witness</button>
+        <button class="settings-tab" id="tab-about" data-settings-page="about" role="tab" aria-selected="false" aria-controls="settings-page-about" tabindex="-1">About</button>
+        <button class="settings-tab" id="tab-shortcuts" data-settings-page="shortcuts" role="tab" aria-selected="false" aria-controls="settings-page-shortcuts" tabindex="-1">Shortcuts</button>
       </div>
-      <div class="settings-page" id="settings-page-witness">
+      <div class="settings-page" id="settings-page-witness" role="tabpanel" aria-labelledby="tab-witness" tabindex="0">
         <div class="set-row">
           <div class="set-label">Ethereum attestation rank <b id="set-eth-val">any witness</b></div>
           <input type="range" id="set-eth" min="0" max="6" step="1" value="0">
@@ -457,7 +457,7 @@
         </div>
         <div class="set-row settings-foot"><label class="set-save"><input type="checkbox" id="set-persist" checked> remember on this device</label></div>
       </div>
-      <div class="settings-page" id="settings-page-about" hidden>
+      <div class="settings-page" id="settings-page-about" role="tabpanel" aria-labelledby="tab-about" tabindex="0" hidden>
         <section class="about-block">
           <h3>Why</h3>
           <p>Public orbital data deserves durable, independently verifiable memory outside any single service.</p>
@@ -475,10 +475,11 @@
           <a href="https://github.com/brookr/RSO" target="_blank" rel="noopener">brookr/RSO <span>independent witness node ↗</span></a>
         </nav>
       </div>
-      <div class="settings-page" id="settings-page-shortcuts" hidden>
+      <div class="settings-page" id="settings-page-shortcuts" role="tabpanel" aria-labelledby="tab-shortcuts" tabindex="0" hidden>
         <dl class="shortcut-list">
           <dt>Arrows / WASD</dt><dd>Steer the view</dd>
           <dt>Space</dt><dd>Rotate the color lens</dd>
+          <dt>X / C</dt><dd>Rotate the left / right record panel</dd>
           <dt>Enter</dt><dd>Cycle through the six closest visible objects</dd>
           <dt>H</dt><dd>Hold or resume motion and rendering</dd>
           <dt>Z</dt><dd>Toggle Zen mode</dd>
@@ -1550,7 +1551,7 @@
         const hex = Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("");
         const ok = hex === led.sha;
         integrityByDate.set(date, ok);
-        if (!ok) console.warn("catalog hash mismatch", date, hex, "≠", led.sha);
+        if (!ok) console.info("catalog hash mismatch", date, hex, "≠", led.sha);
         if (state.shownDay >= 0 && isoFor(state.shownDay) === date) {
           applyHud(recordMeta(date));
           if (state.catalogDate === date) setStatus("ready", ok ? "Live record · verified" : "Live record");
@@ -1829,7 +1830,7 @@
     }
 
     // ── travel ──
-    function setTarget(i) { state.engaged = true; state.target = Math.max(0, Math.min(TOTAL, i)); state.flickVel = 0; $("jump-date").textContent = isoFor(Math.round(state.target)).replaceAll("-", "."); hideHint(); }
+    function setTarget(i) { state.engaged = true; state.target = Math.max(0, Math.min(TOTAL, i)); state.flickVel = 0; $("jump-date").textContent = isoFor(Math.round(state.target)).replaceAll("-", "."); }
     function nearestWitnessIndex(date) {
       const wanted = date.toISOString().slice(0, 10);
       let lo = 0, hi = witnessDates.length;
@@ -1852,7 +1853,6 @@
     function jumpTimelineDigit(k) {
       setTarget(k === "0" ? TOTAL : k === "1" ? 0 : Math.round(TOTAL * Number(k) / 10));
     }
-    let hintGone = false; function hideHint() { if (!hintGone) { hintGone = true; const h = $("hint"); if (h) h.classList.add("gone"); } }
 
     const clampLook = () => { state.yawT = Math.max(-LOOK_YAW, Math.min(LOOK_YAW, state.yawT)); state.pitchT = Math.max(-LOOK_PITCH, Math.min(LOOK_PITCH, state.pitchT)); };
 
@@ -1915,7 +1915,7 @@
       wheelGesture.y += e.deltaY;
       const days = navigationDaysForDistance(wheelGesture.y, Math.min(180, innerHeight * 0.22));
       state.target = Math.max(0, Math.min(TOTAL, wheelGesture.startTarget - Math.sign(wheelGesture.y) * days));
-      state.flickVel = 0; if (days) { state.engaged = true; hideHint(); }
+      state.flickVel = 0; if (days) state.engaged = true;
     }, { passive: false });
     function touchDaysForDistance(px) {
       return navigationDaysForDistance(px, Math.min(64, innerHeight * 0.1));
@@ -1923,6 +1923,15 @@
 
     // ── keyboard: arrows + WASD steer; single-key controls keep the whole viewer reachable ──
     const LOOK_KEYS = new Set(["arrowleft", "arrowright", "arrowup", "arrowdown", "w", "a", "s", "d"]);
+    // R reloads — but only on a confirmed double-press, so a stray key never discards the
+    // session. The first press arms a 5-second window and says so.
+    let reloadArmedAt = 0;
+    function requestReload() {
+      const now = performance.now();
+      if (now - reloadArmedAt < 5000) { location.reload(); return; }
+      reloadArmedAt = now;
+      flashMode("Press R again to reload");
+    }
     function resetDefaultView() {
       state.keys.clear();
       state.yaw = state.yawT = state.pitch = state.pitchT = state.spin = 0;
@@ -1941,12 +1950,14 @@
     }
     addEventListener("keydown", (e) => {
       const k = e.key.toLowerCase();
-      if (k === "escape") { resetDefaultView(); e.preventDefault(); return; }
+      if (k === "escape") { if (settings.classList.contains("open")) showSettings(false); else resetDefaultView(); e.preventDefault(); return; }
       if (e.target && /^(input|textarea)$/i.test(e.target.tagName)) return;
-      if (k === "i") { showSettings(true, "about"); e.preventDefault(); return; }
-      if (settings.classList.contains("open")) { e.preventDefault(); return; }
+      // When the modal is open, let it own its keys natively — Tab, Enter/Space activation,
+      // and the tablist arrows all work, and the inert background traps focus inside it.
+      if (settings.classList.contains("open")) return;
       if (e.repeat && !LOOK_KEYS.has(k)) return;
-      if (k === "r") { location.reload(); e.preventDefault(); return; }
+      if (k === "i") { showSettings(true, "about"); e.preventDefault(); return; }
+      if (k === "r") { requestReload(); e.preventDefault(); return; }
       if (k === "z") { toggleZen(); e.preventDefault(); return; }
       if (e.code === "Backquote" || k === "`") { togglePerf(); e.preventDefault(); return; }
       if (e.code === "KeyP" || k === "p") { captureFrame(); e.preventDefault(); e.stopPropagation(); return; }
@@ -1965,6 +1976,8 @@
       if (k === "}") { moveTimelineCalendar({ months: 1 }); e.preventDefault(); return; }
       if (k === "<") { moveTimelineCalendar({ years: -1 }); e.preventDefault(); return; }
       if (k === ">") { moveTimelineCalendar({ years: 1 }); e.preventDefault(); return; }
+      if (k === "x") { prismRotators["prism-obj"]?.(); e.preventDefault(); return; }     // rotate the left (archive) record
+      if (k === "c") { prismRotators["prism-witness"]?.(); e.preventDefault(); return; } // rotate the right (witness) record
       if (state.suspended) return;
       if (LOOK_KEYS.has(k)) { state.keys.add(k); e.preventDefault(); }
       else if (k === "home") setTarget(0); else if (k === "end") setTarget(TOTAL);
@@ -2002,7 +2015,7 @@
           // swipe spans about 80% of the archive, with proportional travel between.
           const days = touchDaysForDistance(dy);
           state.target = Math.max(0, Math.min(TOTAL, touchGesture.startTarget + Math.sign(dy) * days));
-          state.flickVel = 0; if (days) { state.engaged = true; hideHint(); }
+          state.flickVel = 0; if (days) state.engaged = true;
           if (!touchGesture.lensShifted && Math.abs(touchGesture.accX) >= 54) {
             touchGesture.lensShifted = true;
             cycleMode(Math.sign(touchGesture.accX));
@@ -2176,23 +2189,43 @@
       fsPath.setAttribute("d", full ? FS_EXIT : FS_ENTER);
     });
 
-    function showSettingsPage(page) {
+    function showSettingsPage(page, focusTab) {
       document.querySelectorAll(".settings-page").forEach((el) => { el.hidden = el.id !== `settings-page-${page}`; });
       document.querySelectorAll(".settings-tab").forEach((el) => {
         const active = el.dataset.settingsPage === page;
         el.classList.toggle("active", active); el.setAttribute("aria-selected", String(active));
+        el.tabIndex = active ? 0 : -1;                    // roving focus across the tablist
+        if (active && focusTab) el.focus();
       });
     }
+    let settingsLastFocus = null;
     function showSettings(on, page = null) {
       if (page) showSettingsPage(page);
       if (on) {
         state.keys.clear(); touches.clear(); state.pointer = null; touchGesture = null;
         state.flickVel = 0; state.vel = 0; state.target = state.cursor;
+        settingsLastFocus = document.activeElement;
       }
       settings.classList.toggle("open", on);
       settings.setAttribute("aria-hidden", String(!on));
+      // Trap focus: make everything except the dialog inert so Tab can't leave it and the
+      // background can't be operated, then move focus in — and restore it on close.
+      for (const el of document.body.children) if (el !== settings) el.inert = on;
+      if (on) { const active = settings.querySelector(".settings-tab.active") || $("settings-close"); active?.focus(); }
+      else if (settingsLastFocus && settingsLastFocus.focus) { try { settingsLastFocus.focus(); } catch (e) {} }
     }
     document.querySelectorAll(".settings-tab").forEach((el) => el.addEventListener("click", () => showSettingsPage(el.dataset.settingsPage)));
+    // tablist roving keyboard: arrows move between tabs, Home/End jump to ends
+    $("settings").querySelector(".settings-tabs").addEventListener("keydown", (e) => {
+      const tabs = [...document.querySelectorAll(".settings-tab")];
+      const at = tabs.findIndex((t) => t.dataset.settingsPage === document.querySelector(".settings-tab.active")?.dataset.settingsPage);
+      let to = -1;
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") to = (at + 1) % tabs.length;
+      else if (e.key === "ArrowLeft" || e.key === "ArrowUp") to = (at - 1 + tabs.length) % tabs.length;
+      else if (e.key === "Home") to = 0;
+      else if (e.key === "End") to = tabs.length - 1;
+      if (to >= 0) { e.preventDefault(); e.stopPropagation(); showSettingsPage(tabs[to].dataset.settingsPage, true); }
+    });
     $("settings-btn").addEventListener("click", () => showSettings(true, "witness"));
     $("settings-close").addEventListener("click", () => showSettings(false));
     settings.addEventListener("click", (e) => { if (e.target === settings) showSettings(false); });
@@ -2422,7 +2455,7 @@
       $("insp-name").textContent = m ? m.name : "Archive object";
       // bare values, each explained by its hover/tap tooltip — no inline labels
       const esc = (s) => String(s).replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c]));
-      const tip = (txt, why) => `<span title="${esc(why)}" data-tip="${esc(why)}">${esc(txt)}</span>`;
+      const tip = (txt, why) => `<span tabindex="0" title="${esc(why)}" data-tip="${esc(why)}">${esc(txt)}</span>`;
       const BAND_FULL = ["low Earth orbit", "medium Earth orbit", "geosynchronous Earth orbit"];
       $("insp-meta").innerHTML = m
         ? [
@@ -2625,7 +2658,11 @@ ${fmtNum(FIELD_N)} objects · ${PERF.solids} solids / ${PERF.candidates} approac
       deepMat.uniforms.uCenter.value.set(deepAxis.x * 0.5 + 0.5, deepAxis.y * 0.5 + 0.5);
 
       document.body.classList.toggle("warping", state.warp > 0.1);
-      $("jump").classList.toggle("active", traveling && adist > 0.5);
+      const jumping = traveling && adist > 0.5;
+      $("jump").classList.toggle("active", jumping);
+      // while the big centre jump-to date is showing, fade the top date out; it returns
+      // as the centre date fades on arrival — only one date reads at a time
+      document.body.classList.toggle("jumping", jumping);
       const timebarPct = (TOTAL ? state.cursor / TOTAL : 1) * 100;
       if (Math.abs(timebarPct - state.timebarPct) > 0.002) { state.timebarPct = timebarPct; $("timebar-fill").style.width = `${timebarPct}%`; }
 
@@ -2659,21 +2696,28 @@ ${fmtNum(FIELD_N)} objects · ${PERF.solids} solids / ${PERF.candidates} approac
     //    The border + pager dots live on each face, so they turn as part of the prism. ──
     const prismResets = [];
     function resetPrisms() { prismResets.forEach((reset) => reset()); }
-    function setupPrism(prismId) {
+    const prismRotators = {};
+    function setupPrism(prismId, label) {
       const prism = $(prismId), inner = prism.querySelector(".prism-inner");
       const faces = [...inner.querySelectorAll(".face")], angle = 360 / faces.length;
       faces.forEach((face, at) => {
         const pager = face.querySelector(".pager");
         if (pager) pager.innerHTML = faces.map((_, i) => `<i class="${i === at ? "on" : ""}"></i>`).join("");
       });
+      prism.setAttribute("tabindex", "0");
+      prism.setAttribute("role", "button");
+      prism.setAttribute("aria-label", `${label} — show the next face`);
       let turns = 0;
-      prism.addEventListener("click", (e) => {
-        if (e.target.closest("a")) return;            // links inside a face open; they don't rotate it
-        turns += 1; inner.style.transform = `rotateX(${-turns * angle}deg)`;
+      const rotate = () => { turns += 1; inner.style.transform = `rotateX(${-turns * angle}deg)`; };
+      prism.addEventListener("click", (e) => { if (e.target.closest("a")) return; rotate(); });  // links inside a face open; they don't rotate it
+      prism.addEventListener("keydown", (e) => {
+        if (e.target.closest("a")) return;
+        if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") { e.preventDefault(); e.stopPropagation(); rotate(); }
       });
+      prismRotators[prismId] = rotate;
       prismResets.push(() => { turns = 0; inner.style.transform = "rotateX(0deg)"; });
     }
-    setupPrism("prism-obj"); setupPrism("prism-witness");
+    setupPrism("prism-obj", "Archive record"); setupPrism("prism-witness", "Public witness");
 
     loadSettings(); applyEthRank(); applyOpSource(); document.body.classList.toggle("zen", state.zen); populateLegend();
     addEarth(); addStars(); renderer.setAnimationLoop(animate);

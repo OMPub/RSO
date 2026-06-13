@@ -223,7 +223,7 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn("aUpdated", self.html)
         self.assertIn("aStep", self.html)
         # inspector values are bare, each explained by a hover/tap tooltip
-        self.assertIn('`<span title="${esc(why)}" data-tip="${esc(why)}">', self.html)
+        self.assertIn('`<span tabindex="0" title="${esc(why)}" data-tip="${esc(why)}">', self.html)
 
     def test_generative_identity_is_norad_seeded_and_guarded(self):
         # identity seeds key to the NORAD id → same silhouette everywhere, forever
@@ -284,7 +284,7 @@ class CardArtifactTest(unittest.TestCase):
         for field in ("witness-state", "witness-nodes", "witness-attestations",
                       "witness-sources"):
             self.assertIn(f'id="{field}"', self.html)
-        self.assertIn('setupPrism("prism-witness")', self.html)
+        self.assertIn('setupPrism("prism-witness", "Public witness")', self.html)
 
     def test_embed_readiness(self):
         # fullscreen never promises what a sandboxed host forbids
@@ -341,7 +341,8 @@ class CardArtifactTest(unittest.TestCase):
 
     def test_settings_capture_timeline_navigation(self):
         self.assertIn('if (settings.classList.contains("open")) return;', self.html)
-        self.assertIn('if (settings.classList.contains("open")) { e.preventDefault(); return; }', self.html)
+        # the modal owns its keys natively (Tab / Enter / arrows); background goes inert
+        self.assertIn("for (const el of document.body.children) if (el !== settings) el.inert = on;", self.html)
         self.assertIn("state.flickVel = 0; state.vel = 0; state.target = state.cursor", self.html)
 
     def test_prisms_allow_complete_rotated_faces(self):
@@ -419,7 +420,7 @@ class CardArtifactTest(unittest.TestCase):
         for label in ("Arrows / WASD", "Space", "Enter", "H", "Z", "P", "F", "Esc", "Home / End",
                       "`", "I", "1–9 / 0", "- / +", "[ / ]", "{ / }", "&lt; / &gt;"):
             self.assertIn(f"<dt>{label}</dt>", self.html)
-        self.assertIn("function showSettingsPage(page)", self.html)
+        self.assertIn("function showSettingsPage(page, focusTab)", self.html)
 
     def test_settings_has_concise_about_page_and_repo_links(self):
         self.assertIn('id="settings-page-about"', self.html)
