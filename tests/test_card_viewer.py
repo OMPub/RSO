@@ -496,8 +496,8 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn("halo.visible = state.haloFade > 0.01", self.html)
 
     def test_live_catalog_adopts_without_restarting_the_field(self):
-        self.assertIn("function adoptField(objects)", self.html)
-        self.assertIn("state.catalogDate = date; adoptField(objs)", self.html)
+        self.assertIn("async function adoptField(objects, token)", self.html)
+        self.assertIn("if (!(await adoptField(objs, token))) return;", self.html)
         self.assertNotIn("state.catalogDate = date; assignField(objs)", self.html)
         self.assertIn("assignField([], Math.max(FIELD, Math.round(startRec.count * 0.507)))", self.html)
         # Identity adoption preserves the current frame but continuously migrates every
@@ -505,6 +505,15 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn("function orbitParams(src, band, nid)", self.html)
         self.assertIn("o.orbitTarget = orbitParams(src, src.band, nid)", self.html)
         self.assertIn("settleOrbit(o, objectDt)", self.html)
+
+    def test_day_load_is_strided_and_capability_scaled(self):
+        # the heavy ~34k-slot rebuild spreads across frames so a catalog handoff never
+        # drops a frame; a capable machine takes bigger strides than a phone.
+        self.assertIn("const DAYLOAD_CHUNK = mobile ? 4000 : (navigator.hardwareConcurrency >= 8 ? 20000 : 10000)", self.html)
+        self.assertIn("for (let base = 0; base < newN; base += DAYLOAD_CHUNK)", self.html)
+        self.assertIn("if (token != null && token !== state.loadToken) return false;", self.html)
+        self.assertIn("if (lim < newN) await raf();", self.html)
+        self.assertIn("function colorSlot(o)", self.html)   # per-slot recolor, inlined into the chunked adopt
 
     def test_embedded_baseline_renders_offline(self):
         # The piece must outlive any host: an as-of-build snapshot is inlined so the
@@ -526,7 +535,7 @@ class CardArtifactTest(unittest.TestCase):
         # no frozen FIELD_N: each day recomputes the draw count, so no satellite is
         # duplicated (the old i % objects.length wrap) or silently truncated.
         self.assertIn("const newN = Math.min(objects.length, MAXF), oldN = FIELD_N;", self.html)
-        self.assertIn("if (i >= oldN || !o) { initSlot(i, src); continue; }", self.html)
+        self.assertIn("if (i >= oldN || !o) { initSlot(i, src); colorSlot(O[i]); return; }", self.html)
         self.assertNotIn("objects[i % objects.length]", self.html)
         self.assertIn("function slotBaseSize(klass, band, rcs, nid)", self.html)
         self.assertIn("function initSlot(i, src)", self.html)

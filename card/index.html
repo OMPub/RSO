@@ -1155,35 +1155,51 @@
       pointGeo.attributes.aSeed.needsUpdate = true;
       recolor();
     }
+    // Capability-scaled day-load: a fast machine rebuilds the whole field in one or two
+    // strides, a phone spreads it over several. Spreading the ~34k-slot rebuild across
+    // frames keeps a catalog handoff from dropping a frame — the old synchronous adopt
+    // cost 30–60ms in one hit.
+    const DAYLOAD_CHUNK = mobile ? 4000 : (navigator.hardwareConcurrency >= 8 ? 20000 : 10000);
+    const raf = () => new Promise((r) => requestAnimationFrame(r));
+    function adoptSlot(i, src, oldN) {
+      const o = O[i];
+      if (i >= oldN || !o) { initSlot(i, src); colorSlot(O[i]); return; }  // newly activated → full fresh init (clocks reset)
+      const nid = parseInt(src.id, 10) || i;
+      o.meta = src; o.dataBand = src.band; o.klass = src.klass; o.status = src.status; o.reentered = src.reentered;
+      o.anno = src.anno || null; o.change = src.change || null;
+      o.baseSize = slotBaseSize(src.klass, src.band, src.rcs, nid);
+      o.shape = slotShape(src.klass, src, src.band);
+      o.country = src.country || "—"; o.launchYear = src.launch ? parseInt(src.launch.slice(0, 4)) || 0 : 0;
+      // Preserve the exact current position at handoff, then continuously settle the
+      // slot into the real object's shell and element-driven orbital plane.
+      o.orbitTarget = orbitParams(src, src.band, nid);
+      colorSlot(o);
+    }
     // Attach a downloaded catalog without restarting the river. Existing slots keep their
     // exact position, phase and interpolation history (identity swaps in place, then settles
     // into the real element-driven plane); the field GROWS or SHRINKS to the day's true
     // object count, so no satellite is ever drawn twice and none is silently truncated.
-    function adoptField(objects) {
+    // Chunked + token-guarded: a superseding day-jump abandons a half-finished adopt.
+    async function adoptField(objects, token) {
       state.objects = objects;
-      state.workPhase = 0;
       flushSolids();
       const newN = Math.min(objects.length, MAXF), oldN = FIELD_N;
-      for (let i = 0; i < newN; i++) {
-        const src = objects[i];
-        const o = O[i];
-        if (i >= oldN || !o) { initSlot(i, src); continue; }  // newly activated → full fresh init (clocks reset)
-        const nid = parseInt(src.id, 10) || i;
-        o.meta = src; o.dataBand = src.band; o.klass = src.klass; o.status = src.status; o.reentered = src.reentered;
-        o.anno = src.anno || null; o.change = src.change || null;
-        o.baseSize = slotBaseSize(src.klass, src.band, src.rcs, nid);
-        o.shape = slotShape(src.klass, src, src.band);
-        o.country = src.country || "—"; o.launchYear = src.launch ? parseInt(src.launch.slice(0, 4)) || 0 : 0;
-        // Preserve the exact current position at handoff, then continuously settle the
-        // slot into the real object's shell and element-driven orbital plane.
-        o.orbitTarget = orbitParams(src, src.band, nid);
+      // Shrink the draw count up front; grow it chunk-by-chunk as new slots come online.
+      if (newN < oldN) { FIELD_N = newN; pointGeo.setDrawRange(0, newN); lineGeo.setDrawRange(0, newN * 2); }
+      for (let base = 0; base < newN; base += DAYLOAD_CHUNK) {
+        if (token != null && token !== state.loadToken) return false;   // a newer load won
+        const lim = Math.min(base + DAYLOAD_CHUNK, newN);
+        for (let i = base; i < lim; i++) adoptSlot(i, objects[i], oldN);
+        if (newN > oldN) { FIELD_N = Math.min(lim, newN); pointGeo.setDrawRange(0, FIELD_N); lineGeo.setDrawRange(0, FIELD_N * 2); }
+        if (lim < newN) await raf();                                    // yield a frame between strides
       }
       FIELD_N = newN;
-      pointGeo.setDrawRange(0, FIELD_N);
-      lineGeo.setDrawRange(0, FIELD_N * 2);
+      pointGeo.setDrawRange(0, newN); lineGeo.setDrawRange(0, newN * 2);
       pointGeo.attributes.aShape.needsUpdate = true;
       pointGeo.attributes.aSeed.needsUpdate = true;
-      recolor();
+      state.workPhase = 0;
+      for (const s of pool) if (s.idx >= 0 && s.iid >= 0) setSolidColor(s);
+      return true;
     }
     function pickClass(i) { const r = hashUnit(`c${i}`); return r < 0.363 ? 0 : r < 0.46 ? 1 : r < 0.968 ? 2 : r < 0.998 ? 3 : 4; }
 
@@ -1216,34 +1232,35 @@
       return t < 0.5 ? lerp3([0.42, 0.30, 0.85], [0.25, 0.80, 0.92], t * 2)   // violet → cyan
                      : lerp3([0.25, 0.80, 0.92], [1.0, 0.82, 0.40], (t - 0.5) * 2); // cyan → gold
     }
-    function recolor() {
-      const lens = state.lens;
-      for (let i = 0; i < FIELD_N; i++) {
-        const o = O[i]; if (!o) continue;
-        const re = o.reentered;
-        let col, size = o.baseSize, aMul;
-        if (lens === 1) {                 // operator
-          col = re ? COLORS.ghost : (OP_MAP[o.country] || OTHER_COL); aMul = re ? 0.3 : 1;
-        } else if (lens === 2) {          // launch age
-          col = re ? COLORS.ghost : ageColor(o.launchYear); aMul = re ? 0.3 : 1;
-        } else if (lens === 3) {          // radar cross-section: meaningful for every visible object that carries it
-          col = RCS_COLS[o.meta?.rcs] || OTHER_COL; aMul = o.meta?.rcs ? 1 : 0.45;
-        } else if (lens === 4) {          // meaningful dimensions of today's GP + directory changes
-          col = o.change === "reentry" ? UPD_REENTRY : o.change === "decay" ? UPD_DECAY : o.change === "new" ? UPD_NEW
-            : o.change === "dynamic" ? UPD_DYNAMIC : o.change === "meta" ? UPD_META
-            : o.change === "orbit" ? UPD_ORBIT : UPD_DIM;
-          if (o.change === "reentry") { size = Math.max(size * 2.6, 13.0); aMul = 6.0; }  // predicted reentry — the brightest beacon
-          else if (o.change === "decay") { size = Math.max(size * 2.2, 11.0); aMul = 5.0; }
-          else if (o.change === "new" || o.change === "dynamic" || o.change === "meta") { size = Math.max(size * 1.35, 5.5); aMul = 2.2; }
-          else if (o.change === "orbit") aMul = 0.82;
-          else aMul = 0.10;                                // not refreshed: quiet spatial context
-        } else {                          // object type (default + zen)
-          col = TYPE_COLS[o.klass]; aMul = o.klass === 2 ? 0.74 : 1.0;
-          if (re) { col = COLORS.ghost; size *= 0.8; aMul = 0.32; }
-        }
-        if ((o.dataBand ?? o.band) === 1 && !re) aMul *= 1.15;   // MEO pops at eye level
-        o.col = col; o.size = size; o.aMul = aMul;
+    // Colour one slot for the active lens. Extracted so a chunked day-adopt can recolour
+    // each slot inline as it lands, instead of a second full-field pass afterwards.
+    function colorSlot(o) {
+      const lens = state.lens, re = o.reentered;
+      let col, size = o.baseSize, aMul;
+      if (lens === 1) {                 // operator
+        col = re ? COLORS.ghost : (OP_MAP[o.country] || OTHER_COL); aMul = re ? 0.3 : 1;
+      } else if (lens === 2) {          // launch age
+        col = re ? COLORS.ghost : ageColor(o.launchYear); aMul = re ? 0.3 : 1;
+      } else if (lens === 3) {          // radar cross-section: meaningful for every visible object that carries it
+        col = RCS_COLS[o.meta?.rcs] || OTHER_COL; aMul = o.meta?.rcs ? 1 : 0.45;
+      } else if (lens === 4) {          // meaningful dimensions of today's GP + directory changes
+        col = o.change === "reentry" ? UPD_REENTRY : o.change === "decay" ? UPD_DECAY : o.change === "new" ? UPD_NEW
+          : o.change === "dynamic" ? UPD_DYNAMIC : o.change === "meta" ? UPD_META
+          : o.change === "orbit" ? UPD_ORBIT : UPD_DIM;
+        if (o.change === "reentry") { size = Math.max(size * 2.6, 13.0); aMul = 6.0; }  // predicted reentry — the brightest beacon
+        else if (o.change === "decay") { size = Math.max(size * 2.2, 11.0); aMul = 5.0; }
+        else if (o.change === "new" || o.change === "dynamic" || o.change === "meta") { size = Math.max(size * 1.35, 5.5); aMul = 2.2; }
+        else if (o.change === "orbit") aMul = 0.82;
+        else aMul = 0.10;                                // not refreshed: quiet spatial context
+      } else {                          // object type (default + zen)
+        col = TYPE_COLS[o.klass]; aMul = o.klass === 2 ? 0.74 : 1.0;
+        if (re) { col = COLORS.ghost; size *= 0.8; aMul = 0.32; }
       }
+      if ((o.dataBand ?? o.band) === 1 && !re) aMul *= 1.15;   // MEO pops at eye level
+      o.col = col; o.size = size; o.aMul = aMul;
+    }
+    function recolor() {
+      for (let i = 0; i < FIELD_N; i++) { const o = O[i]; if (o) colorSlot(o); }
       // Batched instance colors are cheap lens-state updates, not per-frame geometry work.
       for (const s of pool) if (s.idx >= 0 && s.iid >= 0) setSolidColor(s);
     }
@@ -1791,7 +1808,8 @@
       try {
         const objs = await loadCatalog(date);
         if (token !== state.loadToken) return;
-        state.catalogDate = date; adoptField(objs);
+        state.catalogDate = date;
+        if (!(await adoptField(objs, token))) return;   // superseded mid-adopt
         setStatus("ready", integrityByDate.get(date) ? "Live record · verified" : "Live record");
         applyHud(recordMeta(date)); populateLegend();
       } catch (e) {
@@ -1803,7 +1821,7 @@
         if (state.catalogDate && state.catalogDate !== date) {
           state.objects = state.objects.map((o) => ({ ...o, status: "carried", anno: null }));
           state.catalogDate = null;                  // a later stop on this day retries the download
-          adoptField(state.objects);
+          await adoptField(state.objects, token);
         }
         setStatus("ready", "Live record");
         applyHud(recordMeta(date)); populateLegend(); // annotations may have loaded even without the bundle
