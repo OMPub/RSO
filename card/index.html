@@ -675,7 +675,7 @@
 
     // ── field: CPU positions → points (dots) + line segments (real motion-blur) ──
     const O = [];                                  // object render records
-    const pPos = new Float32Array(MAXF * 3), pCol = new Float32Array(MAXF * 3), pAlpha = new Float32Array(MAXF), pSize = new Float32Array(MAXF), pFocus = new Float32Array(MAXF), pShape = new Float32Array(MAXF);
+    const pPos = new Float32Array(MAXF * 3), pCol = new Float32Array(MAXF * 3), pAlpha = new Float32Array(MAXF), pSize = new Float32Array(MAXF), pFocus = new Float32Array(MAXF);
     const pSeed = new Float32Array(MAXF * 3), pPrev = new Float32Array(MAXF * 3);
     const pUpdated = new Float32Array(MAXF), pStep = new Float32Array(MAXF);
     const lPos = new Float32Array(MAXF * 2 * 3), lCol = new Float32Array(MAXF * 2 * 3);
@@ -686,7 +686,6 @@
     pointGeo.setAttribute("aAlpha", new THREE.BufferAttribute(pAlpha, 1));
     pointGeo.setAttribute("aSize", new THREE.BufferAttribute(pSize, 1));
     pointGeo.setAttribute("aFocus", new THREE.BufferAttribute(pFocus, 1));
-    pointGeo.setAttribute("aShape", new THREE.BufferAttribute(pShape, 1));
     pointGeo.setAttribute("aSeed", new THREE.BufferAttribute(pSeed, 3));   // s1, s2, tumble rate
     pointGeo.setAttribute("aPrev", new THREE.BufferAttribute(pPrev, 3));   // last frame's position → motion direction
     pointGeo.setAttribute("aUpdated", new THREE.BufferAttribute(pUpdated, 1));
@@ -696,9 +695,9 @@
       transparent: true, depthTest: true, depthWrite: false, blending: THREE.AdditiveBlending, vertexColors: true,
       uniforms: { uPixel: { value: renderer.getPixelRatio() }, uTime: { value: 0 }, uAspect: { value: innerWidth / innerHeight } },
       vertexShader: `
-        attribute float aAlpha, aSize, aFocus, aShape, aUpdated, aStep; attribute vec3 aSeed, aPrev;
+        attribute float aAlpha, aSize, aFocus, aUpdated, aStep; attribute vec3 aSeed, aPrev;
         uniform float uPixel, uTime, uAspect;
-        varying vec3 vColor; varying float vAlpha; varying float vFocus; varying float vShape; varying float vAng; varying float vPx; varying vec2 vSeed;
+        varying vec3 vColor; varying float vAlpha; varying float vFocus; varying float vPx;
         void main(){
           // Slow tabs update interleaved object cohorts. Render between the previous
           // and newest exact orbit positions so the field still glides continuously.
@@ -718,120 +717,22 @@
           // every silhouette carves pixels away from the quad — give them all more canvas
           float sb = 1.30;
           gl_PointSize = clamp(base * (1.0 + swell) * sb, 1.0, 24.0);   // ceiling high enough that LARGE still out-looms
-          // orientation: nose-first along the REAL screen-space motion when moving;
-          // at rest, a seeded attitude that tumbles at the object's own rate.
-          // Guard the near-plane: as w→0 the projected delta blows up to inf/NaN and a
-          // NaN distance field paints the whole sprite quad.
-          vec4 clipP = projectionMatrix * modelViewMatrix * vec4(aPrev, 1.0);
-          float wOK = step(0.008, clip.w) * step(0.008, clipP.w);
-          vec2 dscr = (ndc - clipP.xy / max(0.008, clipP.w)) * vec2(uAspect, 1.0);
-          float sp = length(dscr) * wOK;
-          float restAng = aSeed.x * 6.2832 + uTime * aSeed.z;
-          vec2 dir = mix(vec2(cos(restAng), sin(restAng)), dscr / max(sp, 1e-6), smoothstep(0.0006, 0.0035, sp) * wOK);
-          vAng = atan(dir.y, dir.x + 1e-6);
           vPx = gl_PointSize / uPixel;
-          vColor = color; vAlpha = aAlpha * (0.72 + 0.28 * sin(uTime * 1.4 + aSeed.x * 80.0));
-          vFocus = aFocus; vShape = aShape; vSeed = aSeed.xy;
+          vColor = color; vAlpha = aAlpha * (0.72 + 0.28 * sin(uTime * 1.4 + aSeed.x * 80.0));   // aSeed.x → a per-object twinkle phase
+          vFocus = aFocus;
         }`,
       // near objects render crisp, bright and DEFINED (looming); far ones stay soft pinpoints.
       // Each class is a parametric FAMILY — bus + solar wings, stage + nozzle, fractured
       // shard, gauged ring — and every object draws its own proportions from its NORAD-seeded
       // identity, so no two resolve alike. Tiny dots stay dots (distance LOD).
       fragmentShader: `
-        varying vec3 vColor; varying float vAlpha; varying float vFocus; varying float vShape; varying float vAng; varying float vPx; varying vec2 vSeed;
-        float sdBox(vec2 p, vec2 b){ vec2 q = abs(p) - b; return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0); }
-        float f1(float s, float k){ return fract(s * k + 0.137); }   // decorrelated parameter channels
+        varying vec3 vColor; varying float vAlpha; varying float vFocus; varying float vPx;
         void main(){
+          // Every field point is an honest round dot — the machine silhouettes are drawn by
+          // the BatchedMesh solids near the camera, never by the sprites.
           vec2 q0 = gl_PointCoord - 0.5;
-          float ca = cos(vAng), sa = sin(vAng);
-          vec2 q = mat2(ca, sa, -sa, ca) * q0;                 // +x = nose / direction of travel
-          float s1 = vSeed.x, s2 = vSeed.y;
-          float lod = smoothstep(3.0, 6.0, vPx);               // anything beyond a few pixels IS its shape; only true specks stay dots
-          float d;
-          if (vShape < -0.5) {                                 // honest round point — and visible core behind a flying solid
-            d = length(q0);
-          } else if (vShape < 0.5) {                           // payload (generic) — bus + 1..6 fanned panels
-            float a = mix(0.10, 0.15, f1(s1, 3.7));            // disc bus: satellites gleam round at distance
-            d = length(q) - a;
-            float cnt = floor(1.0 + 5.99 * f1(s1, 17.9));      // 1..6 solar panels
-            float ax  = f1(s2, 15.3) * 3.1416;                 // first panel axis
-            float fan = mix(0.55, 1.05, f1(s1, 19.7));         // fan step between pairs
-            float wc = mix(0.17, 0.26, f1(s1, 7.3));
-            float wl = min(mix(0.08, 0.15, f1(s2, 9.7)), 0.45 - wc);
-            float ww = mix(0.05, 0.085, f1(s2, 12.9));
-            for (int k = 0; k < 3; k++) {
-              float fk = float(k);
-              if (cnt > 2.0 * fk) {
-                float aa = ax + fk * fan;
-                vec2 dirk = vec2(cos(aa), sin(aa));
-                vec2 qq = vec2(dot(q, dirk), dot(q, vec2(-dirk.y, dirk.x)));
-                d = min(d, sdBox(vec2(qq.x - wc, qq.y), vec2(wl, ww)));
-                if (cnt > 2.0 * fk + 1.0) d = min(d, sdBox(vec2(-qq.x - wc, qq.y), vec2(wl, ww)));
-              }
-            }
-          } else if (vShape < 1.5) {                           // rocket body — flat-ended barrel + nozzle bell
-            float L = mix(0.20, 0.30, f1(s1, 4.1));
-            float w = mix(0.10, 0.145, f1(s2, 3.3));
-            d = sdBox(q, vec2(L, w)) - 0.02;                   // a tank, not a torpedo
-            float nz = mix(0.05, 0.085, f1(s1, 6.7));
-            d = min(d, length(q - vec2(-L - nz * 0.55, 0.0)) - nz);
-            d = max(d, -sdBox(q - vec2(L * mix(0.0, 0.45, f1(s2, 8.9)), 0.0), vec2(0.013, w + 0.03))); // stage seam
-            float nf = floor(2.0 + 4.99 * f1(s1, 21.3));       // 2..6 base fins (the vignette shows the full ring)
-            d = min(d, sdBox(vec2(q.x + L - 0.02, abs(q.y) - (w + 0.045)), vec2(0.05, 0.05)));  // profile pair
-            if (nf > 4.5) d = min(d, sdBox(q - vec2(-L + 0.06, 0.0), vec2(0.028, w + 0.08)));   // crowded-ring hint
-          } else if (vShape < 2.5) {                           // debris — every shard fractured its own way
-            d = length(q) - mix(0.26, 0.36, f1(s1, 2.9));
-            float a1 = f1(s1, 5.3) * 6.2832, a2 = a1 + 1.7 + f1(s2, 7.1) * 2.2, a3 = a2 + 1.6 + f1(s1, 9.3) * 2.1;
-            d = max(d, dot(q, vec2(cos(a1), sin(a1))) - mix(0.04, 0.20, f1(s2, 4.7)));
-            d = max(d, dot(q, vec2(cos(a2), sin(a2))) - mix(0.05, 0.22, f1(s1, 6.1)));
-            d = max(d, dot(q, vec2(cos(a3), sin(a3))) - mix(0.06, 0.24, f1(s2, 8.3)));
-          } else if (vShape < 3.5) {                           // unknown — ring, seeded gauge, some horseshoed
-            float rr = mix(0.19, 0.30, f1(s1, 3.1));
-            d = abs(length(q) - rr) - mix(0.035, 0.075, f1(s2, 4.3));
-            if (f1(s1, 8.7) > 0.55) {
-              float ga = f1(s2, 6.9) * 6.2832, gw = mix(0.35, 0.95, f1(s1, 5.7));
-              float dg = abs(mod(atan(q.y, q.x) - ga + 3.14159, 6.28318) - 3.14159);
-              d = max(d, gw - dg);                             // carve the gap
-            }
-          } else if (vShape < 4.5) {                           // STARLINK v1 — flat bus, one LONG array off one end (open book, not a roof dish)
-            d = sdBox(q - vec2(0.0, -0.30), vec2(0.115, 0.045)) - 0.01;
-            float at = (f1(s2, 11.7) - 0.5) * 0.55;            // seeded array articulation — each tracks its own sun
-            float ca2 = cos(at), sa2 = sin(at);
-            vec2 qa = mat2(ca2, sa2, -sa2, ca2) * (q - vec2(0.0, 0.065));
-            float aw = mix(0.075, 0.095, f1(s2, 7.7));         // array narrower than the bus, much longer
-            d = min(d, sdBox(qa, vec2(aw, mix(0.30, 0.36, f1(s1, 9.1)))));
-          } else if (vShape < 5.5) {                           // GEO comsat — long symmetric wings + dish
-            float a = mix(0.09, 0.12, f1(s1, 3.7));
-            d = sdBox(q, vec2(a, a)) - 0.02;
-            float wl = 0.42 - a;
-            d = min(d, sdBox(vec2(abs(q.x) - (a + wl * 0.5 + 0.02), q.y), vec2(wl * 0.5, mix(0.04, 0.055, f1(s2, 5.5)))));
-            d = min(d, length(q - vec2(0.0, a + 0.08)) - mix(0.05, 0.07, f1(s2, 11.1)));
-          } else if (vShape < 6.5) {                           // cubesat — tiny slab, sometimes stub panels
-            d = sdBox(q, vec2(mix(0.05, 0.09, f1(s1, 3.3)), mix(0.045, 0.075, f1(s2, 4.4)))) - 0.012;
-            if (f1(s1, 6.6) > 0.45)
-              d = min(d, sdBox(vec2(abs(q.x) - mix(0.13, 0.17, f1(s2, 8.8)), q.y), vec2(0.07, 0.032)));
-          } else if (vShape < 7.5) {                           // navsat — bus + two wings + nav dish
-            float a = mix(0.10, 0.13, f1(s1, 3.9));
-            d = sdBox(q, vec2(a * 1.1, a)) - 0.02;
-            d = min(d, sdBox(vec2(abs(q.x) - (a + 0.17), q.y), vec2(0.12, mix(0.05, 0.07, f1(s2, 5.9)))));
-            d = min(d, length(q - vec2(0.0, a + 0.07)) - 0.05);
-          } else if (vShape < 8.5) {                           // ONEWEB — box-wing: small bus, two long narrow arrays
-            d = sdBox(q, vec2(0.07, 0.085)) - 0.015;
-            d = min(d, sdBox(vec2(abs(q.x) - 0.26, q.y), vec2(0.17, mix(0.03, 0.042, f1(s2, 6.1)))));
-          } else if (vShape < 9.5) {                           // IRIDIUM — two wings + the big canted antenna
-            d = sdBox(q, vec2(0.10, 0.08)) - 0.015;
-            d = min(d, sdBox(vec2(abs(q.x) - 0.22, q.y), vec2(0.10, 0.05)));
-            vec2 qa = mat2(0.94, -0.34, 0.34, 0.94) * (q - vec2(0.0, -0.17));
-            d = min(d, sdBox(qa, vec2(0.085, 0.115)));
-          } else {                                             // STARLINK v2 mini — bus amidships, TWO long arrays
-            d = sdBox(q, vec2(0.13, 0.05)) - 0.012;
-            float at = (f1(s2, 11.7) - 0.5) * 0.45;            // seeded articulation, same sun-tracking story
-            float ca2 = cos(at), sa2 = sin(at);
-            vec2 qq = mat2(ca2, sa2, -sa2, ca2) * q;
-            d = min(d, sdBox(vec2(qq.x, abs(qq.y) - 0.26), vec2(mix(0.06, 0.08, f1(s2, 7.7)), 0.17)));
-          }
-          d = mix(length(q0), d, lod);                         // tiny = plain dot; near = its own machine
-          if (d > 0.55 || d != d) discard;                     // d!=d traps any NaN before it paints the quad
+          float d = length(q0);
+          if (d > 0.55) discard;
           float edge = mix(0.03, 0.40, vFocus);                // focus 0 → soft glow; focus 1 → filled crisp form
           float core = smoothstep(0.5, edge, d);
           float halo = smoothstep(0.5, 0.12, d) * (0.42 - vFocus*0.3);
@@ -977,7 +878,6 @@
         for (const s of pool) {
           if (s.idx >= 0 && O[s.idx]?.meshMark !== mark) {
             if (s.iid >= 0) batch.deleteInstance(s.iid);
-            pShape[s.idx] = -1;                                   // non-solids are always honest round points
             if (O[s.idx]) O[s.idx].solid = false;
             s.idx = -1; s.iid = -1;                               // the geometry SLOT is permanent — only contents change
           }
@@ -1129,7 +1029,6 @@
       o.shape = slotShape(klass, src, band);
       o.updateAt = state.time; o.meshWanted = false;
       pUpdated[i] = state.time; pStep[i] = 1 / 60;
-      pShape[i] = -1;                                      // points are points; only BatchedMesh draws machine shapes
       // silhouette seeds + tumble: debris spins hard, unknowns drift, hardware holds
       // attitude — except Starlinks, whose identical airframes read distinct by spin
       const tum = (klass === 2 ? 0.5 + 1.6 * rand2(nid, 97)
@@ -1152,7 +1051,6 @@
       // shape flies another object's track while the pool rebuilds
       flushSolids();
       for (let i = 0; i < FIELD_N; i++) initSlot(i, objects.length ? objects[i] : null);
-      pointGeo.attributes.aShape.needsUpdate = true;
       pointGeo.attributes.aSeed.needsUpdate = true;
       recolor();
     }
@@ -1196,7 +1094,6 @@
       }
       FIELD_N = newN;
       pointGeo.setDrawRange(0, newN); lineGeo.setDrawRange(0, newN * 2);
-      pointGeo.attributes.aShape.needsUpdate = true;
       pointGeo.attributes.aSeed.needsUpdate = true;
       state.workPhase = 0;
       for (const s of pool) if (s.idx >= 0 && s.iid >= 0) setSolidColor(s);
@@ -1361,7 +1258,7 @@
           lCol[v0 + 3] = cr * lb; lCol[v0 + 4] = cg * lb; lCol[v0 + 5] = cb * lb; // head bright
         }
         if (o.solid) {                              // thin edge-on geometry keeps an honest round locating core
-          pAlpha[i] *= 0.62; pSize[i] = Math.min(pSize[i], 2.2); pFocus[i] = 0; pShape[i] = -1;
+          pAlpha[i] *= 0.62; pSize[i] = Math.min(pSize[i], 2.2); pFocus[i] = 0;
         }
         o.px = _v.x; o.py = _v.y; o.pz = _v.z; o.pt = t; o.hasPrev = true;
       }

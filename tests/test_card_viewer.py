@@ -121,18 +121,25 @@ class CardArtifactTest(unittest.TestCase):
         )
 
     def test_per_type_silhouettes(self):
-        self.assertIn("aShape", self.html)
-        for marker in ("payload (generic) — bus + 1..6 fanned panels",
-                       "rocket body — flat-ended barrel + nozzle bell",
-                       "debris — every shard fractured its own way", "unknown — ring, seeded gauge"):
+        # The machine silhouettes are the BatchedMesh solids (buildVigShape / bakeSolid);
+        # the field SPRITES are honest round dots — the dead sprite-SDF pipeline is gone.
+        self.assertIn("function bakeSolid(o)", self.html)
+        self.assertIn("function buildVigShape(o)", self.html)
+        for marker in ("payload: archetype-keyed, like the field",
+                       "rocket body: a barrel, not a torpedo",
+                       "debris: a faceted shard all its own"):
             self.assertIn(marker, self.html)
+        # the sprite pipeline is collapsed to a round dot — no leftover aShape/vShape
+        self.assertNotIn("aShape", self.html)
+        self.assertNotIn("vShape", self.html)
+        self.assertIn("Every field point is an honest round dot", self.html)
 
     def test_constellation_archetypes_are_name_keyed(self):
         # the famous constellations get their real silhouettes, in field and vignette alike
         self.assertIn("function payloadShape(", self.html)
         for marker in ('n.startsWith("STARLINK")', 'n.startsWith("ONEWEB")',
-                       'n.includes("IRIDIUM")', "STARLINK v1 — flat bus, one LONG array off one end",
-                       "ONEWEB — box-wing", "IRIDIUM — two wings + the big canted antenna",
+                       'n.includes("IRIDIUM")', "STARLINK v1 — flat bus + one LONG array, seeded sun-tracking fold",
+                       "ONEWEB — box-wing", "IRIDIUM — wings + the big canted antenna",
                        "GEO comsat — long symmetric wings + dish"):
             self.assertIn(marker, self.html)
 
@@ -195,13 +202,10 @@ class CardArtifactTest(unittest.TestCase):
         # culling passes.
         self.assertIn("batch.frustumCulled = false", self.html)
         self.assertIn("batch.perObjectFrustumCulled = false", self.html)
-        # every sprite is a round dot (shape -1) — no faux-machine cube intermediary
-        self.assertIn("honest round point — and visible core behind a flying solid", self.html)
-        self.assertIn("pShape[i] = -1", self.html)
-        self.assertIn("pShape[s.idx] = -1", self.html)
-        self.assertNotIn("pShape[i] = o.shape", self.html)
-        # silhouettes from a few pixels up — the LOD gate is visual, not a perf saving
-        self.assertIn("anything beyond a few pixels IS its shape", self.html)
+        # every sprite is an honest round dot; machine silhouettes are the solids only
+        self.assertIn("Every field point is an honest round dot", self.html)
+        self.assertNotIn("aShape", self.html)
+        self.assertNotIn("pShape", self.html)
         self.assertIn('id="insp-stage"', self.html)
         self.assertIn("altitude regime: ${BAND_FULL[m?.band ?? o.dataBand ?? o.band]}", self.html)
         # one sun for the field and a dawn-bright arc on the sunward limb
@@ -209,7 +213,7 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn("dawn", self.html)
         # Starlink generations split by NORAD id; arrays articulate per-sat
         self.assertIn(">= 55000 ? 10 : 4", self.html)
-        self.assertIn("STARLINK v2 mini — bus amidships, TWO long arrays", self.html)
+        self.assertIn("STARLINK v2 mini — bus amidships, TWO arrays", self.html)
         self.assertIn("updateMeshPool(meshCandidates, refreshMeshes, start, end)", self.html)
         self.assertIn("setSolidMatrix(free)", self.html)
         self.assertIn("_quat.identity()", self.html)
@@ -229,12 +233,12 @@ class CardArtifactTest(unittest.TestCase):
         # identity seeds key to the NORAD id → same silhouette everywhere, forever
         self.assertIn("rand2(nid, 71)", self.html)
         self.assertIn('pointGeo.setAttribute("aSeed"', self.html)
-        # orientation derives from real motion (previous position attribute)…
+        # the previous-position attribute feeds the strided dead-reckoning interpolation,
+        # guarded against a zero step
         self.assertIn('pointGeo.setAttribute("aPrev"', self.html)
-        # …with the near-plane guarded and NaNs trapped before they paint the quad
-        self.assertIn("step(0.008, clip.w) * step(0.008, clipP.w)", self.html)
+        self.assertIn("vec3 displayPos = mix(aPrev, position, blend);", self.html)
+        self.assertIn("clamp((uTime - aUpdated) / max(0.008, aStep), 0.0, 1.0)", self.html)
         self.assertIn("innerWidth / innerHeight, 0.015, 2000", self.html)
-        self.assertIn("d != d) discard", self.html)
         # real elements drive placement: RAAN spreads the planes, inclination tilts
         # the family, eccentricity breathes the radius
         self.assertIn("Number(row.INCLINATION)", self.html)
