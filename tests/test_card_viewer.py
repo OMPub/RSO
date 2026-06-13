@@ -545,6 +545,59 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn("function slotBaseSize(klass, band, rcs, nid)", self.html)
         self.assertIn("function initSlot(i, src)", self.html)
 
+    def test_adaptive_work_stride_escalates_and_relaxes(self):
+        # the frame-budget governor raises the stride when frames run hot and lowers it
+        # again after a sustained good streak, bounded by MAX_WORK_STRIDE.
+        self.assertIn("const MAX_WORK_STRIDE = mobile ? 12 : 24", self.html)
+        self.assertIn("avgCpu > 28 || avgInterval > 40", self.html)
+        self.assertIn("if (state.workStride < MAX_WORK_STRIDE)", self.html)
+        self.assertIn("avgCpu < 6 && avgInterval < 19", self.html)
+        self.assertIn("goodReports >= 5 && state.workStride > 1", self.html)
+
+    def test_prism_rotation_and_keys(self):
+        # the data prisms rotate a true fraction-of-a-turn per activation, are keyboard
+        # operable, and X / C rotate the left / right record from anywhere.
+        self.assertIn("angle = 360 / faces.length", self.html)
+        self.assertIn("rotateX(${-turns * angle}deg)", self.html)
+        self.assertIn('setupPrism("prism-obj", "Archive record")', self.html)
+        self.assertIn('prismRotators["prism-obj"]?.()', self.html)
+        self.assertIn('prismRotators["prism-witness"]?.()', self.html)
+        self.assertIn('e.key === "Enter" || e.key === " " || e.key === "Spacebar"', self.html)
+
+    def test_settings_is_a_real_modal(self):
+        self.assertIn('role="dialog" aria-modal="true"', self.html)
+        self.assertIn("for (const el of document.body.children) if (el !== settings) el.inert = on;", self.html)
+        self.assertIn("settingsLastFocus = document.activeElement", self.html)
+        self.assertIn("settingsLastFocus.focus()", self.html)
+        # tablist roving focus + arrow navigation
+        self.assertIn("el.tabIndex = active ? 0 : -1", self.html)
+        self.assertIn('e.key === "ArrowRight" || e.key === "ArrowDown"', self.html)
+        self.assertIn('role="tabpanel"', self.html)
+
+    def test_reload_needs_a_confirmed_double_press(self):
+        self.assertIn("function requestReload()", self.html)
+        self.assertIn("now - reloadArmedAt < 5000", self.html)
+        self.assertIn('flashMode("Press R again to reload")', self.html)
+        self.assertIn("if (k === \"r\") { requestReload(); e.preventDefault(); return; }", self.html)
+
+    def test_perf_hud_defaults_off_and_top_date_fades_during_jump(self):
+        self.assertIn("perfVisible: false", self.html)
+        self.assertIn('<div class="perf" id="perf" hidden>', self.html)
+        self.assertIn("if (state.perfVisible) $(\"perf\").textContent", self.html)
+        # one date reads at a time: the top date fades while the centre jump date shows
+        self.assertIn('classList.toggle("jumping", jumping)', self.html)
+        self.assertIn("body.jumping .record-date { opacity: 0; }", self.html)
+
+    def test_witness_prism_counts_match_the_index_shape(self):
+        # the four witness faces are computed from the live index: distinct nodes,
+        # attestation count, distinct publication locations.
+        for el in ('id="witness-nodes"', 'id="witness-attestations"', 'id="witness-sources"', 'id="witness-perm"'):
+            self.assertIn(el, self.html)
+        self.assertIn("const nodeIds = new Set((rec.events || []).map", self.html)
+        self.assertIn("nodes: nodeIds.size || attesters", self.html)
+        self.assertIn("attestations: strongest.attestationCount ?? attesters", self.html)
+        self.assertIn("sources: locations.length", self.html)
+
 
 class AttestationIndexContractTest(unittest.TestCase):
     """The exact fields the viewer (and om.pub pages) read from the index."""
