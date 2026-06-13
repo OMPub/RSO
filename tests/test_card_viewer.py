@@ -499,12 +499,37 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn("function adoptField(objects)", self.html)
         self.assertIn("state.catalogDate = date; adoptField(objs)", self.html)
         self.assertNotIn("state.catalogDate = date; assignField(objs)", self.html)
-        self.assertIn("assignField([], Math.max(FIELD, Math.round(rec.count * 0.507)))", self.html)
+        self.assertIn("assignField([], Math.max(FIELD, Math.round(startRec.count * 0.507)))", self.html)
         # Identity adoption preserves the current frame but continuously migrates every
         # slot into the real object's altitude shell and element-driven plane.
         self.assertIn("function orbitParams(src, band, nid)", self.html)
         self.assertIn("o.orbitTarget = orbitParams(src, src.band, nid)", self.html)
         self.assertIn("settleOrbit(o, objectDt)", self.html)
+
+    def test_embedded_baseline_renders_offline(self):
+        # The piece must outlive any host: an as-of-build snapshot is inlined so the
+        # archive renders a real record with zero network.
+        self.assertIn("const BASELINE = {", self.html)
+        self.assertIn("function seedFromBaseline()", self.html)
+        self.assertIn("seedFromBaseline();", self.html)          # boot seeds before any fetch
+        # baseline carries the timeline, ledger metadata, attestation and an anchor digest
+        for key in ('"startDate"', '"days"', '"attest"', '"anno"', '"chainMeta"'):
+            self.assertIn(key, self.html)
+        # permanence-first head resolution, GitHub raw as a mirror not the only memory
+        self.assertIn("ledgerSources:", self.html)
+        self.assertIn("for (const url of CONFIG.ledgerSources)", self.html)
+        # the camera opens on the embedded anchor day and holds there until the visitor flies
+        self.assertIn("witnessDates.indexOf(BASELINE.startDate)", self.html)
+        self.assertIn("if (!state.engaged)", self.html)
+
+    def test_adopt_field_tracks_each_days_true_count(self):
+        # no frozen FIELD_N: each day recomputes the draw count, so no satellite is
+        # duplicated (the old i % objects.length wrap) or silently truncated.
+        self.assertIn("const newN = Math.min(objects.length, MAXF), oldN = FIELD_N;", self.html)
+        self.assertIn("if (i >= oldN || !o) { initSlot(i, src); continue; }", self.html)
+        self.assertNotIn("objects[i % objects.length]", self.html)
+        self.assertIn("function slotBaseSize(klass, band, rcs, nid)", self.html)
+        self.assertIn("function initSlot(i, src)", self.html)
 
 
 class AttestationIndexContractTest(unittest.TestCase):
