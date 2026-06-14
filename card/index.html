@@ -2575,20 +2575,15 @@ ${fmtNum(FIELD_N)} objects · ${PERF.solids} solids / ${PERF.candidates} approac
       // The halo eases onto a new find and hangs in the air for a beat when released.
       // Besides feeling less mechanical, the fade keeps near-plane and limb crossings
       // from looking like the selected object was abruptly switched off.
-      // A flythrough sails objects past the camera, so a selection is transient: once the
-      // chosen object leaves the frame the ring would hang over empty space at the edge and
-      // the inspector would describe something you can't see. Ride the drawn point; drop the
-      // ring as it crosses the edge; retire the whole selection once it's well gone or behind
-      // you. Limb occlusion only DIMS it on-screen — that still earns a ring, so it stays.
-      let haloTarget = state.selIdx >= 0 && state.warpBlend < 0.3 ? 1 : 0;
-      if (haloTarget) {
-        drawnPos(state.selIdx, halo.position);   // ride the point the object is DRAWN at, not its last strided fix
-        _proj.copy(halo.position).project(camera);
-        if (_proj.z > 1 || Math.abs(_proj.x) > 1.18 || Math.abs(_proj.y) > 1.18) { hideInspector(); haloTarget = 0; }
-        else if (Math.abs(_proj.x) > 1.02 || Math.abs(_proj.y) > 1.02) haloTarget = 0;
-      }
+      // A selection PERSISTS: the ring keeps riding its object for the whole orbit — off the
+      // frame edge, behind the Earth, and back around again — so anyone still reading the
+      // inspector never loses their place. drawnPos keeps it pinned to the exact drawn point
+      // (sprites dead-reckon between strided fixes), so it lands true when the object swings
+      // back into view.
+      const haloTarget = state.selIdx >= 0 && state.warpBlend < 0.3 ? 1 : 0;
       state.haloFade += (haloTarget - state.haloFade) * Math.min(1, dt * (haloTarget ? 7 : 4));
       if (haloTarget) {
+        drawnPos(state.selIdx, halo.position);   // ride the point the object is DRAWN at, not its last strided fix
         halo.lookAt(camera.position);
         const hd = halo.position.distanceTo(camera.position);
         const settle = 0.72 + 0.28 * smooth(0, 1, state.haloFade);
@@ -2662,6 +2657,17 @@ ${fmtNum(FIELD_N)} objects · ${PERF.solids} solids / ${PERF.candidates} approac
     function setupPrism(prismId, label) {
       const prism = $(prismId), inner = prism.querySelector(".prism-inner");
       const faces = [...inner.querySelectorAll(".face")], angle = 360 / faces.length;
+      // Seat the drum so the RESTING front face sits on the screen plane (z = 0). Each face is
+      // pushed +apothem toward the viewer to form the drum; under the shallow perspective that
+      // magnifies the front face and spills it past the clip box, shaving the left edge off
+      // left-aligned text. Pulling the whole drum back by that apothem cancels the magnify for
+      // the face you read, while the rotation still foreshortens dramatically (not a slide).
+      const depth = new DOMMatrix(getComputedStyle(faces[0]).transform).m43;   // the face's own translateZ
+      const seat = (deg) => `translateZ(${-depth}px) rotateX(${deg}deg)`;
+      inner.style.transition = "none";
+      inner.style.transform = seat(0);
+      inner.getBoundingClientRect();           // commit the seat without animating it on load
+      inner.style.transition = "";
       faces.forEach((face, at) => {
         const pager = face.querySelector(".pager");
         if (pager) pager.innerHTML = faces.map((_, i) => `<i class="${i === at ? "on" : ""}"></i>`).join("");
@@ -2670,14 +2676,14 @@ ${fmtNum(FIELD_N)} objects · ${PERF.solids} solids / ${PERF.candidates} approac
       prism.setAttribute("role", "button");
       prism.setAttribute("aria-label", `${label} — show the next face`);
       let turns = 0;
-      const rotate = () => { turns += 1; inner.style.transform = `rotateX(${-turns * angle}deg)`; };
+      const rotate = () => { turns += 1; inner.style.transform = seat(-turns * angle); };
       prism.addEventListener("click", (e) => { if (e.target.closest("a")) return; rotate(); });  // links inside a face open; they don't rotate it
       prism.addEventListener("keydown", (e) => {
         if (e.target.closest("a")) return;
         if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") { e.preventDefault(); e.stopPropagation(); rotate(); }
       });
       prismRotators[prismId] = rotate;
-      prismResets.push(() => { turns = 0; inner.style.transform = "rotateX(0deg)"; });
+      prismResets.push(() => { turns = 0; inner.style.transform = seat(0); });
     }
     setupPrism("prism-obj", "Archive record"); setupPrism("prism-witness", "Public witness");
 

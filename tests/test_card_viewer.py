@@ -396,6 +396,13 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn("row-gap: 2px", self.html)
         self.assertIn("letter-spacing: 0.1em; padding-bottom: 3px;", self.html)
         self.assertIn("padding: 6px 10px 0", self.html)
+        # The drum is seated so the RESTING front face sits on the screen plane (z=0): a face
+        # popped toward the viewer under the shallow perspective magnifies and spills past the
+        # clip box, shaving the left edge off left-aligned text. Pull it back by its apothem.
+        self.assertIn("new DOMMatrix(getComputedStyle(faces[0]).transform).m43", self.html)
+        self.assertIn("const seat = (deg) => `translateZ(${-depth}px) rotateX(${deg}deg)`", self.html)
+        self.assertIn("inner.style.transform = seat(-turns * angle)", self.html)
+        self.assertIn("turns = 0; inner.style.transform = seat(0)", self.html)
 
     def test_mobile_layout_gestures_and_tooltip_taps(self):
         # The former two lower-left prisms are one eight-face archive prism,
@@ -539,10 +546,10 @@ class CardArtifactTest(unittest.TestCase):
     def test_selection_halo_eases_in_and_out(self):
         self.assertIn("haloFade: 0", self.html)
         self.assertIn("if (best !== state.selIdx) state.haloFade = 0", self.html)
-        self.assertIn("let haloTarget = state.selIdx >= 0 && state.warpBlend < 0.3 ? 1 : 0", self.html)
+        self.assertIn("const haloTarget = state.selIdx >= 0 && state.warpBlend < 0.3 ? 1 : 0", self.html)
         self.assertIn("halo.visible = state.haloFade > 0.01", self.html)
 
-    def test_selection_rides_the_drawn_position_and_retires_off_screen(self):
+    def test_selection_rides_the_drawn_position_and_persists(self):
         # The halo and the tap hit-test read the point the object is DRAWN at — sprites
         # dead-reckon between strided fixes (the vertex shader's mix), solids sit at pPos —
         # so the ring rides the speck and a tap lands on what you see, even under striding.
@@ -552,12 +559,11 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn("drawnPos(state.selIdx, halo.position)", self.html)
         self.assertIn("drawnPos(state.selIdx, _proj).project(camera)", self.html)
         self.assertIn("drawnPos(i, _proj).project(camera)", self.html)
-        # A flythrough sails objects past: the ring drops as the object crosses the frame
-        # edge, and the whole selection retires once it's well gone or behind the camera —
-        # no ring stranded over empty space, no inspector describing an unseen object.
-        self.assertIn("_proj.copy(halo.position).project(camera)", self.html)
-        self.assertIn("Math.abs(_proj.x) > 1.18 || Math.abs(_proj.y) > 1.18) { hideInspector(); haloTarget = 0; }", self.html)
-        self.assertIn("Math.abs(_proj.x) > 1.02 || Math.abs(_proj.y) > 1.02) haloTarget = 0", self.html)
+        # A selection PERSISTS through the whole orbit — including off-screen and back around —
+        # so it is NOT retired when the object merely leaves the frame. (No edge/behind-camera
+        # auto-dismiss of the halo or inspector.)
+        self.assertNotIn("_proj.copy(halo.position).project(camera)", self.html)
+        self.assertNotIn("Math.abs(_proj.y) > 1.18) { hideInspector()", self.html)
 
     def test_live_catalog_adopts_without_restarting_the_field(self):
         self.assertIn("async function adoptField(objects, token)", self.html)
@@ -617,7 +623,7 @@ class CardArtifactTest(unittest.TestCase):
         # the data prisms rotate a true fraction-of-a-turn per activation, are keyboard
         # operable, and X / C rotate the left / right record from anywhere.
         self.assertIn("angle = 360 / faces.length", self.html)
-        self.assertIn("rotateX(${-turns * angle}deg)", self.html)
+        self.assertIn("seat(-turns * angle)", self.html)   # a true fraction-of-a-turn, re-seated each time
         self.assertIn('setupPrism("prism-obj", "Archive record")', self.html)
         self.assertIn('prismRotators["prism-obj"]?.()', self.html)
         self.assertIn('prismRotators["prism-witness"]?.()', self.html)
