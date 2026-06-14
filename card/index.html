@@ -889,7 +889,7 @@
           const wi = cands[j].i;
           if (O[wi].solid) continue;
           const free = pool.find((s) => s.idx < 0);
-          if (!free || builds >= 1) continue;                     // never let geometry baking steal a whole frame
+          if (!free || (builds >= 1 && wi !== state.selIdx)) continue;   // ≤1 bake/frame — but the tapped object jumps the queue so it solidifies at once
           builds++;
           const geo = bakeSolid(O[wi]);
           if (geo.getAttribute("position").count > RES_V) { geo.dispose(); continue; } // never overflow a slot
@@ -1299,10 +1299,18 @@
       const refreshMeshes = phase === stride - 1 || !meshCandidates.length;
       if (refreshMeshes) {
         let n = 0;
+        const sel = state.selIdx;
         for (let i = 0; i < FIELD_N; i++) {
           const o = O[i]; if (!o?.meshWanted) continue;
           const c = meshCandidates[n] || (meshCandidates[n] = {});
-          c.i = i; c.d = o.meshDist; c.px = o.meshPx; n++;
+          c.i = i; c.d = o.meshDist; c.px = i === sel ? Infinity : o.meshPx; n++;
+        }
+        // A tapped object always shows its true generated 3D solid, however far it has drifted:
+        // force it into the candidate set at top priority so the pool can't evict it while it
+        // stays selected. Deselecting simply stops the injection and it reverts to a sprite.
+        if (sel >= 0 && sel < FIELD_N && O[sel]?.meta && !O[sel].meshWanted) {
+          const c = meshCandidates[n] || (meshCandidates[n] = {});
+          c.i = sel; c.d = O[sel].meshDist || 0; c.px = Infinity; n++;
         }
         meshCandidates.length = n;
       }
@@ -1790,8 +1798,11 @@
     // ── view modes / colour lenses: swipe left/right + spacebar ──
     let modeAt = 0;
     function cycleMode(dir) { const now = performance.now(); if (now - modeAt < 320) return; modeAt = now; state.lens = (state.lens + dir + LENSES.length) % LENSES.length; applyMode(); }
-    function applyMode() { recolor(); populateLegend(); flashMode(LENSES[state.lens]); }
-    function setZen(on) { state.zen = on; document.body.classList.toggle("zen", on); flashMode(on ? "Zen" : LENSES[state.lens]); }
+    // No centre flash on lens change — the legend's title already names the active lens, and
+    // the toast could overlap the inspector at some aspect ratios. Zen still flashes on entry
+    // (the legend is hidden there); leaving Zen needs none, the legend fades back with its name.
+    function applyMode() { recolor(); populateLegend(); }
+    function setZen(on) { state.zen = on; document.body.classList.toggle("zen", on); if (on) flashMode("Zen"); }
     function toggleZen() { setZen(!state.zen); }
     function flashMode(name) { if (name !== RELOAD_MSG) reloadPrompted = false; const t = $("mode-toast"); t.textContent = name; t.classList.add("show"); clearTimeout(flashMode.t); flashMode.t = setTimeout(() => { t.classList.remove("show"); reloadPrompted = false; }, 1100); }
     const rgbStr = (c) => `rgb(${Math.round(c[0]*255)},${Math.round(c[1]*255)},${Math.round(c[2]*255)})`;
@@ -1815,8 +1826,9 @@
     }
 
     // ── scroll gestures: distance maps across time; one sideways gesture = one lens ──
-    let wheelGesture = null;
+    let wheelGesture = null, wheelEndTimer = 0;
     const WHEEL_GESTURE_GAP = 220;
+    const WHEEL_GESTURE_IDLE = 140;   // a lull this long ends the gesture, so the NEXT burst re-arms a lens shift
     function navigationDaysForDistance(px, oneDayPx) {
       const d = Math.abs(px);
       if (d < 8) return 0;
@@ -1835,6 +1847,11 @@
       const now = performance.now(), axis = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? "x" : "y";
       if (!wheelGesture || now - wheelGesture.at > WHEEL_GESTURE_GAP || wheelGesture.axis !== axis) beginWheelGesture(axis, now);
       wheelGesture.at = now; state.lastWheel = now;
+      // End the gesture a short lull after the LAST event. A continuous swipe fires far faster
+      // than this so it stays ONE gesture (one lens shift); two deliberate flicks at the same
+      // spot fall on opposite sides of the lull, so the second re-arms and shifts again.
+      clearTimeout(wheelEndTimer);
+      wheelEndTimer = setTimeout(() => { wheelGesture = null; }, WHEEL_GESTURE_IDLE);
       if (axis === "x") {
         wheelGesture.x += e.deltaX;
         if (!wheelGesture.lensShifted && Math.abs(wheelGesture.x) >= 24) {
@@ -2388,7 +2405,14 @@
       const labelEl = $("insp-label"), ci = state.lens === 4 && o.change && CHANGE_INFO[o.change];
       if (ci) { labelEl.textContent = ci[0]; labelEl.style.color = rgbStr(ci[1]); }
       else { labelEl.textContent = o.status === "new" ? "Launched this day" : o.status === "decayed" ? "Decay reported" : "Tracked object"; labelEl.style.color = ""; }
-      $("insp-name").textContent = m ? m.name : "Archive object";
+      // Tint the object's name (and the model-stage frame) to the colour its speck wears in
+      // the river RIGHT NOW — o.col is whatever the active lens painted it (type / operator /
+      // age / radar size / daily change), so "which one did I tap?" matches across every lens.
+      const lensCol = o.col ? rgbStr(o.col) : "";
+      const nameEl = $("insp-name");
+      nameEl.textContent = m ? m.name : "Archive object";
+      nameEl.style.color = lensCol;
+      $("insp-stage").style.borderColor = lensCol || "";
       // bare values, each explained by its hover/tap tooltip — no inline labels
       const esc = (s) => String(s).replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c]));
       const tip = (txt, why) => `<span tabindex="0" title="${esc(why)}" data-tip="${esc(why)}">${esc(txt)}</span>`;
@@ -2404,6 +2428,10 @@
             m.ecc > 0.1 ? tip(m.ecc.toFixed(2), "orbital eccentricity") : null,
             m.raan ? tip(`Ω${m.raan.toFixed(0)}°`, "right ascension of the ascending node — the orbital plane's swivel") : null,
             m.rcs ? tip(m.rcs.toLowerCase(), "radar cross-section class") : null,
+            // high-drag objects carry the very terms that flagged them: the SGP4 B* drag
+            // coefficient and the mean-motion derivative (how fast the orbit is tightening).
+            o.change === "dynamic" && m.bstar ? tip(`B* ${m.bstar.toExponential(1)}`, "B* drag term — atmospheric drag pulling this orbit down; the higher it is, the faster it decays") : null,
+            o.change === "dynamic" && m.mmDot ? tip(`Δn ${m.mmDot.toExponential(1)}`, "rate the orbital period is tightening (rev/day²) — the rapid-change signature that flagged this object") : null,
           ].filter(Boolean).join(" · ")
         : `${bandName} · ${["payload", "rocket body", "debris", "unknown", "tba"][pickClass(best)]}`;
       // the observation plane: what the archive learned about THIS object this doc-day.

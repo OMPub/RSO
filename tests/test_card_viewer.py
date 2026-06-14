@@ -524,6 +524,41 @@ class CardArtifactTest(unittest.TestCase):
         # is allowed to shift the lens once.
         self.assertIn("wheelGesture.lensShifted = true", self.html)
         self.assertNotIn("while (wheelAccumX", self.html)
+        # A lull ends the gesture, so a SECOND sideways flick at the same spot re-arms and
+        # shifts again — while a continuous swipe (events far closer than the lull) stays one.
+        self.assertIn("let wheelGesture = null, wheelEndTimer = 0;", self.html)
+        self.assertIn("const WHEEL_GESTURE_IDLE = 140;", self.html)
+        self.assertIn("wheelEndTimer = setTimeout(() => { wheelGesture = null; }, WHEEL_GESTURE_IDLE);", self.html)
+
+    def test_inspector_object_takes_the_active_lens_colour(self):
+        # The inspected object's name and model-frame are tinted to the colour its speck
+        # wears under the active lens (o.col, set by colorSlot) — in every lens, not just 4.
+        self.assertIn('const lensCol = o.col ? rgbStr(o.col) : "";', self.html)
+        self.assertIn("nameEl.style.color = lensCol;", self.html)
+        self.assertIn('$("insp-stage").style.borderColor = lensCol || "";', self.html)
+
+    def test_high_drag_objects_surface_their_drag_terms(self):
+        # A high-drag (dynamic) object adds the very quantities that flagged it: the SGP4
+        # B* drag term and the mean-motion derivative. Gated so routine objects stay clean.
+        self.assertIn('o.change === "dynamic" && m.bstar ? tip(`B* ${m.bstar.toExponential(1)}`', self.html)
+        self.assertIn('o.change === "dynamic" && m.mmDot ? tip(`Δn ${m.mmDot.toExponential(1)}`', self.html)
+
+    def test_lens_change_shows_no_centre_toast(self):
+        # The legend title already names the active lens; the centre flash could overlap the
+        # inspector, so lens changes no longer flash it. Zen still flashes on entry only.
+        self.assertIn("function applyMode() { recolor(); populateLegend(); }", self.html)
+        self.assertNotIn("flashMode(LENSES[state.lens])", self.html)
+        self.assertIn('if (on) flashMode("Zen");', self.html)
+        # the reload prompt and other status toasts still use flashMode
+        self.assertIn("flashMode(RELOAD_MSG)", self.html)
+
+    def test_tapped_object_is_forced_to_render_solid(self):
+        # Selecting an object injects it into the mesh-candidate set at top priority so it
+        # always wins a solid slot however far it has drifted, and jumps the 1-bake budget.
+        self.assertIn("c.px = i === sel ? Infinity : o.meshPx;", self.html)
+        self.assertIn("sel >= 0 && sel < FIELD_N && O[sel]?.meta && !O[sel].meshWanted", self.html)
+        self.assertIn("c.i = sel; c.d = O[sel].meshDist || 0; c.px = Infinity;", self.html)
+        self.assertIn("(builds >= 1 && wi !== state.selIdx)", self.html)
 
     def test_operator_legend_and_consistent_prism_gutters(self):
         # Every categorical legend follows aligned names with swatches on the right.
