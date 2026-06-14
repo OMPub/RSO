@@ -139,15 +139,17 @@
     .insp-label { color: var(--accent); font-size: 8px; }
     .insp-name { margin-top: 5px; font-size: 14px; line-height: 1.1; }
     .insp-meta { margin-top: 6px; color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; }
-    .insp-meta span { position: relative; cursor: help; border-bottom: 1px dotted rgba(154,169,255,0.32); }
-    .insp-meta span:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
-    .insp-meta span.tip-open::after, .insp-meta span:hover::after, .insp-meta span:focus-visible::after { position: absolute; left: 50%; bottom: calc(100% + 7px); z-index: 8; width: max-content; max-width: min(220px, 72vw);
+    .insp-body [data-tip] { position: relative; cursor: help; border-bottom: 1px dotted rgba(154,169,255,0.32); }
+    .insp-body [data-tip]:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+    .insp-body [data-tip].tip-open::after, .insp-body [data-tip]:hover::after, .insp-body [data-tip]:focus-visible::after { position: absolute; left: 50%; bottom: calc(100% + 7px); z-index: 8; width: max-content; max-width: min(220px, 72vw);
       padding: 5px 7px; border: 1px solid var(--line); border-radius: 4px; content: attr(data-tip); transform: translateX(-50%);
       color: var(--ink); background: rgba(2,7,8,0.96); box-shadow: 0 4px 18px rgba(0,0,0,0.55); white-space: normal; text-align: center;
       font-size: 8px; line-height: 1.35; letter-spacing: 0.04em; text-transform: none; pointer-events: none; }
     .insp-obs { margin-top: 5px; color: var(--seal, #8cffd0); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 9px; letter-spacing: 0.05em; }
     .insp-obs:empty { display: none; }
     .insp-obs.tip { color: #fff0d6; text-shadow: 0 0 11px rgba(255,238,206,0.55); }   /* predicted reentry — incandescent, the headline */
+    .insp-drag { margin-top: 5px; color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 9px; letter-spacing: 0.05em; }
+    .insp-drag:empty { display: none; }
     /* clickable line inside a rotating prism (e.g. the contract address) */
     .prism-link { pointer-events: auto; color: var(--muted); text-decoration: none; border-bottom: 1px dotted rgba(154,169,255,0.45); transition: color 150ms, border-color 150ms; }
     .prism-link:hover { color: var(--ink); border-color: var(--accent); }
@@ -408,10 +410,11 @@
 
     <section class="inspector" id="inspector">
       <div class="insp-stage" id="insp-stage"></div>
-      <div class="insp-body">
+      <div class="insp-body" id="insp-body">
         <div class="insp-label" id="insp-label">Tracked object</div>
         <div class="insp-name" id="insp-name">—</div>
         <div class="insp-meta" id="insp-meta">—</div>
+        <div class="insp-drag" id="insp-drag"></div>
         <div class="insp-obs" id="insp-obs"></div>
       </div>
     </section>
@@ -2234,8 +2237,10 @@
     //    scissored corner of the SAME context (no second canvas — grids punish those).
     //    Same NORAD seeds as the field silhouettes → the shape in the box IS the dot
     //    you tapped, grown to full form. ──
-    const vig = { active: false, scene: null, camera: null, group: null };
-    function vigColor(klass) { const c = TYPE_COLS[klass] || TYPE_COLS[3]; return new THREE.Color(c[0], c[1], c[2]); }
+    const vig = { active: false, scene: null, camera: null, group: null, tint: null };
+    // The model wears the SAME colour its speck has under the active lens (vig.tint = o.col),
+    // falling back to the type palette — so the inspector's 3D self matches name, frame and field.
+    function vigColor(klass) { const c = vig.tint || TYPE_COLS[klass] || TYPE_COLS[3]; return new THREE.Color(c[0], c[1], c[2]); }
     function vigMat(klass, dim) {
       const col = vigColor(klass);
       const mat = new THREE.MeshPhongMaterial({ color: col, flatShading: true, shininess: 24,
@@ -2346,6 +2351,7 @@
         vig.scene.add(sun, new THREE.AmbientLight(0x8896c8, 0.55));
       }
       vigHide();
+      vig.tint = o.col || null;          // colour the model to the active lens before baking its materials
       vig.group = buildVigShape(o);
       vig.group.rotation.set(0.42, rand2(parseInt(o.meta?.id || 1, 10) || 1, 119) * 6.28, 0);
       // radar cross-section sets the model's presence in the frame too:
@@ -2391,7 +2397,7 @@
     function hideInspector() {
       state.selIdx = -1;
       $("inspector").classList.remove("visible");
-      $("insp-meta").querySelectorAll(".tip-open").forEach((e) => e.classList.remove("tip-open"));
+      $("insp-body").querySelectorAll(".tip-open").forEach((e) => e.classList.remove("tip-open"));
       vigHide();
     }
     function showInspector(best) {
@@ -2415,23 +2421,21 @@
       $("insp-stage").style.borderColor = lensCol || "";
       // bare values, each explained by its hover/tap tooltip — no inline labels
       const esc = (s) => String(s).replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c]));
-      const tip = (txt, why) => `<span tabindex="0" title="${esc(why)}" data-tip="${esc(why)}">${esc(txt)}</span>`;
+      // data-tip drives the instant in-app tooltip; aria-label (NOT title) keeps it for
+      // screen readers without the browser's slow, redundant native title box.
+      const tip = (txt, why) => `<span tabindex="0" aria-label="${esc(txt)} — ${esc(why)}" data-tip="${esc(why)}">${esc(txt)}</span>`;
       const BAND_FULL = ["low Earth orbit", "medium Earth orbit", "geosynchronous Earth orbit"];
       $("insp-meta").innerHTML = m
         ? [
-            tip(`NORAD ${m.id}`, "NORAD catalog number"),
-            tip(bandName, `altitude regime: ${BAND_FULL[m?.band ?? o.dataBand ?? o.band]}`),
-            tip(m.type, "object type"),
-            m.country && m.country !== "—" ? tip(m.country, "country / operator code") : null,
+            tip(`NORAD ${m.id}`, "catalog number"),
+            tip(bandName, `how high it orbits — ${BAND_FULL[m?.band ?? o.dataBand ?? o.band]}`),
+            tip(m.type, "what kind of object it is"),
+            m.country && m.country !== "—" ? tip(m.country, "country / operator") : null,
             m.launch ? tip(m.launch, "launch date") : null,
-            m.inc ? tip(`${m.inc.toFixed(1)}°`, "orbital inclination") : null,
-            m.ecc > 0.1 ? tip(m.ecc.toFixed(2), "orbital eccentricity") : null,
-            m.raan ? tip(`Ω${m.raan.toFixed(0)}°`, "right ascension of the ascending node — the orbital plane's swivel") : null,
-            m.rcs ? tip(m.rcs.toLowerCase(), "radar cross-section class") : null,
-            // high-drag objects carry the very terms that flagged them: the SGP4 B* drag
-            // coefficient and the mean-motion derivative (how fast the orbit is tightening).
-            o.change === "dynamic" && m.bstar ? tip(`B* ${m.bstar.toExponential(1)}`, "B* drag term — atmospheric drag pulling this orbit down; the higher it is, the faster it decays") : null,
-            o.change === "dynamic" && m.mmDot ? tip(`Δn ${m.mmDot.toExponential(1)}`, "rate the orbital period is tightening (rev/day²) — the rapid-change signature that flagged this object") : null,
+            m.inc ? tip(`${m.inc.toFixed(1)}°`, "orbit tilt — angle between its path and the equator") : null,
+            m.ecc > 0.1 ? tip(m.ecc.toFixed(2), "how oval the orbit is (0 is a circle)") : null,
+            m.raan ? tip(`Ω${m.raan.toFixed(0)}°`, "which way the orbit's plane is turned") : null,
+            m.rcs ? tip(m.rcs.toLowerCase(), "how big it looks on radar") : null,
           ].filter(Boolean).join(" · ")
         : `${bandName} · ${["payload", "rocket body", "debris", "unknown", "tba"][pickClass(best)]}`;
       // the observation plane: what the archive learned about THIS object this doc-day.
@@ -2439,6 +2443,13 @@
       const obsEl = $("insp-obs"), tipObs = o.anno && o.anno.kind === "tip";
       obsEl.textContent = o.anno ? `${tipObs ? "⚠ " : "◉ observed · "}${o.anno.text}` : "";
       obsEl.classList.toggle("tip", tipObs);
+      // High-drag objects get the two numbers that flagged them on their OWN line — keeps the
+      // data line from wrapping, and reads as the plain-language "why it's changing" note.
+      $("insp-drag").innerHTML = o.change === "dynamic" && m && (m.bstar || m.mmDot)
+        ? [ m.bstar ? tip(`B* ${m.bstar.toExponential(1)}`, "how hard the thin upper air is dragging it down") : null,
+            m.mmDot ? tip(`Δn ${m.mmDot.toExponential(1)}`, "how fast its orbit is shrinking") : null,
+          ].filter(Boolean).join(" · ")
+        : "";
       $("inspector").classList.add("visible");
       vigShow(o);   // stays up until another object — or blank space — is tapped
     }
@@ -2514,10 +2525,10 @@
       if (best < 0 || (best === state.selIdx && $("inspector").classList.contains("visible"))) { hideInspector(); return; }
       showInspector(best);
     }
-    $("insp-meta").addEventListener("click", (e) => {
+    $("insp-body").addEventListener("click", (e) => {
       const hit = e.target.closest("[data-tip]");
       const wasOpen = !!hit?.classList.contains("tip-open");
-      $("insp-meta").querySelectorAll(".tip-open").forEach((x) => x.classList.remove("tip-open"));
+      $("insp-body").querySelectorAll(".tip-open").forEach((x) => x.classList.remove("tip-open"));
       if (hit && !wasOpen) hit.classList.add("tip-open");
     });
     $("inspector").addEventListener("click", (e) => {

@@ -185,7 +185,7 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn('rcs === "LARGE" ? 1.55 : rcs === "MEDIUM" ? 1.0 : rcs === "SMALL" ? 0.62', self.html)
         self.assertIn("0.92 + rand2(nid, 89) * 0.16", self.html)
         self.assertIn('rcs === "LARGE" ? 1.28', self.html)   # vignette presence
-        self.assertIn('tip(m.rcs.toLowerCase(), "radar cross-section class")', self.html)
+        self.assertIn('tip(m.rcs.toLowerCase(), "how big it looks on radar")', self.html)
 
     def test_band_clocks_and_persistent_selection(self):
         # each band returns on its own clean story clock: LEO 5 min, MEO 12, GEO 60
@@ -243,7 +243,7 @@ class CardArtifactTest(unittest.TestCase):
         self.assertNotIn("aShape", self.html)
         self.assertNotIn("pShape", self.html)
         self.assertIn('id="insp-stage"', self.html)
-        self.assertIn("altitude regime: ${BAND_FULL[m?.band ?? o.dataBand ?? o.band]}", self.html)
+        self.assertIn("how high it orbits — ${BAND_FULL[m?.band ?? o.dataBand ?? o.band]}", self.html)
         # one sun for the field and a dawn-bright arc on the sunward limb
         self.assertIn("const SUN = new THREE.Vector3", self.html)
         self.assertIn("dawn", self.html)
@@ -262,8 +262,9 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn("attr.addUpdateRange(first * attr.itemSize, count * attr.itemSize)", self.html)
         self.assertIn("aUpdated", self.html)
         self.assertIn("aStep", self.html)
-        # inspector values are bare, each explained by a hover/tap tooltip
-        self.assertIn('`<span tabindex="0" title="${esc(why)}" data-tip="${esc(why)}">', self.html)
+        # inspector values are bare, each explained by an instant hover/tap tooltip
+        # (data-tip); aria-label keeps it for screen readers, no slow native title box
+        self.assertIn('`<span tabindex="0" aria-label="${esc(txt)} — ${esc(why)}" data-tip="${esc(why)}">', self.html)
 
     def test_generative_identity_is_norad_seeded_and_guarded(self):
         # identity seeds key to the NORAD id → same silhouette everywhere, forever
@@ -538,10 +539,34 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn('$("insp-stage").style.borderColor = lensCol || "";', self.html)
 
     def test_high_drag_objects_surface_their_drag_terms(self):
-        # A high-drag (dynamic) object adds the very quantities that flagged it: the SGP4
-        # B* drag term and the mean-motion derivative. Gated so routine objects stay clean.
-        self.assertIn('o.change === "dynamic" && m.bstar ? tip(`B* ${m.bstar.toExponential(1)}`', self.html)
-        self.assertIn('o.change === "dynamic" && m.mmDot ? tip(`Δn ${m.mmDot.toExponential(1)}`', self.html)
+        # A high-drag (dynamic) object shows the quantities that flagged it — the SGP4 B*
+        # drag term and the mean-motion derivative — on their OWN line (insp-drag), so the
+        # data line never wraps. Plain-language tooltips, gated so routine objects stay clean.
+        self.assertIn('$("insp-drag").innerHTML = o.change === "dynamic" && m && (m.bstar || m.mmDot)', self.html)
+        self.assertIn('m.bstar ? tip(`B* ${m.bstar.toExponential(1)}`, "how hard the thin upper air is dragging it down")', self.html)
+        self.assertIn('m.mmDot ? tip(`Δn ${m.mmDot.toExponential(1)}`, "how fast its orbit is shrinking")', self.html)
+        self.assertIn('<div class="insp-drag" id="insp-drag">', self.html)
+        self.assertIn(".insp-drag:empty { display: none; }", self.html)
+        # the drag terms no longer live in the (wrapping) data line
+        self.assertNotIn('m.rcs.toLowerCase(), "how big it looks on radar") : null,\n            o.change === "dynamic"', self.html)
+
+    def test_inspector_tooltips_are_instant_only_and_plain(self):
+        # data-tip drives the instant in-app tooltip; the slow, redundant native title box
+        # is gone (aria-label keeps the explanation for screen readers). Plain wording.
+        self.assertIn('aria-label="${esc(txt)} — ${esc(why)}" data-tip="${esc(why)}"', self.html)
+        self.assertNotIn('title="${esc(why)}" data-tip="${esc(why)}"', self.html)
+        self.assertIn('tip(`NORAD ${m.id}`, "catalog number")', self.html)
+        self.assertIn('"which way the orbit\'s plane is turned"', self.html)
+        # tooltips work for any data-tip span in the inspector body (meta AND drag line)
+        self.assertIn(".insp-body [data-tip]", self.html)
+        self.assertIn('$("insp-body").addEventListener("click"', self.html)
+
+    def test_inspector_model_follows_the_active_lens(self):
+        # The vignette's 3D model wears the active-lens colour (o.col via vig.tint), so the
+        # model matches the name, the stage frame, and the speck in the field — every lens.
+        self.assertIn("vig = { active: false, scene: null, camera: null, group: null, tint: null }", self.html)
+        self.assertIn("const c = vig.tint || TYPE_COLS[klass] || TYPE_COLS[3]", self.html)
+        self.assertIn("vig.tint = o.col || null;", self.html)
 
     def test_lens_change_shows_no_centre_toast(self):
         # The legend title already names the active lens; the centre flash could overlap the
