@@ -79,7 +79,7 @@
     .prism { position: relative; overflow: hidden; cursor: pointer; perspective: 4000px; pointer-events: auto; -webkit-tap-highlight-color: transparent; }
     .prism-inner { position: relative; height: 94px; transform-style: preserve-3d; transition: transform 0.62s cubic-bezier(0.45,0.05,0.2,1); }
     /* the border + dots live ON each face, so they rotate as part of the prism */
-    .face { position: absolute; inset: 0; backface-visibility: hidden; padding: 8px 10px 0; border-top: 1px solid var(--line); }
+    .face { position: absolute; inset: 0; backface-visibility: hidden; padding: 6px 10px 0; border-top: 1px solid var(--line); }
     .face:nth-child(1) { transform: rotateX(0deg)   translateZ(47px); }
     .face:nth-child(2) { transform: rotateX(90deg)  translateZ(47px); }
     .face:nth-child(3) { transform: rotateX(180deg) translateZ(47px); }
@@ -99,11 +99,11 @@
     .prism.eight .face:nth-child(8) { transform: rotateX(315deg) translateZ(114px); }
     /* axial / centre-gutter alignment: counts right-align to a shared centreline (tabular figures),
        labels left-align off it — each column grows outward as needed */
-    .readout-rows { margin-top: 7px; display: grid; grid-template-columns: 1fr 3fr; column-gap: 14px; row-gap: 3px; align-items: baseline;
+    .readout-rows { margin-top: 6px; display: grid; grid-template-columns: 1fr 3fr; column-gap: 14px; row-gap: 2px; align-items: baseline;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-variant-numeric: tabular-nums; font-size: 10px; text-transform: uppercase; letter-spacing: 0.03em; }
     .readout-rows .lbl { text-align: left; color: var(--muted); white-space: nowrap; }
     .readout-rows b { text-align: right; color: var(--ink); font-weight: 600; }
-    .readout-rows .hd { font-size: 8px; color: var(--muted); font-weight: 400; letter-spacing: 0.1em; padding-bottom: 5px; } /* face title, aligned to the same axis */
+    .readout-rows .hd { font-size: 8px; color: var(--muted); font-weight: 400; letter-spacing: 0.1em; padding-bottom: 3px; } /* face title, aligned to the same axis */
     /* altitude = neutral cool-grey brightness ramp (low→high), distinct from the categorical class colours */
     .readout-rows b.leo { color: #6e7790; } .readout-rows b.meo { color: #99a1b8; } .readout-rows b.geo { color: #d2d8ea; }
     /* object type = the same hues as the dots flying past */
@@ -147,7 +147,7 @@
       font-size: 8px; line-height: 1.35; letter-spacing: 0.04em; text-transform: none; pointer-events: none; }
     .insp-obs { margin-top: 5px; color: var(--seal, #8cffd0); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 9px; letter-spacing: 0.05em; }
     .insp-obs:empty { display: none; }
-    .insp-obs.tip { color: #ffd97a; text-shadow: 0 0 10px rgba(255,200,90,0.4); }   /* predicted reentry — the headline */
+    .insp-obs.tip { color: #fff0d6; text-shadow: 0 0 11px rgba(255,238,206,0.55); }   /* predicted reentry — incandescent, the headline */
     /* clickable line inside a rotating prism (e.g. the contract address) */
     .prism-link { pointer-events: auto; color: var(--muted); text-decoration: none; border-bottom: 1px dotted rgba(154,169,255,0.45); transition: color 150ms, border-color 150ms; }
     .prism-link:hover { color: var(--ink); border-color: var(--accent); }
@@ -1122,9 +1122,22 @@
     const LENSES = ["Object type", "Operator", "Launch age", "Radar size", "Daily changes"];
     // Daily-change lens: the dense GP refresh plus the rarer, more consequential
     // directory/new/decay events. Priority runs left-to-right in changeKind().
-    const UPD_REENTRY = [1.0, 0.85, 0.45], UPD_DECAY = [1.0, 0.22, 0.08], UPD_NEW = [0.55, 1.0, 0.86],
-      UPD_DYNAMIC = [1.0, 0.78, 0.30], UPD_META = [0.82, 0.52, 1.0],
+    // Reentry is incandescent white-hot (a body burning up) so it never reads as the
+    // same warm gold as high-drag; high-drag is a clear amber-orange, well clear of the
+    // deep-red decay and the white-hot reentry. Each category stays distinct at swatch size.
+    const UPD_REENTRY = [1.0, 0.95, 0.82], UPD_DECAY = [1.0, 0.22, 0.08], UPD_NEW = [0.55, 1.0, 0.86],
+      UPD_DYNAMIC = [1.0, 0.55, 0.13], UPD_META = [0.82, 0.52, 1.0],
       UPD_ORBIT = [0.35, 0.66, 1.0], UPD_DIM = [0.30, 0.34, 0.42];
+    // Daily-changes category → inspector headline + swatch colour (matches the legend),
+    // so the selected dot's category is unambiguous even when two hues sit close together.
+    const CHANGE_INFO = {
+      reentry: ["Re-entry predicted", UPD_REENTRY],
+      decay:   ["Decay / re-entry", UPD_DECAY],
+      new:     ["Launched this day", UPD_NEW],
+      dynamic: ["High drag / rapid change", UPD_DYNAMIC],
+      meta:    ["Directory / identity edit", UPD_META],
+      orbit:   ["Routine orbit solution", UPD_ORBIT],
+    };
     const TYPE_COLS = [COLORS.payload, COLORS.rocket, COLORS.debris, COLORS.unknown, COLORS.tba];
     const RCS_COLS = { LARGE: [1.0, 0.68, 0.28], MEDIUM: [0.42, 0.72, 1.0], SMALL: [0.72, 0.48, 1.0] };
     const OPERATORS = [
@@ -2370,7 +2383,11 @@
       state.selIdx = best;
       const o = O[best], m = o.meta;
       const bandName = BAND[m?.band ?? o.dataBand ?? o.band].name;
-      $("insp-label").textContent = o.status === "new" ? "Launched this day" : o.status === "decayed" ? "Decay reported" : "Tracked object";
+      // In the Daily-changes lens the headline names THIS object's change category, tinted to
+      // match its legend swatch — so "which one did I select?" is answered at a glance.
+      const labelEl = $("insp-label"), ci = state.lens === 4 && o.change && CHANGE_INFO[o.change];
+      if (ci) { labelEl.textContent = ci[0]; labelEl.style.color = rgbStr(ci[1]); }
+      else { labelEl.textContent = o.status === "new" ? "Launched this day" : o.status === "decayed" ? "Decay reported" : "Tracked object"; labelEl.style.color = ""; }
       $("insp-name").textContent = m ? m.name : "Archive object";
       // bare values, each explained by its hover/tap tooltip — no inline labels
       const esc = (s) => String(s).replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c]));

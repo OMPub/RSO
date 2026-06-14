@@ -82,6 +82,42 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn('o.anno && o.anno.kind === "tip"', self.html)
         self.assertIn('sw(UPD_REENTRY, "Reentry predicted")', self.html)
 
+    def test_daily_change_colours_are_mutually_distinct(self):
+        # Re-entry (incandescent white-hot) used to read as the same warm gold as the
+        # high-drag swatch. Parse the constants and require real separation between every
+        # event colour so a legend dot is never ambiguous.
+        def rgb(name):
+            m = re.search(name + r"\s*=\s*\[\s*([0-9.]+),\s*([0-9.]+),\s*([0-9.]+)\s*\]", self.html)
+            self.assertIsNotNone(m, name + " colour not found")
+            return tuple(float(x) for x in m.groups())
+
+        def dist(a, b):
+            return sum((x - y) ** 2 for x, y in zip(a, b)) ** 0.5
+
+        cols = {k: rgb("UPD_" + k.upper()) for k in ("reentry", "decay", "new", "dynamic", "meta", "orbit")}
+        # the pair the user flagged: now clearly separated
+        self.assertGreater(dist(cols["reentry"], cols["dynamic"]), 0.35)
+        # re-entry reads incandescent — every channel near white
+        self.assertGreater(min(cols["reentry"]), 0.8)
+        # high-drag stays a warm amber, not white (mid channel well below white)
+        self.assertLess(cols["dynamic"][1], 0.75)
+        # no two event colours collide
+        keys = list(cols)
+        for i in range(len(keys)):
+            for j in range(i + 1, len(keys)):
+                self.assertGreater(dist(cols[keys[i]], cols[keys[j]]), 0.2,
+                                   f"{keys[i]} and {keys[j]} swatches are too similar")
+
+    def test_inspector_names_the_selected_change_category(self):
+        # "Which one did I select?" — in the Daily-changes lens the inspector headline
+        # names the object's change category and tints it to match its legend swatch.
+        self.assertIn("const CHANGE_INFO = {", self.html)
+        for kind in ("reentry", "decay", "new", "dynamic", "meta", "orbit"):
+            self.assertRegex(self.html, kind + r":\s*\[")
+        self.assertIn('reentry: ["Re-entry predicted", UPD_REENTRY]', self.html)
+        self.assertIn("state.lens === 4 && o.change && CHANGE_INFO[o.change]", self.html)
+        self.assertIn("labelEl.style.color = rgbStr(ci[1])", self.html)
+
     def test_witness_gate_defaults_are_coherent(self):
         # script default, persisted-settings fallback and slider markup must
         # agree: rank 0 = any sweeper-accepted witness counts
@@ -354,6 +390,12 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn(".prism-inner { position: relative; height: 94px", self.html)
         self.assertIn("translateZ(47px)", self.html)
         self.assertIn("translateZ(114px)", self.html)
+        # The densest face (on-orbit by type: header + four rows) must clear the fixed 94px
+        # box. Tight row spacing + a slim header gutter keep every row inside the face, so
+        # nothing clips on a display whose font metrics round the layout a pixel or two taller.
+        self.assertIn("row-gap: 2px", self.html)
+        self.assertIn("letter-spacing: 0.1em; padding-bottom: 3px;", self.html)
+        self.assertIn("padding: 6px 10px 0", self.html)
 
     def test_mobile_layout_gestures_and_tooltip_taps(self):
         # The former two lower-left prisms are one eight-face archive prism,
@@ -438,7 +480,7 @@ class CardArtifactTest(unittest.TestCase):
     def test_desktop_prisms_occupy_lower_corners_and_controls_top_right(self):
         self.assertIn("#prism-obj { left: calc(var(--safe-left) + 18px); }", self.html)
         self.assertIn("#prism-witness { right: calc(var(--safe-right) + 18px); }", self.html)
-        self.assertIn(".face { position: absolute; inset: 0; backface-visibility: hidden; padding: 8px 10px 0;", self.html)
+        self.assertIn(".face { position: absolute; inset: 0; backface-visibility: hidden; padding: 6px 10px 0;", self.html)
         status = re.search(r'<div class="status">(.*?)</div>', self.html, re.S)
         self.assertIsNotNone(status)
         self.assertLess(status.group(1).index('id="status-label"'),
@@ -481,7 +523,7 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn('const sw = (c, label, shape) => `<div class="lg-row after">', self.html)
         self.assertIn("OPERATORS.map((o) => sw(o.col, o.name))", self.html)
         self.assertIn(".lg-row.after", self.html)
-        self.assertIn("padding: 8px 10px 0", self.html)
+        self.assertIn("padding: 6px 10px 0", self.html)
 
     def test_live_performance_meter_reports_phase_costs(self):
         self.assertIn('id="perf"', self.html)
