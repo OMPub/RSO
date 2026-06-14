@@ -585,12 +585,22 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn("if (k === \"r\") { requestReload(); e.preventDefault(); return; }", self.html)
 
     def test_tap_prefers_event_objects_and_prism_reads_as_rotation(self):
-        # a rare reentry/decay/new object wins the tap over an ordinary neighbour, so the
-        # event objects worth inspecting are actually reachable in a 34k field.
-        self.assertIn('const w = o.change === "reentry" ? 0.3 : (o.change === "decay" || o.change === "new") ? 0.6 : 1;', self.html)
+        # a rare reentry (near-absolute), then a decay or launch, wins the tap over an
+        # ordinary neighbour, so the event objects worth inspecting are reachable in 34k.
+        self.assertIn('const w = o.change === "reentry" ? 0.05 : (o.change === "decay" || o.change === "new") ? 0.5 : 1;', self.html)
         self.assertIn("Math.sqrt(dx * dx + dy * dy + dz * dz) * (0.6 + 0.4 * d2 / R2) * w", self.html)
         # the deep eight-face prism needs a near vanishing point or its turn flattens to a slide
         self.assertIn(".prism.eight { perspective: 900px; }", self.html)
+
+    def test_reentry_forecasts_are_always_visible_and_findable(self):
+        # The few predicted-reentry objects are pinned into the visible river (real planes
+        # could hide them off-screen for the whole session), drift slowly, and read as a
+        # notable presence in every lens — so the headline data is actually seen.
+        self.assertIn("function pinReentryPhase(o, nid)", self.html)
+        self.assertIn('if (o.meta && o.meta.change === "reentry") { o.phase = 0.44 + rand2(nid, 47) * 0.16;', self.html)
+        self.assertIn('lapRate: src && src.change === "reentry" ? 1 / 2600 : 1 / LAP_BY_BAND[band]', self.html)
+        self.assertIn('if (o.change === "reentry" && !re && state.lens !== 4) { size = Math.max(size, 5.0); aMul = Math.max(aMul, 2.2); }', self.html)
+        self.assertIn("pinReentryPhase(o, nid);", self.html)
 
     def test_perf_hud_defaults_off_and_top_date_fades_during_jump(self):
         self.assertIn("perfVisible: false", self.html)

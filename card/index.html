@@ -963,7 +963,12 @@
     function orbitParams(src, band, nid) {
       const B = BAND[band];
       let g;
-      if (src && (src.raan || src.inc)) {
+      if (src && src.change === "reentry") {
+        // The headline objects: a predicted reentry is the most consequential thing in
+        // the sky, so pin it to the central river (a small spread keeps the few apart)
+        // instead of letting a real but unlucky orbital plane hide it off-screen forever.
+        g = (rand2(nid, 23) - 0.5) * 0.5;
+      } else if (src && (src.raan || src.inc)) {
         g = ((src.raan || 0) / 360 - 0.5) * (band === 0 ? 2.3 : 2.7)
           + ((src.inc - 65) / 65) * 0.35
           + (rand2(nid, 23) - 0.5) * 0.18;
@@ -979,8 +984,15 @@
         eccV: src ? Math.min(0.5, src.ecc * 1.8) : 0,
         ep: rand2(nid, 103) * 6.2832,
         wj: B.speed * (0.82 + rand2(nid, 31) * 0.36),
-        lapRate: 1 / LAP_BY_BAND[band]
+        // a predicted reentry drifts slowly so it lingers in the visible river for the
+        // whole session instead of whipping past once every few minutes
+        lapRate: src && src.change === "reentry" ? 1 / 2600 : 1 / LAP_BY_BAND[band]
       };
+    }
+    // The headline objects are pinned into the heart of the visible arc (measured phase
+    // window ~0.35–0.65) with a small spread, so a reentry forecast is always on screen.
+    function pinReentryPhase(o, nid) {
+      if (o.meta && o.meta.change === "reentry") { o.phase = 0.44 + rand2(nid, 47) * 0.16; o.pt = o.phase; }
     }
     function settleOrbit(o, objectDt) {
       const t = o.orbitTarget; if (!t) return;
@@ -1043,6 +1055,7 @@
       o.country = src ? (src.country || "—") : "—";
       o.launchYear = src && src.launch ? parseInt(src.launch.slice(0, 4)) || 0 : 0;
       o.hasPrev = false; o.solid = false;
+      pinReentryPhase(o, nid);
     }
     function assignField(objects, placeholderCount = FIELD) {
       state.objects = objects;
@@ -1075,6 +1088,7 @@
       // Preserve the exact current position at handoff, then continuously settle the
       // slot into the real object's shell and element-driven orbital plane.
       o.orbitTarget = orbitParams(src, src.band, nid);
+      pinReentryPhase(o, nid);   // snap the few headline objects into view, even mid-flight
       colorSlot(o);
     }
     // Attach a downloaded catalog without restarting the river. Existing slots keep their
@@ -1157,6 +1171,10 @@
         col = TYPE_COLS[o.klass]; aMul = o.klass === 2 ? 0.74 : 1.0;
         if (re) { col = COLORS.ghost; size *= 0.8; aMul = 0.32; }
       }
+      // a predicted reentry stays a notable presence in EVERY lens — it keeps the lens's
+      // own colour but reads brighter and larger, so the headline objects are spottable
+      // (and tappable) without forcing the Daily-changes lens. The lens itself paints them gold.
+      if (o.change === "reentry" && !re && state.lens !== 4) { size = Math.max(size, 5.0); aMul = Math.max(aMul, 2.2); }
       if ((o.dataBand ?? o.band) === 1 && !re) aMul *= 1.15;   // MEO pops at eye level
       o.col = col; o.size = size; o.aMul = aMul;
     }
@@ -2430,7 +2448,7 @@
         // a pixel from the tap, and that is never the one you meant. But the rare event
         // objects (a predicted reentry most of all, then decays and launches) are the ones
         // worth tapping, so they win over an ordinary neighbour inside the same tap radius.
-        const w = o.change === "reentry" ? 0.3 : (o.change === "decay" || o.change === "new") ? 0.6 : 1;
+        const w = o.change === "reentry" ? 0.05 : (o.change === "decay" || o.change === "new") ? 0.5 : 1;
         const score = Math.sqrt(dx * dx + dy * dy + dz * dz) * (0.6 + 0.4 * d2 / R2) * w;
         if (score < bestScore) { bestScore = score; best = i; }
       }
