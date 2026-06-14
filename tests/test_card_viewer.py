@@ -575,10 +575,22 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn('role="tabpanel"', self.html)
 
     def test_reload_needs_a_confirmed_double_press(self):
+        # reload only if the second R lands while the prompt is still on screen; once it
+        # fades (or another toast replaces it) R re-prompts instead of reloading.
         self.assertIn("function requestReload()", self.html)
-        self.assertIn("now - reloadArmedAt < 5000", self.html)
-        self.assertIn('flashMode("Press R again to reload")', self.html)
+        self.assertIn("if (reloadPrompted) { location.reload(); return; }", self.html)
+        self.assertIn('const RELOAD_MSG = "Press R again to reload"', self.html)
+        self.assertIn("if (name !== RELOAD_MSG) reloadPrompted = false;", self.html)   # any other toast disarms
+        self.assertIn("t.classList.remove(\"show\"); reloadPrompted = false;", self.html)  # fade disarms
         self.assertIn("if (k === \"r\") { requestReload(); e.preventDefault(); return; }", self.html)
+
+    def test_tap_prefers_event_objects_and_prism_reads_as_rotation(self):
+        # a rare reentry/decay/new object wins the tap over an ordinary neighbour, so the
+        # event objects worth inspecting are actually reachable in a 34k field.
+        self.assertIn('const w = o.change === "reentry" ? 0.3 : (o.change === "decay" || o.change === "new") ? 0.6 : 1;', self.html)
+        self.assertIn("Math.sqrt(dx * dx + dy * dy + dz * dz) * (0.6 + 0.4 * d2 / R2) * w", self.html)
+        # the deep eight-face prism needs a near vanishing point or its turn flattens to a slide
+        self.assertIn(".prism.eight { perspective: 900px; }", self.html)
 
     def test_perf_hud_defaults_off_and_top_date_fades_during_jump(self):
         self.assertIn("perfVisible: false", self.html)
