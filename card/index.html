@@ -2442,12 +2442,26 @@
       nearestCyclePos = 0; nearestCycleAt = now;
       showInspector(nearestCycle[0] ?? -1);
     }
+    // The point an object is actually DRAWN at this instant. Sprites dead-reckon between
+    // their last two exact orbit fixes — the same mix the vertex shader runs — so a fast,
+    // strided object glides smoothly between updates; near-field solids sit at the newest
+    // fix (pPos). The selection halo and the tap hit-test both read THIS, not the raw pPos,
+    // so the ring rides the object and a tap lands on the speck you can actually see.
+    function drawnPos(i, out) {
+      const b = i * 3;
+      if (O[i] && O[i].solid) return out.set(pPos[b], pPos[b + 1], pPos[b + 2]);
+      const blend = Math.min(1, Math.max(0, (state.time - pUpdated[i]) / Math.max(0.008, pStep[i])));
+      return out.set(
+        pPrev[b] + (pPos[b] - pPrev[b]) * blend,
+        pPrev[b + 1] + (pPos[b + 1] - pPrev[b + 1]) * blend,
+        pPrev[b + 2] + (pPos[b + 2] - pPrev[b + 2]) * blend);
+    }
     function inspectAt(cx, cy) {
       // a tap means "that one, the one I can SEE": within the radius, the nearer and
       // visually bigger object beats a distant speck that happens to sit pixel-perfect
       const R2 = 20 * 20;
       if (state.selIdx >= 0 && $("inspector").classList.contains("visible")) {
-        _proj.set(pPos[state.selIdx * 3], pPos[state.selIdx * 3 + 1], pPos[state.selIdx * 3 + 2]).project(camera);
+        drawnPos(state.selIdx, _proj).project(camera);
         const sx = (_proj.x * 0.5 + 0.5) * innerWidth, sy = (-_proj.y * 0.5 + 0.5) * innerHeight;
         if (_proj.z <= 1 && (sx - cx) * (sx - cx) + (sy - cy) * (sy - cy) <= R2) { hideInspector(); return; }
       }
@@ -2455,7 +2469,7 @@
       const solid = new Set(pool.map((s) => s.idx));   // solids stay tappable though their sprite is dimmed
       for (let i = 0; i < FIELD_N; i++) {
         const o = O[i]; if (!o || (pAlpha[i] < 0.08 && !solid.has(i))) continue;
-        _proj.set(pPos[i * 3], pPos[i * 3 + 1], pPos[i * 3 + 2]).project(camera);
+        drawnPos(i, _proj).project(camera);
         if (_proj.z > 1) continue;
         const sx = (_proj.x * 0.5 + 0.5) * innerWidth, sy = (-_proj.y * 0.5 + 0.5) * innerHeight;
         const d2 = (sx - cx) * (sx - cx) + (sy - cy) * (sy - cy);
@@ -2561,11 +2575,20 @@ ${fmtNum(FIELD_N)} objects · ${PERF.solids} solids / ${PERF.candidates} approac
       // The halo eases onto a new find and hangs in the air for a beat when released.
       // Besides feeling less mechanical, the fade keeps near-plane and limb crossings
       // from looking like the selected object was abruptly switched off.
-      const haloTarget = state.selIdx >= 0 && state.warpBlend < 0.3 ? 1 : 0;
+      // A flythrough sails objects past the camera, so a selection is transient: once the
+      // chosen object leaves the frame the ring would hang over empty space at the edge and
+      // the inspector would describe something you can't see. Ride the drawn point; drop the
+      // ring as it crosses the edge; retire the whole selection once it's well gone or behind
+      // you. Limb occlusion only DIMS it on-screen — that still earns a ring, so it stays.
+      let haloTarget = state.selIdx >= 0 && state.warpBlend < 0.3 ? 1 : 0;
+      if (haloTarget) {
+        drawnPos(state.selIdx, halo.position);   // ride the point the object is DRAWN at, not its last strided fix
+        _proj.copy(halo.position).project(camera);
+        if (_proj.z > 1 || Math.abs(_proj.x) > 1.18 || Math.abs(_proj.y) > 1.18) { hideInspector(); haloTarget = 0; }
+        else if (Math.abs(_proj.x) > 1.02 || Math.abs(_proj.y) > 1.02) haloTarget = 0;
+      }
       state.haloFade += (haloTarget - state.haloFade) * Math.min(1, dt * (haloTarget ? 7 : 4));
       if (haloTarget) {
-        const si = state.selIdx * 3;
-        halo.position.set(pPos[si], pPos[si + 1], pPos[si + 2]);
         halo.lookAt(camera.position);
         const hd = halo.position.distanceTo(camera.position);
         const settle = 0.72 + 0.28 * smooth(0, 1, state.haloFade);

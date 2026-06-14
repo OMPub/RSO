@@ -539,8 +539,25 @@ class CardArtifactTest(unittest.TestCase):
     def test_selection_halo_eases_in_and_out(self):
         self.assertIn("haloFade: 0", self.html)
         self.assertIn("if (best !== state.selIdx) state.haloFade = 0", self.html)
-        self.assertIn("const haloTarget = state.selIdx >= 0 && state.warpBlend < 0.3 ? 1 : 0", self.html)
+        self.assertIn("let haloTarget = state.selIdx >= 0 && state.warpBlend < 0.3 ? 1 : 0", self.html)
         self.assertIn("halo.visible = state.haloFade > 0.01", self.html)
+
+    def test_selection_rides_the_drawn_position_and_retires_off_screen(self):
+        # The halo and the tap hit-test read the point the object is DRAWN at — sprites
+        # dead-reckon between strided fixes (the vertex shader's mix), solids sit at pPos —
+        # so the ring rides the speck and a tap lands on what you see, even under striding.
+        self.assertIn("function drawnPos(i, out)", self.html)
+        self.assertIn("if (O[i] && O[i].solid) return out.set(pPos[b], pPos[b + 1], pPos[b + 2])", self.html)
+        self.assertIn("(state.time - pUpdated[i]) / Math.max(0.008, pStep[i])", self.html)
+        self.assertIn("drawnPos(state.selIdx, halo.position)", self.html)
+        self.assertIn("drawnPos(state.selIdx, _proj).project(camera)", self.html)
+        self.assertIn("drawnPos(i, _proj).project(camera)", self.html)
+        # A flythrough sails objects past: the ring drops as the object crosses the frame
+        # edge, and the whole selection retires once it's well gone or behind the camera —
+        # no ring stranded over empty space, no inspector describing an unseen object.
+        self.assertIn("_proj.copy(halo.position).project(camera)", self.html)
+        self.assertIn("Math.abs(_proj.x) > 1.18 || Math.abs(_proj.y) > 1.18) { hideInspector(); haloTarget = 0; }", self.html)
+        self.assertIn("Math.abs(_proj.x) > 1.02 || Math.abs(_proj.y) > 1.02) haloTarget = 0", self.html)
 
     def test_live_catalog_adopts_without_restarting_the_field(self):
         self.assertIn("async function adoptField(objects, token)", self.html)
