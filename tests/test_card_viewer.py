@@ -609,6 +609,24 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn("reacquireFollow();", self.html)                     # wired after day load + on arrival
         self.assertIn("<dt>I</dt><dd>Find and follow the ISS</dd>", self.html)
 
+    def test_iss_has_a_hand_built_model(self):
+        # The ISS (25544) is the ONE exception to the NORAD-seeded silhouettes: a hand-modelled
+        # truss + eight solar wings + module stack, used by both the inspector and the field solid.
+        self.assertIn('if (o.meta && o.meta.id === "25544") {', self.html)
+        self.assertIn("the ISS — the ONE hand-modelled", self.html)
+        self.assertIn("for (const sy of [0.11, 0.33, -0.11, -0.33])", self.html)   # four wings per side
+        self.assertIn("pressurised module stack", self.html)
+
+    def test_on_orbit_blank_until_the_reentered_split_is_known(self):
+        # On-orbit needs the re-entered split (from the index aggregate, or the catalog processed
+        # on stop). Until then show "—", NOT the total record count — which would mislabel the
+        # whole catalogue as still up there for the moment a day takes to load.
+        self.assertIn('$("onorbit-count").textContent = orb ? fmtNum(orb.onOrbit) : "—";', self.html)
+        self.assertNotIn('$("onorbit-count").textContent = orb ? fmtNum(orb.onOrbit) : fmtNum(rec.count);', self.html)
+        # the split is read instantly from the index aggregate when the publisher carries it
+        self.assertIn("raw.on_orbit_count", self.html)
+        self.assertIn("raw.reentered_count ?? raw.decayed_count", self.html)
+
     def test_lens_change_shows_no_centre_toast(self):
         # The legend title already names the active lens; the centre flash could overlap the
         # inspector, so lens changes no longer flash it. Zen still flashes on entry only.

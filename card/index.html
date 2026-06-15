@@ -1682,8 +1682,12 @@
       const day = Math.round(state.cursor) + 1;
       $("date-index").textContent = `Day ${String(day).padStart(3, "0")} / ${TOTAL + 1} witnessed days`;
       // ── objects prism ── (what's still up there vs the full record)
+      // "On orbit now" needs the re-entered split. That comes from the index aggregate when
+      // present, else from processing the full daily catalog on stop. Until one of those is
+      // known, show "—" (not the total in record) — better honest-blank than mislabelling the
+      // whole catalogue as still-up-there for the second it takes the day to load.
       const orb = rec.orbit;
-      $("onorbit-count").textContent = orb ? fmtNum(orb.onOrbit) : fmtNum(rec.count);
+      $("onorbit-count").textContent = orb ? fmtNum(orb.onOrbit) : "—";
       $("tracked-count").textContent = fmtNum(rec.count);
       $("reentered-count").textContent = orb ? fmtNum(orb.reentered) : "—";
       const b = rec.bands; // real on-orbit band counts when known, else proportional estimate
@@ -2272,6 +2276,22 @@
       const add = (geom, mat, x = 0, y = 0, z = 0, rx = 0, ry = 0, rz = 0) => {
         const m = new THREE.Mesh(geom, mat); m.position.set(x, y, z); m.rotation.set(rx, ry, rz); g.add(m); return m;
       };
+      if (o.meta && o.meta.id === "25544") {                 // the ISS — the ONE hand-modelled
+        // exception to the NORAD-seeded silhouettes: a truss with eight solar wings and a
+        // module stack athwart it. Colour still follows the active lens (vigMat), like any solid.
+        add(new THREE.BoxGeometry(0.95, 0.045, 0.06), vigMat(0));                       // integrated truss
+        for (const sx of [-0.56, 0.56]) {                                              // port + starboard array sets
+          for (const sy of [0.11, 0.33, -0.11, -0.33]) {                               // four wings per side
+            add(new THREE.BoxGeometry(0.42, 0.010, 0.34), vigMat(0, true), sx, sy, 0);
+          }
+        }
+        add(new THREE.CylinderGeometry(0.075, 0.075, 0.42, 10), vigMat(0), 0, 0, 0, Math.PI / 2, 0, 0);   // pressurised module stack
+        add(new THREE.BoxGeometry(0.15, 0.13, 0.16), vigMat(0), 0, 0, 0.26);           // node / cupola fore
+        add(new THREE.BoxGeometry(0.13, 0.12, 0.15), vigMat(0), 0, 0, -0.24);          // module aft
+        add(new THREE.BoxGeometry(0.26, 0.010, 0.14), vigMat(0, true), 0.26, 0, 0, 0.5, 0, 0);    // radiators
+        add(new THREE.BoxGeometry(0.26, 0.010, 0.14), vigMat(0, true), -0.26, 0, 0, -0.5, 0, 0);
+        return g;
+      }
       if (o.klass === 0) {                                   // payload: archetype-keyed, like the field
         const shape = o.shape || 0;
         if (shape === 4) {                                   // STARLINK v1 — flat bus + one LONG array, seeded sun-tracking fold
