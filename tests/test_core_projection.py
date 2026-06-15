@@ -209,6 +209,24 @@ class AnnotationsTest(unittest.TestCase):
             keys, [("99", "DECAY_DATE"), ("100", "OBJECT_NAME"), ("100", "OBJECT_TYPE")]
         )
 
+    def test_observation_lag_zero_for_same_day_capture(self):
+        annotations = snapshot.build_annotations(
+            "2026-06-08",
+            [gp_record()],
+            [gp_record()],
+            observed_at_utc="2026-06-08T00:15:00Z",
+        )
+        self.assertEqual(annotations["observation_lag_days"], 0)
+
+    def test_observation_lag_marks_reconstructed_days(self):
+        annotations = snapshot.build_annotations(
+            "2026-04-20",
+            [gp_record()],
+            [gp_record()],
+            observed_at_utc="2026-06-14T09:00:00Z",
+        )
+        self.assertEqual(annotations["observation_lag_days"], 55)
+
     def test_baseline_mode_emits_no_changes(self):
         annotations = snapshot.build_annotations(
             "2026-04-20",
@@ -431,7 +449,10 @@ class RebuildV2Test(unittest.TestCase):
                     (snapshot.snapshot_dir("2026-04-20") / "annotations.json").read_text()
                 )
                 self.assertTrue(genesis_annotations["baseline"])
-                self.assertTrue(genesis_annotations["rebuilt"])
+                # No boolean rebuilt flag: a reconstructed day is marked by an
+                # honest observation time far from its docRef day.
+                self.assertNotIn("rebuilt", genesis_annotations)
+                self.assertGreater(genesis_annotations["observation_lag_days"], 0)
                 self.assertEqual(genesis_annotations["catalog_changes"], [])
 
                 day_two_annotations = json_module.loads(

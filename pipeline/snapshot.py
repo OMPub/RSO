@@ -852,6 +852,12 @@ def build_annotations(
     prior and current raw catalogs, plus Space-Track's own
     satcat_change/decay/tip feeds for the window. The consensus core never includes these fields, so
     two nodes may legitimately hold different annotations for the same day.
+
+    `observed_at_utc` is always the moment this record was produced -- live
+    capture time for a daily run, the rebuild moment for a reconstructed day --
+    never backdated. `observation_lag_days` exposes that distance from the
+    docRef day directly (the observation-plane analogue of the chain's
+    `attestationLagDays`): ~0 for a live capture, large for a reconstruction.
     """
     changes = []
     if not baseline and previous_records is not None:
@@ -879,10 +885,14 @@ def build_annotations(
                 )
         changes.sort(key=lambda item: (int_string_sort_key(item["norad_cat_id"]), item["field"]))
 
+    observation_lag_days = max(
+        0, (parse_date(str(observed_at_utc)[:10]) - parse_date(current_date_str)).days
+    )
     annotations = {
         "schema": ANNOTATIONS_SCHEMA,
         "date": current_date_str,
         "observed_at_utc": observed_at_utc,
+        "observation_lag_days": observation_lag_days,
         "source": "space-track.org",
         "fields": list(CONTENT_EXCLUDED_FIELDS),
         "baseline": bool(baseline),
@@ -1811,8 +1821,8 @@ def process_rebuild_content(args):
             and not getattr(args, "force", False)
         ):
             # Idempotent: hydrated or previously rebuilt days keep their exact
-            # artifacts (re-deriving annotations would change rebuilt_at and
-            # break byte-identity with the published bundle).
+            # artifacts (re-deriving annotations would change observed_at_utc
+            # and break byte-identity with the published bundle).
             print(f"  {day}: already carries {CONTENT_SCHEMA} fields; skipping")
             skipped += 1
             previous_records = json.loads(read_catalog_bytes(day))
@@ -1827,7 +1837,12 @@ def process_rebuild_content(args):
                 f"{manifest['sha256']}; refusing to rebuild from unverified bytes"
             )
 
-        observed_at = str(manifest.get("observed_at_utc") or manifest.get("archived_at"))
+        # Honest observation time: this record is being produced NOW, by
+        # diffing stored catalogs offline -- not on the docRef day. Stamp the
+        # real assembly moment (never the day's original archived_at); the
+        # resulting large observation_lag_days is what marks it reconstructed.
+        # The catalog's own capture time still lives in manifest.archived_at.
+        observed_at = utc_stamp()
         baseline = previous_records is None
         annotations = build_annotations(
             day,
@@ -1838,8 +1853,6 @@ def process_rebuild_content(args):
             window_end_utc=manifest.get("delta_window_end_utc"),
             baseline=baseline,
         )
-        annotations["rebuilt"] = True
-        annotations["rebuilt_at"] = utc_stamp()
 
         day_dir = snapshot_dir(day)
         annotations_file = day_dir / "annotations.json"
