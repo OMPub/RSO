@@ -1842,7 +1842,7 @@
         rows = sw(UPD_REENTRY, "Reentry predicted") + sw(UPD_DECAY, "Decay / re-entry") + sw(UPD_NEW, "New object") + sw(UPD_DYNAMIC, "High drag / rapid change")
           + sw(UPD_META, "Directory / identity") + sw(UPD_ORBIT, "Routine orbit solution")
           + (d ? `<div class="lg-note">${fmtNum(d.updated + d.new)} GP-updated${a ? ` · ${fmtNum(a.changedObjects)} directory${a.tipCount ? ` · ${a.tipCount} reentry forecast${a.tipCount === 1 ? "" : "s"}` : ""}` : ""}</div>`
-               : `<div class="lg-note">stop on a day to load</div>`);
+               : "");
       }
       el.innerHTML = `<div class="lg-title">${LENSES[lens]}</div>${rows}`;
     }
