@@ -1960,7 +1960,8 @@
     };
     canvas.addEventListener("pointerdown", (e) => {
       if (settings.classList.contains("open")) return;
-      if (state.suspended) return;
+      // A held view still accepts taps so you can inspect a frozen object — only the
+      // look/navigate drag is suppressed (in pointermove), keeping the frame motionless.
       if (e.pointerType === "touch") {
         touches.set(e.pointerId, { x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, t: performance.now() });
         if (touches.size === 1) touchGesture = { mode: "look", id: e.pointerId, x: e.clientX, y: e.clientY };
@@ -1971,6 +1972,7 @@
       try { canvas.setPointerCapture(e.pointerId); } catch (err) { /* pointer already gone — capture is best-effort */ }
     });
     canvas.addEventListener("pointermove", (e) => {
+      if (state.suspended) return;          // a held view doesn't pan or look — taps still inspect
       if (e.pointerType === "touch") {
         const p = touches.get(e.pointerId); if (!p) return;
         p.x = e.clientX; p.y = e.clientY;
@@ -2395,6 +2397,23 @@
       renderer.setViewport(0, 0, innerWidth, innerHeight);
       renderer.autoClear = true;
     }
+    // One frame drawn on demand. While the view is HELD the render loop is parked, so a tap
+    // (or its dismissal) needs a single manual paint to move the halo onto the frozen object
+    // and show its 3D model — without resuming the simulation. Mirrors the animate halo block.
+    function drawHeldFrame() {
+      const on = state.selIdx >= 0;
+      state.haloFade = on ? 1 : 0;
+      if (on) {
+        drawnPos(state.selIdx, halo.position);
+        halo.lookAt(camera.position);
+        const hd = halo.position.distanceTo(camera.position);
+        halo.scale.setScalar(Math.max(0.8, hd * 0.022));
+        haloMat.opacity = Math.min(0.85, 0.25 + pAlpha[state.selIdx] * 3);
+      }
+      halo.visible = on;
+      renderer.render(scene, camera);
+      renderInspectorVignette(0);
+    }
 
     // ── click to inspect: nearest projected object to the tap ──
     const _proj = new THREE.Vector3();
@@ -2413,6 +2432,7 @@
       $("inspector").classList.remove("visible");
       $("insp-body").querySelectorAll(".tip-open").forEach((e) => e.classList.remove("tip-open"));
       vigHide();
+      if (state.suspended) drawHeldFrame();   // parked loop: repaint once to clear the halo
     }
     function showInspector(best) {
       if (best < 0 || best >= FIELD_N || !O[best]) { hideInspector(); return; }
@@ -2466,6 +2486,7 @@
         : "";
       $("inspector").classList.add("visible");
       vigShow(o);   // stays up until another object — or blank space — is tapped
+      if (state.suspended) drawHeldFrame();   // parked loop: repaint once so the halo + model show
     }
     let nearestCycle = [], nearestCyclePos = -1, nearestCycleAt = 0;
     function inspectClosestVisible() {

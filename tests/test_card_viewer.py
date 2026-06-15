@@ -578,6 +578,19 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn("const c = vig.tint || TYPE_COLS[klass] || TYPE_COLS[3]", self.html)
         self.assertIn("vig.tint = o.col || null;", self.html)
 
+    def test_held_view_still_accepts_taps_to_inspect(self):
+        # 'h' parks the render loop, but a tap must still inspect a frozen object. pointerdown
+        # no longer bails on suspend (only pointermove suppresses pan/look), and a one-shot
+        # drawHeldFrame() paints the halo + 3D model onto the frozen scene without resuming.
+        self.assertIn("if (state.suspended) return;          // a held view doesn't pan or look", self.html)
+        self.assertIn("function drawHeldFrame()", self.html)
+        self.assertIn("if (state.suspended) drawHeldFrame();   // parked loop: repaint once so the halo + model show", self.html)
+        self.assertIn("if (state.suspended) drawHeldFrame();   // parked loop: repaint once to clear the halo", self.html)
+        # pointerdown must NOT short-circuit on suspend any more (that was the tap blocker)
+        pd = self.html[self.html.index('canvas.addEventListener("pointerdown"'):]
+        pd = pd[:pd.index('canvas.addEventListener("pointermove"')]
+        self.assertNotIn("if (state.suspended) return;", pd)
+
     def test_lens_change_shows_no_centre_toast(self):
         # The legend title already names the active lens; the centre flash could overlap the
         # inspector, so lens changes no longer flash it. Zen still flashes on entry only.
