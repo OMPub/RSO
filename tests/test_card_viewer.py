@@ -531,6 +531,16 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn("const WHEEL_GESTURE_IDLE = 140;", self.html)
         self.assertIn("wheelEndTimer = setTimeout(() => { wheelGesture = null; }, WHEEL_GESTURE_IDLE);", self.html)
 
+    def test_operator_unknown_is_split_from_other(self):
+        # "Other" (a real operator not in the highlighted eight — Canada, Intelsat…) is a
+        # different thing from "Unknown" (no/TBD country on record). They get separate colours
+        # and separate legend rows; the genuinely-unattributed objects recede (dimmer alpha).
+        self.assertIn("const UNKNOWN_COL = [0.30, 0.32, 0.37];", self.html)
+        self.assertIn('const isUnattributed = (cc) => cc === "—" || cc === "TBD";', self.html)
+        self.assertIn("col = re ? COLORS.ghost : opc || (isUnattributed(o.country) ? UNKNOWN_COL : OTHER_COL);", self.html)
+        self.assertIn("aMul = re ? 0.3 : opc ? 1 : isUnattributed(o.country) ? 0.5 : 0.9;", self.html)
+        self.assertIn('sw(OTHER_COL, "Other operators") + sw(UNKNOWN_COL, "Unknown")', self.html)
+
     def test_inspector_object_takes_the_active_lens_colour(self):
         # The inspected object's name and model-frame are tinted to the colour its speck
         # wears under the active lens (o.col, set by colorSlot) — in every lens, not just 4.

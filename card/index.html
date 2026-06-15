@@ -1154,7 +1154,12 @@
       { code: "UK",  name: "United Kingdom", col: [0.78, 0.45, 1.0] }    // violet
     ];
     const OP_MAP = Object.fromEntries(OPERATORS.map((o) => [o.code, o.col]));
-    const OTHER_COL = [0.52, 0.54, 0.58];
+    const OTHER_COL = [0.52, 0.54, 0.58];                  // a real operator, just not one of the highlighted set
+    const UNKNOWN_COL = [0.30, 0.32, 0.37];                // no owner on record at all — dimmer, recedes
+    // Space-Track marks an unattributed object "—" (no COUNTRY_CODE) or "TBD" (undetermined):
+    // genuinely owner-unknown, distinct from a named operator (Italy, Canada, Intelsat…) that
+    // simply isn't one of the eight highlighted above.
+    const isUnattributed = (cc) => cc === "—" || cc === "TBD";
     function lerp3(a, b, t) { return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]; }
     function ageColor(year) {
       if (!year) return OTHER_COL;
@@ -1169,7 +1174,9 @@
       const lens = state.lens, re = o.reentered;
       let col, size = o.baseSize, aMul;
       if (lens === 1) {                 // operator
-        col = re ? COLORS.ghost : (OP_MAP[o.country] || OTHER_COL); aMul = re ? 0.3 : 1;
+        const opc = OP_MAP[o.country];
+        col = re ? COLORS.ghost : opc || (isUnattributed(o.country) ? UNKNOWN_COL : OTHER_COL);
+        aMul = re ? 0.3 : opc ? 1 : isUnattributed(o.country) ? 0.5 : 0.9;
       } else if (lens === 2) {          // launch age
         col = re ? COLORS.ghost : ageColor(o.launchYear); aMul = re ? 0.3 : 1;
       } else if (lens === 3) {          // radar cross-section: meaningful for every visible object that carries it
@@ -1821,7 +1828,7 @@
       const sw = (c, label, shape) => `<div class="lg-row after"><span>${label}</span><i class="${shape || ""}" style="background:${litStr(c)};color:${litStr(c)}"></i></div>`;
       let rows = "";
       if (lens === 0) rows = sw(TYPE_COLS[0], "Payload") + sw(TYPE_COLS[1], "Rocket body", "sh-pill") + sw(TYPE_COLS[2], "Debris", "sh-shard") + sw(TYPE_COLS[3], "Unknown", "sh-ring");
-      else if (lens === 1) rows = OPERATORS.map((o) => sw(o.col, o.name)).join("") + sw(OTHER_COL, "Other");
+      else if (lens === 1) rows = OPERATORS.map((o) => sw(o.col, o.name)).join("") + sw(OTHER_COL, "Other operators") + sw(UNKNOWN_COL, "Unknown");
       else if (lens === 2) rows = `<div class="lg-grad"></div><div class="lg-years"><span>1957</span><span>${isoFor(TOTAL).slice(0, 4)}</span></div>`;
       else if (lens === 3) rows = sw(RCS_COLS.LARGE, "Large") + sw(RCS_COLS.MEDIUM, "Medium") + sw(RCS_COLS.SMALL, "Small") + sw(OTHER_COL, "Unclassified");
       else if (lens === 4) {
