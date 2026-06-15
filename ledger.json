@@ -1065,8 +1065,10 @@
   {
     "annotations_sha256": "7df88228555d5424d838a1bbb09f35eb5960a38820d19c97e8b6e289c5b7c822",
     "archived_at": "2026-06-15T05:31:26.146140+00:00",
+    "asset_url": "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-06-15/rso-archive-2026-06-15.tar.gz",
     "base_snapshot_date": "2026-06-14",
     "base_snapshot_sha256": "44de7c269ebe83aab075887528b8b03f59de8d2f9c5bc0065196164d632f3b5d",
+    "bundle_sha256": "87466305b2651569c8f692b8d2f040ed8e44e8a88937193467668214e56b64eb",
     "compressed_bytes": 11371050,
     "conjunctions_sha256": "9135644e837febc6766b0402b0b7bebe9e9e2a3999a9263cf8e689fcb059eb61",
     "content_schema": "rso-core-v1",
