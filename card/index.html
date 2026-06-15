@@ -1804,14 +1804,21 @@
     // No centre flash on lens change — the legend's title already names the active lens, and
     // the toast could overlap the inspector at some aspect ratios. Zen still flashes on entry
     // (the legend is hidden there); leaving Zen needs none, the legend fades back with its name.
-    function applyMode() { recolor(); populateLegend(); }
+    // Recolour the field, refresh the legend, and — if an object is open — re-render the
+    // inspector so its name, frame, 3D model and data all follow the NEW lens in lock-step.
+    function applyMode() { recolor(); populateLegend(); if (state.selIdx >= 0 && $("inspector").classList.contains("visible")) showInspector(state.selIdx); }
     function setZen(on) { state.zen = on; document.body.classList.toggle("zen", on); if (on) flashMode("Zen"); }
     function toggleZen() { setZen(!state.zen); }
     function flashMode(name) { if (name !== RELOAD_MSG) reloadPrompted = false; const t = $("mode-toast"); t.textContent = name; t.classList.add("show"); clearTimeout(flashMode.t); flashMode.t = setTimeout(() => { t.classList.remove("show"); reloadPrompted = false; }, 1100); }
     const rgbStr = (c) => `rgb(${Math.round(c[0]*255)},${Math.round(c[1]*255)},${Math.round(c[2]*255)})`;
+    // A field dot is drawn with an additive glow that brightens it — and because warm colours
+    // already max out red, that lift pushes them toward yellow. The legend swatch is a flat
+    // chip, so it read a notch more orange than its own dots. Preview that luminous look here
+    // (gentle lift, tuned to keep every swatch distinct) so the key matches what flies past.
+    const litStr = (c) => rgbStr(c.map((v) => Math.min(1, v * 1.18) * 0.92 + 0.05));
     function populateLegend() {
       const el = $("lens-legend"), lens = state.lens;
-      const sw = (c, label, shape) => `<div class="lg-row after"><span>${label}</span><i class="${shape || ""}" style="background:${rgbStr(c)};color:${rgbStr(c)}"></i></div>`;
+      const sw = (c, label, shape) => `<div class="lg-row after"><span>${label}</span><i class="${shape || ""}" style="background:${litStr(c)};color:${litStr(c)}"></i></div>`;
       let rows = "";
       if (lens === 0) rows = sw(TYPE_COLS[0], "Payload") + sw(TYPE_COLS[1], "Rocket body", "sh-pill") + sw(TYPE_COLS[2], "Debris", "sh-shard") + sw(TYPE_COLS[3], "Unknown", "sh-ring");
       else if (lens === 1) rows = OPERATORS.map((o) => sw(o.col, o.name)).join("") + sw(OTHER_COL, "Other");

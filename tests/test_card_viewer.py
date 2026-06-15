@@ -571,11 +571,24 @@ class CardArtifactTest(unittest.TestCase):
     def test_lens_change_shows_no_centre_toast(self):
         # The legend title already names the active lens; the centre flash could overlap the
         # inspector, so lens changes no longer flash it. Zen still flashes on entry only.
-        self.assertIn("function applyMode() { recolor(); populateLegend(); }", self.html)
+        self.assertIn("function applyMode() { recolor(); populateLegend();", self.html)
         self.assertNotIn("flashMode(LENSES[state.lens])", self.html)
         self.assertIn('if (on) flashMode("Zen");', self.html)
         # the reload prompt and other status toasts still use flashMode
         self.assertIn("flashMode(RELOAD_MSG)", self.html)
+
+    def test_lens_change_refreshes_an_open_inspector(self):
+        # Changing lens while an object is open re-renders the inspector so its name, frame,
+        # 3D model and data all follow the NEW lens together (not just the field specks).
+        self.assertIn('if (state.selIdx >= 0 && $("inspector").classList.contains("visible")) showInspector(state.selIdx);',
+                      self.html)
+
+    def test_legend_swatches_preview_the_luminous_field(self):
+        # A field dot is drawn with an additive glow that brightens (and warm-shifts) it; the
+        # flat legend chip read a notch more orange. The swatch previews that glow so the key
+        # matches the dots — a gentle lift tuned to keep every category distinct.
+        self.assertIn("const litStr = (c) => rgbStr(c.map((v) => Math.min(1, v * 1.18) * 0.92 + 0.05));", self.html)
+        self.assertIn('style="background:${litStr(c)};color:${litStr(c)}"', self.html)
 
     def test_tapped_object_is_forced_to_render_solid(self):
         # Selecting an object injects it into the mesh-candidate set at top priority so it
