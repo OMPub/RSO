@@ -6,6 +6,7 @@ the observation plane records exactly what changed and when we learned it.
 """
 
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -308,6 +309,32 @@ class AnnotationsTest(unittest.TestCase):
             snapshot.validate_annotation_rows(
                 [{"NORAD_CAT_ID": 69179}], context="satcat_change response"
             )
+
+
+class CatalogSourceRepoTest(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self._orig = snapshot.DATA_DIR
+        snapshot.DATA_DIR = Path(self.tmp.name) / "data"
+        self.addCleanup(lambda: setattr(snapshot, "DATA_DIR", self._orig))
+
+    def _write_receipt(self, date, receipt):
+        day_dir = snapshot.snapshot_dir(date)
+        day_dir.mkdir(parents=True, exist_ok=True)
+        snapshot.write_json(day_dir / "storage.json", receipt)
+
+    def test_adopted_day_routes_to_upstream_repo(self):
+        self._write_receipt("2026-04-28", {"date": "2026-04-28", "verified_from_upstream": "OMPub/RSO"})
+        self.assertEqual(snapshot.catalog_source_repo("2026-04-28"), "OMPub/RSO")
+
+    def test_own_day_uses_default_repo(self):
+        self._write_receipt("2026-06-10", {"date": "2026-06-10"})
+        self.assertIsNone(snapshot.catalog_source_repo("2026-06-10"))
+
+    def test_explicit_repo_always_wins(self):
+        self._write_receipt("2026-04-28", {"date": "2026-04-28", "verified_from_upstream": "OMPub/RSO"})
+        self.assertEqual(snapshot.catalog_source_repo("2026-04-28", repo="me/RSO"), "me/RSO")
 
 
 def cdm_row(cdm_id="1", created="2026-06-10 05:00:00.000000", pc="0.0001", emergency="N"):

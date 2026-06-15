@@ -2371,12 +2371,30 @@ def catalog_bytes_from_release_bundle(current_date_str, repo=None):
     )
 
 
+def catalog_source_repo(current_date_str, repo=None):
+    """The repo whose release holds a day's published bundle.
+
+    A forked node never publishes its own release for days it mirrored from an
+    upstream node, so for an adopted day (storage.json records
+    `verified_from_upstream`) the catalog must be fetched from the upstream
+    repo, not this node's. An explicit repo argument always wins.
+    """
+    if repo is not None:
+        return repo
+    upstream = load_storage_receipt(current_date_str).get("verified_from_upstream")
+    if isinstance(upstream, str) and upstream:
+        return upstream
+    return None
+
+
 def read_catalog_bytes(current_date_str, repo=None):
     gz_path = catalog_gz_path(current_date_str)
     if gz_path.exists():
         with gzip.open(gz_path, "rb") as f:
             return read_limited(f, MAX_CATALOG_BYTES, label=str(gz_path))
-    return catalog_bytes_from_release_bundle(current_date_str, repo=repo)
+    return catalog_bytes_from_release_bundle(
+        current_date_str, repo=catalog_source_repo(current_date_str, repo)
+    )
 
 
 def date_range(start_date_str, end_date_str):
