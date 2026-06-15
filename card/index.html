@@ -490,7 +490,7 @@
           <dt>H</dt><dd>Hold or resume motion and rendering</dd>
           <dt>Z</dt><dd>Toggle Zen mode</dd>
           <dt>`</dt><dd>Toggle frame-rate and performance data</dd>
-          <dt>I</dt><dd>Open the About page</dd>
+          <dt>I</dt><dd>Find and follow the ISS</dd>
           <dt>P</dt><dd>Capture a PNG screenshot</dd>
           <dt>F</dt><dd>Toggle fullscreen</dd>
           <dt>,</dt><dd>Open witness settings</dd>
@@ -615,7 +615,7 @@
       attested: false, pulseY: 0, pulseStr: 0,
       maxSpeed: reduced ? 6 : 24, accel: 30,
       yaw: 0, pitch: 0, yawT: 0, pitchT: 0, wasTraveling: false,
-      pointer: null, loadToken: 0, selIdx: -1,
+      pointer: null, loadToken: 0, selIdx: -1, followNorad: null,   // a selection follows its NORAD across day changes
       lens: 0, keys: new Set(), tilt: null,   // tilt = {base:{b,g}} once enabled
       ethRank: 0, opSource: 0,                // witness settings (rank 0 = any sweeper-accepted witness)
       chainMeta: null,                        // {contractAddress, chainId} from the attestation index
@@ -1761,7 +1761,7 @@
         state.catalogDate = date;
         if (!(await adoptField(objs, token))) return;   // superseded mid-adopt
         setStatus("ready", integrityByDate.get(date) ? "Live record · verified" : "Live record");
-        applyHud(recordMeta(date)); populateLegend();
+        applyHud(recordMeta(date)); populateLegend(); reacquireFollow();
       } catch (e) {
         if (token !== state.loadToken) return;
         console.info("archive bundle not reachable; field stays representative", date);
@@ -1772,6 +1772,7 @@
           state.objects = state.objects.map((o) => ({ ...o, status: "carried", anno: null }));
           state.catalogDate = null;                  // a later stop on this day retries the download
           await adoptField(state.objects, token);
+          reacquireFollow();
         }
         setStatus("ready", "Live record");
         applyHud(recordMeta(date)); populateLegend(); // annotations may have loaded even without the bundle
@@ -1922,7 +1923,7 @@
       // and the tablist arrows all work, and the inert background traps focus inside it.
       if (settings.classList.contains("open")) return;
       if (e.repeat && !LOOK_KEYS.has(k)) return;
-      if (k === "i") { showSettings(true, "about"); e.preventDefault(); return; }
+      if (k === "i") { findISS(); e.preventDefault(); return; }
       if (k === "r") { requestReload(); e.preventDefault(); return; }
       if (k === "z") { toggleZen(); e.preventDefault(); return; }
       if (e.code === "Backquote" || k === "`") { togglePerf(); e.preventDefault(); return; }
@@ -2429,6 +2430,7 @@
     }
     function hideInspector() {
       state.selIdx = -1;
+      state.followNorad = null;             // dismissing drops the cross-day follow lock
       $("inspector").classList.remove("visible");
       $("insp-body").querySelectorAll(".tip-open").forEach((e) => e.classList.remove("tip-open"));
       vigHide();
@@ -2439,6 +2441,8 @@
       if (best !== state.selIdx) state.haloFade = 0;
       state.selIdx = best;
       const o = O[best], m = o.meta;
+      state.followNorad = m ? m.id : null;  // keep this object selected as the days scrub past
+
       const bandName = BAND[m?.band ?? o.dataBand ?? o.band].name;
       // In the Daily-changes lens the headline names THIS object's change category, tinted to
       // match its legend swatch — so "which one did I select?" is answered at a glance.
@@ -2515,6 +2519,32 @@
       nearestCycle = closest.slice(0, 6).map((x) => x.i);
       nearestCyclePos = 0; nearestCycleAt = now;
       showInspector(nearestCycle[0] ?? -1);
+    }
+    // The ISS is the one object everyone goes looking for. 'i' finds it by catalog number and
+    // selects it — leaving it followed (the selection re-acquires by NORAD across day changes,
+    // so you can scrub the timeline and watch the same station evolve). It rides a real LEO
+    // orbit, so it may be behind the camera right now: the inspector shows its record at once
+    // and the halo rings it the instant its lap carries it back into frame.
+    const ISS_NORAD = "25544";
+    function slotForNorad(nid) {
+      for (let i = 0; i < FIELD_N; i++) { const o = O[i]; if (o && o.meta && o.meta.id === nid) return i; }
+      return -1;
+    }
+    function findISS() {
+      const idx = slotForNorad(ISS_NORAD);
+      if (idx < 0) { flashMode("ISS not in this view"); return; }
+      showInspector(idx);
+      drawnPos(idx, _proj).project(camera);
+      const onScreen = _proj.z <= 1 && Math.abs(_proj.x) <= 1 && Math.abs(_proj.y) <= 1;
+      flashMode(onScreen ? "Following the ISS" : "Following the ISS · coming around");
+    }
+    // After a day loads, re-bind the followed selection to that NORAD's new slot (or, if the
+    // object isn't catalogued on this day, just hide the card but keep the lock for its return).
+    function reacquireFollow() {
+      if (!state.followNorad) return;
+      const idx = slotForNorad(state.followNorad);
+      if (idx >= 0) showInspector(idx);
+      else { state.selIdx = -1; $("inspector").classList.remove("visible"); vigHide(); }
     }
     // The point an object is actually DRAWN at this instant. Sprites dead-reckon between
     // their last two exact orbit fixes — the same mix the vertex shader runs — so a fast,
@@ -2701,13 +2731,14 @@ ${fmtNum(FIELD_N)} objects · ${PERF.solids} solids / ${PERF.candidates} approac
       if (shown !== state.shownDay) { state.shownDay = shown; showDay(isoFor(shown)); }
       if (!state.wasTraveling && traveling) {                                             // moving through days — no download yet
         setStatus("loading", "Scanning the chain…");
-        state.selIdx = -1;                                                                // hyperspace clears the selection
-        $("inspector").classList.remove("visible"); vigHide();                            // the inspected object is leaving with its day
+        state.selIdx = -1;                                                                // release the halo during the warp
+        if (!state.followNorad) { $("inspector").classList.remove("visible"); vigHide(); } // a followed object keeps its card and re-acquires on arrival
       }
       if (state.wasTraveling && !traveling) {                                             // arrived on a day → only now fetch it
         const d = isoFor(shown);
         if (state.catalogDate === d) setStatus("ready", integrityByDate.get(d) ? "Live record · verified" : "Live record"); // already have this day
-        else loadDayCatalog(d);                                                            // download just this one
+        else loadDayCatalog(d);                                                            // download just this one (re-acquires again after adopt)
+        reacquireFollow();                                                                 // re-select the followed object from the field we have right now
       }
       state.wasTraveling = traveling;
 

@@ -198,9 +198,11 @@ class CardArtifactTest(unittest.TestCase):
         self.assertNotIn("5200", self.html)
         self.assertIn("best === state.selIdx", self.html)
         self.assertIn("hideInspector()", self.html)
-        # selection: halo rides the chosen object; hyperspace clears it
+        # selection: halo rides the chosen object; travel releases the halo but a followed
+        # object keeps its card and re-acquires by NORAD on the next day (see ISS test)
         self.assertIn("RingGeometry", self.html)
-        self.assertIn("state.selIdx = -1;                                                                // hyperspace clears the selection", self.html)
+        self.assertIn("state.selIdx = -1;                                                                // release the halo during the warp", self.html)
+        self.assertIn("if (!state.followNorad) { $(\"inspector\").classList.remove(\"visible\"); vigHide(); }", self.html)
 
     def test_full_population_flies(self):
         # desktop flies EVERY on-orbit object — buffers at the ceiling, draw range live
@@ -590,6 +592,22 @@ class CardArtifactTest(unittest.TestCase):
         pd = self.html[self.html.index('canvas.addEventListener("pointerdown"'):]
         pd = pd[:pd.index('canvas.addEventListener("pointermove"')]
         self.assertNotIn("if (state.suspended) return;", pd)
+
+    def test_i_finds_and_follows_the_iss(self):
+        # 'i' selects the ISS by catalog number (25544) and follows it: a selection records
+        # its NORAD and re-acquires that slot after each day loads, so you can scrub the
+        # timeline and watch the same station change. Off-screen is handled (card shows now,
+        # halo rings it when its lap returns it). 'i' no longer opens the About page.
+        self.assertIn('if (k === "i") { findISS(); ', self.html)
+        self.assertNotIn('if (k === "i") { showSettings(true, "about");', self.html)
+        self.assertIn('const ISS_NORAD = "25544";', self.html)
+        self.assertIn("function findISS()", self.html)
+        self.assertIn('flashMode(onScreen ? "Following the ISS" : "Following the ISS · coming around")', self.html)
+        self.assertIn("function reacquireFollow()", self.html)
+        self.assertIn("state.followNorad = m ? m.id : null;", self.html)   # set on select
+        self.assertIn("state.followNorad = null;", self.html)              # cleared on dismiss
+        self.assertIn("reacquireFollow();", self.html)                     # wired after day load + on arrival
+        self.assertIn("<dt>I</dt><dd>Find and follow the ISS</dd>", self.html)
 
     def test_lens_change_shows_no_centre_toast(self):
         # The legend title already names the active lens; the centre flash could overlap the
