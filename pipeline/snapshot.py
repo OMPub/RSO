@@ -556,6 +556,27 @@ def core_content_sha256(records, schema=CONTENT_SCHEMA):
     return compute_hash(canonicalize(core_records(records, schema)))
 
 
+def reentered_object_count(records, on_date):
+    """Count catalogued objects that had already re-entered on a given date.
+
+    Mirrors the card's client-side split (card/index.html recordMeta/applyHud):
+    an object is re-entered when it carries a DECAY_DATE whose calendar day is
+    on or before the snapshot date. DECAY_DATE is the late-backfilled mutable
+    field excluded from the consensus contentHash, so this is an
+    observation-plane count -- per-node, time-of-capture dependent, never part
+    of contentHash -- which is why it rides in the manifest/ledger alongside the
+    full sha256 (also DECAY_DATE-sensitive), not in the consensus core. The
+    on-orbit count is simply len(records) - this, so the two always sum to
+    object_count.
+    """
+    count = 0
+    for record in records:
+        decay = str(record.get("DECAY_DATE") or record.get("decay_date") or "")[:10]
+        if decay and decay <= on_date:
+            count += 1
+    return count
+
+
 def content_excluded_fields(schema):
     try:
         return CONTENT_PROJECTIONS[schema]
@@ -1101,6 +1122,7 @@ def save_snapshot(
             gz_file.write(canonical_bytes)
 
     cutoff_utc = state_as_of_utc or f"{current_date_str}T{CUTOFF_TIME}Z"
+    reentered = reentered_object_count(data, current_date_str)
     manifest = {
         "date": current_date_str,
         "cutoff_utc": cutoff_utc,
@@ -1110,6 +1132,8 @@ def save_snapshot(
         "content_excluded_fields": list(CONTENT_EXCLUDED_FIELDS),
         "content_sha256": core_content_sha256(data),
         "object_count": len(data),
+        "on_orbit_count": len(data) - reentered,
+        "reentered_count": reentered,
         "raw_bytes": len(canonical_bytes),
         "compressed_bytes": gz_path.stat().st_size,
         "provenance": provenance,
@@ -1209,6 +1233,10 @@ def ledger_entry_from_manifest(manifest):
         "base_snapshot_sha256",
         "delta_window_start_utc",
         "delta_window_end_utc",
+        # On-orbit vs re-entered split (observation-plane, DECAY_DATE-derived).
+        # Optional so manifests archived before this field stay reproducible.
+        "on_orbit_count",
+        "reentered_count",
     ):
         if key in manifest:
             entry[key] = manifest[key]
@@ -1871,6 +1899,9 @@ def process_rebuild_content(args):
         manifest["content_excluded_fields"] = list(CONTENT_EXCLUDED_FIELDS)
         manifest["content_sha256"] = core_content_sha256(records)
         manifest["annotations_sha256"] = sha256_path(annotations_file)
+        reentered = reentered_object_count(records, day)
+        manifest["on_orbit_count"] = len(records) - reentered
+        manifest["reentered_count"] = reentered
         write_json(manifest_path, manifest)
         update_ledger(manifest)
 
@@ -3488,16 +3519,8 @@ def publish_arweave_bundle(bundle, upload_policy="if_missing", force=False):
     transaction = upload["transaction"]
     upload_mode = "inline" if upload["inline_data"] else "chunked"
     total_chunks = len(upload["chunk_plan"]["chunks"])
-    print(f"  Arweave mode: {upload_mode} ({total_chunks} chunks)")
-    arweave_submit_transaction(upload)
-    if not upload["inline_data"]:
-        arweave_submit_chunks(upload)
-
-    status_code, tx_status = arweave_query_tx_status(transaction["id"])
-    state, confirmations, block_height = arweave_tx_confirmation(status_code, tx_status)
     tx_url = f"{arweave_gateway()}/{transaction['id']}"
-    destination = {
-        "status": state,
+    base_destination = {
         "gateway": arweave_gateway(),
         "bundle_sha256": bundle["bundle_sha256"],
         "transaction_id": transaction["id"],
@@ -3508,6 +3531,24 @@ def publish_arweave_bundle(bundle, upload_policy="if_missing", force=False):
         "upload_mode": upload_mode,
         "chunk_count": total_chunks,
         "submitted_at": utc_stamp(),
+    }
+    print(f"  Arweave mode: {upload_mode} ({total_chunks} chunks)")
+    arweave_submit_transaction(upload)
+    # AR is spent the instant the tx is broadcast above. Persist the tx id NOW,
+    # before the (possibly long) chunk upload and status round-trip, so a kill
+    # mid-upload leaves a receipt the next run's skip-guard can see -- it will
+    # not build a fresh tx and pay again. The reward covers the data, so the
+    # chunk delivery can be completed later (reconcile / --force) without a
+    # second payment.
+    record_storage_destination(bundle, "arweave", {"status": "pending", **base_destination})
+    if not upload["inline_data"]:
+        arweave_submit_chunks(upload)
+
+    status_code, tx_status = arweave_query_tx_status(transaction["id"])
+    state, confirmations, block_height = arweave_tx_confirmation(status_code, tx_status)
+    destination = {
+        "status": state,
+        **base_destination,
         "last_checked_at": utc_stamp(),
         "confirmations": confirmations,
         "block_height": block_height,

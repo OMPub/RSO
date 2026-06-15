@@ -106,17 +106,7 @@ jobs:
 
       - name: Commit hydrated archive days
         if: inputs.hydrate_upstream
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data ledger.json
-          if git diff --cached --quiet; then
-            echo "No hydrated archive changes to commit."
-          else
-            git commit -m "Adopt verified upstream v2 archive days"
-            git push origin "HEAD:$RSO_NODE_BRANCH"
-          fi
+        run: bash scripts/git-commit-paths.sh "$RSO_NODE_BRANCH" "Adopt verified upstream v2 archive days" data ledger.json
 
       - name: Rebuild content fields for own archive days
         env:
@@ -164,17 +154,7 @@ jobs:
           DATES
 
       - name: Commit rebuilt archive metadata
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data ledger.json latest.json
-          if git diff --cached --quiet; then
-            echo "No rebuilt metadata to commit."
-          else
-            git commit -m "Record v2 content fields and publish destinations"
-            git push origin "HEAD:$RSO_NODE_BRANCH"
-          fi
+        run: bash scripts/git-commit-paths.sh "$RSO_NODE_BRANCH" "Record v2 content fields and publish destinations" data ledger.json latest.json
 
       - name: Set up Foundry for attestation signing
         uses: foundry-rs/foundry-toolchain@v1
@@ -197,18 +177,4 @@ jobs:
             --end "$RSO_RANGE_END"
 
       - name: Commit attestation state
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if [ ! -d data/attestations ]; then
-            echo "No attestation state directory."
-            exit 0
-          fi
-          git add data/attestations
-          if git diff --cached --quiet; then
-            echo "No attestation state changes to commit."
-            exit 0
-          fi
-          git commit -m "Record signed DocChain attestations"
-          git push origin "HEAD:$RSO_NODE_BRANCH"
+        run: bash scripts/git-commit-paths.sh "$RSO_NODE_BRANCH" "Record signed DocChain attestations" data/attestations

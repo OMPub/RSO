@@ -140,17 +140,7 @@ jobs:
 
       - name: Publish public sweeper report
         if: env.RSO_SWEEPER_ENABLED == 'true'
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add reports/sweeper indexer/cache indexer/generated
-          if git diff --cached --quiet; then
-            echo "No sweeper report changes to commit."
-            exit 0
-          fi
-          git commit -m "Publish RSO sweeper report and verified index"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+        run: bash scripts/git-commit-paths.sh "${GITHUB_REF_NAME}" "Publish RSO sweeper report and verified index" reports/sweeper indexer/cache indexer/generated
 
       - name: Upload sweeper report
         if: env.RSO_SWEEPER_ENABLED == 'true' && always()

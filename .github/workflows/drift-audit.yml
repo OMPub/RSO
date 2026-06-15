@@ -82,18 +82,14 @@ jobs:
       - name: Commit drift report
         run: |
           set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ ! -f build/drift/report.json ]; then
+            echo "No drift report produced (audit did not write one); nothing to commit."
+            exit 0
+          fi
           mkdir -p reports/drift
           stamp="$(date -u +%Y%m%dT%H%M%SZ)"
           cp build/drift/report.json "reports/drift/drift-$stamp.json"
-          git add reports/drift
-          if git diff --cached --quiet; then
-            echo "No drift report changes to commit."
-          else
-            git commit -m "Record weekly drift audit report"
-            git push origin "HEAD:$RSO_NODE_BRANCH"
-          fi
+          bash scripts/git-commit-paths.sh "$RSO_NODE_BRANCH" "Record weekly drift audit report" reports/drift
 
       - name: Open consensus-drift issue
         if: steps.audit.outputs.audit_status == '1'
