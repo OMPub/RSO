@@ -75,14 +75,4 @@ jobs:
             --start "$RSO_PUBLISH_START" --end "$RSO_PUBLISH_END"
 
       - name: Commit storage receipts
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data ledger.json latest.json
-          if git diff --cached --quiet; then
-            echo "No storage receipt changes to commit."
-            exit 0
-          fi
-          git commit -m "Record archive publish destinations"
-          git push origin "HEAD:$RSO_NODE_BRANCH"
+        run: bash scripts/git-commit-paths.sh "$RSO_NODE_BRANCH" "Record archive publish destinations" data ledger.json latest.json

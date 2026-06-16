@@ -556,6 +556,27 @@ def core_content_sha256(records, schema=CONTENT_SCHEMA):
     return compute_hash(canonicalize(core_records(records, schema)))
 
 
+def reentered_object_count(records, on_date):
+    """Count catalogued objects that had already re-entered on a given date.
+
+    Mirrors the card's client-side split (card/index.html recordMeta/applyHud):
+    an object is re-entered when it carries a DECAY_DATE whose calendar day is
+    on or before the snapshot date. DECAY_DATE is the late-backfilled mutable
+    field excluded from the consensus contentHash, so this is an
+    observation-plane count -- per-node, time-of-capture dependent, never part
+    of contentHash -- which is why it rides in the manifest/ledger alongside the
+    full sha256 (also DECAY_DATE-sensitive), not in the consensus core. The
+    on-orbit count is simply len(records) - this, so the two always sum to
+    object_count.
+    """
+    count = 0
+    for record in records:
+        decay = str(record.get("DECAY_DATE") or record.get("decay_date") or "")[:10]
+        if decay and decay <= on_date:
+            count += 1
+    return count
+
+
 def content_excluded_fields(schema):
     try:
         return CONTENT_PROJECTIONS[schema]
@@ -852,6 +873,12 @@ def build_annotations(
     prior and current raw catalogs, plus Space-Track's own
     satcat_change/decay/tip feeds for the window. The consensus core never includes these fields, so
     two nodes may legitimately hold different annotations for the same day.
+
+    `observed_at_utc` is always the moment this record was produced -- live
+    capture time for a daily run, the rebuild moment for a reconstructed day --
+    never backdated. `observation_lag_days` exposes that distance from the
+    docRef day directly (the observation-plane analogue of the chain's
+    `attestationLagDays`): ~0 for a live capture, large for a reconstruction.
     """
     changes = []
     if not baseline and previous_records is not None:
@@ -879,10 +906,14 @@ def build_annotations(
                 )
         changes.sort(key=lambda item: (int_string_sort_key(item["norad_cat_id"]), item["field"]))
 
+    observation_lag_days = max(
+        0, (parse_date(str(observed_at_utc)[:10]) - parse_date(current_date_str)).days
+    )
     annotations = {
         "schema": ANNOTATIONS_SCHEMA,
         "date": current_date_str,
         "observed_at_utc": observed_at_utc,
+        "observation_lag_days": observation_lag_days,
         "source": "space-track.org",
         "fields": list(CONTENT_EXCLUDED_FIELDS),
         "baseline": bool(baseline),
@@ -1091,6 +1122,7 @@ def save_snapshot(
             gz_file.write(canonical_bytes)
 
     cutoff_utc = state_as_of_utc or f"{current_date_str}T{CUTOFF_TIME}Z"
+    reentered = reentered_object_count(data, current_date_str)
     manifest = {
         "date": current_date_str,
         "cutoff_utc": cutoff_utc,
@@ -1100,6 +1132,8 @@ def save_snapshot(
         "content_excluded_fields": list(CONTENT_EXCLUDED_FIELDS),
         "content_sha256": core_content_sha256(data),
         "object_count": len(data),
+        "on_orbit_count": len(data) - reentered,
+        "reentered_count": reentered,
         "raw_bytes": len(canonical_bytes),
         "compressed_bytes": gz_path.stat().st_size,
         "provenance": provenance,
@@ -1199,6 +1233,10 @@ def ledger_entry_from_manifest(manifest):
         "base_snapshot_sha256",
         "delta_window_start_utc",
         "delta_window_end_utc",
+        # On-orbit vs re-entered split (observation-plane, DECAY_DATE-derived).
+        # Optional so manifests archived before this field stay reproducible.
+        "on_orbit_count",
+        "reentered_count",
     ):
         if key in manifest:
             entry[key] = manifest[key]
@@ -1223,12 +1261,21 @@ def publication_fields_from_receipt(receipt):
     arweave = destinations.get("arweave")
     if (
         isinstance(arweave, dict)
-        and arweave.get("status") == "submitted"
+        # only advertise the ar:// location once the tx is mined -- a pending
+        # transaction's gateway URL 404s, so pointing consumers at it would lie
+        and arweave.get("status") == "confirmed"
         and isinstance(arweave.get("transaction_id"), str)
         and arweave.get("transaction_id")
         and arweave.get("bundle_sha256") == receipt.get("bundle_sha256")
     ):
         fields["arweave_tx"] = arweave["transaction_id"]
+    # A day adopted from an upstream node is a faithful mirror, not a local
+    # re-derivation; record the chain of custody in this node's own ledger
+    # (the consensus manifest must stay byte-identical to upstream and so
+    # cannot carry it).
+    adopted_from = receipt.get("verified_from_upstream")
+    if isinstance(adopted_from, str) and adopted_from:
+        fields["adopted_from"] = adopted_from
     return fields
 
 
@@ -1811,8 +1858,8 @@ def process_rebuild_content(args):
             and not getattr(args, "force", False)
         ):
             # Idempotent: hydrated or previously rebuilt days keep their exact
-            # artifacts (re-deriving annotations would change rebuilt_at and
-            # break byte-identity with the published bundle).
+            # artifacts (re-deriving annotations would change observed_at_utc
+            # and break byte-identity with the published bundle).
             print(f"  {day}: already carries {CONTENT_SCHEMA} fields; skipping")
             skipped += 1
             previous_records = json.loads(read_catalog_bytes(day))
@@ -1827,7 +1874,12 @@ def process_rebuild_content(args):
                 f"{manifest['sha256']}; refusing to rebuild from unverified bytes"
             )
 
-        observed_at = str(manifest.get("observed_at_utc") or manifest.get("archived_at"))
+        # Honest observation time: this record is being produced NOW, by
+        # diffing stored catalogs offline -- not on the docRef day. Stamp the
+        # real assembly moment (never the day's original archived_at); the
+        # resulting large observation_lag_days is what marks it reconstructed.
+        # The catalog's own capture time still lives in manifest.archived_at.
+        observed_at = utc_stamp()
         baseline = previous_records is None
         annotations = build_annotations(
             day,
@@ -1838,8 +1890,6 @@ def process_rebuild_content(args):
             window_end_utc=manifest.get("delta_window_end_utc"),
             baseline=baseline,
         )
-        annotations["rebuilt"] = True
-        annotations["rebuilt_at"] = utc_stamp()
 
         day_dir = snapshot_dir(day)
         annotations_file = day_dir / "annotations.json"
@@ -1849,6 +1899,9 @@ def process_rebuild_content(args):
         manifest["content_excluded_fields"] = list(CONTENT_EXCLUDED_FIELDS)
         manifest["content_sha256"] = core_content_sha256(records)
         manifest["annotations_sha256"] = sha256_path(annotations_file)
+        reentered = reentered_object_count(records, day)
+        manifest["on_orbit_count"] = len(records) - reentered
+        manifest["reentered_count"] = reentered
         write_json(manifest_path, manifest)
         update_ledger(manifest)
 
@@ -2349,12 +2402,30 @@ def catalog_bytes_from_release_bundle(current_date_str, repo=None):
     )
 
 
+def catalog_source_repo(current_date_str, repo=None):
+    """The repo whose release holds a day's published bundle.
+
+    A forked node never publishes its own release for days it mirrored from an
+    upstream node, so for an adopted day (storage.json records
+    `verified_from_upstream`) the catalog must be fetched from the upstream
+    repo, not this node's. An explicit repo argument always wins.
+    """
+    if repo is not None:
+        return repo
+    upstream = load_storage_receipt(current_date_str).get("verified_from_upstream")
+    if isinstance(upstream, str) and upstream:
+        return upstream
+    return None
+
+
 def read_catalog_bytes(current_date_str, repo=None):
     gz_path = catalog_gz_path(current_date_str)
     if gz_path.exists():
         with gzip.open(gz_path, "rb") as f:
             return read_limited(f, MAX_CATALOG_BYTES, label=str(gz_path))
-    return catalog_bytes_from_release_bundle(current_date_str, repo=repo)
+    return catalog_bytes_from_release_bundle(
+        current_date_str, repo=catalog_source_repo(current_date_str, repo)
+    )
 
 
 def date_range(start_date_str, end_date_str):
@@ -3356,6 +3427,68 @@ def publish_github_release(
     return result
 
 
+# Arweave transaction lifecycle, recorded honestly: a fresh POST is "pending"
+# (accepted by the network, not yet mined) and only becomes "confirmed" once a
+# /tx/{id}/status query shows it in a block. Consumers are pointed at the
+# ar:// location only after "confirmed" (an unconfirmed tx 404s), and a pending
+# receipt is settled by `reconcile-arweave`, never by silently claiming success.
+ARWEAVE_LIVE_STATUSES = ("submitted", "pending", "confirmed")
+
+
+def arweave_query_tx_status(transaction_id):
+    return arweave_request_with_retries(
+        "GET", f"/tx/{transaction_id}/status", allow_not_found=True
+    )
+
+
+def arweave_tx_confirmation(status_code, tx_status):
+    """Map a /tx/{id}/status response to (status, confirmations, block_height).
+
+    A 200 with block data means mined -> "confirmed"; anything else (404
+    not-yet-mined, or a body without a block) is "pending". We never infer
+    "confirmed" from the act of submitting -- only from an observed block.
+    """
+    if status_code == 200 and isinstance(tx_status, dict):
+        block_height = tx_status.get("block_height")
+        confirmations = tx_status.get("number_of_confirmations")
+        try:
+            confirmations = int(confirmations)
+        except (TypeError, ValueError):
+            confirmations = None
+        if block_height is not None or (confirmations is not None and confirmations >= 1):
+            return "confirmed", confirmations, block_height
+    return "pending", None, None
+
+
+def arweave_recheck_destination(existing):
+    """Re-query a recorded Arweave tx and return an updated destination dict.
+
+    Promotes pending -> confirmed once the tx is mined; never downgrades a
+    confirmed receipt; on a network error keeps the prior status and just
+    stamps last_checked_at (honest: we could not confirm this run)."""
+    transaction_id = existing.get("transaction_id")
+    if not transaction_id:
+        return existing
+    updated = dict(existing)
+    try:
+        status_code, tx_status = arweave_query_tx_status(transaction_id)
+    except SnapshotError as exc:
+        updated["last_checked_at"] = utc_stamp()
+        updated["status_response"] = f"recheck_failed: {exc}"
+        return updated
+    state, confirmations, block_height = arweave_tx_confirmation(status_code, tx_status)
+    if existing.get("status") == "confirmed":
+        state = "confirmed"
+    updated["status"] = state
+    updated["confirmations"] = confirmations
+    if block_height is not None:
+        updated["block_height"] = block_height
+    updated["status_code"] = status_code
+    updated["status_response"] = tx_status
+    updated["last_checked_at"] = utc_stamp()
+    return updated
+
+
 def publish_arweave_bundle(bundle, upload_policy="if_missing", force=False):
     jwk = arweave_wallet_jwk()
     if jwk is None:
@@ -3366,16 +3499,19 @@ def publish_arweave_bundle(bundle, upload_policy="if_missing", force=False):
     if (
         isinstance(existing, dict)
         and existing.get("bundle_sha256") == bundle["bundle_sha256"]
-        and existing.get("status") == "submitted"
+        and existing.get("status") in ARWEAVE_LIVE_STATUSES
         and existing.get("transaction_id")
         and not force
         and upload_policy != "always_mirror"
     ):
+        # A tx for these exact bytes already exists; never re-submit it (that
+        # would spend AR on a duplicate). Settlement is reconcile-arweave's job.
         print(f"  SKIP: storage.json already records Arweave TX {existing.get('transaction_id')}")
         return {
             "status": "skipped",
             "reason": "receipt_exists",
             "transaction_id": existing.get("transaction_id"),
+            "arweave_status": existing.get("status"),
             **bundle,
         }
 
@@ -3383,19 +3519,8 @@ def publish_arweave_bundle(bundle, upload_policy="if_missing", force=False):
     transaction = upload["transaction"]
     upload_mode = "inline" if upload["inline_data"] else "chunked"
     total_chunks = len(upload["chunk_plan"]["chunks"])
-    print(f"  Arweave mode: {upload_mode} ({total_chunks} chunks)")
-    arweave_submit_transaction(upload)
-    if not upload["inline_data"]:
-        arweave_submit_chunks(upload)
-
-    status_code, tx_status = arweave_request_with_retries(
-        "GET",
-        f"/tx/{transaction['id']}/status",
-        allow_not_found=True,
-    )
     tx_url = f"{arweave_gateway()}/{transaction['id']}"
-    destination = {
-        "status": "submitted",
+    base_destination = {
         "gateway": arweave_gateway(),
         "bundle_sha256": bundle["bundle_sha256"],
         "transaction_id": transaction["id"],
@@ -3406,14 +3531,35 @@ def publish_arweave_bundle(bundle, upload_policy="if_missing", force=False):
         "upload_mode": upload_mode,
         "chunk_count": total_chunks,
         "submitted_at": utc_stamp(),
+    }
+    print(f"  Arweave mode: {upload_mode} ({total_chunks} chunks)")
+    arweave_submit_transaction(upload)
+    # AR is spent the instant the tx is broadcast above. Persist the tx id NOW,
+    # before the (possibly long) chunk upload and status round-trip, so a kill
+    # mid-upload leaves a receipt the next run's skip-guard can see -- it will
+    # not build a fresh tx and pay again. The reward covers the data, so the
+    # chunk delivery can be completed later (reconcile / --force) without a
+    # second payment.
+    record_storage_destination(bundle, "arweave", {"status": "pending", **base_destination})
+    if not upload["inline_data"]:
+        arweave_submit_chunks(upload)
+
+    status_code, tx_status = arweave_query_tx_status(transaction["id"])
+    state, confirmations, block_height = arweave_tx_confirmation(status_code, tx_status)
+    destination = {
+        "status": state,
+        **base_destination,
+        "last_checked_at": utc_stamp(),
+        "confirmations": confirmations,
+        "block_height": block_height,
         "status_code": status_code,
         "status_response": tx_status,
     }
     record_storage_destination(bundle, "arweave", destination)
     print(
-        f"  SUBMITTED: {bundle['asset_name']} to Arweave as {transaction['id']}"
+        f"  {state.upper()}: {bundle['asset_name']} to Arweave as {transaction['id']}"
     )
-    return {"status": "submitted", "transaction_id": transaction["id"], "transaction_url": tx_url, **bundle}
+    return {"status": state, "transaction_id": transaction["id"], "transaction_url": tx_url, **bundle}
 
 
 def publish_arweave_bundle_nonfatal(bundle, upload_policy="if_missing", force=False):
@@ -3437,6 +3583,56 @@ def publish_arweave_bundle_nonfatal(bundle, upload_policy="if_missing", force=Fa
             },
         )
         return {"status": "failed", "reason": "arweave_upload_failed", "error": error, **bundle}
+
+
+def reconcile_arweave_pending(days):
+    """Re-query pending Arweave receipts and settle their recorded status.
+
+    Promotes pending -> confirmed once a tx is mined, refreshes the day's
+    ledger entry (so the ar:// location surfaces only after confirmation) and
+    the latest pointer. Re-uploads nothing -- this only observes and records.
+    """
+    checked = 0
+    settled = 0
+    for day in days:
+        receipt = load_storage_receipt(day)
+        destinations = receipt.get("destinations")
+        if not isinstance(destinations, dict):
+            continue
+        existing = destinations.get("arweave")
+        if not isinstance(existing, dict) or not existing.get("transaction_id"):
+            continue
+        if existing.get("status") not in ("submitted", "pending"):
+            continue
+        checked += 1
+        updated = arweave_recheck_destination(existing)
+        destinations["arweave"] = updated
+        receipt["destinations"] = destinations
+        receipt["updated_at"] = utc_stamp()
+        write_json(storage_receipt_path(day), receipt)
+        print(
+            f"  {day}: arweave {existing.get('status')} -> {updated.get('status')} "
+            f"(tx {existing.get('transaction_id')})"
+        )
+        if updated.get("status") == "confirmed":
+            settled += 1
+            manifest = read_json_if_exists(snapshot_dir(day) / "manifest.json")
+            if manifest is not None:
+                update_ledger(manifest)
+    if settled:
+        write_latest_pointer()
+    print(f"\nReconcile complete: checked {checked} pending, newly confirmed {settled}")
+    return settled
+
+
+def process_reconcile_arweave(args):
+    if bool(getattr(args, "start", None)) != bool(getattr(args, "end", None)):
+        raise SnapshotError("--start and --end must be given together")
+    if getattr(args, "start", None):
+        days = list(date_range(args.start, args.end))
+    else:
+        days = discover_snapshot_dates()
+    reconcile_arweave_pending(days)
 
 
 def resolve_publish_dates(args):
@@ -4125,6 +4321,15 @@ def main():
     update_pointers_parser.add_argument("--start", help="Start date (YYYY-MM-DD); defaults to all archived days")
     update_pointers_parser.add_argument("--end", help="End date inclusive (YYYY-MM-DD)")
 
+    reconcile_arweave_parser = subparsers.add_parser(
+        "reconcile-arweave",
+        help="Re-query pending Arweave receipts and promote them to confirmed (no re-upload)",
+    )
+    reconcile_arweave_parser.add_argument(
+        "--start", help="Start date (YYYY-MM-DD); defaults to all archived days"
+    )
+    reconcile_arweave_parser.add_argument("--end", help="End date inclusive (YYYY-MM-DD)")
+
     validate_parser = subparsers.add_parser(
         "validate", help="Validate every committed archive artifact without network access"
     )
@@ -4344,6 +4549,9 @@ def main():
         return
     if args.command == "update-pointers":
         process_update_pointers(args)
+        return
+    if args.command == "reconcile-arweave":
+        process_reconcile_arweave(args)
         return
 
     client = SpaceTrackClient()

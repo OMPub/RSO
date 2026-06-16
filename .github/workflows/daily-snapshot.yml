@@ -284,17 +284,7 @@ jobs:
           python pipeline/snapshot.py validate
 
       - name: Commit archive changes
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data ledger.json
-          if git diff --cached --quiet; then
-            echo "No archive changes to commit."
-            exit 0
-          fi
-          git commit -m "Archive RSO snapshot"
-          git push origin "HEAD:$RSO_NODE_BRANCH"
+        run: bash scripts/git-commit-paths.sh "$RSO_NODE_BRANCH" "Archive RSO snapshot" data ledger.json
 
       - name: Publish release archives
         env:
@@ -310,17 +300,7 @@ jobs:
           python "${args[@]}"
 
       - name: Commit publish receipts
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data ledger.json latest.json
-          if git diff --cached --quiet; then
-            echo "No publish receipt changes to commit."
-            exit 0
-          fi
-          git commit -m "Record archive publish destinations"
-          git push origin "HEAD:$RSO_NODE_BRANCH"
+        run: bash scripts/git-commit-paths.sh "$RSO_NODE_BRANCH" "Record archive publish destinations" data ledger.json latest.json
 
       - name: Check attestation configuration
         env:
@@ -369,21 +349,7 @@ jobs:
             --end "$RSO_SNAPSHOT_END_DATE"
 
       - name: Commit attestation state
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if [ ! -d data/attestations ]; then
-            echo "No attestation state directory."
-            exit 0
-          fi
-          git add data/attestations
-          if git diff --cached --quiet; then
-            echo "No attestation state changes to commit."
-            exit 0
-          fi
-          git commit -m "Record signed DocChain attestations"
-          git push origin "HEAD:$RSO_NODE_BRANCH"
+        run: bash scripts/git-commit-paths.sh "$RSO_NODE_BRANCH" "Record signed DocChain attestations" data/attestations
 
       - name: Refresh DocChain attestation index
         env:
@@ -408,14 +374,4 @@ jobs:
           python "${args[@]}"
 
       - name: Commit attestation index
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add --all -- indexer/cache indexer/generated 2>/dev/null || true
-          if git diff --cached --quiet; then
-            echo "No attestation index changes to commit."
-            exit 0
-          fi
-          git commit -m "Update DocChain attestation index"
-          git push origin "HEAD:$RSO_NODE_BRANCH"
+        run: bash scripts/git-commit-paths.sh "$RSO_NODE_BRANCH" "Update DocChain attestation index" indexer/cache indexer/generated
