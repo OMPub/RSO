@@ -617,15 +617,21 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn("for (const sy of [0.11, 0.33, -0.11, -0.33])", self.html)   # four wings per side
         self.assertIn("pressurised module stack", self.html)
 
-    def test_on_orbit_blank_until_the_reentered_split_is_known(self):
-        # On-orbit needs the re-entered split (from the index aggregate, or the catalog processed
-        # on stop). Until then show "—", NOT the total record count — which would mislabel the
-        # whole catalogue as still up there for the moment a day takes to load.
-        self.assertIn('$("onorbit-count").textContent = orb ? fmtNum(orb.onOrbit) : "—";', self.html)
+    def test_on_orbit_estimated_until_the_exact_split_loads(self):
+        # On-orbit = record minus already-re-entered. The exact split comes from the index
+        # aggregate or the processed catalog; until then estimate it from the stable on-orbit
+        # ratio so the first frame shows a real, decayed-subtracted figure — never the bare
+        # total — then snaps to exact. The ratio self-calibrates from each exact split.
+        self.assertIn("let onOrbitRatio = 0.507;", self.html)
+        self.assertIn("if (objs.length) onOrbitRatio = onOrbit / objs.length;", self.html)
+        self.assertIn("onOrbit = orb ? orb.onOrbit : Math.round(rec.count * onOrbitRatio)", self.html)
+        self.assertIn('$("reentered-count").textContent = fmtNum(orb ? orb.reentered : rec.count - onOrbit);', self.html)
+        # never falls back to showing the raw total as "on orbit now"
         self.assertNotIn('$("onorbit-count").textContent = orb ? fmtNum(orb.onOrbit) : fmtNum(rec.count);', self.html)
-        # the split is read instantly from the index aggregate when the publisher carries it
+        # the exact split is read instantly from the baseline/index aggregate when present
         self.assertIn("raw.on_orbit_count", self.html)
         self.assertIn("raw.reentered_count ?? raw.decayed_count", self.html)
+        self.assertIn("on_orbit_count: e.oo, reentered_count: e.re", self.html)   # baseline forward-compat
 
     def test_lens_change_shows_no_centre_toast(self):
         # The legend title already names the active lens; the centre flash could overlap the

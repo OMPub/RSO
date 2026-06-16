@@ -557,6 +557,10 @@
     // Band speeds above only flavour the WARP rush.
     const LAP_BY_BAND = [300, 720, 3600];
     const PROP = { bands: { LEO: 0.905, MEO: 0.066, GEO: 0.029 } };
+    // The on-orbit share of the record is very stable day to day (~0.51). We keep the last
+    // exact value seen so "on orbit now" can show a near-exact figure the instant a day opens —
+    // before its full catalog downloads — then snap to the precise count once it does.
+    let onOrbitRatio = 0.507;
     const COLORS = {                                  // distinct hues that survive the brightness clip
       payload: [0.30, 0.52, 1.0],   // blue — stays blue (not white) when bright/near
       rocket:  [1.0, 0.58, 0.16],   // hot orange
@@ -1423,7 +1427,9 @@
         witnessDates = ds.map((e) => e.d);
         TOTAL = witnessDates.length - 1;
         ds.forEach((e) => ledgerByDate.set(e.d, { count: e.c, sha: e.s || "", bands: null,
-          raw: { object_count: e.c, sha256: e.s, content_sha256: e.cs, content_schema: e.sc, provenance: e.pv, compressed_bytes: e.by, source: "space-track.org", format: "OMM/JSON" } }));
+          // e.oo / e.re carry the on-orbit / re-entered split when the baseline build includes it
+          // (then the count is exact on the first frame, no catalog needed); absent → estimated.
+          raw: { object_count: e.c, on_orbit_count: e.oo, reentered_count: e.re, sha256: e.s, content_sha256: e.cs, content_schema: e.sc, provenance: e.pv, compressed_bytes: e.by, source: "space-track.org", format: "OMM/JSON" } }));
       }
       for (const [date, a] of Object.entries(BASELINE.attest || {})) {
         attestByDate.set(date, { blockHash: a.b, tdh: a.t, groups: a.g, nodes: a.n, attestations: a.a, sources: a.src, ar: a.ar || [] });
@@ -1629,6 +1635,7 @@
       bandCountsByDate.set(date, bc);
       typeCountsByDate.set(date, tc);
       orbitByDate.set(date, { onOrbit, reentered: reenteredTot, total: objs.length });
+      if (objs.length) onOrbitRatio = onOrbit / objs.length;        // refine the estimate from this exact split
       deltaByDate.set(date, {
         updated: delta?.updated_object_count ?? delta?.deduped_update_count ?? 0,
         new: delta?.new_object_count ?? launched, decayed: decToday, carried: delta?.carried_forward_count ?? 0
@@ -1682,14 +1689,14 @@
       const day = Math.round(state.cursor) + 1;
       $("date-index").textContent = `Day ${String(day).padStart(3, "0")} / ${TOTAL + 1} witnessed days`;
       // ── objects prism ── (what's still up there vs the full record)
-      // "On orbit now" needs the re-entered split. That comes from the index aggregate when
-      // present, else from processing the full daily catalog on stop. Until one of those is
-      // known, show "—" (not the total in record) — better honest-blank than mislabelling the
-      // whole catalogue as still-up-there for the second it takes the day to load.
-      const orb = rec.orbit;
-      $("onorbit-count").textContent = orb ? fmtNum(orb.onOrbit) : "—";
+      // "On orbit now" = record minus what's already re-entered. The exact split arrives with
+      // the day's index aggregate or its processed catalog; until then estimate it from the
+      // stable on-orbit ratio so the count is a real, decayed-subtracted figure on the very
+      // first frame (never the bare total), then snaps to exact when the day loads.
+      const orb = rec.orbit, onOrbit = orb ? orb.onOrbit : Math.round(rec.count * onOrbitRatio);
+      $("onorbit-count").textContent = fmtNum(onOrbit);
       $("tracked-count").textContent = fmtNum(rec.count);
-      $("reentered-count").textContent = orb ? fmtNum(orb.reentered) : "—";
+      $("reentered-count").textContent = fmtNum(orb ? orb.reentered : rec.count - onOrbit);
       const b = rec.bands; // real on-orbit band counts when known, else proportional estimate
       $("leo-count").textContent = fmtNum(b ? b.leo : Math.round(rec.count * PROP.bands.LEO));
       $("meo-count").textContent = fmtNum(b ? b.meo : Math.round(rec.count * PROP.bands.MEO));
