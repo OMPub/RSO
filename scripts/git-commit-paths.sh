@@ -26,9 +26,15 @@ shift 2
 git config user.name "github-actions[bot]"
 git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-# Stage the requested paths. `|| true` so an absent path is not fatal; `--all`
-# so deletions within tracked paths are staged too.
-git add --all -- "$@" 2>/dev/null || true
+# Stage each path INDEPENDENTLY. `git add` aborts atomically on a pathspec that
+# matches nothing, so adding every path in one call would refuse to stage the
+# valid paths whenever an optional/generated path (e.g. indexer/generated) is
+# absent -- leaving a real change unstaged and the later commit failing with
+# "no changes added to commit". Per-path keeps a missing path from blocking the
+# others; `--all` stages deletions within tracked paths too.
+for path in "$@"; do
+  git add --all -- "$path" 2>/dev/null || true
+done
 
 # `git status --porcelain` reports staged changes even on an unborn branch and
 # never parses HEAD, so it cannot throw "could not parse HEAD". Scoping it to

@@ -223,7 +223,9 @@ class ReleaseBundleTests(unittest.TestCase):
         self.assertEqual(snapshot.arweave_tx_confirmation(200, {}), ("pending", None, None))
 
     def test_reconcile_promotes_pending_to_confirmed(self):
-        with patch.object(snapshot, "LEDGER_PATH", self.root / "ledger.json"):
+        with patch.object(snapshot, "LEDGER_PATH", self.root / "ledger.json"), patch.object(
+            snapshot, "LATEST_POINTER_PATH", self.root / "latest.json"
+        ):
             self.archive_day()
             bundle = {
                 "date": "2026-04-18",
@@ -252,7 +254,9 @@ class ReleaseBundleTests(unittest.TestCase):
             self.assertIn("last_checked_at", arw)
 
     def test_reconcile_leaves_still_pending_unconfirmed(self):
-        with patch.object(snapshot, "LEDGER_PATH", self.root / "ledger.json"):
+        with patch.object(snapshot, "LEDGER_PATH", self.root / "ledger.json"), patch.object(
+            snapshot, "LATEST_POINTER_PATH", self.root / "latest.json"
+        ):
             self.archive_day()
             bundle = {
                 "date": "2026-04-18", "asset_name": "x.tar.gz", "bytes": 1,
