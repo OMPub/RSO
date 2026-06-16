@@ -65,6 +65,15 @@ jobs:
           python3 pipeline/snapshot.py hydrate-catalogs \
             --start "$RSO_PUBLISH_START" --end "$RSO_PUBLISH_END"
 
+      - name: Backfill card-parity aggregates for the range
+        # Add on_orbit/reentered/band/type/delta to each day's manifest + ledger
+        # from the just-hydrated catalogs. No --force: already-published days take
+        # the annotation-preserving top-up path, so bundle bytes stay identical.
+        run: |
+          set -euo pipefail
+          python3 pipeline/snapshot.py rebuild-content \
+            --start "$RSO_PUBLISH_START" --end "$RSO_PUBLISH_END"
+
       - name: Publish bundles (GitHub asset + single Arweave upload per day)
         env:
           GH_TOKEN: ${{ github.token }}
@@ -74,5 +83,10 @@ jobs:
           python3 pipeline/snapshot.py publish \
             --start "$RSO_PUBLISH_START" --end "$RSO_PUBLISH_END"
 
+      - name: Build Tier-1 index
+        # GitHub-raw mirror (node branch). Arweave permanence is opt-in to avoid
+        # re-paying AR per run: `build-index --arweave` with ARWEAVE_JWK set.
+        run: python3 pipeline/snapshot.py build-index --repo "$GITHUB_REPOSITORY" --branch "$RSO_NODE_BRANCH"
+
       - name: Commit storage receipts
-        run: bash scripts/git-commit-paths.sh "$RSO_NODE_BRANCH" "Record archive publish destinations" data ledger.json latest.json
+        run: bash scripts/git-commit-paths.sh "$RSO_NODE_BRANCH" "Record archive publish destinations" data ledger.json latest.json index

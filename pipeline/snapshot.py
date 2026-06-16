@@ -110,6 +110,30 @@ LATEST_POINTER_PATH = Path(__file__).parent.parent / "latest.json"
 REPORTS_DIR = Path(__file__).parent.parent / "reports"
 RELEASE_OUTPUT_DIR = Path(__file__).parent.parent / ".release"
 
+# Lean Tier-1 index: a compact, year-chunked aggregate timeline a browser can
+# read instantly (HUD numbers with zero catalog download), kept separate from
+# the heavy ledger.json. index/manifest.json points at the year chunks and
+# inlines the latest day's full aggregate. See build_index().
+INDEX_DIR = Path(__file__).parent.parent / "index"
+INDEX_SCHEMA = "rso-index-v1"
+# The lean per-day fields the index carries (plus the catalog locator). Order is
+# documentation only -- write_json sorts keys.
+INDEX_ENTRY_FIELDS = (
+    "date",
+    "object_count",
+    "on_orbit_count",
+    "reentered_count",
+    "band_counts",
+    "type_counts",
+    "delta",
+    "sha256",
+    "content_sha256",
+    "provenance",
+    "compressed_bytes",
+)
+DEFAULT_NODE_REPO = "OMPub/RSO"
+DEFAULT_NODE_BRANCH = "node"
+
 STORAGE_BACKENDS = frozenset({"none", "github_release", "arweave", "ipfs_pinata"})
 UPLOAD_POLICIES = frozenset({"never", "if_missing", "always_mirror"})
 ARWEAVE_GATEWAY_DEFAULT = "https://arweave.net"
@@ -556,25 +580,137 @@ def core_content_sha256(records, schema=CONTENT_SCHEMA):
     return compute_hash(canonicalize(core_records(records, schema)))
 
 
+# Card-parity aggregate buckets. These mirror card/index.html exactly so the
+# index/ledger can serve the HUD with zero catalog download; they are all
+# observation-plane (DECAY_DATE/OBJECT_TYPE/MEAN_MOTION derived) -- per-node,
+# time-of-capture dependent, never part of the consensus contentHash -- which is
+# why they ride in the manifest/ledger alongside the full sha256, not in core.
+BAND_BUCKETS = ("leo", "meo", "geo")
+TYPE_BUCKETS = ("payload", "rocket", "debris", "unknown", "tba")
+
+
+def record_decay_day(record):
+    """The YYYY-MM-DD a record decayed, or '' if still on orbit.
+
+    Mirrors the card: `String(row.DECAY_DATE || row.decay_date || "").slice(0,10)`.
+    """
+    return str(record.get("DECAY_DATE") or record.get("decay_date") or "")[:10]
+
+
+def classify_band(mean_motion):
+    """LEO/MEO/GEO bucket from MEAN_MOTION (rev/day). Mirrors card bandFromMM:
+    GEO when 0.9<=mm<=1.1, LEO when mm>=11.0, otherwise MEO (also for
+    missing/non-finite/non-positive mean motion)."""
+    try:
+        value = float(mean_motion)
+    except (TypeError, ValueError):
+        return "meo"
+    if value > 0:
+        if 0.9 <= value <= 1.1:
+            return "geo"
+        if value >= 11.0:
+            return "leo"
+    return "meo"
+
+
+def classify_type(object_type):
+    """payload/rocket/debris/unknown bucket from OBJECT_TYPE. Mirrors card
+    klassFromType (substring match, DEBRIS before ROCKET before PAYLOAD). The
+    'tba' bucket exists for card parity but klassFromType never yields it, so it
+    always counts zero -- kept so the shape matches the card's TN array."""
+    t = str(object_type or "").upper()
+    if "DEBRIS" in t:
+        return "debris"
+    if "ROCKET" in t:
+        return "rocket"
+    if "PAYLOAD" in t:
+        return "payload"
+    return "unknown"
+
+
 def reentered_object_count(records, on_date):
     """Count catalogued objects that had already re-entered on a given date.
 
-    Mirrors the card's client-side split (card/index.html recordMeta/applyHud):
-    an object is re-entered when it carries a DECAY_DATE whose calendar day is
-    on or before the snapshot date. DECAY_DATE is the late-backfilled mutable
-    field excluded from the consensus contentHash, so this is an
-    observation-plane count -- per-node, time-of-capture dependent, never part
-    of contentHash -- which is why it rides in the manifest/ledger alongside the
-    full sha256 (also DECAY_DATE-sensitive), not in the consensus core. The
-    on-orbit count is simply len(records) - this, so the two always sum to
-    object_count.
+    An object is re-entered when DECAY_DATE's calendar day is on or before the
+    snapshot date (decay <= date). on_orbit_count is len(records) minus this, so
+    the two always sum to object_count. See aggregate_counts for the full split.
     """
-    count = 0
+    return sum(1 for r in records if record_decay_day(r) and record_decay_day(r) <= on_date)
+
+
+def aggregate_counts(records, on_date, delta=None):
+    """Compute the card's HUD aggregates over a day's catalog, in one pass.
+
+    Mirrors card/index.html recordMeta/applyHud:
+      * re-entered  = objects with DECAY_DATE <= on_date (already came down)
+      * on_orbit    = the rest; band_counts/type_counts cover ONLY these
+                      (re-entered objects are not part of "what's up there")
+      * delta       = {updated, new, decayed}: updated/new from the day's bounded
+                      gp_history delta, decayed = objects whose DECAY_DATE is
+                      exactly on_date (the card's decToday).
+    Returns a dict of {on_orbit_count, reentered_count, band_counts, type_counts,
+    delta} -- the observation-plane aggregate carried in the manifest/ledger/index.
+    """
+    bands = {bucket: 0 for bucket in BAND_BUCKETS}
+    types = {bucket: 0 for bucket in TYPE_BUCKETS}
+    reentered = 0
+    decayed_today = 0
     for record in records:
-        decay = str(record.get("DECAY_DATE") or record.get("decay_date") or "")[:10]
+        decay = record_decay_day(record)
+        if decay and decay == on_date:
+            decayed_today += 1
         if decay and decay <= on_date:
-            count += 1
-    return count
+            reentered += 1
+            continue
+        bands[classify_band(record.get("MEAN_MOTION"))] += 1
+        types[classify_type(record.get("OBJECT_TYPE"))] += 1
+    delta = delta if isinstance(delta, dict) else {}
+    updated = delta.get("updated_object_count")
+    if updated is None:
+        updated = delta.get("deduped_update_count", 0)
+    return {
+        "on_orbit_count": len(records) - reentered,
+        "reentered_count": reentered,
+        "band_counts": bands,
+        "type_counts": types,
+        "delta": {
+            "updated": int(updated or 0),
+            "new": int(delta.get("new_object_count", 0) or 0),
+            "decayed": decayed_today,
+        },
+    }
+
+
+# The aggregate keys a manifest/ledger/index entry carries, in the order the
+# index emits them. AGGREGATE_MANIFEST_FIELDS is the subset re-derivable purely
+# from the catalog (+ delta.json) -- the validator and backfill both lean on it.
+AGGREGATE_MANIFEST_FIELDS = (
+    "on_orbit_count",
+    "reentered_count",
+    "band_counts",
+    "type_counts",
+    "delta",
+)
+
+
+def manifest_aggregate_fields(records, on_date, delta=None):
+    """The card-parity aggregate fields for a manifest, derived from the bytes."""
+    aggregates = aggregate_counts(records, on_date, delta=delta)
+    return {key: aggregates[key] for key in AGGREGATE_MANIFEST_FIELDS}
+
+
+def backfill_manifest_aggregates(manifest, day, records):
+    """Add/refresh the card-parity aggregate fields on an existing manifest in
+    place, reading the day's delta.json for updated/new. Returns True iff a
+    field was added or changed, so the caller knows whether to rewrite/re-ledger.
+    Touches no annotation, so it is byte-safe for already-published bundles."""
+    fields = manifest_aggregate_fields(
+        records, day, delta=read_json_if_exists(snapshot_dir(day) / "delta.json")
+    )
+    if all(manifest.get(key) == value for key, value in fields.items()):
+        return False
+    manifest.update(fields)
+    return True
 
 
 def content_excluded_fields(schema):
@@ -1105,6 +1241,7 @@ def save_snapshot(
     state_as_of_utc=None,
     annotations=None,
     conjunctions=None,
+    delta=None,
 ):
     day_dir = snapshot_dir(current_date_str)
     day_dir.mkdir(parents=True, exist_ok=True)
@@ -1122,7 +1259,7 @@ def save_snapshot(
             gz_file.write(canonical_bytes)
 
     cutoff_utc = state_as_of_utc or f"{current_date_str}T{CUTOFF_TIME}Z"
-    reentered = reentered_object_count(data, current_date_str)
+    aggregates = aggregate_counts(data, current_date_str, delta=delta)
     manifest = {
         "date": current_date_str,
         "cutoff_utc": cutoff_utc,
@@ -1132,8 +1269,11 @@ def save_snapshot(
         "content_excluded_fields": list(CONTENT_EXCLUDED_FIELDS),
         "content_sha256": core_content_sha256(data),
         "object_count": len(data),
-        "on_orbit_count": len(data) - reentered,
-        "reentered_count": reentered,
+        "on_orbit_count": aggregates["on_orbit_count"],
+        "reentered_count": aggregates["reentered_count"],
+        "band_counts": aggregates["band_counts"],
+        "type_counts": aggregates["type_counts"],
+        "delta": aggregates["delta"],
         "raw_bytes": len(canonical_bytes),
         "compressed_bytes": gz_path.stat().st_size,
         "provenance": provenance,
@@ -1233,10 +1373,14 @@ def ledger_entry_from_manifest(manifest):
         "base_snapshot_sha256",
         "delta_window_start_utc",
         "delta_window_end_utc",
-        # On-orbit vs re-entered split (observation-plane, DECAY_DATE-derived).
-        # Optional so manifests archived before this field stay reproducible.
+        # Card-parity aggregates (observation-plane: DECAY_DATE/type/mean-motion
+        # derived). Optional so manifests archived before these fields existed
+        # stay reproducible; the card reads them straight off the ledger entry.
         "on_orbit_count",
         "reentered_count",
+        "band_counts",
+        "type_counts",
+        "delta",
     ):
         if key in manifest:
             entry[key] = manifest[key]
@@ -1269,6 +1413,12 @@ def publication_fields_from_receipt(receipt):
         and arweave.get("bundle_sha256") == receipt.get("bundle_sha256")
     ):
         fields["arweave_tx"] = arweave["transaction_id"]
+        # A confirmed Arweave tx is the permanent, CORS-fetchable catalog mirror
+        # (a bundle tar). This is the locator a browser can actually read --
+        # never the GitHub release asset_url, whose redirect strips CORS headers.
+        tx_url = arweave.get("transaction_url") or f"{arweave_gateway()}/{arweave['transaction_id']}"
+        fields["catalog_url"] = tx_url
+        fields["catalog_url_kind"] = "bundle_tar"
     # A day adopted from an upstream node is a faithful mirror, not a local
     # re-derivation; record the chain of custody in this node's own ledger
     # (the consensus manifest must stay byte-identical to upstream and so
@@ -1400,6 +1550,7 @@ def archive_snapshot(
         state_as_of_utc=state_as_of_utc,
         annotations=annotations,
         conjunctions=conjunctions,
+        delta=delta,
     )
     print(f"  Content SHA-256 ({CONTENT_SCHEMA}): {manifest['content_sha256']}")
     cleanup_stale_artifacts(
@@ -1859,10 +2010,20 @@ def process_rebuild_content(args):
         ):
             # Idempotent: hydrated or previously rebuilt days keep their exact
             # artifacts (re-deriving annotations would change observed_at_utc
-            # and break byte-identity with the published bundle).
-            print(f"  {day}: already carries {CONTENT_SCHEMA} fields; skipping")
-            skipped += 1
-            previous_records = json.loads(read_catalog_bytes(day))
+            # and break byte-identity with the published bundle). But top up the
+            # card-parity aggregate fields if a pre-aggregate rebuild left them
+            # out -- these derive purely from the recorded catalog + delta.json,
+            # touch no annotation, and let the existing ~57 days gain the split.
+            day_records = json.loads(read_catalog_bytes(day))
+            if backfill_manifest_aggregates(manifest, day, day_records):
+                write_json(manifest_path, manifest)
+                update_ledger(manifest)
+                print(f"  {day}: backfilled aggregate fields (annotations untouched)")
+                rebuilt += 1
+            else:
+                print(f"  {day}: already carries {CONTENT_SCHEMA} fields; skipping")
+                skipped += 1
+            previous_records = day_records
             continue
 
         records = json.loads(read_catalog_bytes(day))
@@ -1899,9 +2060,14 @@ def process_rebuild_content(args):
         manifest["content_excluded_fields"] = list(CONTENT_EXCLUDED_FIELDS)
         manifest["content_sha256"] = core_content_sha256(records)
         manifest["annotations_sha256"] = sha256_path(annotations_file)
-        reentered = reentered_object_count(records, day)
-        manifest["on_orbit_count"] = len(records) - reentered
-        manifest["reentered_count"] = reentered
+        # Card-parity aggregates from the recorded bytes. updated/new come from
+        # the day's delta.json if it was archived (rolling days); genesis has
+        # none, so those stay 0 while decayed/on-orbit/bands still compute.
+        manifest.update(
+            manifest_aggregate_fields(
+                records, day, delta=read_json_if_exists(day_dir / "delta.json")
+            )
+        )
         write_json(manifest_path, manifest)
         update_ledger(manifest)
 
@@ -3070,7 +3236,7 @@ def arweave_wallet_balance(address):
     return int(balance)
 
 
-def arweave_build_transaction(bundle, jwk):
+def arweave_build_transaction(bundle, jwk, tags=None):
     bundle_bytes = Path(bundle["path"]).read_bytes()
     chunk_plan = arweave_generate_transaction_chunks(bundle_bytes)
     _, price = arweave_request("GET", f"/price/{len(bundle_bytes)}")
@@ -3092,7 +3258,7 @@ def arweave_build_transaction(bundle, jwk):
         "id": "",
         "last_tx": anchor,
         "owner": jwk["n"],
-        "tags": arweave_tag_objects(bundle),
+        "tags": tags if tags is not None else arweave_tag_objects(bundle),
         "target": "",
         "quantity": "0",
         "data": "",
@@ -3995,6 +4161,21 @@ def validate_snapshot_artifacts(
                 f"{context}: object_count={manifest.get('object_count')} actual={len(records)}"
             )
 
+        # Card-parity aggregates must re-derive from the catalog bytes (plus the
+        # day's delta.json for updated/new), exactly as object_count/sha256 do.
+        # Only fields the manifest actually carries are checked, so manifests
+        # archived before the aggregates existed still validate.
+        expected_aggregates = manifest_aggregate_fields(
+            records,
+            current_date_str,
+            delta=read_json_if_exists(day_dir / "delta.json"),
+        )
+        for key, value in expected_aggregates.items():
+            if key in manifest and manifest.get(key) != value:
+                errors.append(
+                    f"{context}: {key}={manifest.get(key)} but catalog yields {value}"
+                )
+
         try:
             validate_gp_records(records, min_count=min_count, context=context)
         except SnapshotError as exc:
@@ -4220,6 +4401,376 @@ def validate_archive(
     if required_catalog_dates:
         print(f"  Local catalogs required: {len(required_catalog_dates)}")
     print("  Status:    VALID")
+
+
+# ---------------------------------------------------------------------------
+# Lean Tier-1 index (index/YYYY.json + index/manifest.json)
+# ---------------------------------------------------------------------------
+def node_branch_catalog_url(current_date_str, repo, branch):
+    """Raw node-branch URL of a day's catalog.json.gz (CORS-fetchable)."""
+    return (
+        "https://raw.githubusercontent.com/"
+        f"{repo}/{branch}/data/{current_date_str.replace('-', '/')}/catalog.json.gz"
+    )
+
+
+def catalog_locator(current_date_str, receipt, repo, branch):
+    """The CORS-fetchable per-day catalog URL + its kind for an index entry.
+
+    A confirmed Arweave tx (permanent bundle tar) wins; otherwise the node-branch
+    raw catalog.json.gz, which a browser CAN read. The GitHub release asset is
+    never used as the locator: its 302 redirect target serves no CORS headers,
+    so a browser can never fetch it.
+    """
+    pub = publication_fields_from_receipt(receipt)
+    if pub.get("catalog_url"):
+        return pub["catalog_url"], pub.get("catalog_url_kind", "bundle_tar")
+    if repo and branch:
+        return node_branch_catalog_url(current_date_str, repo, branch), "catalog_gz"
+    return None, None
+
+
+def index_entry_from_manifest(manifest, *, catalog_url=None, catalog_url_kind=None):
+    """Project a manifest onto the lean Tier-1 index entry (+ catalog locator).
+
+    Aggregate fields are copied only when present, so days not yet rebuilt with
+    the card-parity aggregates still index (object_count/sha256/provenance are
+    always there)."""
+    entry = {key: manifest[key] for key in INDEX_ENTRY_FIELDS if key in manifest}
+    if catalog_url:
+        entry["catalog_url"] = catalog_url
+        entry["catalog_url_kind"] = catalog_url_kind
+    return entry
+
+
+def build_index(repo=DEFAULT_NODE_REPO, branch=DEFAULT_NODE_BRANCH, *, dates=None, index_dir=None):
+    """Build the lean Tier-1 index from archived manifests + storage receipts.
+
+    Writes index/YYYY.json year-chunks (lean per-day aggregate entries, each with
+    a CORS-fetchable catalog locator) and index/manifest.json
+    {schema, chunks:[{year,path,sha256,count,first,last}], latest, latestEntry, ...}.
+    latestEntry inlines the newest day's full aggregate so a consumer boots to the
+    head with exact numbers from the manifest alone. Returns the manifest dict.
+    """
+    # Resolve INDEX_DIR at call time (not as a default arg) so tests monkeypatching
+    # the module global, and any --output-dir override, take effect.
+    index_dir = Path(index_dir) if index_dir is not None else INDEX_DIR
+    dates = dates if dates is not None else discover_snapshot_dates()
+    chunks_by_year = collections.defaultdict(list)
+    entries_by_date = {}
+    for current_date_str in dates:
+        manifest = read_json_if_exists(snapshot_dir(current_date_str) / "manifest.json")
+        if manifest is None:
+            continue
+        url, kind = catalog_locator(
+            current_date_str, load_storage_receipt(current_date_str), repo, branch
+        )
+        entry = index_entry_from_manifest(manifest, catalog_url=url, catalog_url_kind=kind)
+        entries_by_date[current_date_str] = entry
+        chunks_by_year[current_date_str[:4]].append(entry)
+
+    if not entries_by_date:
+        raise SnapshotError("build-index: no archived manifests found under data/")
+
+    index_dir.mkdir(parents=True, exist_ok=True)
+    # Remove year chunks that no longer have any backing day (e.g. after a prune)
+    # so the index never advertises a stale chunk.
+    live_chunks = {f"{year}.json" for year in chunks_by_year}
+    for stale in index_dir.glob("[0-9][0-9][0-9][0-9].json"):
+        if stale.name not in live_chunks:
+            stale.unlink()
+
+    chunks_meta = []
+    for year in sorted(chunks_by_year):
+        year_entries = sorted(chunks_by_year[year], key=lambda e: e["date"])
+        chunk_path = index_dir / f"{year}.json"
+        write_json(chunk_path, year_entries)
+        chunks_meta.append(
+            {
+                "year": year,
+                "path": f"index/{year}.json",
+                "sha256": sha256_path(chunk_path),
+                "count": len(year_entries),
+                "first": year_entries[0]["date"],
+                "last": year_entries[-1]["date"],
+            }
+        )
+
+    latest_date = max(entries_by_date)
+    manifest = {
+        "schema": INDEX_SCHEMA,
+        "generated_at_utc": utc_stamp(),
+        "repo": repo,
+        "branch": branch,
+        "day_count": len(entries_by_date),
+        "first": min(entries_by_date),
+        "latest": latest_date,
+        "chunks": chunks_meta,
+        "latestEntry": entries_by_date[latest_date],
+    }
+    write_json(index_dir / "manifest.json", manifest)
+    return manifest
+
+
+def arweave_upload_file(
+    path,
+    *,
+    content_type="application/json",
+    extra_tags=(),
+    jwk=None,
+    build=arweave_build_transaction,
+    submit_transaction=arweave_submit_transaction,
+    submit_chunks=arweave_submit_chunks,
+    query_status=arweave_query_tx_status,
+):
+    """Upload a single file to Arweave with index-appropriate tags.
+
+    Returns a destination dict (status/transaction_id/transaction_url) or a skip
+    dict ({"status":"skipped","reason":"missing_wallet"}) when no wallet is set.
+    The submit/query callables are injectable so the index Arweave mirror is
+    testable with no network."""
+    jwk = jwk if jwk is not None else arweave_wallet_jwk()
+    if jwk is None:
+        return {"status": "skipped", "reason": "missing_wallet"}
+    path = Path(path)
+    tag_pairs = [
+        ("App-Name", "RSO-Index"),
+        ("App-Version", PIPELINE_VERSION),
+        ("Content-Type", content_type),
+        *extra_tags,
+    ]
+    tags = [
+        {"name": b64url_encode(n.encode("utf-8")), "value": b64url_encode(v.encode("utf-8"))}
+        for n, v in tag_pairs
+    ]
+    upload = build({"path": str(path)}, jwk, tags=tags)
+    transaction = upload["transaction"]
+    submit_transaction(upload)
+    if not upload["inline_data"]:
+        submit_chunks(upload)
+    status_code, tx_status = query_status(transaction["id"])
+    state, confirmations, block_height = arweave_tx_confirmation(status_code, tx_status)
+    return {
+        "status": state,
+        "transaction_id": transaction["id"],
+        "transaction_url": f"{arweave_gateway()}/{transaction['id']}",
+        "confirmations": confirmations,
+        "block_height": block_height,
+        "submitted_at": utc_stamp(),
+    }
+
+
+def mirror_index_to_arweave(index_dir=None, *, upload=arweave_upload_file):
+    """Mirror the index year-chunks + manifest to Arweave for permanence.
+
+    Records each tx under index/manifest.json's "arweave" key. No-op (returns
+    None) when no wallet is configured -- GitHub-raw on the node branch is always
+    the convenience mirror; Arweave is the pay-once permanence layer on top."""
+    index_dir = Path(index_dir) if index_dir is not None else INDEX_DIR
+    manifest_path = index_dir / "manifest.json"
+    manifest = read_json_if_exists(manifest_path)
+    if manifest is None:
+        raise SnapshotError("mirror-index: index/manifest.json not found; run build-index first")
+
+    chunk_txs = {}
+    for chunk in manifest.get("chunks", []):
+        result = upload(
+            index_dir / f"{chunk['year']}.json",
+            extra_tags=[("RSO-Index-Chunk", chunk["year"]), ("Chunk-SHA256", chunk["sha256"])],
+        )
+        if result.get("status") == "skipped":
+            return None
+        chunk_txs[chunk["path"]] = result
+
+    # Embed chunk locations before uploading the manifest, so the permanent
+    # manifest itself names where each permanent chunk lives.
+    manifest["arweave"] = {"chunks": chunk_txs}
+    write_json(manifest_path, manifest)
+    manifest_tx = upload(manifest_path, extra_tags=[("RSO-Index", "manifest")])
+    if manifest_tx.get("status") != "skipped":
+        manifest["arweave"]["manifest"] = manifest_tx
+        write_json(manifest_path, manifest)
+    return manifest
+
+
+def process_build_index(args):
+    repo = args.repo or os.environ.get("GITHUB_REPOSITORY") or DEFAULT_NODE_REPO
+    branch = args.branch or os.environ.get("RSO_NODE_BRANCH") or DEFAULT_NODE_BRANCH
+    index_dir = Path(args.output_dir) if args.output_dir else INDEX_DIR
+    manifest = build_index(repo, branch, index_dir=index_dir)
+    print(f"\nTier-1 index built under {index_dir}  (repo={repo} branch={branch})")
+    print(
+        f"  days: {manifest['day_count']}  years: {len(manifest['chunks'])}  "
+        f"latest: {manifest['latest']}"
+    )
+    for chunk in manifest["chunks"]:
+        print(f"  {chunk['path']}  ({chunk['count']} days, {chunk['first']}..{chunk['last']})")
+    if getattr(args, "arweave", False):
+        mirrored = mirror_index_to_arweave(index_dir)
+        if mirrored is None:
+            print("  Arweave mirror: SKIPPED (ARWEAVE_JWK not set)")
+        else:
+            print("  Arweave mirror: index manifest + chunks uploaded")
+
+
+# ---------------------------------------------------------------------------
+# Embedded baseline re-cut: the Tier-1 index inlined as-of-mint into the card,
+# so the NFT boots fully offline to its mint-day head with exact numbers.
+# ---------------------------------------------------------------------------
+# Compact baseline day keys mirror what card/index.html seedFromBaseline reads.
+BASELINE_BEGIN_MARKER = "// BASELINE:BEGIN"
+BASELINE_END_MARKER = "// BASELINE:END"
+
+
+def baseline_day_from_index_entry(entry):
+    """Compact one Tier-1 index entry into a baseline `days[]` element.
+
+    Keys match card/index.html seedFromBaseline: d,c,s,cs,sc,pv,by always, plus
+    the aggregates oo/re/bc/tc/dl and the catalog locator cu/ck when the index
+    carries them (so the inlined baseline shows exact numbers with no network).
+    """
+    day = {
+        "d": entry["date"],
+        "c": entry["object_count"],
+        "s": entry["sha256"],
+        "cs": entry["content_sha256"],
+        # The index entry intentionally omits content_schema (closed lean field
+        # set); every archived day uses the current schema, so default to it.
+        "sc": entry.get("content_schema", CONTENT_SCHEMA),
+        "pv": entry["provenance"],
+        "by": entry["compressed_bytes"],
+    }
+    for compact, full in (
+        ("oo", "on_orbit_count"),
+        ("re", "reentered_count"),
+        ("bc", "band_counts"),
+        ("tc", "type_counts"),
+        ("dl", "delta"),
+    ):
+        if full in entry:
+            day[compact] = entry[full]
+    if entry.get("catalog_url"):
+        day["cu"] = entry["catalog_url"]
+        day["ck"] = entry.get("catalog_url_kind")
+    return day
+
+
+def index_entries_in_order(index_manifest, index_dir):
+    """All Tier-1 index day entries across every year chunk, sorted by date."""
+    entries = []
+    for chunk in index_manifest.get("chunks", []):
+        chunk_entries = read_json_if_exists(index_dir / f"{chunk['year']}.json", default=[])
+        if isinstance(chunk_entries, list):
+            entries.extend(chunk_entries)
+    entries.sort(key=lambda e: e.get("date", ""))
+    return entries
+
+
+def build_baseline_object(index_manifest, index_dir, *, start_date=None, build_at=None, carry=None):
+    """Assemble the embedded BASELINE object from the Tier-1 index.
+
+    `days` is the full compact timeline (with aggregates inlined). startDate is
+    the mint/anchor day the card boots onto (defaults to the index head). The
+    attestation digest (`attest`), annotation digest (`anno`/`annoDate`) and
+    `chainMeta` are observation/chain planes the index does not hold, so they are
+    carried forward verbatim from `carry` (typically the card's current baseline)
+    to avoid losing them on a re-cut.
+    """
+    days = [baseline_day_from_index_entry(e) for e in index_entries_in_order(index_manifest, index_dir)]
+    baseline = {
+        "buildAt": build_at or utc_stamp(),
+        "startDate": start_date or index_manifest.get("latest") or (days[-1]["d"] if days else None),
+        "days": days,
+    }
+    carry = carry if isinstance(carry, dict) else {}
+    for key in ("chainMeta", "attest", "annoDate", "anno"):
+        if key in carry:
+            baseline[key] = carry[key]
+    return baseline
+
+
+def extract_baseline_from_card(card_path):
+    """Parse the BASELINE object currently embedded between the card markers."""
+    text = Path(card_path).read_text(encoding="utf-8")
+    match = re.search(
+        re.escape(BASELINE_BEGIN_MARKER)
+        + r".*?\n\s*const BASELINE\s*=\s*(\{.*?\});\s*\n\s*"
+        + re.escape(BASELINE_END_MARKER),
+        text,
+        re.DOTALL,
+    )
+    if not match:
+        return None
+    return json.loads(match.group(1))
+
+
+def inject_baseline_into_card(card_path, baseline_json):
+    """Replace the `const BASELINE = {...};` between the card markers in place.
+
+    Returns the rewritten card text length. Raises if the markers are absent so
+    we never silently fail to update the permanent offline floor."""
+    card_path = Path(card_path)
+    text = card_path.read_text(encoding="utf-8")
+    pattern = re.compile(
+        r"(" + re.escape(BASELINE_BEGIN_MARKER) + r"[^\n]*\n)"
+        r".*?"
+        r"(\n[ \t]*" + re.escape(BASELINE_END_MARKER) + r")",
+        re.DOTALL,
+    )
+    if not pattern.search(text):
+        raise SnapshotError(
+            f"{card_path}: BASELINE markers not found; cannot inject "
+            f"(expected {BASELINE_BEGIN_MARKER!r} / {BASELINE_END_MARKER!r})"
+        )
+    replacement = r"\g<1>    const BASELINE = " + baseline_json.replace("\\", "\\\\") + r";\g<2>"
+    new_text = pattern.sub(replacement, text, count=1)
+    card_path.write_text(new_text, encoding="utf-8")
+    return len(new_text)
+
+
+def process_build_baseline(args):
+    index_dir = Path(args.index_dir) if args.index_dir else INDEX_DIR
+    index_manifest = read_json_if_exists(index_dir / "manifest.json")
+    if index_manifest is None:
+        raise SnapshotError(
+            f"build-baseline: {index_dir / 'manifest.json'} not found; run build-index first"
+        )
+
+    # Preserve the chain/observation planes (attest/anno/chainMeta) from an
+    # existing baseline: an explicit --carry-from, else the card we're injecting.
+    carry = None
+    carry_source = args.carry_from or args.inject
+    if carry_source:
+        carry_path = Path(carry_source)
+        if carry_path.suffix == ".json":
+            carry = read_json_if_exists(carry_path)
+        elif carry_path.exists():
+            carry = extract_baseline_from_card(carry_path)
+
+    baseline = build_baseline_object(
+        index_manifest,
+        index_dir,
+        start_date=args.start_date,
+        build_at=getattr(args, "build_at", None),
+        carry=carry,
+    )
+    payload = json.dumps(baseline, ensure_ascii=True, separators=(",", ":"))
+
+    if args.inject:
+        # Never overwrite a populated permanent floor with an empty baseline.
+        if not baseline["days"]:
+            raise SnapshotError("build-baseline: refusing to inject an empty baseline")
+        inject_baseline_into_card(args.inject, payload)
+        carried = [k for k in ("attest", "anno", "chainMeta") if k in baseline]
+        print(
+            f"  injected baseline into {args.inject}: {len(baseline['days'])} days, "
+            f"startDate={baseline['startDate']}, carried={','.join(carried) or 'none'}"
+        )
+    elif args.output:
+        Path(args.output).write_text(payload + "\n", encoding="utf-8")
+        print(f"  wrote baseline ({len(baseline['days'])} days) to {args.output}")
+    else:
+        print(payload)
 
 
 def add_common_snapshot_args(parser):
@@ -4513,6 +5064,60 @@ def main():
         help="Clear the prerelease flag instead of setting it",
     )
 
+    build_index_parser = subparsers.add_parser(
+        "build-index",
+        help="Build the lean Tier-1 index (index/YYYY.json + index/manifest.json)",
+    )
+    build_index_parser.add_argument(
+        "--repo",
+        default=os.environ.get("GITHUB_REPOSITORY"),
+        help=f"OWNER/REPO for node-branch catalog locators (default: {DEFAULT_NODE_REPO})",
+    )
+    build_index_parser.add_argument(
+        "--branch",
+        default=os.environ.get("RSO_NODE_BRANCH"),
+        help=f"Branch hosting data/ for catalog locators (default: {DEFAULT_NODE_BRANCH})",
+    )
+    build_index_parser.add_argument(
+        "--output-dir",
+        default=None,
+        help="Where to write the index (default: <repo>/index)",
+    )
+    build_index_parser.add_argument(
+        "--arweave",
+        action="store_true",
+        help="Also mirror the built index to Arweave (requires ARWEAVE_JWK)",
+    )
+
+    build_baseline_parser = subparsers.add_parser(
+        "build-baseline",
+        help="Re-cut the card's embedded baseline from the Tier-1 index (as-of-mint)",
+    )
+    build_baseline_parser.add_argument(
+        "--index-dir", default=None, help="Index directory to read (default: <repo>/index)"
+    )
+    build_baseline_parser.add_argument(
+        "--start-date",
+        default=None,
+        help="Mint/anchor day the card boots onto (default: index head)",
+    )
+    build_baseline_parser.add_argument(
+        "--build-at", default=None, help="Override buildAt timestamp (default: now, UTC)"
+    )
+    build_baseline_parser.add_argument(
+        "--carry-from",
+        default=None,
+        help="Baseline JSON or card to carry attest/anno/chainMeta from (default: --inject card)",
+    )
+    build_baseline_parser.add_argument(
+        "--inject",
+        default=None,
+        help="Card HTML to rewrite in place between the BASELINE markers",
+    )
+    build_baseline_parser.add_argument(
+        "--output", default=None, help="Write the baseline JSON to this file instead of stdout"
+    )
+
     args = parser.parse_args()
 
     if args.command == "verify":
@@ -4546,6 +5151,12 @@ def main():
         return
     if args.command == "rebuild-content":
         process_rebuild_content(args)
+        return
+    if args.command == "build-index":
+        process_build_index(args)
+        return
+    if args.command == "build-baseline":
+        process_build_baseline(args)
         return
     if args.command == "update-pointers":
         process_update_pointers(args)
