@@ -299,8 +299,17 @@ jobs:
           fi
           python "${args[@]}"
 
+      - name: Build Tier-1 index
+        # Lean year-chunked aggregate index a browser reads instantly (the card's
+        # HUD numbers with no catalog download). Runs after publish so each day's
+        # storage.json receipt is available for the CORS catalog locator. GitHub-raw
+        # (the node branch) is the daily mirror; Arweave permanence is a periodic
+        # step (`build-index --arweave`) to avoid re-paying for the growing current
+        # year chunk every day.
+        run: python pipeline/snapshot.py build-index --repo "$GITHUB_REPOSITORY" --branch "$RSO_NODE_BRANCH"
+
       - name: Commit publish receipts
-        run: bash scripts/git-commit-paths.sh "$RSO_NODE_BRANCH" "Record archive publish destinations" data ledger.json latest.json
+        run: bash scripts/git-commit-paths.sh "$RSO_NODE_BRANCH" "Record archive publish destinations" data ledger.json latest.json index
 
       - name: Check attestation configuration
         env:
