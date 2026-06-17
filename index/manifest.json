@@ -1,0 +1,48 @@
+{
+  "branch": "node",
+  "chunks": [
+    {
+      "count": 59,
+      "first": "2026-04-20",
+      "last": "2026-06-17",
+      "path": "index/2026.json",
+      "sha256": "3e6a783ab61d600468644281067ddb7e06cb08c0f8be9af83b6ea2e7b188f5a3",
+      "year": "2026"
+    }
+  ],
+  "day_count": 59,
+  "first": "2026-04-20",
+  "generated_at_utc": "2026-06-17T05:20:05Z",
+  "latest": "2026-06-17",
+  "latestEntry": {
+    "band_counts": {
+      "geo": 1838,
+      "leo": 29003,
+      "meo": 3689
+    },
+    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/17/catalog.json.gz",
+    "catalog_url_kind": "catalog_gz",
+    "compressed_bytes": 11377124,
+    "content_sha256": "814bda5b876797d8bbef6ee13c954c1ab9f004312de9818d9d8f0d1c394fc41a",
+    "date": "2026-06-17",
+    "delta": {
+      "decayed": 0,
+      "new": 60,
+      "updated": 27468
+    },
+    "object_count": 68066,
+    "on_orbit_count": 34530,
+    "provenance": "rolling_gp_history_delta",
+    "reentered_count": 33536,
+    "sha256": "5b101de2ec537dd1b1394ab10edf370a9c7a41e067a737f2c4fcf07a2665ae07",
+    "type_counts": {
+      "debris": 12320,
+      "payload": 18131,
+      "rocket": 2244,
+      "tba": 0,
+      "unknown": 1835
+    }
+  },
+  "repo": "OMPub/RSO",
+  "schema": "rso-index-v1"
+}
