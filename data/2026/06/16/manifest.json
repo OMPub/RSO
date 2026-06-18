@@ -38,6 +38,11 @@
     "/class/gp_history/NORAD_CAT_ID/330000--339999/CREATION_DATE/2026-06-15T00:00:00--2026-06-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json"
   ],
   "archived_at": "2026-06-16T05:36:07.269286+00:00",
+  "band_counts": {
+    "geo": 1836,
+    "leo": 28946,
+    "meo": 3689
+  },
   "base_snapshot_date": "2026-06-15",
   "base_snapshot_sha256": "6109ed01b4d6cdecca614d904f07ecf3fb3be6f675bc6bb244a2f64ec493200b",
   "compressed_bytes": 11423557,
@@ -57,6 +62,11 @@
   "content_sha256": "741c505a4bfa072afd8d74d059eb3eff4ce3c17fec8d87da174aacf66c18ef7f",
   "cutoff_utc": "2026-06-16T00:00:00Z",
   "date": "2026-06-16",
+  "delta": {
+    "decayed": 0,
+    "new": 8,
+    "updated": 26245
+  },
   "delta_window_end_utc": "2026-06-16T00:00:00Z",
   "delta_window_start_utc": "2026-06-15T00:00:00Z",
   "format": "OMM/JSON",
@@ -70,5 +80,12 @@
   "reentered_count": 33535,
   "sha256": "beb49ac476387d7e7f19161f009b5b6209ab8c44defe0ea5fe8eac7798e066a2",
   "source": "space-track.org",
-  "state_as_of_utc": "2026-06-16T00:00:00Z"
+  "state_as_of_utc": "2026-06-16T00:00:00Z",
+  "type_counts": {
+    "debris": 12320,
+    "payload": 18130,
+    "rocket": 2243,
+    "tba": 0,
+    "unknown": 1778
+  }
 }

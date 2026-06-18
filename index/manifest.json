@@ -6,13 +6,13 @@
       "first": "2026-04-20",
       "last": "2026-06-18",
       "path": "index/2026.json",
-      "sha256": "8f553d2139bace7416eeb49a36473784b48cbdf5ff5871f1b0f8e427e355d6fd",
+      "sha256": "3c4a3b16dc9c901cdfe9f30d735d7cd6662698b3cb35d4e61410d4b67bba577a",
       "year": "2026"
     }
   ],
   "day_count": 60,
   "first": "2026-04-20",
-  "generated_at_utc": "2026-06-18T05:05:30Z",
+  "generated_at_utc": "2026-06-18T23:49:43Z",
   "latest": "2026-06-18",
   "latestEntry": {
     "band_counts": {

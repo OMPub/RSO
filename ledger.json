@@ -1046,54 +1046,102 @@
     "annotations_sha256": "83cb7ad34cd4b3d123e1a10f3bcff3b74126cdd41668faffaae0ff28c6a7c0b8",
     "archived_at": "2026-06-14T05:09:45.654409+00:00",
     "asset_url": "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-06-14/rso-archive-2026-06-14.tar.gz",
+    "band_counts": {
+      "geo": 1836,
+      "leo": 28942,
+      "meo": 3689
+    },
     "base_snapshot_date": "2026-06-13",
     "base_snapshot_sha256": "fe5333bef049520fddf35913b72cfbf74461a4691ed3bfc8658025c03bd3b592",
-    "bundle_sha256": "d48b7f0b7b2bea6991a5fb758dbe4980510ac8d51ba611255570f17d26f99a11",
+    "bundle_sha256": "dd836710228f05d51a1d75bb4477d817fc504636f681d3d1a4bee646c20f51a0",
     "compressed_bytes": 11357573,
     "conjunctions_sha256": "6f963e5cdce832cc1dadfe2cf78a8b430a4cea112a0b6383f0971f5203a4a0e4",
     "content_schema": "rso-core-v1",
     "content_sha256": "92c36eae7bef6b2024fc0d176c1f65a08172652f5933433c81f4db9f3e472779",
     "date": "2026-06-14",
+    "delta": {
+      "decayed": 0,
+      "new": 1,
+      "updated": 27819
+    },
     "delta_window_end_utc": "2026-06-14T00:00:00Z",
     "delta_window_start_utc": "2026-06-13T00:00:00Z",
     "object_count": 67998,
+    "on_orbit_count": 34467,
     "provenance": "rolling_gp_history_delta",
     "query_strategy": "prior_snapshot_plus_bounded_gp_history_delta",
+    "reentered_count": 33531,
     "sha256": "44de7c269ebe83aab075887528b8b03f59de8d2f9c5bc0065196164d632f3b5d",
-    "state_as_of_utc": "2026-06-14T00:00:00Z"
+    "state_as_of_utc": "2026-06-14T00:00:00Z",
+    "type_counts": {
+      "debris": 12321,
+      "payload": 18133,
+      "rocket": 2243,
+      "tba": 0,
+      "unknown": 1770
+    }
   },
   {
     "annotations_sha256": "7df88228555d5424d838a1bbb09f35eb5960a38820d19c97e8b6e289c5b7c822",
     "archived_at": "2026-06-15T05:31:26.146140+00:00",
     "asset_url": "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-06-15/rso-archive-2026-06-15.tar.gz",
+    "band_counts": {
+      "geo": 1835,
+      "leo": 28940,
+      "meo": 3690
+    },
     "base_snapshot_date": "2026-06-14",
     "base_snapshot_sha256": "44de7c269ebe83aab075887528b8b03f59de8d2f9c5bc0065196164d632f3b5d",
-    "bundle_sha256": "87466305b2651569c8f692b8d2f040ed8e44e8a88937193467668214e56b64eb",
+    "bundle_sha256": "b41882d626ce04cb2f579fe8956368f7aa360a36716b60dbc40f781d7897cbe2",
     "compressed_bytes": 11371050,
     "conjunctions_sha256": "9135644e837febc6766b0402b0b7bebe9e9e2a3999a9263cf8e689fcb059eb61",
     "content_schema": "rso-core-v1",
     "content_sha256": "e61b3c5bda28ca276e8d91f33e4257f9d225ddb74ae44fcf15a7979acf64cd94",
     "date": "2026-06-15",
+    "delta": {
+      "decayed": 0,
+      "new": 0,
+      "updated": 27065
+    },
     "delta_window_end_utc": "2026-06-15T00:00:00Z",
     "delta_window_start_utc": "2026-06-14T00:00:00Z",
     "object_count": 67998,
+    "on_orbit_count": 34465,
     "provenance": "rolling_gp_history_delta",
     "query_strategy": "prior_snapshot_plus_bounded_gp_history_delta",
+    "reentered_count": 33533,
     "sha256": "6109ed01b4d6cdecca614d904f07ecf3fb3be6f675bc6bb244a2f64ec493200b",
-    "state_as_of_utc": "2026-06-15T00:00:00Z"
+    "state_as_of_utc": "2026-06-15T00:00:00Z",
+    "type_counts": {
+      "debris": 12321,
+      "payload": 18131,
+      "rocket": 2243,
+      "tba": 0,
+      "unknown": 1770
+    }
   },
   {
     "annotations_sha256": "96f2a5d2c296a5702073d9941b6b9d8e422884afeb65900baa1845d3c868f054",
     "archived_at": "2026-06-16T05:36:07.269286+00:00",
     "asset_url": "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-06-16/rso-archive-2026-06-16.tar.gz",
+    "band_counts": {
+      "geo": 1836,
+      "leo": 28946,
+      "meo": 3689
+    },
     "base_snapshot_date": "2026-06-15",
     "base_snapshot_sha256": "6109ed01b4d6cdecca614d904f07ecf3fb3be6f675bc6bb244a2f64ec493200b",
-    "bundle_sha256": "0f73a080532d43706ae55a97ee503f67accb0b804e91120161fe414a896b85eb",
+    "bundle_sha256": "13fe618e88c5b9a295f9245fb6a5caa1824cc796b4d42e5497cab5dfd3ec8de5",
     "compressed_bytes": 11423557,
     "conjunctions_sha256": "bb6f6ce1f1381c19f9a555e1606e8d38f7fed06180c236460bdb88c298410c55",
     "content_schema": "rso-core-v1",
     "content_sha256": "741c505a4bfa072afd8d74d059eb3eff4ce3c17fec8d87da174aacf66c18ef7f",
     "date": "2026-06-16",
+    "delta": {
+      "decayed": 0,
+      "new": 8,
+      "updated": 26245
+    },
     "delta_window_end_utc": "2026-06-16T00:00:00Z",
     "delta_window_start_utc": "2026-06-15T00:00:00Z",
     "object_count": 68006,
@@ -1102,7 +1150,14 @@
     "query_strategy": "prior_snapshot_plus_bounded_gp_history_delta",
     "reentered_count": 33535,
     "sha256": "beb49ac476387d7e7f19161f009b5b6209ab8c44defe0ea5fe8eac7798e066a2",
-    "state_as_of_utc": "2026-06-16T00:00:00Z"
+    "state_as_of_utc": "2026-06-16T00:00:00Z",
+    "type_counts": {
+      "debris": 12320,
+      "payload": 18130,
+      "rocket": 2243,
+      "tba": 0,
+      "unknown": 1778
+    }
   },
   {
     "annotations_sha256": "ee2497716eaeca3aae69be6d4a6a4f3ee2cdc0c2504dc1ef179e1fca1bf6cf29",
