@@ -2660,6 +2660,15 @@
       mat.userData.dim = !!dim;
       return mat;
     }
+    // The ISS is the one hand-modelled, realistically-coloured craft (not lens-tinted): gold solar
+    // wings, white truss / radiators / modules, the Russian segment's bluish panels. Emissive keeps
+    // every face legible against black, the way the field solids are lit. Shared by inspector + cameo.
+    const ISS_MAT = {
+      gold:  new THREE.MeshPhongMaterial({ color: 0x86592a, emissive: 0x2a1c08, shininess: 22, flatShading: true }),
+      irosa: new THREE.MeshPhongMaterial({ color: 0x3a2810, emissive: 0x150d04, shininess: 18, flatShading: true }),
+      white: new THREE.MeshPhongMaterial({ color: 0xc9ced5, emissive: 0x12151b, shininess: 55, flatShading: true }),
+      blue:  new THREE.MeshPhongMaterial({ color: 0x2c4d8a, emissive: 0x0a1120, shininess: 26, flatShading: true }),
+    };
     function buildVigShape(o) {
       const nid = o.meta ? (parseInt(o.meta.id, 10) || 1) : 1;
       const R = (salt) => rand2(nid, salt);
@@ -2667,20 +2676,30 @@
       const add = (geom, mat, x = 0, y = 0, z = 0, rx = 0, ry = 0, rz = 0) => {
         const m = new THREE.Mesh(geom, mat); m.position.set(x, y, z); m.rotation.set(rx, ry, rz); g.add(m); return m;
       };
-      if (o.meta && o.meta.id === "25544") {                 // the ISS — the ONE hand-modelled
-        // exception to the NORAD-seeded silhouettes: a truss with eight solar wings and a
-        // module stack athwart it. Colour still follows the active lens (vigMat), like any solid.
-        add(new THREE.BoxGeometry(0.95, 0.045, 0.06), vigMat(0));                       // integrated truss
-        for (const sx of [-0.56, 0.56]) {                                              // port + starboard array sets
-          for (const sy of [0.11, 0.33, -0.11, -0.33]) {                               // four wings per side
-            add(new THREE.BoxGeometry(0.42, 0.010, 0.34), vigMat(0, true), sx, sy, 0);
-          }
-        }
-        add(new THREE.CylinderGeometry(0.075, 0.075, 0.42, 10), vigMat(0), 0, 0, 0, Math.PI / 2, 0, 0);   // pressurised module stack
-        add(new THREE.BoxGeometry(0.15, 0.13, 0.16), vigMat(0), 0, 0, 0.26);           // node / cupola fore
-        add(new THREE.BoxGeometry(0.13, 0.12, 0.15), vigMat(0), 0, 0, -0.24);          // module aft
-        add(new THREE.BoxGeometry(0.26, 0.010, 0.14), vigMat(0, true), 0.26, 0, 0, 0.5, 0, 0);    // radiators
-        add(new THREE.BoxGeometry(0.26, 0.010, 0.14), vigMat(0, true), -0.26, 0, 0, -0.5, 0, 0);
+      if (o.meta && o.meta.id === "25544") {                 // the ISS — the ONE hand-modelled craft
+        // Modelled in the XY plane after the canonical broadside portrait, so a lookAt(camera)
+        // presents that same face: a long integrated truss (X), eight gold solar wings in four
+        // pairs (extending ±Y), darker iROSA over the outer arrays, white amidships radiators +
+        // pressurised modules, and the Russian segment with its bluish panels slung below (−Y).
+        const { gold, irosa, white, blue } = ISS_MAT;
+        add(new THREE.BoxGeometry(2.0, 0.05, 0.07), white);                              // integrated truss
+        const wing = new THREE.BoxGeometry(0.22, 0.72, 0.012);                           // one solar wing (long in Y)
+        for (const sx of [-0.92, -0.5, 0.5, 0.92])                                       // four truss stations…
+          for (const sy of [0.46, -0.46]) add(wing, gold, sx, sy, 0);                    // …a wing up + down → eight
+        const rosa = new THREE.BoxGeometry(0.14, 0.42, 0.014);                           // newer iROSA over the outer arrays
+        for (const sx of [-0.92, 0.92]) for (const sy of [0.42, -0.42]) add(rosa, irosa, sx, sy, 0.013);
+        // white thermal radiators amidships, set off the array plane so they read as the lighter
+        // perpendicular panels of the portrait
+        for (const sx of [0.26, -0.26]) add(new THREE.BoxGeometry(0.36, 0.2, 0.012), white, sx, 0, 0.12, 0, 0, 0.18 * (sx > 0 ? 1 : -1));
+        // pressurised module cluster across the truss centre, a stack toward the viewer (+Z)
+        add(new THREE.CylinderGeometry(0.085, 0.085, 0.6, 14), white, 0, 0, 0.17, Math.PI / 2, 0, 0);   // Destiny/Harmony/JEM run
+        add(new THREE.BoxGeometry(0.5, 0.17, 0.17), white, 0, 0, 0.13);                  // lateral modules (Columbus / JEM / airlock)
+        add(new THREE.CylinderGeometry(0.055, 0.055, 0.13, 10), white, 0, -0.1, 0.4, Math.PI / 2, 0, 0); // node + cupola, fore
+        // Russian segment slung below centre: module stack, small panels, and a docked ferry
+        add(new THREE.CylinderGeometry(0.05, 0.05, 0.5, 10), white, 0, -0.42, 0.07);
+        for (const sx of [0.22, -0.22]) add(new THREE.BoxGeometry(0.24, 0.075, 0.01), blue, sx, -0.52, 0.07);
+        add(new THREE.CylinderGeometry(0.04, 0.05, 0.18, 8), white, 0, -0.74, 0.07);     // docked Soyuz / Progress
+        for (const sx of [0.13, -0.13]) add(new THREE.BoxGeometry(0.17, 0.055, 0.008), blue, sx, -0.74, 0.07);
         return g;
       }
       if (o.klass === 0) {                                   // payload: archetype-keyed, like the field
@@ -2769,6 +2788,37 @@
         if (R(19) > 0.6) add(new THREE.BoxGeometry(0.16, 0.16, 0.16), vigMat(3, true));
       }
       return g;
+    }
+    // ── ISS cameo ────────────────────────────────────────────────────────────────────────────
+    // The one close flyby in a field where every other object is a distant mote: the hand-modelled
+    // station drifts centrally across the view now and then. Built once, lit by the scene, parked
+    // off-view between passes. The 'i' key still finds the REAL ISS in the catalog — this is ambient.
+    const issCameo = buildVigShape({ meta: { id: "25544" } });
+    issCameo.scale.setScalar(9); issCameo.visible = false; scene.add(issCameo);
+    const ISS_FLY = { dur: 15, gap: 46, dist: 60, near: 18, span: 74, rise: -7 };
+    let issFlyT = -1, issGap = 16, issBasis = null;   // first pass ~16s in; -1 = parked
+    const _issF = new THREE.Vector3(), _issR = new THREE.Vector3(), _issU = new THREE.Vector3();
+    function updateIssCameo(dt) {
+      if (issFlyT < 0) {                                  // parked: count down to the next pass (not during warp)
+        if (state.warp < 0.25) issGap -= dt;
+        if (issGap > 0) return;
+        camera.getWorldDirection(_issF);                 // capture a fixed world path in front of the current view
+        _issR.crossVectors(_issF, camera.up).normalize();
+        _issU.crossVectors(_issR, _issF).normalize();
+        issBasis = { o: camera.position.clone(), f: _issF.clone(), r: _issR.clone(), u: _issU.clone() };
+        issFlyT = 0;
+      }
+      issFlyT += dt / ISS_FLY.dur;
+      if (issFlyT >= 1) { issFlyT = -1; issGap = ISS_FLY.gap; issCameo.visible = false; return; }
+      const t = issFlyT, b = issBasis;
+      const lateral = (t - 0.5) * 2 * ISS_FLY.span;        // off-left → centre → off-right
+      const depth = ISS_FLY.dist - Math.sin(t * Math.PI) * ISS_FLY.near;   // dips closer at the centre of the pass
+      issCameo.position.copy(b.o)
+        .addScaledVector(b.f, depth).addScaledVector(b.r, lateral).addScaledVector(b.u, ISS_FLY.rise);
+      issCameo.lookAt(camera.position);                    // present the broadside, then a gentle 3/4 sway
+      issCameo.rotateY(0.34 + Math.sin(state.time * 0.18) * 0.12);
+      issCameo.rotateX(-0.14);
+      issCameo.visible = state.warp < 0.5;                 // a hyperspace jump mid-pass hides it
     }
     function vigShow(o) {
       if (!vig.scene) {
@@ -3126,6 +3176,7 @@ ${fmtNum(FIELD_N)} objects · ${PERF.solids} solids / ${PERF.candidates} approac
       // Project the wormhole's fixed flight axis after steering the camera. The membrane
       // remains screen-space, but its spiral origin always sits inside the tunnel throat.
       camera.updateMatrixWorld();
+      updateIssCameo(dt);                                  // the station's periodic central flyby
       deepAxis.set(CAM.x, CAM.y, camera.position.z - CORRIDOR).project(camera);
       deepMat.uniforms.uCenter.value.set(deepAxis.x * 0.5 + 0.5, deepAxis.y * 0.5 + 0.5);
 
