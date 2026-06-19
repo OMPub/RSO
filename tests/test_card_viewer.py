@@ -319,8 +319,8 @@ class CardArtifactTest(unittest.TestCase):
         # card counts distinct Arweave locators as independent permanent copies
         self.assertIn('id="witness-perm"', self.html)
         self.assertIn("independent permanent copies", self.html)
-        self.assertIn(r"arweave\.(net|dev)", self.html)
-        # declared locations also serve as verified download mirrors
+        self.assertIn('"arweave.net", "arweave.dev"', self.html)   # gateways in the locator host allowlist
+        # declared locations also serve as verified download mirrors (host-allowlisted before fetch)
         self.assertIn("(attestByDate.get(date) || {}).ar", self.html)
         # Public witness is itself a four-face prism, including the four requested
         # views of the day's witness state.
@@ -945,13 +945,74 @@ class CardNodeRankTest(unittest.TestCase):
 
     def test_reorder_repulls_from_the_new_head(self):
         self.assertIn("async function refreshFromNodes()", self.html)
-        self.assertIn("renderNodeRank(); persistSettings(); refreshFromNodes();", self.html)
+        self.assertIn("nodeOrderManual = true; renderNodeRank(); persistSettings(); scheduleRefresh();", self.html)
 
     def test_order_persists_and_roster_extends_the_list(self):
         self.assertIn('localStorage.setItem("rso-node-order"', self.html)
         self.assertIn("function applyNodeOrder(order)", self.html)
         self.assertIn("async function loadRoster()", self.html)
         self.assertIn('roster: (n) => rawUrl(n, n.idx, "indexer/generated/nodes.json")', self.html)
+
+    def test_default_rank_is_by_tdh(self):
+        # nodes default-sort by on-chain TDH backing (custom-first, then TDH desc), derived from
+        # the attestation index's per-node nodeBackingTdh; a manual drag overrides + persists
+        self.assertIn("const tdhOf = ", self.html)
+        self.assertIn("const nodesByTdh = ", self.html)
+        self.assertIn("function autoRankByTdh()", self.html)
+        self.assertIn("nodeBackingTdh", self.html)            # honest TDH from the attestation events
+        self.assertIn("let nodeOrderManual = false", self.html)
+        self.assertIn("else { state.nodes = nodesByTdh(); }", self.html)   # TDH is the default
+        self.assertIn('id="node-rank-reset"', self.html)      # reset back to TDH rank
+        self.assertIn("function resetNodeRank()", self.html)
+
+    def test_visitor_can_add_an_arbitrary_node(self):
+        self.assertIn('id="node-add"', self.html)
+        self.assertIn("function addCustomNode(", self.html)
+        self.assertIn("function removeCustomNode(", self.html)
+        self.assertIn("function parseNodeInput(", self.html)
+        self.assertIn('localStorage.setItem("rso-custom-nodes"', self.html)  # custom nodes persist
+        self.assertIn("state.nodes.unshift(node)", self.html)               # your node serves first
+
+    def test_node_definitions_are_sanitized_json_only_no_eval(self):
+        # social-engineering hardening: a hostile roster / pasted node can only ever add a
+        # github.com/<owner>/<repo> fetch target — validated by regex, never eval'd, capped.
+        self.assertIn("function sanitizeNode(", self.html)
+        self.assertIn("const REPO_RE = ", self.html)
+        self.assertIn("const MAX_NODES =", self.html)
+        self.assertIn("const n = sanitizeNode(r);", self.html)  # roster entries re-validated on ingest
+        self.assertIn("sanitizeNode(c, { custom: true })", self.html)  # stored custom nodes re-validated
+        # never evaluate fetched/stored content
+        for forbidden in ("eval(", "new Function", "document.write", 'setTimeout("'):
+            self.assertNotIn(forbidden, self.html)
+        # the only fetch host is GitHub raw — no node field interpolates a scheme/host
+        self.assertIn("`https://raw.githubusercontent.com/${n.repo}/${branch}/${path}`", self.html)
+
+    def test_locators_from_node_json_are_host_allowlisted(self):
+        # catalog_url + signed Arweave mirrors come from node-served JSON (not built by rawUrl), so
+        # they pass a host allowlist (https + raw.githubusercontent.com / arweave gateways) before fetch
+        self.assertIn("const safeLocator = ", self.html)
+        self.assertIn('LOCATOR_HOSTS = new Set(["raw.githubusercontent.com", "arweave.net", "arweave.dev"])', self.html)
+        self.assertIn("safeLocator(led.raw.catalog_url)", self.html)         # index/ledger locator gated
+        self.assertIn("locations.map(safeLocator).filter(Boolean)", self.html)  # attestation mirrors gated
+        self.assertNotIn('/^ar:\\/\\/|arweave', self.html)                   # the old unanchored-substring regex is gone
+
+    def test_downloads_are_byte_capped_against_bombs(self):
+        # a hostile node can't OOM the tab: decompression and every body read are capped
+        self.assertIn("const MAX_CATALOG_BYTES =", self.html)
+        self.assertIn("async function readCapped(res, max)", self.html)
+        self.assertIn("total > MAX_CATALOG_BYTES", self.html)                # gunzip stops past the cap
+        self.assertNotIn('return new Response(s).arrayBuffer();', self.html) # old uncapped gunzip gone
+        self.assertIn("readCapped(g.res, MAX_JSON_BYTES)", self.html)        # node JSON capped before parse
+        self.assertIn("readCapped(r, MAX_GZ_BYTES)", self.html)              # catalog bytes capped
+        self.assertIn("MAX_CHUNK_DAYS", self.html)                          # year-chunk entry count bounded
+
+    def test_rerank_is_debounced_and_tdh_key_is_node_backing_only(self):
+        self.assertIn("function scheduleRefresh()", self.html)
+        self.assertIn("refreshTimer = setTimeout(", self.html)
+        self.assertIn("if (seq !== refreshSeq) return;", self.html)          # superseded re-ranks drop out
+        self.assertIn("const t = +e.nodeBackingTdh || 0;", self.html)        # group combinedSupportTdh not mis-attributed
+        # add/remove must NOT latch a manual order (only an explicit drag does)
+        self.assertNotIn("state.nodes.unshift(node);\n      nodeOrderManual = true;", self.html)
 
 
 if __name__ == "__main__":

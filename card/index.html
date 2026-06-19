@@ -216,19 +216,32 @@
     .set-label b { color: var(--seal); font-weight: 600; }
     .set-row input[type=range] { width: 100%; accent-color: #9aa9ff; }
     .set-note { margin-top: 5px; font-size: 9px; color: var(--dim); line-height: 1.4; }
-    .node-rank { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+    .node-rank { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 5px; max-height: 232px; overflow-y: auto; overscroll-behavior: contain; }
+    .node-rank::-webkit-scrollbar { width: 6px; } .node-rank::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
     .node-row { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 7px; background: rgba(255,255,255,0.018); font-family: ui-monospace, monospace; font-size: 10px; color: var(--ink); touch-action: none; cursor: grab; transition: border-color 160ms ease, background 160ms ease; }
     .node-row.dragging { cursor: grabbing; border-color: var(--accent); background: rgba(154,169,255,0.10); box-shadow: 0 6px 20px rgba(0,0,0,0.35); position: relative; z-index: 2; }
     .node-row .node-grab { color: var(--dim); letter-spacing: -1px; font-size: 12px; }
     .node-row .node-rank-n { color: var(--muted); width: 12px; text-align: center; }
-    .node-name { flex: 1; display: flex; align-items: center; gap: 7px; text-transform: none; letter-spacing: 0; }
-    .node-tag { font-size: 7.5px; color: var(--seal); border: 1px solid var(--line); border-radius: 4px; padding: 1px 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .node-name { flex: 1; min-width: 0; display: flex; align-items: center; flex-wrap: wrap; gap: 5px 7px; text-transform: none; letter-spacing: 0; }
+    .node-tag { font-size: 7.5px; color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 1px 4px; text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; }
+    .node-tag.live { color: var(--seal); border-color: rgba(154,255,214,0.4); }
+    .node-tdh { font-size: 7.5px; color: var(--dim); letter-spacing: 0.04em; white-space: nowrap; }
     .node-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--line); flex: none; }
     .node-dot.live { background: var(--seal); box-shadow: 0 0 9px rgba(154,255,214,0.9); }
-    .node-moves { display: flex; flex-direction: column; gap: 1px; }
-    .node-mv { appearance: none; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 8px; line-height: 1; padding: 1px 3px; border-radius: 3px; }
+    .node-moves { display: flex; align-items: center; gap: 1px; flex: none; }
+    .node-mv { appearance: none; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 8px; line-height: 1; padding: 2px 3px; border-radius: 3px; }
     .node-mv:hover { color: var(--ink); background: rgba(255,255,255,0.06); }
     .node-mv:disabled { opacity: 0.25; cursor: default; }
+    .node-rm { appearance: none; background: none; border: none; color: var(--dim); cursor: pointer; font-size: 9px; line-height: 1; padding: 2px 4px; border-radius: 3px; margin-left: 2px; }
+    .node-rm:hover { color: var(--magenta); background: rgba(255,85,125,0.10); }
+    .node-add-row { display: flex; gap: 6px; margin-top: 7px; }
+    .node-add { flex: 1; min-width: 0; background: rgba(255,255,255,0.03); border: 1px solid var(--line); border-radius: 6px; color: var(--ink); font-family: ui-monospace, monospace; font-size: 10px; padding: 7px 9px; }
+    .node-add::placeholder { color: var(--dim); }
+    .node-add:focus { outline: none; border-color: var(--accent); }
+    .node-add-btn { appearance: none; background: rgba(154,169,255,0.10); border: 1px solid var(--line); border-radius: 6px; color: var(--ink); font-family: ui-monospace, monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; padding: 0 12px; cursor: pointer; }
+    .node-add-btn:hover { border-color: var(--accent); }
+    .set-reset { appearance: none; background: none; border: 1px solid var(--line); border-radius: 4px; color: var(--muted); font-family: ui-monospace, monospace; font-size: 7.5px; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 6px; cursor: pointer; font-weight: 400; }
+    .set-reset:hover { color: var(--ink); border-color: var(--accent); }
     .settings-foot { margin-bottom: 0; }
     .set-save { font-family: ui-monospace, monospace; font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; display: flex; align-items: center; gap: 7px; cursor: pointer; }
     .shortcut-list { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px 16px; margin: 0; font-family: ui-monospace, monospace; font-size: 9px; line-height: 1.4; }
@@ -469,9 +482,14 @@
           <div class="set-note">minimum on-chain TDH backing to count a day as attested</div>
         </div>
         <div class="set-row">
-          <div class="set-label">Index source priority</div>
+          <div class="set-label">Index source priority <button type="button" id="node-rank-reset" class="set-reset">TDH rank</button></div>
           <ol class="node-rank" id="node-rank" aria-label="Backing nodes in priority order — drag to re-rank"></ol>
-          <div class="set-note">drag to rank the backing nodes — the top one serves; any failure falls through to the next. extended by the network's published roster.</div>
+          <div class="node-add-row">
+            <input type="text" id="node-add" class="node-add" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="80" placeholder="add your own node — owner/repo" aria-label="Add a backing node by GitHub owner/repo">
+            <button type="button" id="node-add-btn" class="node-add-btn">add</button>
+          </div>
+          <div class="set-note" id="node-add-err" role="alert" aria-live="polite"></div>
+          <div class="set-note">ranked by on-chain TDH backing by default — the top node serves, any failure falls through to the next. Drag to override, paste your own node to take an arbitrary one, or reset to TDH. Extended by the network's published roster.</div>
         </div>
         <div class="set-row settings-foot"><label class="set-save"><input type="checkbox" id="set-persist" checked> remember on this device</label></div>
       </div>
@@ -1467,7 +1485,44 @@
     // ── live source nodes ──────────────────────────────────────────────────────────────────
     // Every live fetch walks the ranked nodes top-down; the first to answer wins, the rest are
     // automatic fallback. state.nodes is re-orderable in settings and persisted per device.
-    state.nodes = CONFIG.nodes.map((n) => ({ ...n }));
+    // Hardening: a node is a backing publisher on GitHub raw. EVERY node — from CONFIG, the
+    // published roster, or pasted by the visitor — passes through sanitizeNode before it can reach
+    // a URL or the DOM, so an attacker who controls a roster (or social-engineers a paste) can only
+    // ever cause a fetch of github.com/<owner>/<repo>: no other host, no path-traversal, no script.
+    // All fetched payloads are read with JSON.parse only (safeParse) — never eval/Function, and the
+    // catalog bytes are still hash-checked against the index. Strings are escaped at render time.
+    // owner/repo: owner is a GitHub login (alnum + single hyphens, no dots); repo allows . _ - ;
+    // exactly one slash. Locks every node to a real-looking github.com/<owner>/<repo> path.
+    const REPO_RE = /^[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\/[A-Za-z0-9][A-Za-z0-9._-]*$/;
+    const BRANCH_RE = /^[A-Za-z0-9][A-Za-z0-9._/-]*$/;                            // a git ref, no leading dot
+    const MAX_NODES = 64;                                                         // cap on an untrusted roster
+    const safeBranch = (b, fallback) => (typeof b === "string" && BRANCH_RE.test(b) && !b.includes("..")) ? b : fallback;
+    // Parse a pasted node: accept "owner/repo" or a github.com/owner/repo URL, nothing else.
+    function parseNodeInput(text) {
+      let s = String(text || "").trim();
+      const m = s.match(/^(?:https?:\/\/)?(?:www\.)?github\.com\/([^/]+\/[^/#?]+)/i);
+      if (m) s = m[1];
+      s = s.replace(/\.git$/i, "").replace(/\/+$/, "");
+      return REPO_RE.test(s) && !s.includes("..") ? s : null;
+    }
+    // The single gate every node definition passes. Returns a clean node or null. The id is the
+    // CANONICAL "github:<owner>/<repo>" (lowercased) — the same key the on-chain attestation index
+    // uses for nodeId — so TDH, dedup and persistence all key off it regardless of a roster's label.
+    function sanitizeNode(raw, { custom = false } = {}) {
+      if (!raw || typeof raw !== "object") return null;
+      const repo = typeof raw.repo === "string" ? raw.repo.trim() : "";
+      if (!REPO_RE.test(repo) || repo.includes("..")) return null;
+      const tdh = Number.isFinite(+raw.tdh) && +raw.tdh >= 0 ? Math.floor(+raw.tdh) : null;
+      return {
+        id: "github:" + repo.toLowerCase(),
+        label: String(raw.label || repo).slice(0, 48),
+        repo, node: safeBranch(raw.node, "node"), idx: safeBranch(raw.idx, "main"),
+        tdh, custom: !!custom,
+      };
+    }
+    state.nodes = CONFIG.nodes.map((n) => sanitizeNode(n)).filter(Boolean);
+    const nodeTdhLive = new Map();    // canonical nodeId -> TDH backing, from the live attestation index
+    const tdhOf = (n) => (nodeTdhLive.has(n.id) ? nodeTdhLive.get(n.id) : (n.tdh || 0));
     const rawUrl = (n, branch, path) => `https://raw.githubusercontent.com/${n.repo}/${branch}/${path}`;
     const nodeUrl = {
       manifest: (n) => rawUrl(n, n.node, "index/manifest.json"),
@@ -1478,8 +1533,38 @@
       catalog: (n, date) => rawUrl(n, n.node, `data/${date.replaceAll("-", "/")}`),
     };
     const safeParse = (t) => { try { return JSON.parse(t); } catch (e) { return null; } };
+    // Size caps + a host allowlist for the ONE class of URL not built by rawUrl: bundle locators
+    // copied out of node-served JSON (the index/ledger catalog_url, and signed Arweave mirrors from
+    // the attestation index). A hostile node can put any string there, so before fetching we require
+    // https on a known host, and EVERY download is byte-capped — a gzip bomb or a giant payload from
+    // a hostile node can't beacon to an arbitrary host or exhaust memory. Caps mirror the pipeline.
+    const MAX_JSON_BYTES = 32 * 1024 * 1024;       // any node-served JSON (index, chunk, docchain, roster, anno, delta)
+    const MAX_GZ_BYTES = 64 * 1024 * 1024;         // the compressed catalog on the wire
+    const MAX_CATALOG_BYTES = 200 * 1024 * 1024;   // the decompressed catalog (matches snapshot.py MAX_CATALOG_BYTES)
+    const MAX_CHUNK_DAYS = 400;                    // a year-chunk holds <= 366 day entries
+    const LOCATOR_HOSTS = new Set(["raw.githubusercontent.com", "arweave.net", "arweave.dev"]);
+    const safeLocator = (u) => {                   // honour a locator only if https on a known host
+      try { const x = new URL(String(u)); return x.protocol === "https:" && LOCATOR_HOSTS.has(x.hostname) ? x.href : null; }
+      catch (e) { return null; }
+    };
+    // Read a response body with a hard byte cap, so a hostile node can't stream gigabytes into memory.
+    async function readCapped(res, max) {
+      const reader = res.body && res.body.getReader();
+      if (!reader) { const b = new Uint8Array(await res.arrayBuffer()); if (b.byteLength > max) throw new Error("oversized response"); return b; }
+      const chunks = []; let total = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        total += value.byteLength;
+        if (total > max) { try { await reader.cancel(); } catch (e) {} throw new Error("oversized response"); }
+        chunks.push(value);
+      }
+      const out = new Uint8Array(total); let off = 0;
+      for (const c of chunks) { out.set(c, off); off += c.byteLength; }
+      return out;
+    }
     // Walk the ranked nodes; resolve { node, res } from the first to answer OK, else null. The
-    // caller reads res as text or arrayBuffer (the heavy catalog is gzip, the index is JSON).
+    // caller reads res via readCapped (the heavy catalog is gzip, the index is JSON) — never uncapped.
     async function fromNodes(urlOf, cache = "no-store") {
       for (const n of state.nodes) {
         try { const res = await fetch(urlOf(n), { cache }); if (res.ok) return { node: n, res }; }
@@ -1489,7 +1574,9 @@
     }
     const jsonFromNodes = async (urlOf, cache) => {
       const g = await fromNodes(urlOf, cache);
-      return g ? { node: g.node, data: safeParse(await g.res.text()) } : null;
+      if (!g) return null;
+      try { return { node: g.node, data: safeParse(new TextDecoder().decode(await readCapped(g.res, MAX_JSON_BYTES))) }; }
+      catch (e) { return null; }   // oversized / unreadable — treat as a miss, fall through
     };
     // A lean index entry maps straight onto the ledger shape the HUD already reads.
     const ledgerFromIndex = (e) => ({ count: e.object_count, sha: String(e.sha256 || ""), bands: e.band_counts || null, raw: e });
@@ -1525,14 +1612,16 @@
     // blocks storage simply re-fetches for the session — the baseline still guarantees a render.
     async function loadIndexChunk(year, meta) {
       const key = `rso-idx-${year}`, want = (meta && meta.sha256) || "";
+      const ingest = (e) => e && e.date && (ledgerByDate.set(e.date, ledgerFromIndex(e)), seedAnnoSummary(e.date, e.anno_summary));
       try {
         const c = JSON.parse(localStorage.getItem(key) || "null");
-        if (c && c.sha === want && Array.isArray(c.days)) { c.days.forEach((e) => e && e.date && (ledgerByDate.set(e.date, ledgerFromIndex(e)), seedAnnoSummary(e.date, e.anno_summary))); return; }
+        if (c && c.sha === want && Array.isArray(c.days)) { c.days.slice(0, MAX_CHUNK_DAYS).forEach(ingest); return; }
       } catch (e) { /* no storage, or stale — fetch fresh */ }
       const got = await jsonFromNodes((n) => nodeUrl.chunk(n, year));
-      const days = got && got.data;
+      let days = got && got.data;
       if (!Array.isArray(days)) return;
-      days.forEach((e) => e && e.date && (ledgerByDate.set(e.date, ledgerFromIndex(e)), seedAnnoSummary(e.date, e.anno_summary)));
+      if (days.length > MAX_CHUNK_DAYS) days = days.slice(0, MAX_CHUNK_DAYS);   // a year has <= 366 days; bound a hostile chunk
+      days.forEach(ingest);
       try { localStorage.setItem(key, JSON.stringify({ sha: want, days })); } catch (e) { /* not persisted — session only */ }
     }
     // Legacy fallback: the pre-index ledger.json (whole-timeline, bloated entries, no catalog_url).
@@ -1576,7 +1665,20 @@
     function bandFromMM(mm) { const v = Number(mm); if (Number.isFinite(v) && v > 0) { if (v >= 0.9 && v <= 1.1) return 2; if (v >= 11.0) return 0; return 1; } return 1; }
     function klassFromType(t) { t = String(t || "").toUpperCase(); return t.includes("DEBRIS") ? 2 : t.includes("ROCKET") ? 1 : t.includes("PAYLOAD") ? 0 : 3; }
 
-    async function gunzip(buf) { const s = new Blob([buf]).stream().pipeThrough(new DecompressionStream("gzip")); return new Response(s).arrayBuffer(); }
+    async function gunzip(buf) {   // capped at MAX_CATALOG_BYTES so a gzip bomb from a hostile node can't OOM the tab
+      const reader = new Blob([buf]).stream().pipeThrough(new DecompressionStream("gzip")).getReader();
+      const chunks = []; let total = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        total += value.byteLength;
+        if (total > MAX_CATALOG_BYTES) { try { await reader.cancel(); } catch (e) {} throw new Error("catalog exceeds size cap"); }
+        chunks.push(value);
+      }
+      const out = new Uint8Array(total); let off = 0;
+      for (const c of chunks) { out.set(c, off); off += c.byteLength; }
+      return out.buffer;
+    }
     function untar(buf, suffix) {
       const b = new Uint8Array(buf), dec = new TextDecoder(); let off = 0;
       while (off + 512 <= b.length) {
@@ -1673,17 +1775,18 @@
       // the ledger hash, not the address. Last resort: the ranked nodes' raw catalog.json.gz. The
       // GitHub RELEASE asset is never tried: its redirect target sends no CORS headers.
       let ab = null, isTar = false;
-      const led = ledgerByDate.get(date) || {}, locator = led.raw && led.raw.catalog_url;
+      const led = ledgerByDate.get(date) || {}, locator = led.raw && safeLocator(led.raw.catalog_url);
       if (locator) {
-        try { const r = await fetch(locator, { cache: "force-cache" }); if (r.ok) { ab = await r.arrayBuffer(); isTar = (led.raw.catalog_url_kind !== "catalog_gz"); } } catch (e) { /* fall through */ }
+        try { const r = await fetch(locator, { cache: "force-cache" }); if (r.ok) { ab = (await readCapped(r, MAX_GZ_BYTES)).buffer; isTar = (led.raw.catalog_url_kind !== "catalog_gz"); } } catch (e) { /* fall through */ }
       }
       for (const u of (attestByDate.get(date) || {}).ar || []) {
         if (ab) break;
-        try { const r = await fetch(u, { cache: "force-cache" }); if (r.ok) { ab = await r.arrayBuffer(); isTar = true; } } catch (e) { /* try next */ }
+        const url = safeLocator(u); if (!url) continue;     // attestation locators are host-allowlisted too
+        try { const r = await fetch(url, { cache: "force-cache" }); if (r.ok) { ab = (await readCapped(r, MAX_GZ_BYTES)).buffer; isTar = true; } } catch (e) { /* try next */ }
       }
       if (!ab) {
         const g = await fromNodes((n) => `${nodeUrl.catalog(n, date)}/catalog.json.gz`, "force-cache");
-        if (g) ab = await g.res.arrayBuffer();
+        if (g) { try { ab = (await readCapped(g.res, MAX_GZ_BYTES)).buffer; } catch (e) { /* oversized — no bundle */ } }
       }
       if (!ab) throw new Error("no bundle mirror reachable");
       const cgz = isTar ? untar(await gunzip(ab), "catalog.json.gz") : ab;
@@ -2326,7 +2429,7 @@
             // permanence: each node signs its publication locations into its attestation —
             // distinct Arweave locators = independent pay-once-store-forever copies
             const locations = [...new Set((strongest.locations || []).map(String).filter(Boolean))];
-            const ar = locations.filter((u) => /^ar:\/\/|arweave\.(net|dev)\//i.test(u));
+            const ar = locations.map(safeLocator).filter(Boolean);   // https on a known host only (no substring bypass)
             const nodeIds = new Set((rec.events || []).map((e) => e.publication?.nodeId || e.claimedNodeId || e.nodeId).filter(Boolean));
             const attesters = (strongest.attesters || []).length;
             attestByDate.set(rec.date, {
@@ -2340,91 +2443,163 @@
             });
           }
         }
+        // Per-node TDH backing, keyed by canonical nodeId ("github:owner/repo") — the honest
+        // "TDH rank" the source list defaults to: each node's strongest OWN backing across its events
+        // (nodeBackingTdh only; combinedSupportTdh is the agreement group's aggregate, not per-node).
+        // Key extraction mirrors pipeline node_tdh_from_attestations exactly so roster + live agree.
+        nodeTdhLive.clear();
+        for (const e of idx.events || []) {
+          const nid = String((e.nodeId || e.claimedNodeId || (e.publication && e.publication.nodeId) || "")).toLowerCase();
+          if (!nid) continue;
+          const t = +e.nodeBackingTdh || 0;
+          if (t > (nodeTdhLive.get(nid) || 0)) nodeTdhLive.set(nid, t);
+        }
+        autoRankByTdh();   // re-rank to TDH order unless the visitor has set a manual order
       }
       if (state.shownDay >= 0) applyHud(recordMeta(isoFor(state.shownDay)));
     }
     function applyEthRank() { $("set-eth-val").textContent = state.ethRank ? `≥ ${state.ethRank} TDH` : "any witness"; if (state.shownDay >= 0) applyHud(recordMeta(isoFor(state.shownDay))); }
     $("set-eth").addEventListener("input", (e) => { state.ethRank = +e.target.value; applyEthRank(); persistSettings(); });
 
-    // ── draggable index-source rank ─────────────────────────────────────────────────────────
-    // The list IS state.nodes; the top one serves every fetch and any failure falls through to the
-    // next. Re-ranking re-pulls the live index, the attestation overlay and the open day's bundle
-    // from the new head. Drag works on mouse + touch; ▲▼ give a keyboard / no-drag path.
+    // ── index-source rank: draggable, TDH-default, visitor-extensible ───────────────────────
+    // The list IS state.nodes; the top one serves every fetch and any failure falls through. By
+    // default it is ranked by each node's on-chain TDH backing (descending); the visitor can drag
+    // to override (persisted), paste their own node, or reset back to TDH. Re-ranking re-pulls the
+    // index, attestation overlay and the open day's bundle from the new head. Drag works on mouse +
+    // touch; ▲▼ give a keyboard / no-drag path. Custom nodes carry a ✕ to remove.
     const escHtml = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    const fmtTdh = (t) => t >= 1e6 ? (t / 1e6).toFixed(1).replace(/\.0$/, "") + "M" : t >= 1e3 ? Math.round(t / 1e3) + "k" : String(t | 0);
+    let nodeOrderManual = false;                            // true once the visitor drags / adds / removes
+    const nodesByTdh = () =>                                // custom (visitor-chosen) first, then TDH desc — stable
+      [...state.nodes].sort((a, b) => (b.custom ? 1 : 0) - (a.custom ? 1 : 0) || tdhOf(b) - tdhOf(a));
+    function autoRankByTdh() {                              // re-rank to TDH unless the visitor took control
+      if (!nodeOrderManual) state.nodes = nodesByTdh();
+      renderNodeRank();
+    }
     function renderNodeRank() {
       const ol = $("node-rank"); if (!ol) return;
       ol.innerHTML = "";
       state.nodes.forEach((n, i) => {
         const li = document.createElement("li");
         li.className = "node-row"; li.dataset.id = n.id;
-        const live = state.liveNode && state.liveNode.id === n.id, last = i === state.nodes.length - 1;
-        li.innerHTML = `<span class="node-grab" aria-hidden="true">⠿</span><span class="node-rank-n">${i + 1}</span>` +
-          `<span class="node-name">${escHtml(n.label)}${i === 0 ? '<span class="node-tag">head</span>' : ""}` +
-          `${live ? '<span class="node-tag" style="color:var(--seal);border-color:rgba(154,255,214,0.4)">live</span>' : ""}</span>` +
-          `<span class="node-dot${live ? " live" : ""}"></span><span class="node-moves">` +
-          `<button class="node-mv" data-d="-1" aria-label="move ${escHtml(n.label)} up"${i === 0 ? " disabled" : ""}>▲</button>` +
-          `<button class="node-mv" data-d="1" aria-label="move ${escHtml(n.label)} down"${last ? " disabled" : ""}>▼</button></span>`;
+        const live = state.liveNode && state.liveNode.id === n.id, last = i === state.nodes.length - 1, t = tdhOf(n);
+        const tags = (i === 0 ? '<span class="node-tag">head</span>' : "")
+          + (live ? '<span class="node-tag live">live</span>' : "")
+          + (n.custom ? '<span class="node-tag">yours</span>' : "")
+          + (t > 0 ? `<span class="node-tdh">TDH ${escHtml(fmtTdh(t))}</span>` : "");
+        li.innerHTML = `<span class="node-grab" aria-hidden="true">⠿</span><span class="node-rank-n">${i + 1}</span>`
+          + `<span class="node-name">${escHtml(n.label)}${tags}</span>`
+          + `<span class="node-dot${live ? " live" : ""}"></span><span class="node-moves">`
+          + `<button class="node-mv" data-d="-1" aria-label="move ${escHtml(n.label)} up"${i === 0 ? " disabled" : ""}>▲</button>`
+          + `<button class="node-mv" data-d="1" aria-label="move ${escHtml(n.label)} down"${last ? " disabled" : ""}>▼</button>`
+          + (n.custom ? `<button class="node-rm" data-rm="1" aria-label="remove ${escHtml(n.label)}">✕</button>` : "")
+          + `</span>`;
         ol.appendChild(li);
       });
     }
-    function moveNode(from, to) {
+    function moveNode(from, to) {                           // an explicit drag / ▲▼ — THIS is what latches manual
       if (from < 0 || to < 0 || to >= state.nodes.length || from === to) return;
       const [n] = state.nodes.splice(from, 1); state.nodes.splice(to, 0, n);
-      renderNodeRank(); persistSettings(); refreshFromNodes();
+      nodeOrderManual = true; renderNodeRank(); persistSettings(); scheduleRefresh();
     }
-    async function refreshFromNodes() {                   // a new head means a new server — re-pull
+    function addCustomNode(text) {                          // a visitor's own node — validated, never eval'd
+      const err = $("node-add-err"), inp = $("node-add");
+      const repo = parseNodeInput(text);
+      const node = repo && sanitizeNode({ repo }, { custom: true });
+      if (!node) { if (err) err.textContent = "enter a GitHub owner/repo"; return; }
+      if (state.nodes.some((n) => n.id === node.id)) { if (err) err.textContent = "already in the list"; return; }
+      if (state.nodes.length >= MAX_NODES) { if (err) err.textContent = "source list is full"; return; }
+      state.nodes.unshift(node);                            // custom nodes float to the head via nodesByTdh
+      if (inp) inp.value = ""; if (err) err.textContent = "";
+      autoRankByTdh();                                      // re-sort (custom-first) WITHOUT latching manual
+      persistSettings(); scheduleRefresh();
+    }
+    function removeCustomNode(id) {
+      const i = state.nodes.findIndex((n) => n.id === id && n.custom);
+      if (i < 0) return;
+      state.nodes.splice(i, 1);
+      autoRankByTdh();                                      // no manual latch — a removal isn't an ordering choice
+      persistSettings(); scheduleRefresh();
+    }
+    function resetNodeRank() {                              // back to the TDH default
+      nodeOrderManual = false;
+      try { localStorage.removeItem("rso-node-order"); } catch (e) {}
+      autoRankByTdh(); persistSettings(); scheduleRefresh();
+    }
+    // A re-rank changes which node serves, but rapid reorders shouldn't fire one full re-pull each:
+    // debounce + an in-flight token so only the latest ranking's fetch chain commits its state.
+    let refreshTimer = null, refreshSeq = 0;
+    function scheduleRefresh() {
+      if (refreshTimer) clearTimeout(refreshTimer);
+      refreshTimer = setTimeout(() => { refreshTimer = null; refreshFromNodes(); }, 300);
+    }
+    async function refreshFromNodes() {                     // a new head means a new server — re-pull
+      const seq = ++refreshSeq;
       setStatus("loading", "Re-ranking sources…");
       state.liveNode = null;
       const idx = await loadIndex(); if (!idx) await loadLedger();
+      if (seq !== refreshSeq) return;                       // superseded by a newer re-rank — drop this run
       setStatus(state.liveNode ? "ready" : "offline", state.liveNode ? `Live · ${state.liveNode.label}` : "Embedded archive");
       renderNodeRank();
       await fetchIndex();
+      if (seq !== refreshSeq) return;
       const date = isoFor(state.shownDay >= 0 ? state.shownDay : state.cursor);
       state.catalogDate = null; loadDayCatalog(date);
     }
     (() => {
-      const ol = $("node-rank"); if (!ol) return;
-      let d = null;
-      ol.addEventListener("pointerdown", (e) => {
-        const li = e.target.closest(".node-row"); if (!li || e.target.closest(".node-mv")) return;
-        d = { li, from: [...ol.children].indexOf(li), y0: e.clientY, to: null };
-        li.setPointerCapture(e.pointerId); li.classList.add("dragging"); li.style.pointerEvents = "none";
-      });
-      ol.addEventListener("pointermove", (e) => {
-        if (!d) return;
-        d.li.style.transform = `translateY(${e.clientY - d.y0}px)`;
-        const el = document.elementFromPoint(e.clientX, e.clientY), row = el && el.closest(".node-row");
-        if (row && row !== d.li) d.to = [...ol.children].indexOf(row);
-      });
-      const end = () => {
-        if (!d) return;
-        d.li.style.transform = ""; d.li.style.pointerEvents = ""; d.li.classList.remove("dragging");
-        const { from, to } = d; d = null;
-        if (to != null && to !== from) moveNode(from, to);
-      };
-      ol.addEventListener("pointerup", end);
-      ol.addEventListener("pointercancel", end);
-      ol.addEventListener("click", (e) => {
-        const b = e.target.closest(".node-mv"); if (!b || b.disabled) return;
-        const from = [...ol.children].indexOf(b.closest(".node-row"));
-        moveNode(from, from + (+b.dataset.d));
-      });
+      const ol = $("node-rank");
+      if (ol) {
+        let d = null;
+        ol.addEventListener("pointerdown", (e) => {
+          const li = e.target.closest(".node-row"); if (!li || e.target.closest(".node-mv, .node-rm")) return;
+          d = { li, from: [...ol.children].indexOf(li), y0: e.clientY, to: null };
+          li.setPointerCapture(e.pointerId); li.classList.add("dragging"); li.style.pointerEvents = "none";
+        });
+        ol.addEventListener("pointermove", (e) => {
+          if (!d) return;
+          d.li.style.transform = `translateY(${e.clientY - d.y0}px)`;
+          const el = document.elementFromPoint(e.clientX, e.clientY), row = el && el.closest(".node-row");
+          if (row && row !== d.li) d.to = [...ol.children].indexOf(row);
+        });
+        const end = () => {
+          if (!d) return;
+          d.li.style.transform = ""; d.li.style.pointerEvents = ""; d.li.classList.remove("dragging");
+          const { from, to } = d; d = null;
+          if (to != null && to !== from) moveNode(from, to);
+        };
+        ol.addEventListener("pointerup", end);
+        ol.addEventListener("pointercancel", end);
+        ol.addEventListener("click", (e) => {
+          const rm = e.target.closest(".node-rm");
+          if (rm) { removeCustomNode(rm.closest(".node-row").dataset.id); return; }
+          const b = e.target.closest(".node-mv"); if (!b || b.disabled) return;
+          const from = [...ol.children].indexOf(b.closest(".node-row"));
+          moveNode(from, from + (+b.dataset.d));
+        });
+      }
+      const addBtn = $("node-add-btn"), addInp = $("node-add"), resetBtn = $("node-rank-reset");
+      if (addBtn) addBtn.addEventListener("click", () => addCustomNode($("node-add").value));
+      if (addInp) addInp.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); addCustomNode(addInp.value); } });
+      if (resetBtn) resetBtn.addEventListener("click", resetNodeRank);
     })();
-    // The network's published roster (indexer/generated/nodes.json) extends the visitor's ranked
-    // defaults with every backing node, appended below them; the saved order is then re-applied so
-    // a previously-ranked roster node keeps its place. No-op until a node publishes the roster.
+    // The network's published roster (indexer/generated/nodes.json) extends the visitor's list with
+    // every backing node. Every entry is re-validated (sanitizeNode) and the list is capped, so a
+    // hostile roster can only ever add more github.com/<owner>/<repo> fetch targets — nothing else.
     async function loadRoster() {
       const got = await jsonFromNodes(nodeUrl.roster);
       const list = got && got.data && (Array.isArray(got.data) ? got.data : got.data.nodes);
       if (!Array.isArray(list)) return;
       const known = new Set(state.nodes.map((n) => n.id));
       let added = false;
-      for (const r of list) {
-        if (!r || !r.id || known.has(r.id) || !r.repo) continue;
-        state.nodes.push({ id: r.id, label: r.label || r.id, repo: r.repo, node: r.node || "node", idx: r.idx || "main" });
-        known.add(r.id); added = true;
+      for (const r of list.slice(0, MAX_NODES)) {
+        if (state.nodes.length >= MAX_NODES) break;
+        const n = sanitizeNode(r);
+        if (!n || known.has(n.id)) continue;
+        state.nodes.push(n); known.add(n.id); added = true;
       }
-      if (added) { applyNodeOrder(loadNodeOrder()); renderNodeRank(); }
+      if (!added) { renderNodeRank(); return; }            // refresh TDH/live tags even with nothing new
+      if (nodeOrderManual) applyNodeOrder(loadNodeOrder()); else state.nodes = nodesByTdh();
+      renderNodeRank();
     }
     const loadNodeOrder = () => { try { return JSON.parse(localStorage.getItem("rso-node-order") || "null"); } catch (e) { return null; } };
     function applyNodeOrder(order) {                        // known ids in saved order; unknown appended
@@ -2436,7 +2611,10 @@
       if (!$("set-persist").checked) return;
       try {
         localStorage.setItem("rso-settings", JSON.stringify({ ethRank: state.ethRank, lens: state.lens }));
-        localStorage.setItem("rso-node-order", JSON.stringify(state.nodes.map((n) => n.id)));
+        localStorage.setItem("rso-custom-nodes", JSON.stringify(
+          state.nodes.filter((n) => n.custom).map((n) => ({ repo: n.repo, node: n.node, idx: n.idx, label: n.label }))));
+        if (nodeOrderManual) localStorage.setItem("rso-node-order", JSON.stringify(state.nodes.map((n) => n.id)));
+        else localStorage.removeItem("rso-node-order");
       } catch (e) {}
     }
     function loadSettings() {
@@ -2444,7 +2622,20 @@
         const s = JSON.parse(localStorage.getItem("rso-settings") || "null");
         if (s) { state.ethRank = s.ethRank ?? 0; state.lens = s.lens ?? 0; $("set-eth").value = state.ethRank; }
       } catch (e) {}
-      applyNodeOrder(loadNodeOrder());
+      // Restore the visitor's pasted nodes — re-validated on load (never trust stored data either).
+      try {
+        const custom = JSON.parse(localStorage.getItem("rso-custom-nodes") || "null");
+        if (Array.isArray(custom)) {
+          const known = new Set(state.nodes.map((n) => n.id));
+          for (const c of custom.slice(0, MAX_NODES)) {
+            const n = sanitizeNode(c, { custom: true });
+            if (n && !known.has(n.id) && state.nodes.length < MAX_NODES) { state.nodes.push(n); known.add(n.id); }
+          }
+        }
+      } catch (e) {}
+      const order = loadNodeOrder();
+      if (Array.isArray(order)) { nodeOrderManual = true; applyNodeOrder(order); }
+      else { state.nodes = nodesByTdh(); }                  // TDH default (roster tdh until the live index lands)
     }
 
     // ── inspector vignette: the tapped object's generative 3D self, rendered in a

@@ -138,6 +138,12 @@ jobs:
           fi
           python3 "${args[@]}"
 
+      - name: Refresh backing-node roster (TDH-ranked from the verified index)
+        if: env.RSO_SWEEPER_ENABLED == 'true'
+        # Re-derive each node's on-chain TDH backing from the just-refreshed attestation index and
+        # publish indexer/generated/nodes.json (the card's default source rank). Committed below.
+        run: python3 pipeline/snapshot.py build-nodes
+
       - name: Publish public sweeper report
         if: env.RSO_SWEEPER_ENABLED == 'true'
         run: bash scripts/git-commit-paths.sh "${GITHUB_REF_NAME}" "Publish RSO sweeper report and verified index" reports/sweeper indexer/cache indexer/generated
