@@ -1,4 +1,9 @@
 {
+  "anno_summary": {
+    "decay_notices": 95,
+    "directory_changes": 20,
+    "tip_count": 18
+  },
   "annotations_sha256": "96f2a5d2c296a5702073d9941b6b9d8e422884afeb65900baa1845d3c868f054",
   "api_query_base": "https://www.space-track.org/basicspacedata/query",
   "api_query_paths": [

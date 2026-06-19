@@ -6,15 +6,20 @@
       "first": "2026-04-20",
       "last": "2026-06-18",
       "path": "index/2026.json",
-      "sha256": "3c4a3b16dc9c901cdfe9f30d735d7cd6662698b3cb35d4e61410d4b67bba577a",
+      "sha256": "db7787fae15e4e4188f110265a64dcdf5e467bcac1ae33d8fd7f79334abdc06d",
       "year": "2026"
     }
   ],
   "day_count": 60,
   "first": "2026-04-20",
-  "generated_at_utc": "2026-06-18T23:49:43Z",
+  "generated_at_utc": "2026-06-19T01:14:16Z",
   "latest": "2026-06-18",
   "latestEntry": {
+    "anno_summary": {
+      "decay_notices": 4,
+      "directory_changes": 68,
+      "tip_count": 4
+    },
     "band_counts": {
       "geo": 1839,
       "leo": 29063,
@@ -23,6 +28,7 @@
     "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/18/catalog.json.gz",
     "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11394888,
+    "content_schema": "rso-core-v1",
     "content_sha256": "3461abb045fa40342b711133db077d468acc5eab9bf1884143ebec8a5c8e4179",
     "date": "2026-06-18",
     "delta": {
