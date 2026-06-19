@@ -822,8 +822,12 @@
     // one sun for the whole scene: low over the limb, upper-left — solids take raking
     // light and the atmosphere wears a dawn-bright arc on the same side
     const SUN = new THREE.Vector3(-0.55, 0.42, -0.72).normalize();
-    scene.add(new THREE.AmbientLight(0x46525e, 0.6));
-    const fieldSun = new THREE.DirectionalLight(0xffffff, 1.9); fieldSun.position.copy(SUN).multiplyScalar(10); scene.add(fieldSun);
+    // Bright cool hemisphere fill so every face of a solid reads its own (legend) colour, not black —
+    // the BatchedMesh uses vertexColors, so a brighter omni fill paints the unlit side in the object's
+    // hue. A reduced key sun keeps 3D form; an anti-sun fill lifts the shadow side the camera often sees.
+    scene.add(new THREE.HemisphereLight(0xccd6ea, 0x232a33, 0.92));
+    const fieldSun = new THREE.DirectionalLight(0xffffff, 1.5); fieldSun.position.copy(SUN).multiplyScalar(10); scene.add(fieldSun);
+    const fieldFill = new THREE.DirectionalLight(0xc2cee2, 0.6); fieldFill.position.copy(SUN).multiplyScalar(-9); scene.add(fieldFill);
     const batch = new THREE.BatchedMesh(MESH_POOL, MESH_POOL * RES_V, MESH_POOL * RES_I,
       new THREE.MeshPhongMaterial({ vertexColors: true, flatShading: true, shininess: 26 }));
     // Reserved placeholder geometry gives the batch itself an empty cached bound on its
@@ -1567,8 +1571,11 @@
     // caller reads res via readCapped (the heavy catalog is gzip, the index is JSON) — never uncapped.
     async function fromNodes(urlOf, cache = "no-store") {
       for (const n of state.nodes) {
-        try { const res = await fetch(urlOf(n), { cache }); if (res.ok) return { node: n, res }; }
-        catch (e) { /* unreachable node — fall through to the next */ }
+        // redirect:"error" — a GitHub-raw path serves file bytes, never an off-host 3xx; refusing to
+        // FOLLOW one means a node can't smuggle content from another host via a redirect (a github.io
+        // page redirect, etc.). A redirect just errors and we fall through to the next node.
+        try { const res = await fetch(urlOf(n), { cache, redirect: "error" }); if (res.ok) return { node: n, res }; }
+        catch (e) { /* unreachable node / redirect — fall through to the next */ }
       }
       return null;
     }
@@ -1777,12 +1784,12 @@
       let ab = null, isTar = false;
       const led = ledgerByDate.get(date) || {}, locator = led.raw && safeLocator(led.raw.catalog_url);
       if (locator) {
-        try { const r = await fetch(locator, { cache: "force-cache" }); if (r.ok) { ab = (await readCapped(r, MAX_GZ_BYTES)).buffer; isTar = (led.raw.catalog_url_kind !== "catalog_gz"); } } catch (e) { /* fall through */ }
+        try { const r = await fetch(locator, { cache: "force-cache", redirect: "error" }); if (r.ok) { ab = (await readCapped(r, MAX_GZ_BYTES)).buffer; isTar = (led.raw.catalog_url_kind !== "catalog_gz"); } } catch (e) { /* fall through */ }
       }
       for (const u of (attestByDate.get(date) || {}).ar || []) {
         if (ab) break;
         const url = safeLocator(u); if (!url) continue;     // attestation locators are host-allowlisted too
-        try { const r = await fetch(url, { cache: "force-cache" }); if (r.ok) { ab = (await readCapped(r, MAX_GZ_BYTES)).buffer; isTar = true; } } catch (e) { /* try next */ }
+        try { const r = await fetch(url, { cache: "force-cache", redirect: "error" }); if (r.ok) { ab = (await readCapped(r, MAX_GZ_BYTES)).buffer; isTar = true; } } catch (e) { /* try next */ }
       }
       if (!ab) {
         const g = await fromNodes((n) => `${nodeUrl.catalog(n, date)}/catalog.json.gz`, "force-cache");
