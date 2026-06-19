@@ -768,5 +768,40 @@
       "tba": 0,
       "unknown": 1899
     }
+  },
+  {
+    "anno_summary": {
+      "decay_notices": 91,
+      "directory_changes": 143,
+      "tip_count": 4
+    },
+    "band_counts": {
+      "geo": 1839,
+      "leo": 29071,
+      "meo": 3691
+    },
+    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/19/catalog.json.gz",
+    "catalog_url_kind": "catalog_gz",
+    "compressed_bytes": 11365255,
+    "content_schema": "rso-core-v1",
+    "content_sha256": "bdb3e743254e66be2ddb9165342269f47fcf9df1630f3cbd91f76cc3d0efefb1",
+    "date": "2026-06-19",
+    "delta": {
+      "decayed": 0,
+      "new": 8,
+      "updated": 27247
+    },
+    "object_count": 68138,
+    "on_orbit_count": 34601,
+    "provenance": "rolling_gp_history_delta",
+    "reentered_count": 33537,
+    "sha256": "ab91a5cb0839e5cd2a22e08fb9736ab2f5ce27738f8348707d5ddf39527afa04",
+    "type_counts": {
+      "debris": 12320,
+      "payload": 18236,
+      "rocket": 2247,
+      "tba": 0,
+      "unknown": 1798
+    }
   }
 ]
