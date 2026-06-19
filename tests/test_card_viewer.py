@@ -611,12 +611,24 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn("<dt>I</dt><dd>Find and follow the ISS</dd>", self.html)
 
     def test_iss_has_a_hand_built_model(self):
-        # The ISS (25544) is the ONE exception to the NORAD-seeded silhouettes: a hand-modelled
-        # truss + eight solar wings + module stack, used by both the inspector and the field solid.
+        # The ISS (25544) is the ONE hand-modelled, realistically-coloured craft: an integrated
+        # truss with eight gold solar wings in four pairs, white modules/radiators and the Russian
+        # segment slung below. Used by both the inspector and the cameo.
         self.assertIn('if (o.meta && o.meta.id === "25544") {', self.html)
-        self.assertIn("the ISS — the ONE hand-modelled", self.html)
-        self.assertIn("for (const sy of [0.11, 0.33, -0.11, -0.33])", self.html)   # four wings per side
-        self.assertIn("pressurised module stack", self.html)
+        self.assertIn("the ISS — the ONE hand-modelled craft", self.html)
+        self.assertIn("const ISS_MAT =", self.html)                                  # realistic, not lens-tinted
+        self.assertIn("for (const sx of [-0.92, -0.5, 0.5, 0.92])", self.html)       # four truss stations…
+        self.assertIn("for (const sy of [0.46, -0.46]) add(wing, gold", self.html)   # …a wing up + down → eight
+        self.assertIn("Russian segment slung below", self.html)
+
+    def test_iss_does_a_periodic_central_flyby(self):
+        # The one close flyby in a field of distant motes: a detailed ISS cameo drifts centrally
+        # across the view now and then, parked off-view between passes, paused during hyperspace.
+        self.assertIn("const issCameo = buildVigShape({ meta: { id: \"25544\" } })", self.html)
+        self.assertIn("function updateIssCameo(dt)", self.html)
+        self.assertIn("updateIssCameo(dt);", self.html)                              # driven from the animate loop
+        self.assertIn("issCameo.lookAt(camera.position)", self.html)                 # presents the broadside
+        self.assertIn("issCameo.visible = state.warp < 0.5", self.html)              # hidden during a jump
 
     def test_on_orbit_estimated_until_the_exact_split_loads(self):
         # On-orbit = record minus already-re-entered. The exact split comes from the index
