@@ -126,13 +126,27 @@ INDEX_ENTRY_FIELDS = (
     "band_counts",
     "type_counts",
     "delta",
+    "anno_summary",
     "sha256",
     "content_sha256",
+    "content_schema",
     "provenance",
     "compressed_bytes",
 )
 DEFAULT_NODE_REPO = "OMPub/RSO"
 DEFAULT_NODE_BRANCH = "node"
+
+# The network's backing-node roster, published to indexer/generated/nodes.json on the idx branch
+# (beside the doc-chain index). The card seeds its own ranked defaults and extends them with
+# whatever this lists, so a new mirror joins the fall-through chain without re-minting the card.
+# Each node names where it serves the lean index / ledger / catalog (node branch) and the
+# attestation + roster (idx branch). id/label/repo/node/idx mirror the card's node shape.
+NODE_ROSTER_SCHEMA = "rso-nodes-v1"
+NODE_ROSTER_PATH = Path(__file__).parent.parent / "indexer" / "generated" / "nodes.json"
+NODE_ROSTER = (
+    {"id": "ompub",  "label": "OMPub",      "repo": "OMPub/RSO",  "node": "node", "idx": "main"},
+    {"id": "brookr", "label": "brookr.eth", "repo": "brookr/RSO", "node": "node", "idx": "main"},
+)
 
 STORAGE_BACKENDS = frozenset({"none", "github_release", "arweave", "ipfs_pinata"})
 UPLOAD_POLICIES = frozenset({"never", "if_missing", "always_mirror"})
@@ -628,16 +642,6 @@ def classify_type(object_type):
     return "unknown"
 
 
-def reentered_object_count(records, on_date):
-    """Count catalogued objects that had already re-entered on a given date.
-
-    An object is re-entered when DECAY_DATE's calendar day is on or before the
-    snapshot date (decay <= date). on_orbit_count is len(records) minus this, so
-    the two always sum to object_count. See aggregate_counts for the full split.
-    """
-    return sum(1 for r in records if record_decay_day(r) and record_decay_day(r) <= on_date)
-
-
 def aggregate_counts(records, on_date, delta=None):
     """Compute the card's HUD aggregates over a day's catalog, in one pass.
 
@@ -681,6 +685,26 @@ def aggregate_counts(records, on_date, delta=None):
     }
 
 
+def annotation_summary(annotations):
+    """The card's lens-4 legend counts, precomputed so the daily-changes legend is instant for
+    the whole timeline while scrubbing -- no ~11 MB catalog download. Mirrors card/index.html
+    digestAnnotations exactly: directory_changes = DISTINCT norad_cat_id across catalog_changes,
+    tip_count / decay_notices = the raw message-feed lengths."""
+    if not isinstance(annotations, dict):
+        return {"directory_changes": 0, "tip_count": 0, "decay_notices": 0}
+    directory = {
+        change.get("norad_cat_id")
+        for change in (annotations.get("catalog_changes") or [])
+        if isinstance(change, dict)
+    }
+    directory.discard(None)
+    return {
+        "directory_changes": len(directory),
+        "tip_count": len(annotations.get("tip_messages") or []),
+        "decay_notices": len(annotations.get("decay_messages") or []),
+    }
+
+
 # The aggregate keys a manifest/ledger/index entry carries, in the order the
 # index emits them. AGGREGATE_MANIFEST_FIELDS is the subset re-derivable purely
 # from the catalog (+ delta.json) -- the validator and backfill both lean on it.
@@ -701,12 +725,16 @@ def manifest_aggregate_fields(records, on_date, delta=None):
 
 def backfill_manifest_aggregates(manifest, day, records):
     """Add/refresh the card-parity aggregate fields on an existing manifest in
-    place, reading the day's delta.json for updated/new. Returns True iff a
-    field was added or changed, so the caller knows whether to rewrite/re-ledger.
-    Touches no annotation, so it is byte-safe for already-published bundles."""
+    place, reading the day's delta.json (counts) and annotations.json (legend
+    summary). Returns True iff a field was added or changed, so the caller knows
+    whether to rewrite/re-ledger. Touches no artifact, so it is byte-safe for
+    already-published bundles."""
     fields = manifest_aggregate_fields(
         records, day, delta=read_json_if_exists(snapshot_dir(day) / "delta.json")
     )
+    annotations = read_json_if_exists(snapshot_dir(day) / "annotations.json")
+    if annotations is not None:
+        fields["anno_summary"] = annotation_summary(annotations)
     if all(manifest.get(key) == value for key, value in fields.items()):
         return False
     manifest.update(fields)
@@ -1302,6 +1330,7 @@ def save_snapshot(
         annotations_path = day_dir / "annotations.json"
         write_json(annotations_path, annotations)
         manifest["annotations_sha256"] = sha256_path(annotations_path)
+        manifest["anno_summary"] = annotation_summary(annotations)
 
     if conjunctions is not None:
         conjunctions_path = day_dir / "conjunctions.json"
@@ -1381,6 +1410,7 @@ def ledger_entry_from_manifest(manifest):
         "band_counts",
         "type_counts",
         "delta",
+        "anno_summary",
     ):
         if key in manifest:
             entry[key] = manifest[key]
@@ -4512,6 +4542,24 @@ def build_index(repo=DEFAULT_NODE_REPO, branch=DEFAULT_NODE_BRANCH, *, dates=Non
     return manifest
 
 
+def write_node_roster(out_path=None, *, nodes=NODE_ROSTER):
+    """Publish the backing-node roster the card extends its fall-through rank with.
+
+    Lives on the idx branch (indexer/generated/nodes.json), beside the doc-chain index. The card
+    fetches it through its own ranked nodes and appends any it doesn't already know below the
+    visitor's defaults, so a new mirror joins the chain without a card re-mint. Returns the roster.
+    """
+    path = Path(out_path) if out_path is not None else NODE_ROSTER_PATH
+    path.parent.mkdir(parents=True, exist_ok=True)
+    roster = {
+        "schema": NODE_ROSTER_SCHEMA,
+        "generated_at_utc": utc_stamp(),
+        "nodes": [dict(node) for node in nodes],
+    }
+    write_json(path, roster)
+    return roster
+
+
 def arweave_upload_file(
     path,
     *,
@@ -4613,6 +4661,14 @@ def process_build_index(args):
             print("  Arweave mirror: index manifest + chunks uploaded")
 
 
+def process_build_nodes(args):
+    out = Path(args.output) if getattr(args, "output", None) else NODE_ROSTER_PATH
+    roster = write_node_roster(out)
+    print(f"\nNode roster published to {out}  ({len(roster['nodes'])} nodes)")
+    for node in roster["nodes"]:
+        print(f"  {node['id']:<10} {node['repo']}  (node={node['node']} idx={node['idx']})")
+
+
 # ---------------------------------------------------------------------------
 # Embedded baseline re-cut: the Tier-1 index inlined as-of-mint into the card,
 # so the NFT boots fully offline to its mint-day head with exact numbers.
@@ -4626,16 +4682,17 @@ def baseline_day_from_index_entry(entry):
     """Compact one Tier-1 index entry into a baseline `days[]` element.
 
     Keys match card/index.html seedFromBaseline: d,c,s,cs,sc,pv,by always, plus
-    the aggregates oo/re/bc/tc/dl and the catalog locator cu/ck when the index
-    carries them (so the inlined baseline shows exact numbers with no network).
+    the aggregates oo/re/bc/tc/dl, the annotation summary `as`, and the catalog
+    locator cu/ck when the index carries them (so the inlined baseline shows exact
+    numbers and the daily-changes legend with no network).
     """
     day = {
         "d": entry["date"],
         "c": entry["object_count"],
         "s": entry["sha256"],
         "cs": entry["content_sha256"],
-        # The index entry intentionally omits content_schema (closed lean field
-        # set); every archived day uses the current schema, so default to it.
+        # content_schema is constant across archived days; the index now carries it, but a
+        # manifest archived before it did would lack it, so default to the current schema.
         "sc": entry.get("content_schema", CONTENT_SCHEMA),
         "pv": entry["provenance"],
         "by": entry["compressed_bytes"],
@@ -4646,6 +4703,7 @@ def baseline_day_from_index_entry(entry):
         ("bc", "band_counts"),
         ("tc", "type_counts"),
         ("dl", "delta"),
+        ("as", "anno_summary"),
     ):
         if full in entry:
             day[compact] = entry[full]
@@ -5089,6 +5147,16 @@ def main():
         help="Also mirror the built index to Arweave (requires ARWEAVE_JWK)",
     )
 
+    build_nodes_parser = subparsers.add_parser(
+        "build-nodes",
+        help="Publish the backing-node roster (indexer/generated/nodes.json) the card ranks",
+    )
+    build_nodes_parser.add_argument(
+        "--output",
+        default=None,
+        help="Where to write nodes.json (default: indexer/generated/nodes.json)",
+    )
+
     build_baseline_parser = subparsers.add_parser(
         "build-baseline",
         help="Re-cut the card's embedded baseline from the Tier-1 index (as-of-mint)",
@@ -5154,6 +5222,9 @@ def main():
         return
     if args.command == "build-index":
         process_build_index(args)
+        return
+    if args.command == "build-nodes":
+        process_build_nodes(args)
         return
     if args.command == "build-baseline":
         process_build_baseline(args)

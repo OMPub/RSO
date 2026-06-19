@@ -281,5 +281,83 @@ class BackfillTests(unittest.TestCase):
                 snapshot.DATA_DIR, snapshot.LEDGER_PATH = original
 
 
+class AnnotationSummaryTests(unittest.TestCase):
+    """The lens-4 legend counts (directory / TIP / decay) precomputed into the manifest, ledger
+    and index so the daily-changes legend is instant the whole timeline with no catalog download."""
+
+    def _annotations(self):
+        return {
+            "catalog_changes": [
+                {"norad_cat_id": "1", "field": "OBJECT_NAME"},
+                {"norad_cat_id": "1", "field": "RCS_SIZE"},   # same object → one directory change
+                {"norad_cat_id": "2", "field": "OBJECT_NAME"},
+            ],
+            "tip_messages": [{"NORAD_CAT_ID": "5"}, {"NORAD_CAT_ID": "6"}],
+            "decay_messages": [{"NORAD_CAT_ID": "7"}],
+        }
+
+    def test_summary_counts_distinct_objects_and_feed_lengths(self):
+        summary = snapshot.annotation_summary(self._annotations())
+        self.assertEqual(summary, {"directory_changes": 2, "tip_count": 2, "decay_notices": 1})
+
+    def test_summary_is_zero_for_missing_or_empty(self):
+        self.assertEqual(
+            snapshot.annotation_summary(None),
+            {"directory_changes": 0, "tip_count": 0, "decay_notices": 0},
+        )
+
+    def test_manifest_ledger_and_index_carry_anno_summary(self):
+        original = (snapshot.DATA_DIR, snapshot.INDEX_DIR)
+        with tempfile.TemporaryDirectory() as tmp:
+            try:
+                snapshot.DATA_DIR = Path(tmp) / "data"
+                snapshot.INDEX_DIR = Path(tmp) / "index"
+                records = [gp_record("1"), gp_record("2", "1.0", "ROCKET BODY")]
+                manifest = snapshot.save_snapshot(
+                    "2026-04-12", snapshot.canonicalize(records), records,
+                    "rolling_gp_history_delta", "test", ["/x"],
+                    annotations=self._annotations(),
+                )
+                self.assertEqual(
+                    manifest["anno_summary"],
+                    {"directory_changes": 2, "tip_count": 2, "decay_notices": 1},
+                )
+                entry = snapshot.ledger_entry_from_manifest(manifest)
+                self.assertEqual(entry["anno_summary"], manifest["anno_summary"])
+                index = snapshot.build_index("OMPub/RSO", "node")
+                self.assertEqual(index["latestEntry"]["anno_summary"], manifest["anno_summary"])
+                # content_schema is now self-describing in the index entry too
+                self.assertEqual(index["latestEntry"]["content_schema"], snapshot.CONTENT_SCHEMA)
+            finally:
+                snapshot.DATA_DIR, snapshot.INDEX_DIR = original
+
+    def test_backfill_adds_anno_summary_from_annotations_file(self):
+        original = snapshot.DATA_DIR
+        with tempfile.TemporaryDirectory() as tmp:
+            try:
+                snapshot.DATA_DIR = Path(tmp) / "data"
+                records = [gp_record("1")]
+                day = "2026-04-12"
+                snapshot.save_snapshot(
+                    day, snapshot.canonicalize(records), records,
+                    "rolling_gp_history_delta", "test", ["/x"],
+                    annotations=self._annotations(),
+                )
+                # a manifest archived before anno_summary existed gets it back, byte-safe
+                stale = snapshot.read_json_if_exists(snapshot.snapshot_dir(day) / "manifest.json")
+                stale.pop("anno_summary")
+                self.assertTrue(snapshot.backfill_manifest_aggregates(stale, day, records))
+                self.assertEqual(
+                    stale["anno_summary"],
+                    {"directory_changes": 2, "tip_count": 2, "decay_notices": 1},
+                )
+            finally:
+                snapshot.DATA_DIR = original
+
+    def test_reentered_object_count_helper_is_gone(self):
+        # deleted as dead code by the deep review; aggregate_counts is the single source
+        self.assertFalse(hasattr(snapshot, "reentered_object_count"))
+
+
 if __name__ == "__main__":
     unittest.main()
