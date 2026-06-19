@@ -1,19 +1,21 @@
 {
-  "generated_at_utc": "2026-06-19T00:35:54Z",
+  "generated_at_utc": "2026-06-19T07:42:42Z",
   "nodes": [
     {
       "id": "ompub",
       "idx": "main",
       "label": "OMPub",
       "node": "node",
-      "repo": "OMPub/RSO"
+      "repo": "OMPub/RSO",
+      "tdh": 1
     },
     {
       "id": "brookr",
       "idx": "main",
       "label": "brookr.eth",
       "node": "node",
-      "repo": "brookr/RSO"
+      "repo": "brookr/RSO",
+      "tdh": 0
     }
   ],
   "schema": "rso-nodes-v1"

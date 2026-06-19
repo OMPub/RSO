@@ -4542,19 +4542,60 @@ def build_index(repo=DEFAULT_NODE_REPO, branch=DEFAULT_NODE_BRANCH, *, dates=Non
     return manifest
 
 
-def write_node_roster(out_path=None, *, nodes=NODE_ROSTER):
+def node_tdh_from_attestations(index_path=None):
+    """Per-node TDH backing, keyed by canonical nodeId ("github:<owner>/<repo>"), read from the
+    doc-chain attestation index -- each node's strongest backing across its events. JSON only,
+    best-effort: returns {} if the index is absent. This is the honest "TDH rank" the card defaults
+    its source list to."""
+    path = (
+        Path(index_path) if index_path is not None
+        else Path(__file__).parent.parent / "indexer" / "generated" / "sepolia" / "rso-docchain-index.json"
+    )
+    data = read_json_if_exists(path)
+    tdh = {}
+    if isinstance(data, dict):
+        for event in data.get("events", []) or []:
+            if not isinstance(event, dict):
+                continue
+            # Key extraction mirrors the card's fetchIndex exactly (incl. the publication.nodeId
+            # fallback) so the published roster's default rank matches the card's live re-rank.
+            publication = event.get("publication") if isinstance(event.get("publication"), dict) else {}
+            nid = str(
+                event.get("nodeId") or event.get("claimedNodeId") or publication.get("nodeId") or ""
+            ).lower()
+            if not nid:
+                continue
+            # Each node's own backing only (nodeBackingTdh); combinedSupportTdh is the agreement
+            # group's aggregate across attesters, not a per-node quantity.
+            backing = int(event.get("nodeBackingTdh") or 0)
+            if backing > tdh.get(nid, 0):
+                tdh[nid] = backing
+    return tdh
+
+
+def write_node_roster(out_path=None, *, nodes=NODE_ROSTER, tdh_by_node=None):
     """Publish the backing-node roster the card extends its fall-through rank with.
 
-    Lives on the idx branch (indexer/generated/nodes.json), beside the doc-chain index. The card
-    fetches it through its own ranked nodes and appends any it doesn't already know below the
-    visitor's defaults, so a new mirror joins the chain without a card re-mint. Returns the roster.
+    Lives on the idx branch (indexer/generated/nodes.json), beside the doc-chain index. Each node
+    carries its on-chain `tdh` backing (derived from the attestation index) and the list is sorted
+    by TDH descending -- the default rank the card opens with. The card re-validates every entry and
+    appends any it doesn't already know, so a new mirror joins the chain without a card re-mint.
+    Returns the roster.
     """
     path = Path(out_path) if out_path is not None else NODE_ROSTER_PATH
     path.parent.mkdir(parents=True, exist_ok=True)
+    tdh = tdh_by_node if tdh_by_node is not None else node_tdh_from_attestations()
+    out_nodes = []
+    for node in nodes:
+        entry = dict(node)
+        canonical = "github:" + str(entry.get("repo", "")).lower()
+        entry["tdh"] = int(tdh.get(canonical, entry.get("tdh") or 0))
+        out_nodes.append(entry)
+    out_nodes.sort(key=lambda n: n.get("tdh", 0), reverse=True)
     roster = {
         "schema": NODE_ROSTER_SCHEMA,
         "generated_at_utc": utc_stamp(),
-        "nodes": [dict(node) for node in nodes],
+        "nodes": out_nodes,
     }
     write_json(path, roster)
     return roster
