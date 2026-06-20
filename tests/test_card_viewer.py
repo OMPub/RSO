@@ -492,7 +492,7 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn("#prism-obj { left: calc(var(--safe-left) + 18px); }", self.html)
         self.assertIn("#prism-witness { right: calc(var(--safe-right) + 18px); }", self.html)
         self.assertIn(".face { position: absolute; inset: 0; backface-visibility: hidden; padding: 6px 10px 0;", self.html)
-        status = re.search(r'<div class="status">(.*?)</div>', self.html, re.S)
+        status = re.search(r'<div class="status"[^>]*>(.*?)</div>', self.html, re.S)
         self.assertIsNotNone(status)
         self.assertLess(status.group(1).index('id="status-label"'),
                         status.group(1).index('id="status-light"'))
@@ -912,10 +912,21 @@ class CardLeanIndexTest(unittest.TestCase):
         self.assertIn("if (!idx) await loadLedger();", self.html)   # legacy ledger only when a node lags
 
     def test_status_is_honest_on_bundle_failure(self):
-        # never claims "Live record" when the bundle fetch failed; the aggregates stay live
-        self.assertIn('setStatus("offline", state.liveNode ? "Aggregates live · bundle offline"', self.html)
+        # never claims "Live record" when the bundle fetch failed; the aggregates stay live, shown
+        # as the "Summary only" state (amber)
+        self.assertIn('setStatus("offline", state.liveNode ? "Summary only" : "Embedded archive")', self.html)
         self.assertIn(".status-light.offline", self.html)
-        self.assertIn('state.liveNode ? `Live · ${state.liveNode.label}` : "Embedded archive"', self.html)
+        self.assertNotIn("Aggregates live · bundle offline", self.html)   # old awkward wording is gone
+
+    def test_status_states_carry_plain_language_tooltips(self):
+        # every status word is self-explaining via a hover/focus/tap tooltip + an aria-label
+        self.assertIn("const STATUS_TIP =", self.html)
+        for label in ("Summary only", "Live record · verified", "Embedded archive", "Downloading archive"):
+            self.assertIn(f'"{label}":', self.html)                       # each state has a tip
+        self.assertIn('el.setAttribute("data-tip", tip)', self.html)
+        self.assertIn('el.setAttribute("aria-label"', self.html)          # screen-reader description
+        self.assertIn('<div class="status" id="status" tabindex="0" role="status"', self.html)
+        self.assertIn(".status[data-tip]", self.html)                     # styled tooltip on the status
 
     def test_content_schema_defaults_to_constant_for_lean_index_days(self):
         # the lean index omits the constant schema; the card defaults it so the fingerprint face

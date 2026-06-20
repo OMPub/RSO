@@ -65,6 +65,14 @@
     .status-light.error { background: var(--magenta); box-shadow: 0 0 13px rgba(255,102,142,0.9); }
     .status-light.offline { background: var(--amber); box-shadow: 0 0 13px rgba(255,196,92,0.55); }
     .status-label { font-size: 9px; }
+    .status[data-tip] { cursor: help; }
+    .status[data-tip]:focus-visible { outline: 1px solid var(--accent); outline-offset: 4px; border-radius: 3px; }
+    .status[data-tip].tip-open::after, .status[data-tip]:hover::after, .status[data-tip]:focus-visible::after {
+      position: absolute; top: calc(100% + 9px); right: 0; left: auto; z-index: 9; content: attr(data-tip);
+      width: max-content; max-width: min(264px, 78vw); padding: 7px 9px; border: 1px solid var(--line); border-radius: 5px;
+      color: var(--ink); background: rgba(2,7,8,0.97); box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+      white-space: normal; text-align: left; font-size: 8.5px; line-height: 1.45; letter-spacing: 0.03em;
+      text-transform: none; font-weight: 400; pointer-events: none; }
 
 
     .readout { position: fixed; inset: 0; pointer-events: none; }
@@ -332,7 +340,7 @@
       <div class="date-index" id="date-index">—</div>
     </section>
 
-    <div class="status">
+    <div class="status" id="status" tabindex="0" role="status" aria-live="polite">
       <span class="status-label" id="status-label">Entering orbit</span>
       <span class="status-light loading" id="status-light"></span>
     </div>
@@ -1872,7 +1880,28 @@
     }
 
     // ── HUD ──
-    function setStatus(type, label) { $("status-light").className = `status-light ${type === "ready" || type === "attested" ? "" : type}`.trim(); $("status-label").textContent = label; }
+    // Each status label carries a plain-language tooltip (hover / focus / tap) so the small HUD
+    // word is always self-explaining. "Live · <node>" varies by node, so it's matched by prefix.
+    const STATUS_TIP = {
+      "Live record · verified": "The full record for this day is loaded, and its content hash matches the on-chain attestation — you're seeing the exact witnessed catalogue.",
+      "Live record": "The full record for this day is loaded from a live source.",
+      "Summary only": "The counts for this day are live and exact from the index — but its full per-object catalogue isn't published for download, so individual objects can't be inspected for this day.",
+      "Embedded archive": "No live source is reachable, so the piece is showing the permanent snapshot embedded in the artwork itself — it renders even if every gateway disappears.",
+      "Downloading archive": "Fetching this day's full per-object record…",
+      "Re-ranking sources…": "Re-ranking the backing sources and re-pulling the record from the new top node…",
+      "Scanning the chain…": "Reading the on-chain attestation index…",
+    };
+    function setStatus(type, label) {
+      $("status-light").className = `status-light ${type === "ready" || type === "attested" ? "" : type}`.trim();
+      $("status-label").textContent = label;
+      const el = $("status"); if (!el) return;
+      const tip = STATUS_TIP[label] || (label.startsWith("Live · ") ? "Live data, served by the top-ranked backing node. Stop on a day to load its full per-object record." : "");
+      if (tip) { el.setAttribute("data-tip", tip); el.setAttribute("aria-label", `${label}. ${tip}`); }
+      else { el.removeAttribute("data-tip"); el.setAttribute("aria-label", label); }
+    }
+    $("status").addEventListener("click", (e) => { e.stopPropagation(); $("status").classList.toggle("tip-open"); });   // tap to reveal on touch
+    $("status").addEventListener("blur", () => $("status").classList.remove("tip-open"));
+    document.addEventListener("click", () => $("status").classList.remove("tip-open"));
     function syncCatalogButton(date) {
       const ready = catalogGzByDate.has(date), btn = $("catalog-btn");
       btn.hidden = !ready; btn.disabled = !ready;
@@ -1996,7 +2025,7 @@
         }
         // Honest status: the HUD aggregates are still live from the index, but the per-object
         // bundle for inspection didn't land — never claim "Live record" when the fetch failed.
-        setStatus("offline", state.liveNode ? "Aggregates live · bundle offline" : "Embedded archive");
+        setStatus("offline", state.liveNode ? "Summary only" : "Embedded archive");
         applyHud(recordMeta(date)); populateLegend(); // annotations may have loaded even without the bundle
       }
     }
