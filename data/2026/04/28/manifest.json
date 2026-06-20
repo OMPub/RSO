@@ -1,4 +1,9 @@
 {
+  "anno_summary": {
+    "decay_notices": 0,
+    "directory_changes": 24,
+    "tip_count": 0
+  },
   "annotations_sha256": "1b4356c4b44fc9eafbe173de87fd730e1fce388132f278a01a4f39ba15f068a0",
   "api_query_base": "https://www.space-track.org/basicspacedata/query",
   "api_query_paths": [
@@ -38,6 +43,11 @@
     "/class/gp_history/NORAD_CAT_ID/330000--339999/CREATION_DATE/2026-04-27T00:00:00--2026-04-28T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json"
   ],
   "archived_at": "2026-04-28T04:09:01.982682+00:00",
+  "band_counts": {
+    "geo": 1835,
+    "leo": 28397,
+    "meo": 3687
+  },
   "base_snapshot_date": "2026-04-27",
   "base_snapshot_sha256": "0b80e3443908482aa720e41740c003e4b8965427be34a98d7463260a73bc48b8",
   "compressed_bytes": 11233385,
@@ -56,16 +66,30 @@
   "content_sha256": "9edbee00fab8035af57603e82dca61c339faab3757a636dc9f9f537416479822",
   "cutoff_utc": "2026-04-28T00:00:00Z",
   "date": "2026-04-28",
+  "delta": {
+    "decayed": 0,
+    "new": 24,
+    "updated": 27721
+  },
   "delta_window_end_utc": "2026-04-28T00:00:00Z",
   "delta_window_start_utc": "2026-04-27T00:00:00Z",
   "format": "OMM/JSON",
   "object_count": 67415,
   "observed_at_utc": "2026-04-28T04:08:51Z",
+  "on_orbit_count": 33919,
   "pipeline_version": "0.3.0",
   "provenance": "rolling_gp_history_delta",
   "query_strategy": "prior_snapshot_plus_bounded_gp_history_delta",
   "raw_bytes": 76533299,
+  "reentered_count": 33496,
   "sha256": "4727abba9fc4e599a4b768207ce31318c9b5e43a9deaa014ca7b0a8f873ec92b",
   "source": "space-track.org",
-  "state_as_of_utc": "2026-04-28T00:00:00Z"
+  "state_as_of_utc": "2026-04-28T00:00:00Z",
+  "type_counts": {
+    "debris": 12320,
+    "payload": 17439,
+    "rocket": 2229,
+    "tba": 0,
+    "unknown": 1931
+  }
 }

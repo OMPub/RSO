@@ -1,34 +1,25 @@
 {
   "asset_name": "rso-archive-2026-04-22.tar.gz",
-  "bundle_bytes": 11136360,
-  "bundle_sha256": "042805ffc1f968d8f25b54d9338c882404a26a55413c527ab4ce0334b8392e47",
+  "bundle_bytes": 11136581,
+  "bundle_sha256": "b847780eb3d4d25fb5f0e3a55421e2d66f6950d30f329329631e99ee41f2ee9d",
   "catalog_sha256": "b649c86ea8ef3e629b6ca4fe5a620218378b64f7788afa8ad3ce08785737844b",
   "date": "2026-04-22",
   "destinations": {
     "arweave": {
-      "anchor": "0PSSSd30Mt6N9QKCOnmQseQ59SSovs_7pok7h2oBHdIBBV66gwvdYI4wY2jlauyK",
-      "bundle_sha256": "f75a1de42afe72731d457ed35bee1cbde34a2baf4fcfc244f99906921008e4d0",
-      "chunk_count": 43,
-      "gateway": "https://arweave.net",
-      "reward_winston": "106713782060",
-      "status": "submitted",
-      "status_code": 202,
-      "status_response": "Accepted",
-      "submitted_at": "2026-06-09T22:46:23Z",
-      "transaction_id": "z1Xd5_MjjpCNpXIduDaPAlPKmKEy8lNzYWomFhAzqF4",
-      "transaction_url": "https://arweave.net/z1Xd5_MjjpCNpXIduDaPAlPKmKEy8lNzYWomFhAzqF4",
-      "upload_mode": "chunked",
-      "wallet_address": "0M5DwTnTNoSMjNY-iphmO5Se-8acobq_hD4pRazNPms"
+      "bundle_sha256": "b847780eb3d4d25fb5f0e3a55421e2d66f6950d30f329329631e99ee41f2ee9d",
+      "error": "Arweave wallet 0M5DwTnTNoSMjNY-iphmO5Se-8acobq_hD4pRazNPms has 26765423793 winston, below required reward 106991261017",
+      "failed_at": "2026-06-20T00:56:27Z",
+      "status": "failed"
     },
     "github_release": {
       "asset_name": "rso-archive-2026-04-22.tar.gz",
       "asset_url": "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-04-22/rso-archive-2026-04-22.tar.gz",
       "release_url": "https://github.com/OMPub/RSO/releases/tag/rso-archive-2026-04-22",
       "repo": "OMPub/RSO",
-      "status": "uploaded",
+      "status": "skipped",
       "tag": "rso-archive-2026-04-22"
     }
   },
-  "manifest_sha256": "2323956aacdfaf648a8b27879241aed9d8fe01cce06dd1c4aaa3891c98714030",
-  "updated_at": "2026-06-10T01:23:25Z"
+  "manifest_sha256": "2c0a80a4820b2a8efd736651baef14b2a9ae870c1abb98ac21c803e80f7cad49",
+  "updated_at": "2026-06-20T00:56:27Z"
 }

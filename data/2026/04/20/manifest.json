@@ -1,10 +1,20 @@
 {
+  "anno_summary": {
+    "decay_notices": 0,
+    "directory_changes": 0,
+    "tip_count": 0
+  },
   "annotations_sha256": "b9a30db695fb577f291498005a444d8fc3163577d138576a7f9e019b83a9cc60",
   "api_query_base": "https://www.space-track.org/basicspacedata/query",
   "api_query_paths": [
     "/class/gp/orderby/NORAD_CAT_ID%20asc/format/json"
   ],
   "archived_at": "2026-04-20T00:01:01.390416+00:00",
+  "band_counts": {
+    "geo": 1835,
+    "leo": 28201,
+    "meo": 3679
+  },
   "compressed_bytes": 11301379,
   "content_excluded_fields": [
     "COUNTRY_CODE",
@@ -21,14 +31,28 @@
   "content_sha256": "1838a06696902f7397d78d906c4bd9f5e9d9e372725ccbf4629bbd377231a740",
   "cutoff_utc": "2026-04-20T00:00:00Z",
   "date": "2026-04-20",
+  "delta": {
+    "decayed": 0,
+    "new": 0,
+    "updated": 0
+  },
   "format": "OMM/JSON",
   "object_count": 67208,
   "observed_at_utc": "2026-04-20T00:00:00Z",
+  "on_orbit_count": 33715,
   "pipeline_version": "0.3.0",
   "provenance": "genesis_from_gp",
   "query_strategy": "current_gp_genesis",
   "raw_bytes": 76298962,
+  "reentered_count": 33493,
   "sha256": "5cd6af76f043b0335ced62c887703585560bdff0b5daf272fa4c76636e5ec1ab",
   "source": "space-track.org",
-  "state_as_of_utc": "2026-04-20T00:00:00Z"
+  "state_as_of_utc": "2026-04-20T00:00:00Z",
+  "type_counts": {
+    "debris": 12320,
+    "payload": 17390,
+    "rocket": 2226,
+    "tba": 0,
+    "unknown": 1779
+  }
 }
