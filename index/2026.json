@@ -1925,6 +1925,11 @@
     }
   },
   {
+    "anno_summary": {
+      "decay_notices": 86,
+      "directory_changes": 108,
+      "tip_count": 25
+    },
     "band_counts": {
       "geo": 1836,
       "leo": 28942,
@@ -1955,6 +1960,11 @@
     }
   },
   {
+    "anno_summary": {
+      "decay_notices": 87,
+      "directory_changes": 21,
+      "tip_count": 27
+    },
     "band_counts": {
       "geo": 1835,
       "leo": 28940,
