@@ -155,23 +155,22 @@ jobs:
             fi
           done
 
-          # A node consumes the public sweeper report but must not run the treasury
-          # sweeper itself. Preserve that one intentional workflow deletion while
-          # allowing node-side workflows such as the report checker to follow main.
-          path=".github/workflows/sweep-attestations.yml"
-          git rm --cached --quiet --ignore-unmatch -- "$path" || true
-          if git cat-file -e "HEAD:$path" 2>/dev/null; then
-            git checkout HEAD -- "$path"
-          else
-            rm -f -- "$path"
-          fi
-
-          # Every node runs the public report checker. Resolve a historical
-          # deletion or modify/delete conflict by taking the current main copy.
-          path=".github/workflows/check-sweeper-report.yml"
-          git rm --cached --quiet --ignore-unmatch -- "$path" || true
-          if git cat-file -e "$DEFAULT_BRANCH:$path" 2>/dev/null; then
-            git checkout "$DEFAULT_BRANCH" -- "$path"
+          # Freeze the whole workflows tree to the node's own version so the
+          # node commit carries NO workflow change. A fork's default
+          # GITHUB_TOKEN is forbidden from pushing commits that add or modify
+          # .github/workflows/* ("refusing to allow a GitHub App to create or
+          # update workflow ... without workflows permission") -- and an
+          # unpushable node commit fails the whole daily. The node branch never
+          # EXECUTES these files (scheduled workflows run from the fork's
+          # default branch, where the run already merged the latest code into
+          # the working tree), so keeping node's copies costs nothing and means
+          # a fork never needs a workflow-scope PAT just to keep its node synced.
+          # (sweep-attestations.yml stays absent on nodes because node HEAD
+          # lacks it; the report checker keeps whatever the node already had.)
+          git rm -r --cached --quiet --ignore-unmatch -- .github/workflows || true
+          rm -rf -- .github/workflows
+          if git cat-file -e "HEAD:.github/workflows" 2>/dev/null; then
+            git checkout HEAD -- .github/workflows
           fi
 
           if git diff --name-only --diff-filter=U | grep .; then
