@@ -613,7 +613,7 @@ class CardArtifactTest(unittest.TestCase):
     def test_iss_has_a_hand_built_model(self):
         # The ISS (25544) is the ONE hand-modelled, realistically-coloured craft: an integrated
         # truss with eight gold solar wings in four pairs, white modules/radiators and the Russian
-        # segment slung below. Used by both the inspector and the cameo.
+        # segment slung below. buildVigShape feeds both the inspector and the field solid (bakeSolid).
         self.assertIn('if (o.meta && o.meta.id === "25544") {', self.html)
         self.assertIn("the ISS — the ONE hand-modelled craft", self.html)
         self.assertIn("const ISS_MAT =", self.html)                                  # realistic, not lens-tinted
@@ -621,14 +621,16 @@ class CardArtifactTest(unittest.TestCase):
         self.assertIn("for (const sy of [0.46, -0.46]) add(wing, gold", self.html)   # …a wing up + down → eight
         self.assertIn("Russian segment slung below", self.html)
 
-    def test_iss_does_a_periodic_central_flyby(self):
-        # The one close flyby in a field of distant motes: a detailed ISS cameo drifts centrally
-        # across the view now and then, parked off-view between passes, paused during hyperspace.
-        self.assertIn("const issCameo = buildVigShape({ meta: { id: \"25544\" } })", self.html)
-        self.assertIn("function updateIssCameo(dt)", self.html)
-        self.assertIn("updateIssCameo(dt);", self.html)                              # driven from the animate loop
-        self.assertIn("issCameo.lookAt(camera.position)", self.html)                 # presents the broadside
-        self.assertIn("issCameo.visible = state.warp < 0.5", self.html)              # hidden during a jump
+    def test_iss_is_a_normal_field_object_biased_central(self):
+        # The ISS is NOT a separate scripted cameo — it's the real catalogue object, rendered as its
+        # detailed solid by the normal field path (bakeSolid -> buildVigShape), selectable/clickable
+        # and ring-able like any object, just nudged toward the central river so it floats by nearer
+        # the middle.
+        self.assertNotIn("issCameo", self.html)                                       # the gimmicky cameo is gone
+        self.assertNotIn("updateIssCameo", self.html)
+        self.assertIn("const g = buildVigShape(o);", self.html)                       # field solids ARE buildVigShape
+        self.assertIn("if (nid === 25544) g *= 0.4;", self.html)                      # central-river bias for the ISS
+        self.assertIn('const ISS_NORAD = "25544";', self.html)                        # 'i' still finds the real object
 
     def test_on_orbit_estimated_until_the_exact_split_loads(self):
         # On-orbit = record minus already-re-entered. The exact split comes from the index
