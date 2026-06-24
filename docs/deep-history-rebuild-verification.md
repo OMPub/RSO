@@ -52,8 +52,33 @@ every sampled day. Endpoints anchored (1959-12-31 = genesis era; 2025-12-31 =
 unit tests + the §6 reference vectors (ISS TLE⇔OMM, Sputnik, 1959 Vanguard
 legacy export) + prior numeric spot-checks vs the live Space-Track API.
 
+## Genesis graft — McDowell 1957-58 (2026-06-24)
+Extends genesis from the Space-Track floor (1959-01-11) back to **Sputnik 1,
+1957-10-04**, per §10 decision 3 ("one clean provenance boundary; McDowell
+sources 1957-58 only; hard cutover to Space-Track at 1959").
+
+- Source: McDowell `planet4589.org/space/elements/00000/` (95 files S00001–S00099,
+  NORAD 1–99, redistribution-unrestricted). 3-line extended-TLE; the `3 `
+  provenance line is ignored by the parser. Sputnik 1 parses exact (NORAD 1,
+  1957-10-04T19:18:18, incl 65.1°, mm 14.96977024, ecc 0.0520478).
+- Built with the same engine, `--year-max 1958 --final-day 1959-01-10`: only
+  ≤1958 elsets (25 of them, 0 skips), carried forward to fill the gap up to the
+  Space-Track floor. **464 days, 1957-10-04 → 1959-01-10.**
+- Historically faithful growth: 1957-10-04 Sputnik 1 (1) · 1957-11-03 Sputnik 2
+  (2) · early-1958 Explorer 1 (3) · → 8 objects by 1959-01-10.
+
+**Welded full chain (`out/full_manifest.txt`): 24,926 days, 1957-10-04 →
+2025-12-31, zero gaps, zero duplicates.** The Space-Track segment is byte-for-byte
+unchanged (1959-01-11 = `b1a567a2…`). The weld is a hard provenance boundary:
+the 8 McDowell genesis objects do not carry into the Space-Track era (1959-01-11
+opens at 1 object and the operational catalog rebuilds), exactly as decision 3
+specifies. (Alternative, if a continuous object set is preferred over a clean
+provenance boundary: a combined run carrying McDowell objects forward — would
+change the 1959+ hashes by the few McDowell-only decayed objects; not done.)
+
 ## Result
-**VERIFIED.** The 24,462-day deep-history rebuild is structurally complete
+**VERIFIED.** The 24,462-day Space-Track rebuild + 464-day McDowell genesis graft
+(24,926 days total, 1957-10-04 → 2025-12-31) is structurally complete
 (perfect day continuity), has no hidden data loss (all skips one known
 fail-closed class, fully logged), tracks the real catalog growth curve, and
 every sampled day across the full 1959→2025 timeline reproduces bit-for-bit via
