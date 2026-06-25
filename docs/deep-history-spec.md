@@ -39,6 +39,11 @@ deep build keys on **EPOCH**:
   years (1959: ≈154 elsets) still yield well-defined daily catalogs.
 - Genesis day 1957-10-04 = the McDowell graft; the chain is continuous daily
   from there.
+- **Provenance boundary (segmented, §10.3):** the McDowell genesis set covers
+  1957-10-04 → 1959-01-10; at the Space-Track floor (1959-01-11) the consensus
+  catalog is Space-Track-only — McDowell objects do not carry across. Each day's
+  hash is reproducible from a single source. (Card display may overlay genesis
+  objects from the observation plane; that never enters the hash.)
 - De-dup across overlapping sources by `(NORAD, EPOCH, mean-elements)`: the
   same elset from zip and API collapses to one (proven identical numerically).
 
@@ -372,11 +377,21 @@ scrubber to 1957.
    ≈few-hundred-tx history batches in that window; verify live via
    ar-fees-style gas oracle before each batch. (Mainnet go-live still gated on
    meme-card mint economics, but no longer on gas.)
-3. **Hard cutover to Space-Track at 1959.** McDowell sources **1957-10-04 →
-   1958 only** (the genesis graft). At the first Space-Track day (1959) the
-   authoritative source switches hard to Space-Track. McDowell is used to
-   **cross-validate** the 1959 overlap for our confidence, but is never the
-   source past 1958 — one clean provenance boundary.
+3. **Hard cutover to Space-Track at 1959 — SEGMENTED, resolved 2026-06-25.**
+   McDowell sources **1957-10-04 → 1959-01-10 only** (≤1958 elsets, carried
+   forward to the Space-Track floor 1959-01-11). At 1959-01-11 the catalog is
+   exactly Space-Track; **the 8 McDowell genesis objects do NOT carry into the
+   Space-Track era** (consensus hash, single-source-per-day). Consequence,
+   accepted: the 4 genesis survivors (NORAD 4, 5=Vanguard 1, 8, 9) are absent
+   for 103–179 days in early-1959 until Space-Track first lists them; the 4
+   decayed (1=Sputnik 1, 3, 6, 10) drop permanently — both faithfully reflect
+   Space-Track's real coverage. **Why segmented:** every operational-era day
+   stays reproducible from Space-Track ALONE; a combined/bridged hash would
+   permanently entangle the 4 never-superseded McDowell objects into every
+   1959→2025 day (no day reproducible from Space-Track alone). **Display
+   continuity (genesis + decayed/survivor objects on the card) is handled at the
+   card layer via an observation-plane overlay — a separate thread, never in the
+   hash.** McDowell may still cross-validate the 1959 overlap for confidence.
 4. **Harvest the analyst band + metadata.** Include the analyst T-band (API
    harvest 2020–2025) and build the object directory from current satcat +
    annotations — the fullest "what we knew, when (as reported now)" picture.
