@@ -20,6 +20,7 @@ Usage: python3 spine.py --manifest full_manifest.txt --out-dir spine/
 from __future__ import annotations
 
 import argparse
+import datetime
 import json
 import os
 import sys
@@ -65,10 +66,22 @@ def build(manifest_path, out_dir):
     month_day_index = {}  # (y,m) -> list[str] day strings (for proofs)
     genesis_bh = weld_bh = None
     days = 0
+    prev_date = None
     with open(manifest_path) as f:
         for line in f:
-            day, content_hex, _rc = line.split()
+            parts = line.split()
+            if len(parts) != 3:
+                raise ValueError(f"malformed manifest line: {line!r}")
+            day, content_hex, _rc = parts
+            # B2: fail-closed structural validation BEFORE hashing — the spine is a
+            # strict parentHash chain, so any gap/dup/misorder silently corrupts it.
+            if len(content_hex) != 64 or any(c not in "0123456789abcdef" for c in content_hex):
+                raise ValueError(f"bad contentHash at {day}: {content_hex!r}")
             y, m, d = int(day[:4]), int(day[5:7]), int(day[8:10])
+            cur_date = datetime.date(y, m, d)  # also rejects impossible dates
+            if prev_date is not None and (cur_date - prev_date).days != 1:
+                raise ValueError(f"manifest not strictly contiguous at {day} (prev {prev_date})")
+            prev_date = cur_date
             bh = block_hash(day_doc_ref(y, m, d), parent, bytes.fromhex(content_hex))
             months.setdefault((y, m), []).append(bh)
             month_day_index.setdefault((y, m), []).append(day)

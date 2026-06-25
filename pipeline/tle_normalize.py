@@ -68,6 +68,12 @@ def _is_all_zero(s: str) -> bool:
     return all(c in "0." for c in s)
 
 
+def _ascii_digits(s: str) -> bool:
+    """True iff s is one or more ASCII 0-9 (NOT Unicode str.isdigit, which
+    accepts Arabic-Indic/fullwidth/superscript digits a strict verifier rejects)."""
+    return s != "" and all("0" <= c <= "9" for c in s)
+
+
 def canon_decimal(s: str) -> str:
     """Canonical shortest plain-decimal token for a terminating decimal string."""
     s = s.strip().rstrip("\\").strip()
@@ -79,13 +85,16 @@ def canon_decimal(s: str) -> str:
         s = s[1:]
     if "e" in s or "E" in s:
         mant, _, exp = s.lower().partition("e")
-        if not exp or not mant:
+        esign = ""
+        if exp[:1] in "+-":
+            esign, exp = exp[0], exp[1:]
+        if not _ascii_digits(exp) or not mant:
             raise ValueError(f"bad exponent form: {s!r}")
-        s = _apply_exponent(mant, int(exp))
+        s = _apply_exponent(mant, int(esign + exp))
     if "." not in s:
         s += "."
     int_part, frac_part = s.split(".", 1)
-    if not (int_part + frac_part).isdigit():
+    if not _ascii_digits(int_part + frac_part):
         raise ValueError(f"non-numeric decimal field: {s!r}")
     frac_part = frac_part.rstrip("0")
     int_part = int_part.lstrip("0") or "0"
@@ -106,7 +115,7 @@ def decode_assumed_exp(field: str) -> str:
         raise ValueError(f"malformed assumed-exponent field: {field!r}")
     exp = field[-2:]
     mant = field[:-2]
-    if not mant.isdigit() or not exp[1:].isdigit():
+    if not _ascii_digits(mant) or not _ascii_digits(exp[1:]):
         raise ValueError(f"malformed assumed-exponent field: {field!r}")
     if _is_all_zero(mant):
         return "0"
@@ -124,14 +133,14 @@ def decode_satnum(field: str) -> int:
     if not field:
         raise ValueError("empty satnum")
     c0 = field[0].upper()
-    if c0.isdigit():
-        if not field.isdigit():
+    if "0" <= c0 <= "9":
+        if not _ascii_digits(field):
             raise ValueError(f"bad numeric satnum: {field!r}")
         return int(field)
     if c0 not in ALPHA5:
         raise ValueError(f"bad Alpha-5 leading char: {field!r}")
     rest = field[1:]
-    if not rest.isdigit():
+    if not _ascii_digits(rest):
         raise ValueError(f"bad Alpha-5 satnum: {field!r}")
     return ALPHA5.index(c0) * 10000 + int(rest)
 
@@ -212,10 +221,16 @@ def _render_epoch(year: int, doy: int, usec_of_day: int) -> str:
 def epoch_from_tle(line1: str) -> str:
     """Canonical EPOCH token from a TLE line-1 ``YYDDD.FFFFFFFF`` field."""
     raw = line1[18:32].strip()
+    if not _ascii_digits(raw[:2]):
+        raise ValueError(f"non-ASCII/invalid epoch year: {raw!r}")
     yy = int(raw[:2])
     year = 1900 + yy if yy >= 57 else 2000 + yy
     doy_str, _, frac_str = raw[2:].partition(".")
+    if not _ascii_digits(doy_str) or (frac_str and not _ascii_digits(frac_str)):
+        raise ValueError(f"non-ASCII/invalid epoch field: {raw!r}")
     doy = int(doy_str)
+    if not (1 <= doy <= _days_in_year(year)):
+        raise ValueError(f"day-of-year {doy} out of range for {year}")  # B5 fail-closed
     if frac_str:
         scale = 10 ** len(frac_str)
         usec_of_day = (int(frac_str) * USEC_PER_DAY + scale // 2) // scale
@@ -230,9 +245,13 @@ def epoch_from_omm(iso: str) -> str:
     if s.endswith("Z"):
         s = s[:-1]
     date_part, _, time_part = s.partition("T")
-    y, mo, d = (int(x) for x in date_part.split("-"))
+    dparts = date_part.split("-")
     hh_s, mi_s, sec_part = time_part.split(":")
     sec_s, _, frac = sec_part.partition(".")
+    for tok in dparts + [hh_s, mi_s, sec_s] + ([frac] if frac else []):
+        if not _ascii_digits(tok):  # B6: reject Unicode digits / underscores int() would accept
+            raise ValueError(f"non-ASCII/invalid OMM epoch token: {tok!r}")
+    y, mo, d = (int(x) for x in dparts)
     hh, mi, sec = int(hh_s), int(mi_s), int(sec_s)
     # round-half-up the fractional seconds to exactly 6 digits
     frac6 = frac[:6].ljust(6, "0")

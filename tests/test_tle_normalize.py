@@ -244,5 +244,42 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(tn.content_sha256(recs), tn.content_sha256(list(reversed(recs))))
 
 
+class FailClosedGuardTests(unittest.TestCase):
+    """Regression tests for the integrity-review fixes (B5 DOY, B6 ASCII)."""
+
+    def _l1(self, epoch14):  # line-1 with a full-width 14-char YYDDD.FFFFFFFF epoch field
+        assert len(epoch14) == 14, epoch14
+        return f"1 00001U 57001A   {epoch14}  .00000000  00000-0  00000-0 0  999"
+
+    def test_b5_doy_out_of_range_rejected(self):
+        for bad in ("26000.50000000", "26400.50000000", "25366.50000000"):  # DOY 0, 400, 366(2025)
+            with self.assertRaises(ValueError):
+                tn.epoch_from_tle(self._l1(bad))
+
+    def test_b5_valid_and_leap_366_accepted(self):
+        self.assertTrue(tn.epoch_from_tle(self._l1("26001.00000000")).startswith("2026-01-01"))
+        self.assertEqual(tn.epoch_from_tle(self._l1("24366.00000000")),
+                         "2024-12-31T00:00:00.000000")
+
+    def test_b6_unicode_digits_rejected(self):
+        self.assertEqual(tn.canon_decimal("1.5"), "1.5")  # ascii still fine
+        with self.assertRaises(ValueError):
+            tn.canon_decimal("1.٥")            # Arabic-Indic 5
+        with self.assertRaises(ValueError):
+            tn.decode_assumed_exp("٥0000-3")
+        with self.assertRaises(ValueError):
+            tn.epoch_from_omm("2026-06-21T18:27:32.93222٤")
+        with self.assertRaises(ValueError):
+            tn.decode_satnum("００００５")  # fullwidth digits
+
+    def test_b6_underscore_exponent_rejected(self):
+        with self.assertRaises(ValueError):
+            tn.canon_decimal("1e1_0")
+
+    def test_b6_omm_epoch_still_clean(self):
+        self.assertEqual(tn.epoch_from_omm("2026-06-07T12:15:59.925600"),
+                         "2026-06-07T12:15:59.925600")
+
+
 if __name__ == "__main__":
     unittest.main()

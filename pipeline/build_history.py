@@ -41,17 +41,20 @@ def log(msg):
 
 
 def _parse_to_line(l1, l2, year_max):
-    """One elset -> TSV line (epoch\tnorad9\telset5\tcorejson), or None if filtered.
-    Raises on a malformed elset (caller logs + skips — fail-closed)."""
-    if year_max is not None:
-        yy = int(l1[18:20])
-        yr = 1900 + yy if yy >= 57 else 2000 + yy
-        if yr > year_max:
-            return None
+    """One elset -> TSV line (epoch\tnorad9\telset9\tcorejson), or None if filtered.
+    Raises on a malformed elset (caller logs + skips — fail-closed). Parses BEFORE
+    filtering and gates on the CANONICAL epoch year (B1: a raw yy<=58 elset whose
+    DOY rolls into 1959 must not slip past --year-max). elset is zero-padded 9-wide
+    so the whole-line lexical sort orders it NUMERICALLY (B3: matches the spec /
+    verifier int(ELEMENT_SET_NO) tie-break instead of a 5-wide lexical compare)."""
     core = core_record_from_tle(l1, l2)
+    if year_max is not None and int(core["EPOCH"][:4]) > year_max:
+        return None
     elset = int(element_set_no_from_tle(l1))
+    if elset >= 1_000_000_000:
+        raise ValueError(f"ELEMENT_SET_NO {elset} exceeds 9-digit sort width")
     norad = int(core["NORAD_CAT_ID"])
-    return (f"{core['EPOCH']}\t{norad:09d}\t{elset:05d}\t"
+    return (f"{core['EPOCH']}\t{norad:09d}\t{elset:09d}\t"
             f"{record_json_bytes(core).decode('ascii')}\n")
 
 
@@ -144,12 +147,14 @@ def pass2_sweep(temp_path, manifest_path, final_day):
     last_day = None
     days_emitted = 0
     genesis = None
+    last_emitted = None
     first_hash = last_hash = None
 
     def emit_range(d_start, d_end, mf):
-        nonlocal days_emitted, first_hash, last_hash
+        nonlocal days_emitted, first_hash, last_hash, last_emitted
         if d_start > d_end:
             return
+        last_emitted = d_end
         h = _hash_catalog(current)
         rc = len(current)
         for d in _iter_days(d_start, d_end):
@@ -164,20 +169,24 @@ def pass2_sweep(temp_path, manifest_path, final_day):
         for line in f:
             epoch, norad9, _elset, corejson = line.rstrip("\n").split("\t", 3)
             day = epoch[:10]
+            if final_day and day > final_day:
+                break  # B1: sorted by epoch -> every remaining day is past the archive end
             if genesis is None:
                 genesis = day
             if last_day is not None and day > last_day:
                 emit_range(last_day, _prev_day(day), mf)
             current[norad9] = corejson.encode("ascii")
             last_day = day
-        # finalize from the last change-day through the archive end
+        # finalize through the archive end (carry-forward); never PAST final_day
         if last_day is not None:
-            end = final_day if (final_day and final_day >= last_day) else last_day
-            emit_range(last_day, end, mf)
+            emit_range(last_day, final_day if final_day else last_day, mf)
 
+    # B1: the emitted manifest must end exactly where requested.
+    if final_day and last_emitted != final_day:
+        raise ValueError(f"final emitted day {last_emitted} != requested --final-day {final_day}")
     log(f"pass 2 done: {days_emitted:,} days, genesis {genesis}, "
         f"final objects {len(current):,}")
-    return {"days": days_emitted, "genesis": genesis, "final_day": final_day,
+    return {"days": days_emitted, "genesis": genesis, "final_day": last_emitted,
             "final_object_count": len(current), "first_hash": first_hash,
             "last_hash": last_hash}
 
