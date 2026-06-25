@@ -141,16 +141,19 @@ never by rounding). ECCENTRICITY: TLE 7-digit field has implied `0.` → build
 `"0." + field` first (`0004499` → `0.0004499` = OMM `0.00044990`). MEAN_MOTION_DOT
 (ndot/2): insert `0` before a leading/post-sign `.` then `canon_decimal`.
 
-**Assumed-exponent decode (BSTAR, MEAN_MOTION_DDOT).** A leading `+`/`-`/space is
-the mantissa sign (5 mantissa digits with an implied `0.`); a leading **digit** is
-the rare no-sign negative-overflow form. The exponent is `int(everything after
-the 5 mantissa digits)` — so the standard signed-single-digit form **and**
-Space-Track's historical 2-digit-overflow form for large drag terms on
-near-reentry objects decode uniformly: `17028-3`→`0.00017028`, `-11606-4`→
-`-0.000011606`, **`+2083500`→`0.20835`, `-2979601`→`-2.9796`, `+1582202`→`15.822`,
-`49000-10`→`4.9e-11`**. All overflow values are pinned against the authoritative
-Space-Track `gp_history` JSON (the OMM emits the same decoded number, preserving
-cross-source equivalence). All-zero mantissa → `"0"`; fail-closed otherwise.
+**Assumed-exponent decode (BSTAR, MEAN_MOTION_DDOT) — one unified rule** covers the
+standard form and every Space-Track historical overflow form for large drag terms
+on near-reentry objects: (1) a leading `+`/`-`/space is the mantissa sign (`-`
+negative, else positive); a leading **digit** means no sign. (2) the **exponent**
+is the trailing signed integer — the substring from the last interior `+`/`-`
+(e.g. `-3`, `+1`, `-10`), or, if none, the last 2 digits as a positive exponent
+(`00`, `01`). (3) the **mantissa** is the digits before the exponent with an
+implied decimal point **5 places from the right**: 5 digits → `0.MMMMM`, 6 digits
+→ `M.MMMMM`. All values pinned byte-for-byte against the authoritative Space-Track
+`gp_history` JSON (the OMM emits the same number → cross-source equivalence):
+`17028-3`→`0.00017028`, **`+2083500`→`0.20835`, `-2979601`→`-2.9796`,
+`+1582202`→`15.822`, `49000-10`→`4.9e-11`, `973196+1`→`97.3196`**. All-zero
+mantissa → `"0"`; fail-closed otherwise.
 **Column-shift tolerance:** a subset of legacy records have a blank international
 designator + one extra space, shifting every line-1 field +1; detect via the
 epoch decimal point (index 23 standard vs 24 shifted — never false-positives on a

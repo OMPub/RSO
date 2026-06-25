@@ -116,40 +116,49 @@ def _signed_int_str(s: str) -> bool:
 def decode_assumed_exp(field: str) -> str:
     """Decode a TLE assumed-decimal-exponent field (BSTAR, MEAN_MOTION_DDOT).
 
-    Standard form ``sMMMMMse``: a sign/space, 5 mantissa digits with an implied
-    leading ``0.``, then a signed single-digit exponent → ``s·0.MMMMM × 10^(se)``.
+    One unified rule covers the standard form AND every Space-Track historical
+    overflow form for large drag terms on near-reentry objects. All values below
+    are verified byte-for-byte against the authoritative Space-Track ``gp_history``
+    JSON (the OMM emits the same number, preserving cross-source equivalence):
+      `` 17028-3`` -> 0.00017028 (standard)   ``+2083500`` -> 0.20835
+      ``-2979601`` -> -2.9796                 ``+1582202`` -> 15.822 (nddot)
+      ``49000-10`` -> 4.9e-11                 ``973196+1`` -> 97.3196   ``+00000-0`` -> 0
 
-    Space-Track's historical bulk TLEs ALSO use an overflow form for large drag
-    terms on near-reentry objects, where the exponent is a **signed 2-digit**
-    number occupying the exponent-sign column. Every form below is verified
-    byte-for-byte against the authoritative Space-Track ``gp_history`` JSON:
-      ``+2083500`` -> 0.20835 (0.20835x10^0)   ``-2979601`` -> -2.9796 (-0.29796x10^1)
-      ``+1582202`` -> 15.822  (0.15822x10^2)    ``49000-10`` ->  4.9e-11 (0.49000x10^-10)
-      `` 17028-3`` -> 0.00017028 (standard)     ``+00000-0`` -> 0
-    Rule: a leading ``+``/``-``/space is the mantissa sign (implied ``0.`` mantissa
-    in cols 1-5); a leading digit is the rare no-sign negative-overflow form; the
-    exponent is ``int(everything after the 5 mantissa digits)`` so ``-3``, ``00``,
-    ``01`` and ``-10`` all decode uniformly. Integer/string only, no float;
-    fail-closed otherwise. (Column-shifted records -- blank international
-    designator -- are realigned upstream in ``core_record_from_tle``.)
+    Decode (integer/string only, no float):
+      1. A leading ``+``/``-``/space is the mantissa sign (``-`` negative, else
+         positive); a leading digit means no sign (mantissa starts at col 1).
+      2. The exponent is the trailing signed integer: the substring from the last
+         interior ``+``/``-`` (e.g. ``-3``, ``+1``, ``-10``), or — if none — the
+         last 2 digits as a positive exponent (e.g. ``00``, ``01``).
+      3. The mantissa is the digits before the exponent, with an implied decimal
+         point **5 places from the right**: 5 digits -> ``0.MMMMM``, 6 digits ->
+         ``M.MMMMM`` (the leading digit is the integer part). This is the only
+         convention consistent with Space-Track's JSON across 5- and 6-digit forms.
+    Fail-closed on anything that does not fit. (Column-shifted records — blank
+    international designator — are realigned upstream in ``core_record_from_tle``.)
     """
     if not field or len(field) < 7:
         raise ValueError(f"assumed-exponent field too short: {field!r}")
     c0 = field[0]
-    if c0 in "+- ":
-        msign = "-" if c0 == "-" else ""
-        body = field[1:].rstrip()
+    if c0 in "+-":
+        msign, rest = ("-" if c0 == "-" else ""), field[1:].rstrip()
+    elif c0 == " ":
+        msign, rest = "", field[1:].rstrip()
     elif _ascii_digits(c0):
-        msign = ""
-        body = field.rstrip()
+        msign, rest = "", field.rstrip()
     else:
         raise ValueError(f"malformed assumed-exponent field: {field!r}")
-    mant, exp_str = body[:5], body[5:]
-    if len(mant) != 5 or not _ascii_digits(mant) or not _signed_int_str(exp_str):
+    sp = max(rest.rfind("+"), rest.rfind("-"))
+    if sp > 0:                      # interior exponent sign: '-3', '+1', '-10'
+        mant_digits, exp_str = rest[:sp], rest[sp:]
+    else:                           # no sign: trailing 2 digits are a +exponent
+        mant_digits, exp_str = rest[:-2], rest[-2:]
+    if len(mant_digits) < 5 or not _ascii_digits(mant_digits) or not _signed_int_str(exp_str):
         raise ValueError(f"malformed assumed-exponent field: {field!r}")
-    if _is_all_zero(mant):
+    if _is_all_zero(mant_digits):
         return "0"
-    return canon_decimal(msign + "0." + mant + "e" + str(int(exp_str)))
+    int_part = mant_digits[:-5].lstrip("0") or "0"   # implied decimal 5 from the right
+    return canon_decimal(msign + int_part + "." + mant_digits[-5:] + "e" + str(int(exp_str)))
 
 
 # --------------------------------------------------------------------------
