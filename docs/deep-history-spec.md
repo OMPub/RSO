@@ -241,8 +241,53 @@ commitment regimes.
 
 **History (1957-10 → 2025-12):** daily blockHashes are the Merkle leaves;
 one root per month, `contentHash = monthRoot`, `parentHash = previous month's
-root blockHash`. Month-roots form a ≈830-link spine. Any day is provable by a
-≈5-hash Merkle proof against its on-chain month-root.
+root blockHash`. Month-roots form an 819-link spine (1957-10 → 2025-12 inclusive
+is exactly 819 months; the first root's parent = `0x00…00`). Any day is provable
+by a ≈5-hash Merkle proof against its on-chain month-root.
+
+### 6.1 Normative definitions (frozen — a third party reproduces every value)
+
+**Day boundary.** A "day" is a civil UTC calendar day of a **fixed 86 400-second
+length** (proleptic Gregorian; **no leap seconds** — a UTC day carrying a leap
+second still buckets on the 86 400 000 000-µs grid). EPOCH lies on the 864-µs
+grid (§4.3). Carry-forward cutoff = that day's `T23:59:59.999999Z`.
+
+**blockHash (the leaf, and the on-chain commitment).** Replicates
+`DocChain.sol` `_hashDocBlockFields` exactly:
+```
+blockHash = keccak256(
+    DOC_BLOCK_TYPEHASH                              # 0xb8421210…07894 (32B)
+  ‖ docChainId                                     # 0x6011620b…399bea (32B)
+  ‖ uint64(docRef) left-zero-padded to 32 bytes
+  ‖ parentHash (32B)                               # genesis = 0x00…00
+  ‖ contentHash (32B) )                            # the day's content_sha256
+```
+160 bytes, Ethereum **keccak256** (NOT NIST SHA3-256). `recordCount` is **not**
+hashed (the DocBlock has only 4 fields); it is published per-day and checked
+out-of-band against `contentHash`. blockHash is **EIP-712-domain-independent** —
+the domain (chainId/contract) enters only the *signature*, never the blockHash —
+so all leaves are final regardless of which network later attests them.
+
+**Monthly Merkle tree.** Leaves = that month's daily blockHashes as **opaque
+32-byte values, in chronological day order**. Tree hash is a **separate sha256
+domain** (NOT keccak): `combine(a,b) = sha256(min(a,b) ‖ max(a,b))` — sorted-pair,
+so it is **commutative**. On an odd level the lone node is **promoted unchanged**
+(carried up — NOT the Bitcoin/OpenZeppelin duplicate-last-node rule). `monthRoot`
+= the fold to one 32-byte value. An inclusion proof is the **flat list of sibling
+hashes** (no left/right flags, since combine is commutative); verify by folding
+the leaf with each sibling via the same sorted-pair sha256 and comparing to
+`monthRoot`. Leaves and nodes interchange as lowercase hex, no `0x`.
+*(Reference: `attestation/merkle.py`, `attestation/spine.py`,
+`attestation/keccak256.py`.)*
+
+**Reference vector (self-test).** keccak256 must reproduce
+`DOC_BLOCK_TYPEHASH = keccak256("DocBlock(bytes32 docChainId,uint64 docRef,bytes32
+parentHash,bytes32 contentHash)")` and `docChainId =
+keccak256("https://om.pub/rso/doc-chain")`. The genesis-era on-chain block
+(2026-04-20, parent `0`, contentHash `0x1838a066…231a740`) → blockHash
+`0xe651a583…96e103e` (matches the live Sepolia genesis). Deep-history genesis
+(1957-10-04) blockHash, the 2025-12-31 weld value, and the Dec-2025 spine head
+are pinned in `docs/deep-history-spine-anchors.json`.
 
 **Live (2026-01-01 → present):** per-day attestation as today;
 `docRef = YYYYMMDD000000`, `parentHash = previous day's blockHash`. Day
@@ -251,7 +296,7 @@ the daily chain welds to the history spine with no seam.
 
 **Submission:** offline-compute all blockHashes + month-roots (deterministic),
 then `attestBatch` in low-gas windows (§10.2: weekend ≈02:00–04:00 UTC) —
-≈830 month-roots + the 2026 daily run ≈ a few hundred txs total. At today's
+819 month-roots + the 2026 daily run ≈ a few hundred txs total. At today's
 ≈2–5 gwei that is roughly **0.1–0.3 ETH single node** (the 1–6 ETH figure was
 a high-gwei worst case). One upstream node attests the spine; the community
 adds independent witnesses via late-join if they choose (§10.1).
