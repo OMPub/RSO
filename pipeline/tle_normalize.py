@@ -127,13 +127,15 @@ def decode_assumed_exp(field: str) -> str:
     Decode (integer/string only, no float):
       1. A leading ``+``/``-``/space is the mantissa sign (``-`` negative, else
          positive); a leading digit means no sign (mantissa starts at col 1).
-      2. The exponent is the trailing signed integer: the substring from the last
-         interior ``+``/``-`` (e.g. ``-3``, ``+1``, ``-10``), or — if none — the
-         last 2 digits as a positive exponent (e.g. ``00``, ``01``).
-      3. The mantissa is the digits before the exponent, with an implied decimal
-         point **5 places from the right**: 5 digits -> ``0.MMMMM``, 6 digits ->
-         ``M.MMMMM`` (the leading digit is the integer part). This is the only
-         convention consistent with Space-Track's JSON across 5- and 6-digit forms.
+      2. If there is an interior ``+``/``-``, the exponent is the substring from it
+         (e.g. ``-3``, ``+1``, ``-10``) and the mantissa is the digits before it,
+         with an implied decimal point **5 places from the right** (5 digits ->
+         ``0.MMMMM``, 6 -> ``M.MMMMM`` — the leading digit is the integer part).
+      3. If there is NO interior sign, the mantissa is the first 5 digits
+         (``0.MMMMM``) and the exponent is whatever follows — 1 or 2 digits, a
+         positive exponent: ``+028410`` -> ``0.02841`` (exp ``0``), ``+2083500`` ->
+         ``0.20835`` (exp ``00``). This split is the only one consistent with
+         Space-Track's JSON across the 5-digit, 6-digit, and trailing-space forms.
     Fail-closed on anything that does not fit. (Column-shifted records — blank
     international designator — are realigned upstream in ``core_record_from_tle``.)
     """
@@ -151,8 +153,8 @@ def decode_assumed_exp(field: str) -> str:
     sp = max(rest.rfind("+"), rest.rfind("-"))
     if sp > 0:                      # interior exponent sign: '-3', '+1', '-10'
         mant_digits, exp_str = rest[:sp], rest[sp:]
-    else:                           # no sign: trailing 2 digits are a +exponent
-        mant_digits, exp_str = rest[:-2], rest[-2:]
+    else:                           # no sign: 5-digit mantissa, the rest is a +exponent
+        mant_digits, exp_str = rest[:5], rest[5:]
     if len(mant_digits) < 5 or not _ascii_digits(mant_digits) or not _signed_int_str(exp_str):
         raise ValueError(f"malformed assumed-exponent field: {field!r}")
     if _is_all_zero(mant_digits):

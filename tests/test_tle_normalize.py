@@ -93,6 +93,8 @@ class AssumedExponentTests(unittest.TestCase):
         self.assertEqual(tn.decode_assumed_exp("+1582202"), "15.822")     # nddot 0.15822x10^2
         self.assertEqual(tn.decode_assumed_exp("973196+1"), "97.3196")    # 6-digit mantissa 9.73196x10^1
         self.assertEqual(tn.decode_assumed_exp("100000+2"), "100")        # 1.00000x10^2
+        self.assertEqual(tn.decode_assumed_exp("+028410 "), "0.02841")    # nddot, no sign, 1-digit exp (trailing space)
+        self.assertEqual(tn.decode_assumed_exp("+1056600"), "0.10566")    # no sign, exp 00
         self.assertEqual(tn.decode_assumed_exp(" 17028-3"), "0.00017028")  # standard, leading space
 
     def test_spacetrack_negative_2digit_exponent(self):
