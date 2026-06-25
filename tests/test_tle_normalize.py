@@ -81,7 +81,35 @@ class AssumedExponentTests(unittest.TestCase):
 
     def test_fail_closed_on_missing_exponent_sign(self):
         with self.assertRaises(ValueError):
-            tn.decode_assumed_exp("170283")
+            tn.decode_assumed_exp("170283")   # 6 chars, truncated
+
+    def test_spacetrack_2digit_exponent_overflow(self):
+        # Large drag terms on near-reentry objects — every value verified against
+        # the authoritative Space-Track gp_history JSON.
+        self.assertEqual(tn.decode_assumed_exp("+2083500"), "0.20835")    # BSTAR 0.20835x10^0
+        self.assertEqual(tn.decode_assumed_exp("+0208301"), "0.2083")     # 0.02083x10^1
+        self.assertEqual(tn.decode_assumed_exp("-2979601"), "-2.9796")    # -0.29796x10^1
+        self.assertEqual(tn.decode_assumed_exp("+3387300"), "0.33873")    # nddot 0.33873
+        self.assertEqual(tn.decode_assumed_exp("+1582202"), "15.822")     # nddot 0.15822x10^2
+        self.assertEqual(tn.decode_assumed_exp(" 17028-3"), "0.00017028")  # standard, leading space
+
+    def test_spacetrack_negative_2digit_exponent(self):
+        # Tiny BSTAR needing a -10 exponent (no leading sign; mantissa in cols 1-5).
+        self.assertEqual(tn.decode_assumed_exp("49000-10"), "0.000000000049")  # 4.9e-11
+        self.assertEqual(tn.decode_assumed_exp("87000-10"), "0.000000000087")  # 8.7e-11
+
+
+class ColumnShiftTests(unittest.TestCase):
+    def test_blank_designator_plus_one_shift_recovers(self):
+        # Blank international designator + extra space shifts line-1 fields +1.
+        shifted = "1 22273U           04141.15499409  .00442848 -92388-5  22200-3 0  4447\\"
+        self.assertEqual(tn._line1_offset(shifted), 1)
+        l1 = shifted[tn._line1_offset(shifted):]
+        self.assertEqual(tn.decode_assumed_exp(l1[53:61]), "0.000222")     # recovered BSTAR (API)
+        self.assertEqual(tn.epoch_from_tle(l1)[:10], "2004-05-20")
+
+    def test_standard_line_has_no_shift(self):
+        self.assertEqual(tn._line1_offset(ISS_L1), 0)
 
 
 class NoradTests(unittest.TestCase):

@@ -141,11 +141,21 @@ never by rounding). ECCENTRICITY: TLE 7-digit field has implied `0.` → build
 `"0." + field` first (`0004499` → `0.0004499` = OMM `0.00044990`). MEAN_MOTION_DOT
 (ndot/2): insert `0` before a leading/post-sign `.` then `canon_decimal`.
 
-**Assumed-exponent decode (BSTAR, MEAN_MOTION_DDOT)** `MMMMM±E`: read optional
-`-`; **fail-closed** — assert 2nd-to-last char ∈ `{+,-}` else reject the record;
-all-zero mantissa → `"0"`; else form `sign + "0." + mant + "e" + exp` →
-`canon_decimal`. `17028-3` → `0.00017028` = OMM `0.00017028000000`; `-11606-4` →
-`-0.000011606`. Absent-field defaults (pinned, irreversible):
+**Assumed-exponent decode (BSTAR, MEAN_MOTION_DDOT).** A leading `+`/`-`/space is
+the mantissa sign (5 mantissa digits with an implied `0.`); a leading **digit** is
+the rare no-sign negative-overflow form. The exponent is `int(everything after
+the 5 mantissa digits)` — so the standard signed-single-digit form **and**
+Space-Track's historical 2-digit-overflow form for large drag terms on
+near-reentry objects decode uniformly: `17028-3`→`0.00017028`, `-11606-4`→
+`-0.000011606`, **`+2083500`→`0.20835`, `-2979601`→`-2.9796`, `+1582202`→`15.822`,
+`49000-10`→`4.9e-11`**. All overflow values are pinned against the authoritative
+Space-Track `gp_history` JSON (the OMM emits the same decoded number, preserving
+cross-source equivalence). All-zero mantissa → `"0"`; fail-closed otherwise.
+**Column-shift tolerance:** a subset of legacy records have a blank international
+designator + one extra space, shifting every line-1 field +1; detect via the
+epoch decimal point (index 23 standard vs 24 shifted — never false-positives on a
+standard line) and read line-1 fields at that offset (line 2 is never shifted).
+Absent-field defaults (pinned, irreversible):
 `BSTAR/MEAN_MOTION_DOT/MEAN_MOTION_DDOT = "0"`, injected explicitly (silent
 omission would change the hash). ELEMENT_SET_NO (selection-only, not hashed) is
 read from the line tail by **whitespace-tokenize, never fixed-slice** (legacy

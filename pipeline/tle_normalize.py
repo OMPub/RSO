@@ -104,23 +104,52 @@ def canon_decimal(s: str) -> str:
     return ("-" + out) if neg else out
 
 
+def _signed_int_str(s: str) -> bool:
+    """True iff ``s`` is a (possibly signed) ASCII integer, e.g. '00', '-3', '-10'."""
+    if not s:
+        return False
+    if s[0] in "+-":
+        s = s[1:]
+    return bool(s) and _ascii_digits(s)
+
+
 def decode_assumed_exp(field: str) -> str:
-    """Decode a TLE assumed-exponent field ``MMMMM±E`` (BSTAR, nddot). Fail-closed."""
-    field = field.strip()
-    neg = False
-    if field and field[0] in "+-":
-        neg = field[0] == "-"
-        field = field[1:]
-    if len(field) < 2 or field[-2] not in "+-":
+    """Decode a TLE assumed-decimal-exponent field (BSTAR, MEAN_MOTION_DDOT).
+
+    Standard form ``sMMMMMse``: a sign/space, 5 mantissa digits with an implied
+    leading ``0.``, then a signed single-digit exponent → ``s·0.MMMMM × 10^(se)``.
+
+    Space-Track's historical bulk TLEs ALSO use an overflow form for large drag
+    terms on near-reentry objects, where the exponent is a **signed 2-digit**
+    number occupying the exponent-sign column. Every form below is verified
+    byte-for-byte against the authoritative Space-Track ``gp_history`` JSON:
+      ``+2083500`` -> 0.20835 (0.20835x10^0)   ``-2979601`` -> -2.9796 (-0.29796x10^1)
+      ``+1582202`` -> 15.822  (0.15822x10^2)    ``49000-10`` ->  4.9e-11 (0.49000x10^-10)
+      `` 17028-3`` -> 0.00017028 (standard)     ``+00000-0`` -> 0
+    Rule: a leading ``+``/``-``/space is the mantissa sign (implied ``0.`` mantissa
+    in cols 1-5); a leading digit is the rare no-sign negative-overflow form; the
+    exponent is ``int(everything after the 5 mantissa digits)`` so ``-3``, ``00``,
+    ``01`` and ``-10`` all decode uniformly. Integer/string only, no float;
+    fail-closed otherwise. (Column-shifted records -- blank international
+    designator -- are realigned upstream in ``core_record_from_tle``.)
+    """
+    if not field or len(field) < 7:
+        raise ValueError(f"assumed-exponent field too short: {field!r}")
+    c0 = field[0]
+    if c0 in "+- ":
+        msign = "-" if c0 == "-" else ""
+        body = field[1:].rstrip()
+    elif _ascii_digits(c0):
+        msign = ""
+        body = field.rstrip()
+    else:
         raise ValueError(f"malformed assumed-exponent field: {field!r}")
-    exp = field[-2:]
-    mant = field[:-2]
-    if not _ascii_digits(mant) or not _ascii_digits(exp[1:]):
+    mant, exp_str = body[:5], body[5:]
+    if len(mant) != 5 or not _ascii_digits(mant) or not _signed_int_str(exp_str):
         raise ValueError(f"malformed assumed-exponent field: {field!r}")
     if _is_all_zero(mant):
         return "0"
-    token = ("-" if neg else "") + "0." + mant + "e" + exp
-    return canon_decimal(token)
+    return canon_decimal(msign + "0." + mant + "e" + str(int(exp_str)))
 
 
 # --------------------------------------------------------------------------
@@ -297,20 +326,43 @@ def element_set_no_from_tle(line1: str) -> str:
     return str(int(last_tok)) if last_tok.isdigit() else "0"
 
 
+def _line1_offset(line1: str) -> int:
+    """Detect a +1 column shift in line 1 from the epoch decimal point.
+
+    A standard line puts the epoch ``YYDDD.FFFFFFFF`` at cols 19-32, so the ``.``
+    is at index 23. A subset of Space-Track's legacy export records have a blank
+    international designator plus one extra space, shifting every line-1 field +1
+    (``.`` at index 24). Keyed off the epoch dot (not the designator) so it never
+    false-positives on a standard line. Other alignments fall through to 0 and
+    fail closed downstream.
+    """
+    if len(line1) > 23 and line1[23] == ".":
+        return 0
+    if len(line1) > 24 and line1[24] == ".":
+        return 1
+    return 0
+
+
 def core_record_from_tle(line1: str, line2: str) -> dict:
-    """Build the canonical 11-key (pure-orbit) core record from a TLE line pair."""
+    """Build the canonical 11-key (pure-orbit) core record from a TLE line pair.
+
+    Line 1 fields are read at a detected offset so blank-designator column-shifted
+    records parse correctly; line 2 carries no designator and is never shifted.
+    """
+    off = _line1_offset(line1)
+    l1 = line1[off:] if off else line1
     record = {
         "NORAD_CAT_ID": canon_norad(decode_satnum(line2[2:7])),
-        "EPOCH": epoch_from_tle(line1),
+        "EPOCH": epoch_from_tle(l1),
         "INCLINATION": canon_decimal(line2[8:16]),
         "RA_OF_ASC_NODE": canon_decimal(line2[17:25]),
         "ECCENTRICITY": canon_decimal("0." + line2[26:33].strip()),
         "ARG_OF_PERICENTER": canon_decimal(line2[34:42]),
         "MEAN_ANOMALY": canon_decimal(line2[43:51]),
         "MEAN_MOTION": canon_decimal(line2[52:63]),
-        "MEAN_MOTION_DOT": canon_decimal(line1[33:43]),
-        "MEAN_MOTION_DDOT": decode_assumed_exp(line1[44:52]),
-        "BSTAR": decode_assumed_exp(line1[53:61]),
+        "MEAN_MOTION_DOT": canon_decimal(l1[33:43]),
+        "MEAN_MOTION_DDOT": decode_assumed_exp(l1[44:52]),
+        "BSTAR": decode_assumed_exp(l1[53:61]),
     }
     assert set(record) == set(CORE_KEYS), "core record key mismatch"
     return record
