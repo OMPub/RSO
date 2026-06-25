@@ -90,3 +90,21 @@ Open follow-ons (not blockers): McDowell 1957-58 genesis graft (extends genesis
 from 1959-01-11 back to 1957-10-04); optional tolerant decoder to recover the
 ~48k overflowed-drag-term skips; Merkle/blockHash linkage + mainnet attestation
 (needs chain context + go-ahead).
+
+## Recovery — Space-Track large-drag-term encoding (2026-06-25)
+
+The integrity review's "44-object coverage gap" was resolved: the records were
+Space-Track's own overflow encoding for large drag terms (BSTAR/nddot) on
+near-reentry objects, confirmed against the authoritative `gp_history` JSON. The
+unified decoder (`decode_assumed_exp`, §4.2) recovers **48,613 of 48,614**
+previously-skipped elsets (1 residual is a genuinely corrupt line, correctly
+fail-closed) and the +1 blank-designator column shift. This makes the
+TLE-sourced hash match the OMM-sourced hash where they diverged.
+
+Re-run + re-anchored. **Final anchors:** genesis `0xac994f03…595936fc0`
+(unchanged), weld `0x1bc2b0f3…e0a5596b`, spine-head `0x9e41f7c2…4769e4c5`.
+Final catalog **65,373 objects** (= 65,329 + 44 recovered). Independent
+`verify_days` recompute MATCHES the recovered manifest on 14 days across
+1959→2025 (incl. the 1989 recovery peak and obj-898's 2004 days). Decoder
+validated against ALL 48,614 originally-skipped records offline; 9 decode
+vectors pinned to the Space-Track API.
