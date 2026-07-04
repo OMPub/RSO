@@ -104,9 +104,14 @@ def canon_decimal(s: str) -> str:
     if "e" in s or "E" in s:
         mant, _, exp = s.lower().partition("e")
         esign = ""
-        if exp[:1] in "+-":
+        # NOTE: `exp[:1] in "+-"` would be True for the EMPTY string ('' is a
+        # substring of "+-") and then exp[0] raises IndexError on inputs like
+        # "1e" — a tuple membership test has no such trap.
+        if exp[:1] in ("+", "-"):
             esign, exp = exp[0], exp[1:]
-        if not _ascii_digits(exp) or not mant:
+        # the mantissa must contain at least one digit — ".e5" must not
+        # materialize zeros through the exponent shift
+        if not _ascii_digits(exp) or not any("0" <= c <= "9" for c in mant):
             raise ValueError(f"bad exponent form: {s!r}")
         ev = int(esign + exp)
         if not -999 <= ev <= 999:  # SPEC §2.2 step 3: |exponent| ≤ 999
@@ -295,7 +300,13 @@ def _render_epoch(year: int, doy: int, usec_of_day: int) -> str:
 
 
 def epoch_from_tle(line1: str) -> str:
-    """Canonical EPOCH token from a TLE line-1 ``YYDDD.FFFFFFFF`` field."""
+    """Canonical EPOCH token from a TLE line-1 ``YYDDD.FFFFFFFF`` field.
+
+    The SPEC §1.1 line check runs HERE too (not only in core_record_from_tle):
+    the epoch window is located by offset, so a non-ASCII char anywhere before
+    it would silently shift the slice differently in byte- vs UTF-16- vs
+    code-point-indexed implementations."""
+    _require_ascii_tle_line(line1)
     raw = _strip_ascii(line1[18:32])
     if not _ascii_digits(raw[:2]):
         raise ValueError(f"non-ASCII/invalid epoch year: {raw!r}")
@@ -514,6 +525,8 @@ def canonical_bytes(records) -> bytes:
     value non-empty and drawn from [0-9.\\-T:] (no JSON escaping can ever fire)."""
     seen = set()
     for r in records:
+        if set(r) != set(CORE_KEYS):
+            raise ValueError(f"core record key set mismatch: {sorted(r)}")
         n = r["NORAD_CAT_ID"]
         if not _ascii_int_token(n) or len(n) > 9:
             raise ValueError(f"non-canonical NORAD_CAT_ID token: {n!r}")
