@@ -22,11 +22,14 @@ import hashlib
 
 
 def _to_bytes(value) -> bytes:
-    if isinstance(value, bytes):
-        b = value
-    else:
+    if isinstance(value, (bytes, bytearray)):
+        b = bytes(value)
+    elif isinstance(value, str):
         s = value[2:] if value.startswith("0x") else value
         b = bytes.fromhex(s)
+    else:
+        # fail-closed with the CONTRACTUAL exception type, not AttributeError
+        raise ValueError(f"Merkle node must be bytes or hex str, got {type(value).__name__}")
     if len(b) != 32:
         raise ValueError(f"Merkle node must be 32 bytes, got {len(b)}")
     return b

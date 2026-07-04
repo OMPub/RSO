@@ -353,11 +353,14 @@ def epoch_from_omm(iso: str) -> str:
 
 
 def tle_checksum_ok(line: str) -> bool:
-    if len(line) < 69 or not line[68].isdigit():
+    # ASCII-digit tests only — str.isdigit() accepts Unicode digits that int()
+    # happily parses (guarded upstream on pipeline paths, but this function is
+    # also part of the direct API surface).
+    if len(line) < 69 or not _ascii_digits(line[68]):
         return False
     total = 0
     for ch in line[:68]:
-        if ch.isdigit():
+        if "0" <= ch <= "9":
             total += int(ch)
         elif ch == "-":
             total += 1
@@ -383,7 +386,7 @@ def element_set_no_from_tle(line1: str) -> str:
     # number (e.g. "9993" = set 999 + checksum 3); legacy lines do not.
     if (not had_backslash) and tle_checksum_ok(raw) and len(last_tok) > 1:
         last_tok = last_tok[:-1]
-    return str(int(last_tok)) if last_tok.isdigit() else "0"
+    return str(int(last_tok)) if _ascii_digits(last_tok) else "0"
 
 
 # rso-verify SPEC §1.1 input model: a TLE line contains ONLY the ASCII

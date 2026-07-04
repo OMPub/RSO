@@ -540,6 +540,11 @@ def element_selection_key(record):
         creation_time(record),
         numeric_record_field(record, "GP_ID"),
         epoch_time(record),
+        # Final deterministic tie-breaker: if CREATION_DATE, GP_ID (which maps
+        # to 0 when missing/unparseable) AND EPOCH all tie, selection must not
+        # depend on Space-Track return order — the archived contentHash would
+        # otherwise be irreproducible by replay.
+        record_hash(record),
     )
 
 

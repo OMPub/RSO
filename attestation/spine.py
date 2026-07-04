@@ -65,23 +65,30 @@ def build(manifest_path, out_dir):
     months = {}          # (y,m) -> list[bytes]  daily blockHash leaves, chronological
     month_day_index = {}  # (y,m) -> list[str] day strings (for proofs)
     genesis_bh = weld_bh = None
+    genesis_day = None
     days = 0
     prev_date = None
-    with open(manifest_path) as f:
+    # Full SPEC §5 line grammar — a manifest the clean-room verifiers would
+    # reject (CRLF, dotted dates, junk recordCount) must not build a spine here.
+    line_re = __import__("re").compile(r"^(\d{4})-(\d{2})-(\d{2}) ([0-9a-f]{64}) (0|[1-9][0-9]*)\n?$")
+    with open(manifest_path, newline="") as f:
         for line in f:
-            parts = line.split()
-            if len(parts) != 3:
-                raise ValueError(f"malformed manifest line: {line!r}")
-            day, content_hex, _rc = parts
+            if line in ("", "\n"):
+                continue
+            mo = line_re.match(line)
+            if mo is None:
+                raise ValueError(f"manifest line does not match the SPEC §5 grammar: {line!r}")
+            day = f"{mo.group(1)}-{mo.group(2)}-{mo.group(3)}"
+            content_hex = mo.group(4)
+            y, m, d = int(mo.group(1)), int(mo.group(2)), int(mo.group(3))
+            cur_date = datetime.date(y, m, d)  # also rejects impossible dates
             # B2: fail-closed structural validation BEFORE hashing — the spine is a
             # strict parentHash chain, so any gap/dup/misorder silently corrupts it.
-            if len(content_hex) != 64 or any(c not in "0123456789abcdef" for c in content_hex):
-                raise ValueError(f"bad contentHash at {day}: {content_hex!r}")
-            y, m, d = int(day[:4]), int(day[5:7]), int(day[8:10])
-            cur_date = datetime.date(y, m, d)  # also rejects impossible dates
             if prev_date is not None and (cur_date - prev_date).days != 1:
                 raise ValueError(f"manifest not strictly contiguous at {day} (prev {prev_date})")
             prev_date = cur_date
+            if genesis_day is None:
+                genesis_day = day
             bh = block_hash(day_doc_ref(y, m, d), parent, bytes.fromhex(content_hex))
             months.setdefault((y, m), []).append(bh)
             month_day_index.setdefault((y, m), []).append(day)
@@ -90,6 +97,9 @@ def build(manifest_path, out_dir):
             weld_bh = bh.hex()
             parent = bh
             days += 1
+
+    if days == 0:
+        raise ValueError(f"empty manifest: {manifest_path}")
 
     # 2/3) month-root Merkle roots + the month-root DocBlock spine
     mparent = ZERO
@@ -113,7 +123,9 @@ def build(manifest_path, out_dir):
     proof_checks = []
     for sd in sample_days:
         y, m, d = int(sd[:4]), int(sd[5:7]), int(sd[8:10])
-        if (y, m) not in months:
+        # the sample MONTH may be in span while the sample DAY is not (partial /
+        # weld-extension builds) — .index() on a missing day would crash build()
+        if sd not in month_day_index.get((y, m), []):
             continue
         idx = month_day_index[(y, m)].index(sd)
         leaves = months[(y, m)]
@@ -127,7 +139,7 @@ def build(manifest_path, out_dir):
     summary = {
         "schema": "rso-core-omm-v1", "docChainId": "0x" + DOCCHAIN.hex(),
         "days": days, "months": len(roots),
-        "genesis_day": "1957-10-04", "genesis_blockHash": "0x" + genesis_bh,
+        "genesis_day": genesis_day, "genesis_blockHash": "0x" + genesis_bh,
         "weld_value_2025_12_31": "0x" + weld_bh,
         "spine_head_blockHash": spine_head,
         "blockhash_self_check": "passed (vs on-chain Sepolia genesis)",

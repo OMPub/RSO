@@ -16,8 +16,6 @@ they came from a zip TLE, the live API, or McDowell.
 """
 from __future__ import annotations
 
-import bisect
-
 from tle_normalize import canonical_bytes, content_sha256
 
 # End-of-UTC-day cutoff suffix; epoch tokens are fixed-width ISO so a plain

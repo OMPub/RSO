@@ -62,8 +62,13 @@ def _extract_one(task):
     """Worker: one zip -> its own part file (+ skip file). Returns counts + paths."""
     zf, part_path, skip_path, year_max = task
     kept = skipped = 0
+    # Skip log carries the REJECTED lines — which after decode("ascii","replace")
+    # may contain U+FFFD. errors="backslashreplace" keeps the log writable for
+    # exactly the inputs it exists to record (a strict-ascii log stream would
+    # UnicodeEncodeError inside the except handler and kill the worker).
     with open(part_path, "w", encoding="ascii", buffering=1 << 22) as out, \
-         open(skip_path, "w", encoding="ascii", buffering=1 << 20) as skiplog:
+         open(skip_path, "w", encoding="ascii", errors="backslashreplace",
+              buffering=1 << 20) as skiplog:
         p = subprocess.Popen(["unzip", "-p", zf], stdout=subprocess.PIPE, bufsize=1 << 22)
         prev = None
         for raw in p.stdout:
@@ -81,7 +86,10 @@ def _extract_one(task):
                 except Exception as e:
                     skipped += 1
                     skiplog.write(f"{os.path.basename(zf)}\t{e}\t{l1}\t{l2}\n")
-        p.wait()
+        if rc := p.wait():
+            # a truncated/corrupt zip must fail the run, not silently yield a
+            # partial stream both build AND verify would agree on
+            raise RuntimeError(f"unzip -p {zf} exited {rc}")
     return os.path.basename(zf), kept, skipped, part_path, skip_path
 
 
@@ -111,9 +119,9 @@ def pass1_extract(corpus_dir, temp_path, temp_dir, year_max, skip_log_path, jobs
         log(f"  {name}: kept={k:,} skipped={s:,}")
 
     # concatenate skip files into the single audit log, then remove parts' skips
-    with open(skip_log_path, "w", encoding="ascii") as agg:
+    with open(skip_log_path, "w", encoding="ascii", errors="backslashreplace") as agg:
         for _n, _k, _s, _p, sk in results:
-            with open(sk, encoding="ascii") as f:
+            with open(sk, encoding="ascii", errors="backslashreplace") as f:
                 agg.write(f.read())
             os.remove(sk)
     log(f"pass 1 done: {kept:,} elsets, {skipped:,} skipped (log: {skip_log_path})")
@@ -125,6 +133,10 @@ def external_sort(parts, temp_path, temp_dir, jobs):
     epoch/norad/elset make lexical order == (chrono, numeric, numeric). Merge
     scratch (-T) is kept on the same (large) volume, not the system disk."""
     log(f"sort: external merge of {len(parts)} part(s) (LC_ALL=C)")
+    # guard against a caller regressing to output==input (external_sort DELETES
+    # its inputs after success — sorting a file onto itself would then remove it)
+    if os.path.abspath(temp_path) in {os.path.abspath(p) for p in parts}:
+        raise ValueError("external_sort: output path is one of the inputs")
     env = dict(os.environ, LC_ALL="C")
     cmd = ["sort", f"--parallel={max(1, jobs)}", "-T", temp_dir,
            "-S", "4G", "-o", temp_path] + parts
@@ -215,7 +227,22 @@ def _prev_day(day):
     return f"{y:04d}-{m:02d}-{d:02d}"
 
 
+def valid_day(day):
+    """Strict YYYY-MM-DD calendar validation — a malformed --final-day
+    (e.g. '20251231') would otherwise make _iter_days loop forever."""
+    if not (isinstance(day, str) and len(day) == 10 and day[4] == "-" and day[7] == "-"):
+        return False
+    y, m, d = day[:4], day[5:7], day[8:10]
+    if not (y.isascii() and y.isdigit() and m.isascii() and m.isdigit()
+            and d.isascii() and d.isdigit()):
+        return False
+    yi, mi, di = int(y), int(m), int(d)
+    return 1 <= mi <= 12 and 1 <= di <= _dim(yi, mi)
+
+
 def _iter_days(d_start, d_end):
+    if not (valid_day(d_start) and valid_day(d_end)):
+        raise ValueError(f"invalid day range {d_start!r}..{d_end!r}")
     y, m, d = int(d_start[:4]), int(d_start[5:7]), int(d_start[8:10])
     while True:
         cur = f"{y:04d}-{m:02d}-{d:02d}"
@@ -241,6 +268,9 @@ def main():
     ap.add_argument("--jobs", type=int, default=1, help="parallel pass-1 workers (per-file)")
     ap.add_argument("--keep-temp", action="store_true")
     args = ap.parse_args()
+
+    if args.final_day and not valid_day(args.final_day):
+        sys.exit(f"--final-day {args.final_day!r} is not a valid YYYY-MM-DD date")
 
     os.makedirs(args.out_dir, exist_ok=True)
     temp_dir = args.temp or args.out_dir

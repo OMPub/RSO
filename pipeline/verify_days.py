@@ -30,14 +30,18 @@ TARGETS: list[str] = []  # set in worker init
 
 def _worker(zf):
     """Per file: for each target day, the latest elset <= D per object.
-    Returns {day_index: {norad9: (epoch, elset, core_bytes)}}."""
+    Returns (skipped_count, {day_index: {norad9: (epoch, elset, core_bytes)}})."""
     best = {j: {} for j in range(len(TARGETS))}
+    skipped = 0
     p = subprocess.Popen(["unzip", "-p", zf], stdout=subprocess.PIPE, bufsize=1 << 22)
     prev = None
     for raw in p.stdout:
         if raw[:2] == b"1 ":
             prev = raw
         elif raw[:2] == b"2 " and prev is not None:
+            # errors="replace" is safe ONLY because core_record_from_tle's
+            # ASCII line guard rejects the U+FFFD replacement char fail-closed
+            # — that downstream guard is load-bearing here.
             l1 = prev.decode("ascii", "replace").rstrip("\n")
             l2 = raw.decode("ascii", "replace").rstrip("\n")
             prev = None
@@ -55,9 +59,12 @@ def _worker(zf):
                         if cur is None or key > cur:
                             best[j][norad] = key
             except Exception:
-                pass
-    p.wait()
-    return best
+                skipped += 1  # counted + surfaced: compare against pass1's skip total
+    if rc := p.wait():
+        # a truncated zip must fail verification, not silently agree with a
+        # build that read the same partial stream
+        raise RuntimeError(f"unzip -p {zf} exited {rc}")
+    return skipped, best
 
 
 def _init(targets):
@@ -82,9 +89,17 @@ def main():
                 want[d] = (h, int(c))
 
     zips = sorted(glob.glob(os.path.join(args.corpus, "*.zip")))
+    if not zips:
+        # a wrong --corpus path must not "verify" a zero-object day against
+        # zero bytes of corpus and exit 0
+        sys.exit(f"no .zip files under --corpus {args.corpus}")
     print(f"verifying {len(args.days)} days over {len(zips)} files, {args.jobs} workers")
     with multiprocessing.Pool(args.jobs, initializer=_init, initargs=(args.days,)) as pool:
-        partials = pool.map(_worker, zips)
+        results = pool.map(_worker, zips)
+    total_skipped = sum(r[0] for r in results)
+    partials = [r[1] for r in results]
+    print(f"skipped elsets (fail-closed rejects): {total_skipped}"
+          " — must equal the build's pass-1 skip count for the same corpus")
 
     ok = True
     for j, D in enumerate(args.days):
