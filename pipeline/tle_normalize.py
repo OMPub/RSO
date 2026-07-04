@@ -74,9 +74,27 @@ def _ascii_digits(s: str) -> bool:
     return s != "" and all("0" <= c <= "9" for c in s)
 
 
+# Whitespace handling is ASCII-only by spec (rso-verify SPEC §2.2): exactly
+# \t\n\v\f\r and space. Python's str.strip() strips a *different* (Unicode) set
+# — NBSP, NEL, the C0 separators, ideographic space — which is exactly the
+# cross-language divergence the spec forbids. Exotic whitespace is left in
+# place so the ASCII-digit guards reject it fail-closed.
+_ASCII_WS = " \t\n\v\f\r"
+
+
+def _strip_ascii(s: str) -> str:
+    return s.strip(_ASCII_WS)
+
+
+def _rstrip_ascii(s: str) -> str:
+    return s.rstrip(_ASCII_WS)
+
+
 def canon_decimal(s: str) -> str:
     """Canonical shortest plain-decimal token for a terminating decimal string."""
-    s = s.strip().rstrip("\\").strip()
+    s = _strip_ascii(s)
+    s = s.rstrip("\\")
+    s = _strip_ascii(s)
     if not s:
         raise ValueError("empty decimal field")
     neg = False
@@ -90,7 +108,10 @@ def canon_decimal(s: str) -> str:
             esign, exp = exp[0], exp[1:]
         if not _ascii_digits(exp) or not mant:
             raise ValueError(f"bad exponent form: {s!r}")
-        s = _apply_exponent(mant, int(esign + exp))
+        ev = int(esign + exp)
+        if not -999 <= ev <= 999:  # SPEC §2.2 step 3: |exponent| ≤ 999
+            raise ValueError(f"exponent out of bounds: {s!r}")
+        s = _apply_exponent(mant, ev)
     if "." not in s:
         s += "."
     int_part, frac_part = s.split(".", 1)
@@ -104,13 +125,14 @@ def canon_decimal(s: str) -> str:
     return ("-" + out) if neg else out
 
 
-def _signed_int_str(s: str) -> bool:
-    """True iff ``s`` is a (possibly signed) ASCII integer, e.g. '00', '-3', '-10'."""
+def _valid_assumed_exp_str(s: str) -> bool:
+    """The assumed-exponent field's exponent: an optional sign then EXACTLY
+    1 or 2 ASCII digits (rso-verify SPEC §2.2 shape bounds)."""
     if not s:
         return False
     if s[0] in "+-":
         s = s[1:]
-    return bool(s) and _ascii_digits(s)
+    return len(s) in (1, 2) and _ascii_digits(s)
 
 
 def decode_assumed_exp(field: str) -> str:
@@ -143,11 +165,11 @@ def decode_assumed_exp(field: str) -> str:
         raise ValueError(f"assumed-exponent field too short: {field!r}")
     c0 = field[0]
     if c0 in "+-":
-        msign, rest = ("-" if c0 == "-" else ""), field[1:].rstrip()
+        msign, rest = ("-" if c0 == "-" else ""), _rstrip_ascii(field[1:])
     elif c0 == " ":
-        msign, rest = "", field[1:].rstrip()
+        msign, rest = "", _rstrip_ascii(field[1:])
     elif _ascii_digits(c0):
-        msign, rest = "", field.rstrip()
+        msign, rest = "", _rstrip_ascii(field)
     else:
         raise ValueError(f"malformed assumed-exponent field: {field!r}")
     sp = max(rest.rfind("+"), rest.rfind("-"))
@@ -155,7 +177,8 @@ def decode_assumed_exp(field: str) -> str:
         mant_digits, exp_str = rest[:sp], rest[sp:]
     else:                           # no sign: 5-digit mantissa, the rest is a +exponent
         mant_digits, exp_str = rest[:5], rest[5:]
-    if len(mant_digits) < 5 or not _ascii_digits(mant_digits) or not _signed_int_str(exp_str):
+    # SPEC §2.2 shape bounds: mantissa EXACTLY 5 or 6 digits, exponent 1-2 digits.
+    if not 5 <= len(mant_digits) <= 6 or not _ascii_digits(mant_digits) or not _valid_assumed_exp_str(exp_str):
         raise ValueError(f"malformed assumed-exponent field: {field!r}")
     if _is_all_zero(mant_digits):
         return "0"
@@ -168,16 +191,28 @@ def decode_assumed_exp(field: str) -> str:
 # --------------------------------------------------------------------------
 
 def decode_satnum(field: str) -> int:
-    """Alpha-5 / plain decode of a satnum field to its integer value."""
-    field = field.strip()
+    """Alpha-5 / plain decode of a satnum field to its integer value.
+
+    Bounded + ASCII-strict (rso-verify SPEC §2.4): a plain numeric id has at
+    most 9 significant digits; an Alpha-5 id is EXACTLY 5 chars (ASCII letter +
+    4 ASCII digits, ≤ 339,999). The leading char is ASCII-uppercased ONLY —
+    str.upper() Unicode-folds (long-s ſ → S) which a strict verifier rejects.
+    """
+    field = _strip_ascii(field)
     if not field:
         raise ValueError("empty satnum")
-    c0 = field[0].upper()
+    c0 = field[0]
     if "0" <= c0 <= "9":
         if not _ascii_digits(field):
             raise ValueError(f"bad numeric satnum: {field!r}")
+        if len(field.lstrip("0") or "0") > 9:  # ≤ 9 significant digits
+            raise ValueError(f"numeric satnum out of range: {field!r}")
         return int(field)
-    if c0 not in ALPHA5:
+    if len(field) != 5:  # Alpha-5 is exactly 5 chars
+        raise ValueError(f"bad Alpha-5 satnum length: {field!r}")
+    if "a" <= c0 <= "z":
+        c0 = chr(ord(c0) - 32)  # ASCII uppercase only, never Unicode case-folding
+    if c0 not in ALPHA5 or c0 < "A":  # must be a letter, not a digit
         raise ValueError(f"bad Alpha-5 leading char: {field!r}")
     rest = field[1:]
     if not _ascii_digits(rest):
@@ -190,11 +225,12 @@ def canon_norad(value) -> str:
     if isinstance(value, int):
         n = value
     else:
-        s = str(value).strip()
+        s = _strip_ascii(str(value))
         # An OMM id may be plain digits (incl. future 9-digit) or Alpha-5.
-        n = int(s) if s.isdigit() else decode_satnum(s)
-    if n < 0:
-        raise ValueError(f"negative NORAD id: {value!r}")
+        # ASCII-digit test, never str.isdigit() (Unicode digits parse in int()).
+        n = int(s) if _ascii_digits(s) else decode_satnum(s)
+    if not 0 <= n <= 999_999_999:  # SPEC §2.4 bound; keeps int(token) exact everywhere
+        raise ValueError(f"NORAD id out of range: {value!r}")
     token = str(n)
     if not _ascii_int_token(token):
         raise ValueError(f"non-canonical NORAD token: {token!r}")
@@ -260,7 +296,7 @@ def _render_epoch(year: int, doy: int, usec_of_day: int) -> str:
 
 def epoch_from_tle(line1: str) -> str:
     """Canonical EPOCH token from a TLE line-1 ``YYDDD.FFFFFFFF`` field."""
-    raw = line1[18:32].strip()
+    raw = _strip_ascii(line1[18:32])
     if not _ascii_digits(raw[:2]):
         raise ValueError(f"non-ASCII/invalid epoch year: {raw!r}")
     yy = int(raw[:2])
@@ -271,6 +307,8 @@ def epoch_from_tle(line1: str) -> str:
     doy = int(doy_str)
     if not (1 <= doy <= _days_in_year(year)):
         raise ValueError(f"day-of-year {doy} out of range for {year}")  # B5 fail-closed
+    if len(frac_str) > 8:  # SPEC §2.3: L ≤ 8 keeps F·USEC_PER_DAY < 2^63 in every language
+        raise ValueError(f"epoch fraction longer than 8 digits: {raw!r}")
     if frac_str:
         scale = 10 ** len(frac_str)
         usec_of_day = (int(frac_str) * USEC_PER_DAY + scale // 2) // scale
@@ -281,7 +319,7 @@ def epoch_from_tle(line1: str) -> str:
 
 def epoch_from_omm(iso: str) -> str:
     """Canonical EPOCH token from an OMM ISO timestamp (assert on 864-grid)."""
-    s = iso.strip()
+    s = _strip_ascii(iso)
     if s.endswith("Z"):
         s = s[:-1]
     date_part, _, time_part = s.partition("T")
@@ -337,6 +375,23 @@ def element_set_no_from_tle(line1: str) -> str:
     return str(int(last_tok)) if last_tok.isdigit() else "0"
 
 
+# rso-verify SPEC §1.1 input model: a TLE line contains ONLY the ASCII
+# whitespace set (0x09-0x0D) and printable ASCII (0x20-0x7E). Compiled regex so
+# the guard is C-speed on the 232M-elset rebuild path.
+_NON_ASCII_TLE = __import__("re").compile(r"[^\x09-\x0d\x20-\x7e]")
+
+
+def _require_ascii_tle_line(line: str) -> None:
+    """Reject any byte outside the SPEC §1.1 TLE alphabet — this is what makes
+    byte / UTF-16 / code-point slicing coincide across the producer and every
+    clean-room client."""
+    m = _NON_ASCII_TLE.search(line)
+    if m is not None:
+        raise ValueError(
+            f"non-ASCII/control char U+{ord(m.group()):04X} at offset {m.start()} in TLE line"
+        )
+
+
 def _line1_offset(line1: str) -> int:
     """Detect a +1 column shift in line 1 from the epoch decimal point.
 
@@ -360,6 +415,8 @@ def core_record_from_tle(line1: str, line2: str) -> dict:
     Line 1 fields are read at a detected offset so blank-designator column-shifted
     records parse correctly; line 2 carries no designator and is never shifted.
     """
+    _require_ascii_tle_line(line1)
+    _require_ascii_tle_line(line2)
     off = _line1_offset(line1)
     l1 = line1[off:] if off else line1
     record = {
@@ -367,7 +424,7 @@ def core_record_from_tle(line1: str, line2: str) -> dict:
         "EPOCH": epoch_from_tle(l1),
         "INCLINATION": canon_decimal(line2[8:16]),
         "RA_OF_ASC_NODE": canon_decimal(line2[17:25]),
-        "ECCENTRICITY": canon_decimal("0." + line2[26:33].strip()),
+        "ECCENTRICITY": canon_decimal("0." + _strip_ascii(line2[26:33])),
         "ARG_OF_PERICENTER": canon_decimal(line2[34:42]),
         "MEAN_ANOMALY": canon_decimal(line2[43:51]),
         "MEAN_MOTION": canon_decimal(line2[52:63]),
@@ -447,11 +504,23 @@ def record_json_bytes(r: dict) -> bytes:
     ).encode("ascii")
 
 
+_VALUE_CHARSET = frozenset("0123456789.-T:")
+
+
 def canonical_bytes(records) -> bytes:
-    """Sort by int(NORAD), reject duplicates, serialize the array (sole hash input)."""
+    """Sort by int(NORAD), reject duplicates + non-canonical tokens, serialize
+    the array (sole hash input). Token guards per rso-verify SPEC §2.6: NORAD is
+    ^(0|[1-9][0-9]*)$ with ≤ 9 digits (int-sort exact in every language), every
+    value non-empty and drawn from [0-9.\\-T:] (no JSON escaping can ever fire)."""
     seen = set()
     for r in records:
         n = r["NORAD_CAT_ID"]
+        if not _ascii_int_token(n) or len(n) > 9:
+            raise ValueError(f"non-canonical NORAD_CAT_ID token: {n!r}")
+        for key in CORE_KEYS:
+            v = r[key]
+            if not v or any(c not in _VALUE_CHARSET for c in v):
+                raise ValueError(f"non-canonical value token {v!r} in record {n}")
         if n in seen:
             raise ValueError(f"duplicate NORAD_CAT_ID in catalog: {n}")
         seen.add(n)
