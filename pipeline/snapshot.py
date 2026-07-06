@@ -16,6 +16,7 @@ import hashlib
 import http.cookiejar
 import ipaddress
 import json
+import math
 import os
 import random
 import re
@@ -630,7 +631,8 @@ def classify_band(mean_motion):
         value = float(mean_motion)
     except (TypeError, ValueError):
         return "meo"
-    if value > 0:
+    # Match the card's Number.isFinite guard: inf/nan/overflow -> meo, not leo.
+    if math.isfinite(value) and value > 0:
         if 0.9 <= value <= 1.1:
             return "geo"
         if value >= 11.0:
@@ -703,16 +705,25 @@ def annotation_summary(annotations):
     tip_count / decay_notices = the raw message-feed lengths."""
     if not isinstance(annotations, dict):
         return {"directory_changes": 0, "tip_count": 0, "decay_notices": 0}
+    # Stringify ids like the card (String(c.norad_cat_id)) so numeric/string
+    # forms of one id collapse instead of double-counting; keep only real ids.
     directory = {
-        change.get("norad_cat_id")
+        str(change.get("norad_cat_id"))
         for change in (annotations.get("catalog_changes") or [])
-        if isinstance(change, dict)
+        if isinstance(change, dict) and change.get("norad_cat_id") is not None
     }
-    directory.discard(None)
+
+    def _feed_len(key):
+        # len() only over an actual list — a corrupted/hand-edited annotations
+        # file with a string/dict here would otherwise miscount its LENGTH into
+        # the manifest -> ledger -> index -> card HUD with no error.
+        value = annotations.get(key)
+        return len(value) if isinstance(value, list) else 0
+
     return {
         "directory_changes": len(directory),
-        "tip_count": len(annotations.get("tip_messages") or []),
-        "decay_notices": len(annotations.get("decay_messages") or []),
+        "tip_count": _feed_len("tip_messages"),
+        "decay_notices": _feed_len("decay_messages"),
     }
 
 
@@ -970,7 +981,17 @@ def query_conjunction_messages(client, previous_cutoff, current_cutoff):
 
 
 def conjunction_sort_key(row):
-    return (str(row.get("CREATED") or ""), int_string_sort_key(row.get("CDM_ID")))
+    # record_hash is the final tiebreaker so two rows sharing (CREATED, CDM_ID)
+    # -- a reissued CDM body within one capture window -- order deterministically
+    # regardless of Space-Track's intra-tie return order (else conjunctions_sha256
+    # would diverge by node). CDM_ID string is kept before the hash so numeric
+    # ordering still dominates; int_string_sort_key alone collapses non-decimal ids.
+    return (
+        str(row.get("CREATED") or ""),
+        int_string_sort_key(row.get("CDM_ID")),
+        str(row.get("CDM_ID") or ""),
+        record_hash(row),
+    )
 
 
 def build_conjunctions(
@@ -1032,6 +1053,15 @@ def build_conjunctions(
     return conjunctions
 
 
+def _stable_feed(rows, primary_field):
+    """Deterministic order for a Space-Track annotation feed: the intended
+    chronological primary field, then record_hash as a total tiebreaker so the
+    committed bytes never depend on the server's intra-tie return order."""
+    if not rows:
+        return []
+    return sorted(rows, key=lambda r: (str(r.get(primary_field) or ""), record_hash(r)))
+
+
 def build_annotations(
     current_date_str,
     records,
@@ -1086,9 +1116,13 @@ def build_annotations(
                 )
         changes.sort(key=lambda item: (int_string_sort_key(item["norad_cat_id"]), item["field"]))
 
-    observation_lag_days = max(
-        0, (parse_date(str(observed_at_utc)[:10]) - parse_date(current_date_str)).days
-    )
+    try:
+        observed_day = parse_date(str(observed_at_utc)[:10])
+    except ValueError as exc:
+        raise SnapshotError(
+            f"observed_at_utc {observed_at_utc!r} is not an ISO date"
+        ) from exc
+    observation_lag_days = max(0, (observed_day - parse_date(current_date_str)).days)
     annotations = {
         "schema": ANNOTATIONS_SCHEMA,
         "date": current_date_str,
@@ -1098,9 +1132,13 @@ def build_annotations(
         "fields": list(CONTENT_EXCLUDED_FIELDS),
         "baseline": bool(baseline),
         "catalog_changes": changes,
-        "satcat_changes": satcat_changes if satcat_changes is not None else [],
-        "decay_messages": decay_messages if decay_messages is not None else [],
-        "tip_messages": tip_messages if tip_messages is not None else [],
+        # Stably re-sort each Space-Track feed: its `orderby` leaves rows sharing
+        # the tied timestamp in whatever intra-tie order the server returned, so
+        # two nodes could otherwise commit different annotations_sha256. Keep the
+        # intended chronological primary, break ties on record_hash.
+        "satcat_changes": _stable_feed(satcat_changes, "CHANGE_MADE"),
+        "decay_messages": _stable_feed(decay_messages, "MSG_EPOCH"),
+        "tip_messages": _stable_feed(tip_messages, "MSG_EPOCH"),
     }
     if window_start_utc is not None:
         annotations["window_start_utc"] = window_start_utc
