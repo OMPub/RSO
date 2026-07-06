@@ -173,6 +173,9 @@ ARWEAVE_TRANSIENT_CHUNK_ERRORS = frozenset(
     }
 )
 ARWEAVE_TRANSIENT_HTTP_STATUSES = frozenset({408, 425, 429, 500, 502, 503, 504})
+# A tx observed in a block can still drop out in a fork reorg; only call it
+# "confirmed" once the network has buried it deeper than routine reorgs.
+ARWEAVE_MIN_CONFIRMATIONS = 15
 RELEASE_ARTIFACT_FILENAMES = (
     "catalog.json.gz",
     "manifest.json",
@@ -335,8 +338,11 @@ class SpaceTrackClient:
 
         try:
             result = json.loads(raw)
-        except ValueError:
-            result = None
+        except ValueError as exc:
+            snippet = raw[:200].decode("utf-8", errors="replace").strip()
+            raise SnapshotError(
+                f"Space-Track login returned a non-JSON response: {snippet}"
+            ) from exc
 
         if isinstance(result, dict) and result.get("Login") == "Failed":
             raise SnapshotError("Space-Track login failed. Check credentials.")
@@ -792,10 +798,15 @@ def report_dir():
 
 
 def write_json(path, payload):
+    path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
+    # Write-then-rename so a crash mid-write can never leave a truncated JSON
+    # file at the published path.
+    tmp_path = path.with_name(path.name + ".tmp")
+    with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2, sort_keys=True)
         f.write("\n")
+    os.replace(tmp_path, path)
 
 
 def read_json_if_exists(path, default=None):
@@ -1231,6 +1242,18 @@ def build_delta(
     }
 
 
+def warn_if_empty_delta_window(current_date_str, delta):
+    # Space-Track serves an outage as a clean HTTP-200 empty result, which is
+    # indistinguishable here from a genuinely quiet window. Multi-node consensus
+    # catches a divergent day later; surface it to the operator immediately.
+    if delta and delta.get("raw_row_count") == 0:
+        print(
+            f"  WARNING: {current_date_str}: gp_history window returned 0 rows -- "
+            "quiet day or silent Space-Track outage. Verify against another node "
+            "before trusting this day."
+        )
+
+
 def load_snapshot(current_date_str):
     raw_bytes = read_catalog_bytes(current_date_str)
     return json.loads(raw_bytes)
@@ -1507,10 +1530,17 @@ def update_ledger(manifest):
         with open(LEDGER_PATH, encoding="utf-8") as f:
             try:
                 loaded = json.load(f)
-                if isinstance(loaded, list):
-                    ledger = loaded
-            except json.JSONDecodeError:
-                ledger = []
+            except json.JSONDecodeError as exc:
+                raise SnapshotError(
+                    f"{LEDGER_PATH} is corrupt (not valid JSON); refusing to restart "
+                    f"the ledger from empty: {exc}"
+                ) from exc
+        if not isinstance(loaded, list):
+            raise SnapshotError(
+                f"{LEDGER_PATH} does not contain a JSON list; refusing to restart "
+                "the ledger from empty"
+            )
+        ledger = loaded
 
     new_entry = ledger_entry_from_manifest(manifest)
     new_entry.update(publication_fields_from_receipt(load_storage_receipt(manifest["date"])))
@@ -1891,6 +1921,7 @@ def process_daily(args, client):
     )
     if manifest:
         print(f"\n  DONE. Hash: {manifest['sha256']}")
+        warn_if_empty_delta_window(current_date_str, delta)
 
 
 def process_roll_forward(args, client):
@@ -1996,6 +2027,7 @@ def process_roll_forward(args, client):
         if manifest:
             archived += 1
             last_manifest = manifest
+            warn_if_empty_delta_window(current_date_str, delta)
         state_records = data
         current += timedelta(days=1)
 
@@ -2134,11 +2166,7 @@ def process_update_pointers(args):
             days.append(date_str(current))
             current += timedelta(days=1)
     else:
-        days = sorted(
-            manifest_path.parent.name
-            and f"{manifest_path.parts[-4]}-{manifest_path.parts[-3]}-{manifest_path.parts[-2]}"
-            for manifest_path in DATA_DIR.glob("*/*/*/manifest.json")
-        )
+        days = discover_snapshot_dates()
     updated = 0
     for day in days:
         manifest = read_json_if_exists(snapshot_dir(day) / "manifest.json")
@@ -3265,7 +3293,7 @@ def arweave_signature_payload(transaction):
 
 
 def arweave_wallet_balance(address):
-    _, balance = arweave_request("GET", f"/wallet/{address}/balance")
+    _, balance = arweave_request_with_retries("GET", f"/wallet/{address}/balance")
     if not isinstance(balance, str) or not balance.isdigit():
         raise SnapshotError(f"Arweave balance endpoint returned invalid payload: {balance!r}")
     return int(balance)
@@ -3274,8 +3302,8 @@ def arweave_wallet_balance(address):
 def arweave_build_transaction(bundle, jwk, tags=None):
     bundle_bytes = Path(bundle["path"]).read_bytes()
     chunk_plan = arweave_generate_transaction_chunks(bundle_bytes)
-    _, price = arweave_request("GET", f"/price/{len(bundle_bytes)}")
-    _, anchor = arweave_request("GET", "/tx_anchor")
+    _, price = arweave_request_with_retries("GET", f"/price/{len(bundle_bytes)}")
+    _, anchor = arweave_request_with_retries("GET", "/tx_anchor")
     if not isinstance(price, str) or not price.isdigit():
         raise SnapshotError(f"Arweave price endpoint returned invalid payload: {price!r}")
     if not isinstance(anchor, str) or not anchor:
@@ -3523,6 +3551,32 @@ def publish_github_release(
 
     if asset_exists and not force and not bundle.get("prerelease"):
         print(f"  SKIP: {bundle['tag']} already has {bundle['asset_name']}")
+        recorded_sha = load_storage_receipt(bundle["date"]).get("bundle_sha256")
+        if (
+            isinstance(recorded_sha, str)
+            and recorded_sha
+            and recorded_sha != bundle["bundle_sha256"]
+        ):
+            # The freshly built bytes are not what was published (e.g.
+            # rebuild-content backfilled the manifest since). Overwriting the
+            # recorded fingerprints would desync the receipt from the published
+            # asset and drop its confirmed ar:// locator, so keep the receipt
+            # exactly as recorded.
+            print(
+                f"  WARNING: {bundle['date']}: local bundle sha256 "
+                f"{bundle['bundle_sha256']} differs from the recorded published "
+                f"bundle {recorded_sha}; receipt left untouched. Use --force to "
+                "re-upload the new bytes."
+            )
+            return {
+                "status": "skipped",
+                "reason": "bundle_drift",
+                "repo": resolved_repo,
+                "release_url": release.get("html_url", release_url) if release else release_url,
+                "asset_url": asset.get("browser_download_url") if asset else None,
+                "recorded_bundle_sha256": recorded_sha,
+                **bundle,
+            }
         result = {
             "status": "skipped",
             "reason": "asset_exists",
@@ -3645,9 +3699,12 @@ def arweave_query_tx_status(transaction_id):
 def arweave_tx_confirmation(status_code, tx_status):
     """Map a /tx/{id}/status response to (status, confirmations, block_height).
 
-    A 200 with block data means mined -> "confirmed"; anything else (404
-    not-yet-mined, or a body without a block) is "pending". We never infer
-    "confirmed" from the act of submitting -- only from an observed block.
+    A 200 with block data means mined, but "confirmed" additionally requires
+    ARWEAVE_MIN_CONFIRMATIONS observed confirmations (a freshly mined tx can
+    still drop out in a fork reorg); anything less (404 not-yet-mined, a body
+    without confirmations, or a shallow block) is "pending". We never infer
+    "confirmed" from the act of submitting -- only from an observed, buried
+    block.
     """
     if status_code == 200 and isinstance(tx_status, dict):
         block_height = tx_status.get("block_height")
@@ -3656,8 +3713,10 @@ def arweave_tx_confirmation(status_code, tx_status):
             confirmations = int(confirmations)
         except (TypeError, ValueError):
             confirmations = None
-        if block_height is not None or (confirmations is not None and confirmations >= 1):
+        if confirmations is not None and confirmations >= ARWEAVE_MIN_CONFIRMATIONS:
             return "confirmed", confirmations, block_height
+        if block_height is not None or confirmations is not None:
+            return "pending", confirmations, block_height
     return "pending", None, None
 
 
@@ -3770,9 +3829,28 @@ def publish_arweave_bundle_nonfatal(bundle, upload_policy="if_missing", force=Fa
             upload_policy=upload_policy,
             force=force,
         )
-    except SnapshotError as exc:
+    except (SnapshotError, urllib.error.URLError) as exc:
         error = str(exc)
         print(f"  WARNING: Arweave upload failed; continuing with GitHub Release: {error}")
+        existing = load_storage_receipt(bundle["date"]).get("destinations", {}).get("arweave")
+        if isinstance(existing, dict) and existing.get("transaction_id"):
+            # The broadcast already spent AR on this tx; wiping the receipt
+            # would make a rerun pay for a fresh one. Keep the tx fields and
+            # status, note the failure, and let reconcile-arweave settle it.
+            destination = {
+                **existing,
+                "status": existing.get("status") or "pending",
+                "last_error": error,
+                "last_error_at": utc_stamp(),
+            }
+            record_storage_destination(bundle, "arweave", destination)
+            return {
+                "status": destination["status"],
+                "reason": "arweave_upload_failed",
+                "error": error,
+                "transaction_id": existing.get("transaction_id"),
+                **bundle,
+            }
         record_storage_destination(
             bundle,
             "arweave",
@@ -3791,7 +3869,10 @@ def reconcile_arweave_pending(days):
 
     Promotes pending -> confirmed once a tx is mined, refreshes the day's
     ledger entry (so the ar:// location surfaces only after confirmation) and
-    the latest pointer. Re-uploads nothing -- this only observes and records.
+    the latest pointer. A "failed" receipt that still carries a transaction_id
+    is rechecked too -- the broadcast spent AR even if a later step errored, so
+    the tx may have mined anyway. Re-uploads nothing -- this only observes and
+    records.
     """
     checked = 0
     settled = 0
@@ -3803,7 +3884,7 @@ def reconcile_arweave_pending(days):
         existing = destinations.get("arweave")
         if not isinstance(existing, dict) or not existing.get("transaction_id"):
             continue
-        if existing.get("status") not in ("submitted", "pending"):
+        if existing.get("status") not in ("submitted", "pending", "failed"):
             continue
         checked += 1
         updated = arweave_recheck_destination(existing)
@@ -3905,13 +3986,31 @@ def process_publish(args):
                 target_commitish=target_commitish,
             )
             results.append({"destination": "github_release", **github_result})
-            arweave_result = publish_arweave_bundle_nonfatal(
-                bundle,
-                upload_policy=upload_policy,
-                force=args.force,
-            )
-            if arweave_result.get("reason") != "missing_wallet":
-                results.append({"destination": "arweave", **arweave_result})
+            if github_result.get("reason") == "bundle_drift":
+                # Uploading the drifted local bytes would pay for a tx that no
+                # longer matches the published asset; only settle any tx the
+                # recorded receipt already broadcast.
+                existing = (
+                    load_storage_receipt(current_date_str)
+                    .get("destinations", {})
+                    .get("arweave")
+                )
+                if (
+                    isinstance(existing, dict)
+                    and existing.get("transaction_id")
+                    and existing.get("status") != "confirmed"
+                ):
+                    reconcile_arweave_pending([current_date_str])
+                else:
+                    print(f"  SKIP: Arweave upload for {current_date_str}; recorded receipt preserved")
+            else:
+                arweave_result = publish_arweave_bundle_nonfatal(
+                    bundle,
+                    upload_policy=upload_policy,
+                    force=args.force,
+                )
+                if arweave_result.get("reason") != "missing_wallet":
+                    results.append({"destination": "arweave", **arweave_result})
         elif storage_backend == "arweave":
             results.append(
                 {
@@ -3945,6 +4044,19 @@ def process_publish(args):
     for key in sorted(summary):
         print(f"  {key}: {summary[key]}")
 
+    failed_arweave = [
+        result
+        for result in results
+        if result.get("destination") == "arweave" and result.get("status") == "failed"
+    ]
+    if failed_arweave:
+        # "failed" only arises when a wallet was configured (missing-wallet is
+        # a skip); succeeding silently here would hide a durability gap.
+        raise SnapshotError(
+            f"Arweave upload failed for {len(failed_arweave)} day(s); rerun publish "
+            "(receipts keep any broadcast tx) or reconcile-arweave"
+        )
+
 
 def latest_dates(dates, count):
     if count <= 0:
@@ -3973,6 +4085,23 @@ def resolve_prune_dates(args):
 
 
 def ensure_release_bundle_before_prune(current_date_str, output_dir=None):
+    # A merely-buildable local bundle proves nothing about durability; pruning
+    # the catalog is only safe once the bytes are recorded as published.
+    destinations = load_storage_receipt(current_date_str).get("destinations")
+    destinations = destinations if isinstance(destinations, dict) else {}
+    github = destinations.get("github_release")
+    arweave = destinations.get("arweave")
+    published = (isinstance(github, dict) and github.get("asset_url")) or (
+        isinstance(arweave, dict)
+        and arweave.get("status") == "confirmed"
+        and arweave.get("transaction_id")
+    )
+    if not published:
+        raise SnapshotError(
+            f"{current_date_str}: --require-bundle needs a published destination in "
+            "storage.json (github_release asset_url or a confirmed Arweave tx); "
+            "publish this day before pruning its catalog"
+        )
     try:
         return release_bundle_from_existing(current_date_str, output_dir=output_dir)
     except SnapshotError:
@@ -4050,7 +4179,9 @@ def hydrate_catalog(current_date_str, repo=None, force=False):
         print(f"  SKIP: {path} already exists")
         return {"status": "skipped", "date": current_date_str, "path": str(path)}
 
-    catalog_gz_bytes = catalog_gz_bytes_from_release_bundle(current_date_str, repo=repo)
+    catalog_gz_bytes = catalog_gz_bytes_from_release_bundle(
+        current_date_str, repo=catalog_source_repo(current_date_str, repo)
+    )
     validate_catalog_payload(current_date_str, catalog_gz_bytes, manifest)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(catalog_gz_bytes)
@@ -4455,12 +4586,14 @@ def catalog_locator(current_date_str, receipt, repo, branch):
     A confirmed Arweave tx (permanent bundle tar) wins; otherwise the node-branch
     raw catalog.json.gz, which a browser CAN read. The GitHub release asset is
     never used as the locator: its 302 redirect target serves no CORS headers,
-    so a browser can never fetch it.
+    so a browser can never fetch it. build-index runs inside the checked-out
+    node branch, so a locally absent catalog.json.gz == pruned from the branch:
+    such a day indexes without a locator rather than with a URL that 404s.
     """
     pub = publication_fields_from_receipt(receipt)
     if pub.get("catalog_url"):
         return pub["catalog_url"], pub.get("catalog_url_kind", "bundle_tar")
-    if repo and branch:
+    if repo and branch and catalog_gz_path(current_date_str).exists():
         return node_branch_catalog_url(current_date_str, repo, branch), "catalog_gz"
     return None, None
 
@@ -4491,12 +4624,27 @@ def build_index(repo=DEFAULT_NODE_REPO, branch=DEFAULT_NODE_BRANCH, *, dates=Non
     # the module global, and any --output-dir override, take effect.
     index_dir = Path(index_dir) if index_dir is not None else INDEX_DIR
     dates = dates if dates is not None else discover_snapshot_dates()
+    prior_manifest = read_json_if_exists(index_dir / "manifest.json")
     chunks_by_year = collections.defaultdict(list)
     entries_by_date = {}
     for current_date_str in dates:
-        manifest = read_json_if_exists(snapshot_dir(current_date_str) / "manifest.json")
-        if manifest is None:
+        manifest_path = snapshot_dir(current_date_str) / "manifest.json"
+        if not manifest_path.exists():
             continue
+        try:
+            manifest = read_json_file(manifest_path)
+        except (OSError, json.JSONDecodeError) as exc:
+            # A missing manifest is a legitimately absent day; a present but
+            # unreadable one silently shrinking the index would undercount
+            # day_count, prune a live year chunk, or roll latestEntry back.
+            raise SnapshotError(
+                f"build-index: {current_date_str}: manifest.json exists but cannot "
+                f"be read: {exc}"
+            ) from exc
+        if not isinstance(manifest, dict):
+            raise SnapshotError(
+                f"build-index: {current_date_str}: manifest.json is not a JSON object"
+            )
         url, kind = catalog_locator(
             current_date_str, load_storage_receipt(current_date_str), repo, branch
         )
@@ -4543,6 +4691,19 @@ def build_index(repo=DEFAULT_NODE_REPO, branch=DEFAULT_NODE_BRANCH, *, dates=Non
         "chunks": chunks_meta,
         "latestEntry": entries_by_date[latest_date],
     }
+    # Carry forward prior Arweave chunk records whose recorded bytes match the
+    # freshly computed chunk -- a rebuild must not orphan paid-for permanence
+    # (the manifest tx itself is not carried; its bytes change every rebuild).
+    prior_arweave = prior_manifest.get("arweave") if isinstance(prior_manifest, dict) else None
+    prior_chunk_txs = prior_arweave.get("chunks") if isinstance(prior_arweave, dict) else None
+    if isinstance(prior_chunk_txs, dict):
+        carried_chunks = {}
+        for chunk in chunks_meta:
+            prior_tx = prior_chunk_txs.get(chunk["path"])
+            if isinstance(prior_tx, dict) and prior_tx.get("sha256") == chunk["sha256"]:
+                carried_chunks[chunk["path"]] = prior_tx
+        if carried_chunks:
+            manifest["arweave"] = {"chunks": carried_chunks}
     write_json(index_dir / "manifest.json", manifest)
     return manifest
 
@@ -4571,8 +4732,12 @@ def node_tdh_from_attestations(index_path=None):
             if not nid:
                 continue
             # Each node's own backing only (nodeBackingTdh); combinedSupportTdh is the agreement
-            # group's aggregate across attesters, not a per-node quantity.
-            backing = int(event.get("nodeBackingTdh") or 0)
+            # group's aggregate across attesters, not a per-node quantity. The card coerces a
+            # malformed backing to 0; mirror it so the roster rank cannot diverge from the card's.
+            try:
+                backing = int(event.get("nodeBackingTdh") or 0)
+            except (TypeError, ValueError):
+                backing = 0
             if backing > tdh.get(nid, 0):
                 tdh[nid] = backing
     return tdh
@@ -4666,15 +4831,27 @@ def mirror_index_to_arweave(index_dir=None, *, upload=arweave_upload_file):
     if manifest is None:
         raise SnapshotError("mirror-index: index/manifest.json not found; run build-index first")
 
+    recorded = manifest.get("arweave")
+    recorded_chunks = recorded.get("chunks") if isinstance(recorded, dict) else None
+    recorded_chunks = recorded_chunks if isinstance(recorded_chunks, dict) else {}
     chunk_txs = {}
     for chunk in manifest.get("chunks", []):
+        prior = recorded_chunks.get(chunk["path"])
+        if (
+            isinstance(prior, dict)
+            and prior.get("transaction_id")
+            and prior.get("sha256") == chunk["sha256"]
+        ):
+            # These exact bytes already have a tx; permanence is pay-once.
+            chunk_txs[chunk["path"]] = prior
+            continue
         result = upload(
             index_dir / f"{chunk['year']}.json",
             extra_tags=[("RSO-Index-Chunk", chunk["year"]), ("Chunk-SHA256", chunk["sha256"])],
         )
         if result.get("status") == "skipped":
             return None
-        chunk_txs[chunk["path"]] = result
+        chunk_txs[chunk["path"]] = {**result, "sha256": chunk["sha256"]}
 
     # Embed chunk locations before uploading the manifest, so the permanent
     # manifest itself names where each permanent chunk lives.
@@ -4732,17 +4909,27 @@ def baseline_day_from_index_entry(entry):
     locator cu/ck when the index carries them (so the inlined baseline shows exact
     numbers and the daily-changes legend with no network).
     """
-    day = {
-        "d": entry["date"],
-        "c": entry["object_count"],
-        "s": entry["sha256"],
-        "cs": entry["content_sha256"],
-        # content_schema is constant across archived days; the index now carries it, but a
-        # manifest archived before it did would lack it, so default to the current schema.
-        "sc": entry.get("content_schema", CONTENT_SCHEMA),
-        "pv": entry["provenance"],
-        "by": entry["compressed_bytes"],
-    }
+    try:
+        day = {
+            "d": entry["date"],
+            "c": entry["object_count"],
+            "s": entry["sha256"],
+            "cs": entry["content_sha256"],
+            # content_schema is constant across archived days; the index now carries it, but a
+            # manifest archived before it did would lack it, so default to the current schema.
+            "sc": entry.get("content_schema", CONTENT_SCHEMA),
+            "pv": entry["provenance"],
+            "by": entry["compressed_bytes"],
+        }
+    except KeyError as exc:
+        # A pre-aggregate index entry (day never rebuilt with content fields)
+        # must fail the baseline cut loudly, not with a bare KeyError or a
+        # silent hole in the card's permanent offline floor.
+        raise SnapshotError(
+            f"build-baseline: index entry for {entry.get('date') or '<unknown date>'} "
+            f"is missing {exc.args[0]}; run rebuild-content and build-index for that "
+            "day before re-cutting the baseline"
+        ) from exc
     for compact, full in (
         ("oo", "on_orbit_count"),
         ("re", "reentered_count"),
