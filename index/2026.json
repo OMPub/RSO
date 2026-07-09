@@ -10,8 +10,6 @@
       "leo": 28201,
       "meo": 3679
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/04/20/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11301379,
     "content_schema": "rso-core-v1",
     "content_sha256": "1838a06696902f7397d78d906c4bd9f5e9d9e372725ccbf4629bbd377231a740",
@@ -45,8 +43,6 @@
       "leo": 28200,
       "meo": 3679
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/04/21/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11302770,
     "content_schema": "rso-core-v1",
     "content_sha256": "c4ffe1aea1411239ec0d6b2059bec40415338994ca4914ef8753dad352bf6019",
@@ -80,8 +76,6 @@
       "leo": 28200,
       "meo": 3680
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/04/22/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11248229,
     "content_schema": "rso-core-v1",
     "content_sha256": "1d1658e33ce573829c89fbd6dab61223eb34607d597658fa06a57d429d1bc444",
@@ -115,8 +109,6 @@
       "leo": 28226,
       "meo": 3680
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/04/23/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11281196,
     "content_schema": "rso-core-v1",
     "content_sha256": "82bff6f34cf855595b16cb0a4f7085b1356eef8fe087cda6964be961cb65dbd1",
@@ -150,8 +142,6 @@
       "leo": 28236,
       "meo": 3680
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/04/24/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11323100,
     "content_schema": "rso-core-v1",
     "content_sha256": "0a0b33a835f585f20b731de21975578a068f27784e07db9e5151ec9b224794a7",
@@ -185,8 +175,6 @@
       "leo": 28371,
       "meo": 3686
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/04/25/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11210162,
     "content_schema": "rso-core-v1",
     "content_sha256": "1bbe5e9f6dc9bea6aad6112bcb91fdf83645043b372dcf571c7cba81b5c53bbd",
@@ -220,8 +208,6 @@
       "leo": 28372,
       "meo": 3686
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/04/26/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11217312,
     "content_schema": "rso-core-v1",
     "content_sha256": "08de6e9c7fc87d20de17a8e41481d14ceb8cd3ba678fd281e832d97758ee9d15",
@@ -255,8 +241,6 @@
       "leo": 28374,
       "meo": 3686
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/04/27/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11223865,
     "content_schema": "rso-core-v1",
     "content_sha256": "9596d70d3bbbb50436da32bdcabce977f3c6b7a2bce8835f2d8be0535bb7bbb1",
@@ -290,8 +274,6 @@
       "leo": 28397,
       "meo": 3687
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/04/28/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11233385,
     "content_schema": "rso-core-v1",
     "content_sha256": "9edbee00fab8035af57603e82dca61c339faab3757a636dc9f9f537416479822",
@@ -325,8 +307,6 @@
       "leo": 28422,
       "meo": 3687
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/04/29/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11230417,
     "content_schema": "rso-core-v1",
     "content_sha256": "01bdb8f2f8199e3d7770c4244b054b4e4cac5fa814fba815695fc9babf91f419",
@@ -360,8 +340,6 @@
       "leo": 28422,
       "meo": 3687
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/04/30/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11258523,
     "content_schema": "rso-core-v1",
     "content_sha256": "6dee641f600bf3c303670d0fc14147881e5cc2cde3b1843733bcfa20430c2b33",
@@ -395,8 +373,6 @@
       "leo": 28420,
       "meo": 3687
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/01/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11301305,
     "content_schema": "rso-core-v1",
     "content_sha256": "e9fe102591934367c33fd6489412c575cc5f03d379bd4b71775678222b2c869d",
@@ -430,8 +406,6 @@
       "leo": 28474,
       "meo": 3687
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/02/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11252428,
     "content_schema": "rso-core-v1",
     "content_sha256": "18c05784e969511a4e65596655f8bd3a5d41cdfd54dfee0f23f9b389d12d404b",
@@ -465,8 +439,6 @@
       "leo": 28472,
       "meo": 3687
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/03/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11248451,
     "content_schema": "rso-core-v1",
     "content_sha256": "ed70676adf02636d92e40a5b25b2b406fb269e0772cfde5fe81fed321fc68df6",
@@ -500,8 +472,6 @@
       "leo": 28471,
       "meo": 3687
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/04/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11275209,
     "content_schema": "rso-core-v1",
     "content_sha256": "02ccaf96a9d603f98475d7ad05685504a210c9b1e73f42bad6df5c27e4a30571",
@@ -535,8 +505,6 @@
       "leo": 28493,
       "meo": 3688
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/05/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11260788,
     "content_schema": "rso-core-v1",
     "content_sha256": "e1e71d4740082618fba60e801f2a85a0ff5ce1f6ed4fdf46caa0566e12afa878",
@@ -570,8 +538,6 @@
       "leo": 28524,
       "meo": 3689
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/06/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11269686,
     "content_schema": "rso-core-v1",
     "content_sha256": "0dd4af778d91246dd936eb4d56ae3d43448cbec01292ff21db4c9025dcc56d9f",
@@ -605,8 +571,6 @@
       "leo": 28524,
       "meo": 3689
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/07/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11310165,
     "content_schema": "rso-core-v1",
     "content_sha256": "f72c94f4a4d8e5ed9354beb3f1a864edef280bde2f0dc2bdf136f3059beff1c7",
@@ -640,8 +604,6 @@
       "leo": 28523,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/08/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11282156,
     "content_schema": "rso-core-v1",
     "content_sha256": "d1abeaa192ea6b40f5e632c813062dae6e516d644b1edd84d1fc1d40efb657a9",
@@ -675,8 +637,6 @@
       "leo": 28522,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/09/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11257315,
     "content_schema": "rso-core-v1",
     "content_sha256": "cfd5dcbe110f3b3c7bc2aa9506ff627606ce05177165546672c5b30bd9f118a8",
@@ -710,8 +670,6 @@
       "leo": 28567,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/10/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11271631,
     "content_schema": "rso-core-v1",
     "content_sha256": "8c44b1d03a4f7f25dbee55eadbc69dd6fec53aa4dc1a6c639e4b5bc9e91c2b30",
@@ -745,8 +703,6 @@
       "leo": 28566,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/11/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11270776,
     "content_schema": "rso-core-v1",
     "content_sha256": "4f96c00a6cc305640727216bcd9532e066afc64998d75e90e6364d0549b73a71",
@@ -780,8 +736,6 @@
       "leo": 28568,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/12/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11270241,
     "content_schema": "rso-core-v1",
     "content_sha256": "bdd73f721e20d89139ab4d8805f8d48578700623179144060aef8eeac28cacdb",
@@ -815,8 +769,6 @@
       "leo": 28614,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/13/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11244789,
     "content_schema": "rso-core-v1",
     "content_sha256": "143d896e22f8612e7cff97736337a8b82cd9f7ddb528a00c9e03acf3ab291197",
@@ -850,8 +802,6 @@
       "leo": 28622,
       "meo": 3689
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/14/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11288973,
     "content_schema": "rso-core-v1",
     "content_sha256": "9595361b83205801eeb78ac7c204125fe57cd9ccd1f7ff2a26d3e2b12ce1650c",
@@ -885,8 +835,6 @@
       "leo": 28623,
       "meo": 3689
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/15/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11342900,
     "content_schema": "rso-core-v1",
     "content_sha256": "15717c219cba0ac389d5c953f81ccc9c8f5a4b54d58340479bd2c22ced77132e",
@@ -920,8 +868,6 @@
       "leo": 28625,
       "meo": 3689
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/16/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11333330,
     "content_schema": "rso-core-v1",
     "content_sha256": "56f6c67b81854923f7693671e84329bc3909e33ded2230e353c54ed8525a5e12",
@@ -955,8 +901,6 @@
       "leo": 28633,
       "meo": 3689
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/17/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11284531,
     "content_schema": "rso-core-v1",
     "content_sha256": "77ba7dbc5ad771296e86c0a135e0c2faa94ad31b6cfa9725fc82ca5bc4bf99eb",
@@ -990,8 +934,6 @@
       "leo": 28632,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/18/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11287909,
     "content_schema": "rso-core-v1",
     "content_sha256": "624ea64533fa17ad910512456f0dd4a4a0058f3101b37642c12da691badba503",
@@ -1025,8 +967,6 @@
       "leo": 28649,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/19/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11296071,
     "content_schema": "rso-core-v1",
     "content_sha256": "2f86cc6f3a99dd0bb5fda28d3c0dd0850cbb29e9a926a95cd1b79eb4c653e50f",
@@ -1060,8 +1000,6 @@
       "leo": 28649,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/20/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11281312,
     "content_schema": "rso-core-v1",
     "content_sha256": "2be5af69a8c3f3cbf10a479c48fe5898fa316af9389207f0b23a93b9a1f0064f",
@@ -1095,8 +1033,6 @@
       "leo": 28647,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/21/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11351071,
     "content_schema": "rso-core-v1",
     "content_sha256": "ec30d582b78fdbd1905e2a01bb7faf3f76c00da5a79db339db4c5e125d38024f",
@@ -1130,8 +1066,6 @@
       "leo": 28646,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/22/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11302596,
     "content_schema": "rso-core-v1",
     "content_sha256": "ebbb139c8b647d1cbed5c16db3651985168589e394ceccaafcba786555c9ae02",
@@ -1165,8 +1099,6 @@
       "leo": 28645,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/23/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11281371,
     "content_schema": "rso-core-v1",
     "content_sha256": "13ccd247c21c0e324949f85ec2b90202d3ed04f877acaaa62ac1a0f2175c945b",
@@ -1200,8 +1132,6 @@
       "leo": 28648,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/24/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11302464,
     "content_schema": "rso-core-v1",
     "content_sha256": "0f3c180ebdce41e8c87f002e31ba89571685153c06078ba8335a17bf6746aed6",
@@ -1235,8 +1165,6 @@
       "leo": 28648,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/25/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11265538,
     "content_schema": "rso-core-v1",
     "content_sha256": "a27a561436809a81141e8038eac6c40f4b71d85ac5530e5188eb52cffa2fd3e6",
@@ -1270,8 +1198,6 @@
       "leo": 28646,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/26/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11312941,
     "content_schema": "rso-core-v1",
     "content_sha256": "4178b79a5427b8048ae8344bc685bb83a1443d8d9b7fa2167a083a702c94386e",
@@ -1305,8 +1231,6 @@
       "leo": 28644,
       "meo": 3692
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/27/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11324610,
     "content_schema": "rso-core-v1",
     "content_sha256": "3f948b5ee394708fa0c5b575a2d4f5526ad727d4817fb86d32134f77ad8b86a4",
@@ -1340,8 +1264,6 @@
       "leo": 28699,
       "meo": 3692
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/28/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11302648,
     "content_schema": "rso-core-v1",
     "content_sha256": "2f089dae653c4f933d8e50da67305bea84d2487aa37327b920b92b999484095a",
@@ -1375,8 +1297,6 @@
       "leo": 28721,
       "meo": 3691
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/29/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11302341,
     "content_schema": "rso-core-v1",
     "content_sha256": "5aafd9fe2d188aad720d9c6468f1831d0a83940e45e1be5971ad8873dacf5b86",
@@ -1410,8 +1330,6 @@
       "leo": 28720,
       "meo": 3691
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/30/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11324884,
     "content_schema": "rso-core-v1",
     "content_sha256": "69e87c041e67b365e806256c684377bac98c56540e10861dba3b123de14a2c0d",
@@ -1445,8 +1363,6 @@
       "leo": 28720,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/05/31/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11320473,
     "content_schema": "rso-core-v1",
     "content_sha256": "2a0363c47d927da4313030f4f6c6678e9911129c2bf12424b17eecbbfb0a6ddc",
@@ -1480,8 +1396,6 @@
       "leo": 28720,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/01/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11301034,
     "content_schema": "rso-core-v1",
     "content_sha256": "8846cb904c9431f293a8c307f1b0cd665ef49e954d53979476124e6946e30ad4",
@@ -1515,8 +1429,6 @@
       "leo": 28721,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/02/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11347151,
     "content_schema": "rso-core-v1",
     "content_sha256": "f1c0e0409203e57a3b256a4e51637faa5f76a43a789d00dff5a527f08d8debaf",
@@ -1550,8 +1462,6 @@
       "leo": 28809,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/03/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11380032,
     "content_schema": "rso-core-v1",
     "content_sha256": "adaa25577aad221b6842b6f29b96b6de49ba2e0c3add4909bbb98f3f189f9039",
@@ -1585,8 +1495,6 @@
       "leo": 28862,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/04/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11424219,
     "content_schema": "rso-core-v1",
     "content_sha256": "3c6eed791367ca7485ab2c3cfb81babdc22ec8f6e823a896c2e46728038f6336",
@@ -1620,8 +1528,6 @@
       "leo": 28862,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/05/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11452390,
     "content_schema": "rso-core-v1",
     "content_sha256": "156d34876b7a68aa0014e3e6d2313ec7bf995f832336ef68e6a951ad8aea0c27",
@@ -1655,8 +1561,6 @@
       "leo": 28862,
       "meo": 3689
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/06/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11379578,
     "content_schema": "rso-core-v1",
     "content_sha256": "be7fc77a2eaf68c50273f66985142ad0b0b810d03c404428a0c87e92e5264105",
@@ -1690,8 +1594,6 @@
       "leo": 28861,
       "meo": 3689
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/07/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11384256,
     "content_schema": "rso-core-v1",
     "content_sha256": "086956fe197b16f2382187d462845b2e8aefc621fc1d8bec2f6a40aeaa30952b",
@@ -1725,8 +1627,6 @@
       "leo": 28861,
       "meo": 3689
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/08/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11388944,
     "content_schema": "rso-core-v1",
     "content_sha256": "6da11fe361442a6dab4d4bcd916a1ba2de88eeea16e2bfcc5620a835301fd3b1",
@@ -1760,8 +1660,6 @@
       "leo": 28861,
       "meo": 3689
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/09/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11347977,
     "content_schema": "rso-core-v1",
     "content_sha256": "32f1fc3c886cffb71df31c443e9a1cbce56f78f59d7047df69d78b5fe4c2cc22",
@@ -1795,8 +1693,6 @@
       "leo": 28863,
       "meo": 3688
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/10/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11394550,
     "content_schema": "rso-core-v1",
     "content_sha256": "c9b50187fd74988ff935435ed3a8645ebe3461a0284c007f8d892ec2796d0754",
@@ -1830,8 +1726,6 @@
       "leo": 28916,
       "meo": 3688
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/11/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11413914,
     "content_schema": "rso-core-v1",
     "content_sha256": "05fb722f634a11139acfe45d4e1725f13c2d94a9a39bfed9c863f44720763f99",
@@ -1865,8 +1759,6 @@
       "leo": 28935,
       "meo": 3689
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/12/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11361687,
     "content_schema": "rso-core-v1",
     "content_sha256": "c3c7eb52cf467295d95a21dea1ae93b4e00643f4502f599a8bac9dc805f6781b",
@@ -1900,8 +1792,6 @@
       "leo": 28941,
       "meo": 3689
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/13/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11401116,
     "content_schema": "rso-core-v1",
     "content_sha256": "971773513761cc3002c9b991cfe4cd95a36a505e35863389c1abc73ef5fb6831",
@@ -1935,8 +1825,6 @@
       "leo": 28942,
       "meo": 3689
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/14/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11357573,
     "content_schema": "rso-core-v1",
     "content_sha256": "92c36eae7bef6b2024fc0d176c1f65a08172652f5933433c81f4db9f3e472779",
@@ -1970,8 +1858,6 @@
       "leo": 28940,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/15/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11371050,
     "content_schema": "rso-core-v1",
     "content_sha256": "e61b3c5bda28ca276e8d91f33e4257f9d225ddb74ae44fcf15a7979acf64cd94",
@@ -2005,8 +1891,6 @@
       "leo": 28946,
       "meo": 3689
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/16/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11423557,
     "content_schema": "rso-core-v1",
     "content_sha256": "741c505a4bfa072afd8d74d059eb3eff4ce3c17fec8d87da174aacf66c18ef7f",
@@ -2040,8 +1924,6 @@
       "leo": 29003,
       "meo": 3689
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/17/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11377124,
     "content_schema": "rso-core-v1",
     "content_sha256": "814bda5b876797d8bbef6ee13c954c1ab9f004312de9818d9d8f0d1c394fc41a",
@@ -2075,8 +1957,6 @@
       "leo": 29063,
       "meo": 3691
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/18/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11394888,
     "content_schema": "rso-core-v1",
     "content_sha256": "3461abb045fa40342b711133db077d468acc5eab9bf1884143ebec8a5c8e4179",
@@ -2110,8 +1990,6 @@
       "leo": 29071,
       "meo": 3691
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/19/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11365255,
     "content_schema": "rso-core-v1",
     "content_sha256": "bdb3e743254e66be2ddb9165342269f47fcf9df1630f3cbd91f76cc3d0efefb1",
@@ -2145,8 +2023,6 @@
       "leo": 29096,
       "meo": 3691
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/20/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11415157,
     "content_schema": "rso-core-v1",
     "content_sha256": "2f5246bcebb7e4a5a68eb08643880427328ac59f40fc229f793fe67282231761",
@@ -2180,8 +2056,6 @@
       "leo": 29097,
       "meo": 3691
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/21/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11382104,
     "content_schema": "rso-core-v1",
     "content_sha256": "e9734dba222b48051ae8d9cad866c943a126bbeffdb520fd648945d2aed14975",
@@ -2215,8 +2089,6 @@
       "leo": 29097,
       "meo": 3691
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/22/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11390678,
     "content_schema": "rso-core-v1",
     "content_sha256": "a9e8f4bcfb56acc4ca324dd26762103e77874a61acabb87eb0fded591e27e93c",
@@ -2250,8 +2122,6 @@
       "leo": 29098,
       "meo": 3691
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/23/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11391598,
     "content_schema": "rso-core-v1",
     "content_sha256": "0b5804897370782c0b9901fa26302a4bba6be95a3b99d8e9c2b5c77477370984",
@@ -2285,8 +2155,6 @@
       "leo": 29100,
       "meo": 3691
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/24/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11343742,
     "content_schema": "rso-core-v1",
     "content_sha256": "c297731a93e454cc57a5bdb60b88b688c250e92915adc9de016af329366d532e",
@@ -2320,8 +2188,6 @@
       "leo": 29097,
       "meo": 3691
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/25/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11369269,
     "content_schema": "rso-core-v1",
     "content_sha256": "3e5ae00c718abd245cd68d2b77f7d71cf0265533e14a892a265774ac11998e71",
@@ -2355,8 +2221,6 @@
       "leo": 29157,
       "meo": 3691
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/26/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11342980,
     "content_schema": "rso-core-v1",
     "content_sha256": "23c14c64161227bf2ff29c461262f538be4d7bfebd87d0f096abb4be713a6889",
@@ -2390,8 +2254,6 @@
       "leo": 29157,
       "meo": 3691
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/27/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11335755,
     "content_schema": "rso-core-v1",
     "content_sha256": "8d5d58c25f93e3dbb3bdce2d60ac857870bb63d0a3c7c3ed4aa14f6340a57e18",
@@ -2425,8 +2287,6 @@
       "leo": 29186,
       "meo": 3689
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/28/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11369519,
     "content_schema": "rso-core-v1",
     "content_sha256": "2b09630d56d6ca9c2d17c8970c544c8eafb1d0e79f7db88671a46cef2282150a",
@@ -2460,8 +2320,6 @@
       "leo": 29181,
       "meo": 3689
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/29/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11411128,
     "content_schema": "rso-core-v1",
     "content_sha256": "540c5a692205b014c9ca1e02ad808b9669b8c17e0146eeecb0371f2321562ab1",
@@ -2495,8 +2353,6 @@
       "leo": 29181,
       "meo": 3689
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/06/30/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11397714,
     "content_schema": "rso-core-v1",
     "content_sha256": "c8ed1af1be33f9fc053f81ed513fc817777425425b527e66efcfda01c574e81d",
@@ -2530,8 +2386,6 @@
       "leo": 29233,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/07/01/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11390231,
     "content_schema": "rso-core-v1",
     "content_sha256": "d68b16a2d5a846e35d1b2fc93f52ebb186cd2522d715c23e238769014028f7f9",
@@ -2565,8 +2419,6 @@
       "leo": 29231,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/07/02/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11451536,
     "content_schema": "rso-core-v1",
     "content_sha256": "cf533435b72f0c68708e618b88bc6ec6ba8077b6f8b734bef014b696ea1f2f33",
@@ -2600,8 +2452,6 @@
       "leo": 29231,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/07/03/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11372800,
     "content_schema": "rso-core-v1",
     "content_sha256": "9ec7eca02cc54b2f18eeef0194dda86c74e21250bf44b0771a42f1479bd0ba02",
@@ -2635,8 +2485,6 @@
       "leo": 29231,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/07/04/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11386547,
     "content_schema": "rso-core-v1",
     "content_sha256": "8088821ab8bb9355b2c9a749861a27bb2f94f945c81f5fe93da879c02e6b859f",
@@ -2670,8 +2518,6 @@
       "leo": 29226,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/07/05/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11430891,
     "content_schema": "rso-core-v1",
     "content_sha256": "f6aea2d6db10506edfb6c816ad6dcde58aed4e63fa3c4c6709cbb3db36df2dc4",
@@ -2705,8 +2551,6 @@
       "leo": 29225,
       "meo": 3690
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/07/06/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11380682,
     "content_schema": "rso-core-v1",
     "content_sha256": "89b791428b1a7a86434ff85fd4ea8175bc2a3517ce127c79e170cd9fee054780",
@@ -2727,6 +2571,109 @@
       "rocket": 2246,
       "tba": 0,
       "unknown": 1796
+    }
+  },
+  {
+    "anno_summary": {
+      "decay_notices": 4,
+      "directory_changes": 16,
+      "tip_count": 22
+    },
+    "band_counts": {
+      "geo": 1841,
+      "leo": 29218,
+      "meo": 3690
+    },
+    "compressed_bytes": 11418285,
+    "content_schema": "rso-core-v1",
+    "content_sha256": "942dd34a277b8d5f71ff8409b3f74a2e0bd5fdc97a2a24c676c7b027e5d0d764",
+    "date": "2026-07-07",
+    "delta": {
+      "decayed": 0,
+      "new": 0,
+      "updated": 28917
+    },
+    "object_count": 68319,
+    "on_orbit_count": 34749,
+    "provenance": "rolling_gp_history_delta",
+    "reentered_count": 33570,
+    "sha256": "428c2e0fe81f79e4781731307c0fbff5ce332896ce3e43d337b96f44cb8b5252",
+    "type_counts": {
+      "debris": 12334,
+      "payload": 18376,
+      "rocket": 2246,
+      "tba": 0,
+      "unknown": 1793
+    }
+  },
+  {
+    "anno_summary": {
+      "decay_notices": 16,
+      "directory_changes": 42,
+      "tip_count": 19
+    },
+    "band_counts": {
+      "geo": 1842,
+      "leo": 29231,
+      "meo": 3690
+    },
+    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/07/08/catalog.json.gz",
+    "catalog_url_kind": "catalog_gz",
+    "compressed_bytes": 11437163,
+    "content_schema": "rso-core-v1",
+    "content_sha256": "76f0df297edc341fb5d638501c3b874dce5bc301df3d4709d097aca64749f411",
+    "date": "2026-07-08",
+    "delta": {
+      "decayed": 0,
+      "new": 25,
+      "updated": 27271
+    },
+    "object_count": 68344,
+    "on_orbit_count": 34763,
+    "provenance": "rolling_gp_history_delta",
+    "reentered_count": 33581,
+    "sha256": "46a2557a068a26d9dbb6d7c33a3efe682d2170ef49cdf5b1fa8dbbc01a32cc91",
+    "type_counts": {
+      "debris": 12332,
+      "payload": 18394,
+      "rocket": 2246,
+      "tba": 0,
+      "unknown": 1791
+    }
+  },
+  {
+    "anno_summary": {
+      "decay_notices": 118,
+      "directory_changes": 1,
+      "tip_count": 15
+    },
+    "band_counts": {
+      "geo": 1842,
+      "leo": 29231,
+      "meo": 3690
+    },
+    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/07/09/catalog.json.gz",
+    "catalog_url_kind": "catalog_gz",
+    "compressed_bytes": 11430722,
+    "content_schema": "rso-core-v1",
+    "content_sha256": "c0dc99acdef63b28e3711e2d7438079034a8fd289c18337ef6075d1a896bfc1b",
+    "date": "2026-07-09",
+    "delta": {
+      "decayed": 0,
+      "new": 0,
+      "updated": 27075
+    },
+    "object_count": 68344,
+    "on_orbit_count": 34763,
+    "provenance": "rolling_gp_history_delta",
+    "reentered_count": 33581,
+    "sha256": "1f4961244aed638f26bda1ffa0ac1bbe7429503ac552af05a534fb637c9252a3",
+    "type_counts": {
+      "debris": 12332,
+      "payload": 18395,
+      "rocket": 2246,
+      "tba": 0,
+      "unknown": 1790
     }
   }
 ]
