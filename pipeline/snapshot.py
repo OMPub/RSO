@@ -4088,12 +4088,21 @@ def process_publish(args):
         if result.get("destination") == "arweave" and result.get("status") == "failed"
     ]
     if failed_arweave:
-        # "failed" only arises when a wallet was configured (missing-wallet is
-        # a skip); succeeding silently here would hide a durability gap.
-        raise SnapshotError(
-            f"Arweave upload failed for {len(failed_arweave)} day(s); rerun publish "
-            "(receipts keep any broadcast tx) or reconcile-arweave"
+        # github_release is the durable daily mirror; Arweave is opt-in
+        # permanence whose wallet may be intentionally unfunded (funded later),
+        # so a failed Arweave upload is NOT fatal by default -- the day is still
+        # published to github_release, the receipt keeps any broadcast tx, and
+        # reconcile-arweave retries it. Only --require-arweave makes it fatal
+        # (for operators who treat Arweave as mandatory). A loud warning either
+        # way so the durability gap is never silent.
+        detail = (
+            f"Arweave upload failed for {len(failed_arweave)} day(s); the day(s) are "
+            "published to github_release, receipts keep any broadcast tx, and "
+            "reconcile-arweave will retry"
         )
+        if getattr(args, "require_arweave", False):
+            raise SnapshotError(detail + " -- --require-arweave set, failing")
+        print(f"  WARNING: {detail}")
 
 
 def latest_dates(dates, count):
@@ -5302,6 +5311,16 @@ def main():
         "--prerelease",
         action="store_true",
         help="Create or update GitHub releases as prereleases",
+    )
+    publish_parser.add_argument(
+        "--require-arweave",
+        action="store_true",
+        help=(
+            "Treat a failed Arweave upload as fatal. Off by default: github_release "
+            "is the durable daily mirror and Arweave is opt-in permanence (its wallet "
+            "may be intentionally unfunded), so a failed upload only warns and is "
+            "retried by reconcile-arweave."
+        ),
     )
     publish_parser.add_argument(
         "--target-commitish",
