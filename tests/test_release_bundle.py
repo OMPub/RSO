@@ -929,13 +929,13 @@ class ReleaseBundleTests(unittest.TestCase):
         )
         self.assertEqual(result["bundle_sha256"], expected["bundle_sha256"])
 
-    def publish_args(self):
+    def publish_args(self, require_arweave=False):
         return SimpleNamespace(
             date="2026-04-18", start=None, end=None,
             storage_backend="github_release", upload_policy="if_missing",
             target_commitish=None, rebuild=False, use_existing_bundle=False,
             output_dir=self.root / "out", min_objects=1, repo=None,
-            force=False, prerelease=False,
+            force=False, prerelease=False, require_arweave=require_arweave,
         )
 
     def fake_bundle(self):
@@ -950,7 +950,10 @@ class ReleaseBundleTests(unittest.TestCase):
             "manifest_sha256": "c" * 64,
         }
 
-    def test_publish_raises_when_arweave_upload_failed(self):
+    def test_arweave_upload_failure_is_nonfatal_by_default_fatal_with_flag(self):
+        # A failed Arweave upload must NOT fail the daily by default: github_release
+        # is the durable mirror and Arweave permanence is opt-in (its wallet may be
+        # intentionally unfunded). --require-arweave makes it fatal.
         with patch.object(snapshot, "LEDGER_PATH", self.root / "ledger.json"), patch.object(
             snapshot, "LATEST_POINTER_PATH", self.root / "latest.json"
         ), patch.object(
@@ -967,16 +970,19 @@ class ReleaseBundleTests(unittest.TestCase):
                     "status": "failed", "reason": "arweave_upload_failed", **bundle
                 },
             ):
+                # default: warns, does NOT raise
+                snapshot.process_publish(self.publish_args())
+                # --require-arweave: raises
                 with self.assertRaisesRegex(snapshot.SnapshotError, "Arweave upload failed"):
-                    snapshot.process_publish(self.publish_args())
+                    snapshot.process_publish(self.publish_args(require_arweave=True))
 
-            # no wallet configured stays a clean exit
+            # no wallet configured stays a clean exit even with --require-arweave
             with patch.object(
                 snapshot,
                 "publish_arweave_bundle_nonfatal",
                 lambda bundle, **k: {"status": "skipped", "reason": "missing_wallet", **bundle},
             ):
-                snapshot.process_publish(self.publish_args())
+                snapshot.process_publish(self.publish_args(require_arweave=True))
 
     def test_publish_skips_arweave_upload_after_bundle_drift(self):
         arweave_calls = []
