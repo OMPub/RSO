@@ -4131,18 +4131,23 @@ def resolve_prune_dates(args):
     return resolve_publish_dates(args)
 
 
-def ensure_release_bundle_before_prune(current_date_str, output_dir=None):
-    # Verify a valid release bundle for this day exists (or can be built) before
-    # its raw catalog is pruned. release_bundle_from_existing re-checks the
-    # catalog bytes against the committed manifest, so a bundle here proves the
-    # day's bytes are captured. The daily runs build -> prune -> publish in one
-    # job, so the bundle produced here is uploaded to github_release in the same
-    # run; a stricter "already published" gate is impossible under that ordering
-    # (publish is the step AFTER prune) and would break the daily.
-    try:
-        return release_bundle_from_existing(current_date_str, output_dir=output_dir)
-    except SnapshotError:
-        return build_release_bundle(current_date_str, output_dir=output_dir)
+def day_has_published_destination(current_date_str):
+    """True iff the day's bytes are durably published elsewhere — a github_release
+    asset or a confirmed Arweave tx — so pruning its raw catalog from git loses
+    nothing. The daily publishes to github_release BEFORE pruning, so a freshly
+    captured day satisfies this by the time prune runs."""
+    destinations = load_storage_receipt(current_date_str).get("destinations")
+    destinations = destinations if isinstance(destinations, dict) else {}
+    github = destinations.get("github_release")
+    arweave = destinations.get("arweave")
+    return bool(
+        (isinstance(github, dict) and github.get("asset_url"))
+        or (
+            isinstance(arweave, dict)
+            and arweave.get("status") == "confirmed"
+            and arweave.get("transaction_id")
+        )
+    )
 
 
 def process_prune_catalogs(args):
@@ -4155,6 +4160,7 @@ def process_prune_catalogs(args):
     pruned = 0
     retained = 0
     skipped = 0
+    kept_unpublished = 0
     for current_date_str in dates:
         if current_date_str in retained_dates:
             retained += 1
@@ -4164,8 +4170,15 @@ def process_prune_catalogs(args):
         if not path.exists():
             skipped += 1
             continue
-        if args.require_bundle:
-            ensure_release_bundle_before_prune(current_date_str, output_dir=args.output_dir)
+        if args.require_bundle and not day_has_published_destination(current_date_str):
+            # Never prune a catalog whose bytes are not yet durably published:
+            # KEEP it in git (do NOT delete, do NOT fail the run) until it is.
+            # The daily publishes to github_release before pruning, so this only
+            # trips for a legacy day whose earlier publish never completed — its
+            # catalog is preserved and gets published/pruned on a later run.
+            kept_unpublished += 1
+            print(f"  KEPT (not yet published; catalog retained): {path}")
+            continue
         path.unlink()
         pruned += 1
         print(f"  PRUNED: {path}")
@@ -4174,6 +4187,8 @@ def process_prune_catalogs(args):
     print(f"  pruned:  {pruned}")
     print(f"  retained:{retained}")
     print(f"  skipped: {skipped}")
+    if kept_unpublished:
+        print(f"  kept (unpublished): {kept_unpublished}")
 
 
 def validate_catalog_payload(current_date_str, catalog_gz_bytes, manifest):

@@ -274,14 +274,10 @@ jobs:
           set -euo pipefail
           python pipeline/snapshot.py publish --start "$RSO_SNAPSHOT_START_DATE" --end "$RSO_SNAPSHOT_END_DATE" --storage-backend none
 
-      - name: Prune old catalogs from git archive
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          python pipeline/snapshot.py prune-catalogs --all --keep-latest "$RSO_RETAINED_CATALOG_COUNT" --require-bundle
-          python pipeline/snapshot.py validate
-
+      # ORDER MATTERS: commit + publish the captured catalog BEFORE pruning it.
+      # Prune only removes a day's raw catalog once its bytes are durably
+      # published (github_release/Arweave), and if publish fails the run aborts
+      # here — so a catalog can never be deleted-and-committed while unpublished.
       - name: Commit archive changes
         run: bash scripts/git-commit-paths.sh "$RSO_NODE_BRANCH" "Archive RSO snapshot" data ledger.json
 
@@ -297,6 +293,16 @@ jobs:
             args+=(--force)
           fi
           python "${args[@]}"
+
+      - name: Prune old catalogs from git archive
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # --require-bundle: KEEP (never delete) a catalog not yet published; the
+          # prune deletions are committed by "Commit publish receipts" below.
+          python pipeline/snapshot.py prune-catalogs --all --keep-latest "$RSO_RETAINED_CATALOG_COUNT" --require-bundle
+          python pipeline/snapshot.py validate
 
       - name: Build Tier-1 index
         # Lean year-chunked aggregate index a browser reads instantly (the card's
