@@ -2,51 +2,51 @@
   "branch": "node",
   "chunks": [
     {
-      "count": 87,
+      "count": 88,
       "first": "2026-04-20",
-      "last": "2026-07-15",
+      "last": "2026-07-16",
       "path": "index/2026.json",
-      "sha256": "728b19bcd027ccf77f0c7072e302a78c27acdae1b0925ea2392ae7244eedd708",
+      "sha256": "c5fd6c9e979a778b5f14485b6b1d3a006abe3db14eac6c6332acef9622e984f6",
       "year": "2026"
     }
   ],
-  "day_count": 87,
+  "day_count": 88,
   "first": "2026-04-20",
-  "generated_at_utc": "2026-07-15T03:37:04Z",
-  "latest": "2026-07-15",
+  "generated_at_utc": "2026-07-16T03:39:31Z",
+  "latest": "2026-07-16",
   "latestEntry": {
     "anno_summary": {
-      "decay_notices": 121,
-      "directory_changes": 118,
-      "tip_count": 10
+      "decay_notices": 0,
+      "directory_changes": 12,
+      "tip_count": 4
     },
     "band_counts": {
       "geo": 1844,
-      "leo": 29440,
+      "leo": 29443,
       "meo": 3689
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/07/15/catalog.json.gz",
+    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/07/16/catalog.json.gz",
     "catalog_url_kind": "catalog_gz",
-    "compressed_bytes": 11424925,
+    "compressed_bytes": 11441808,
     "content_schema": "rso-core-v1",
-    "content_sha256": "fca12bdb92a3bd110726e11d5f29780e7dd2e397553f8df3be9b0d9ccc6da92b",
-    "date": "2026-07-15",
+    "content_sha256": "8024a92f4fa589dec5a1e67c6c8ff6fd837e7bd0030bb9dca3a9c3bd989ce450",
+    "date": "2026-07-16",
     "delta": {
       "decayed": 0,
-      "new": 94,
-      "updated": 28213
+      "new": 3,
+      "updated": 27698
     },
-    "object_count": 68562,
-    "on_orbit_count": 34973,
+    "object_count": 68565,
+    "on_orbit_count": 34976,
     "provenance": "rolling_gp_history_delta",
     "reentered_count": 33589,
-    "sha256": "0fe0a5083fa8a0b86105ce53370dddd7bd095d1eea94744f3721059a77e297fe",
+    "sha256": "98f5e1298a834f0f702786e3d1d4fbb3a84335055f13d5343dfda6afbb156107",
     "type_counts": {
       "debris": 12386,
-      "payload": 18489,
+      "payload": 18491,
       "rocket": 2249,
       "tba": 0,
-      "unknown": 1849
+      "unknown": 1850
     }
   },
   "repo": "OMPub/RSO",
