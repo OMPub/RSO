@@ -1,0 +1,959 @@
+{
+  "alert_window_count": 7,
+  "content_excluded_fields": [
+    "COUNTRY_CODE",
+    "DECAY_DATE",
+    "LAUNCH_DATE",
+    "OBJECT_ID",
+    "OBJECT_NAME",
+    "OBJECT_TYPE",
+    "RCS_SIZE",
+    "SITE",
+    "TLE_LINE0"
+  ],
+  "feed_liveness": {
+    "alerts": [],
+    "conjunction_days": 7,
+    "days_checked": [
+      "2026-07-14",
+      "2026-07-15",
+      "2026-07-16",
+      "2026-07-17",
+      "2026-07-18",
+      "2026-07-19",
+      "2026-07-20"
+    ],
+    "empty_conjunction_days": 0,
+    "sections_empty": {
+      "decay_messages": 1,
+      "satcat_changes": 2,
+      "tip_messages": 0
+    },
+    "sections_present": {
+      "decay_messages": 7,
+      "satcat_changes": 7,
+      "tip_messages": 7
+    }
+  },
+  "generated_at_utc": "2026-07-20T07:02:08Z",
+  "results": [
+    {
+      "api_query_paths": [
+        "/class/gp_history/NORAD_CAT_ID/0--9999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/10000--19999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/20000--29999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/30000--39999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/40000--49999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/50000--59999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/60000--69999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/70000--79999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/80000--89999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/90000--99999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/100000--109999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/110000--119999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/120000--129999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/130000--139999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/140000--149999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/150000--159999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/160000--169999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/170000--179999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/180000--189999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/190000--199999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/200000--209999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/210000--219999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/220000--229999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/230000--239999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/240000--249999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/250000--259999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/260000--269999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/270000--279999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/280000--289999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/290000--299999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/300000--309999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/310000--319999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/320000--329999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/330000--339999/CREATION_DATE/2026-04-28T00:00:00--2026-04-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json"
+      ],
+      "core_field_mutations": [],
+      "date": "2026-04-29",
+      "fresh_selected": 28558,
+      "observation_drift_count": 7,
+      "observation_drift_sample": [
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-04-27",
+          "gp_id": "321151783",
+          "norad_cat_id": "46454",
+          "recorded": null
+        },
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-04-28",
+          "gp_id": "321208001",
+          "norad_cat_id": "46559",
+          "recorded": null
+        },
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-04-27",
+          "gp_id": "321154721",
+          "norad_cat_id": "53451",
+          "recorded": null
+        },
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-04-30",
+          "gp_id": "321161203",
+          "norad_cat_id": "61156",
+          "recorded": null
+        },
+        {
+          "field": "TLE_LINE0",
+          "fresh": "0 PRSC-E03",
+          "gp_id": "321223788",
+          "norad_cat_id": "68835",
+          "recorded": "0 TBA - TO BE ASSIGNED"
+        },
+        {
+          "field": "OBJECT_NAME",
+          "fresh": "PRSC-E03",
+          "gp_id": "321223788",
+          "norad_cat_id": "68835",
+          "recorded": "TBA - TO BE ASSIGNED"
+        },
+        {
+          "field": "OBJECT_TYPE",
+          "fresh": "PAYLOAD",
+          "gp_id": "321223788",
+          "norad_cat_id": "68835",
+          "recorded": "UNKNOWN"
+        }
+      ],
+      "raw_rows": 111439,
+      "recorded_updates": 28558,
+      "selection_drift": [
+        {
+          "gp_id": "321262432",
+          "kind": "recorded_elset_absent",
+          "norad_cat_id": "62377"
+        },
+        {
+          "fresh_gp_id": "321221745",
+          "kind": "selection_appeared",
+          "norad_cat_id": "66293"
+        }
+      ],
+      "window_end_utc": "2026-04-29T00:00:00Z",
+      "window_start_utc": "2026-04-28T00:00:00Z"
+    },
+    {
+      "api_query_paths": [
+        "/class/gp_history/NORAD_CAT_ID/0--9999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/10000--19999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/20000--29999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/30000--39999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/40000--49999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/50000--59999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/60000--69999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/70000--79999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/80000--89999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/90000--99999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/100000--109999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/110000--119999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/120000--129999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/130000--139999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/140000--149999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/150000--159999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/160000--169999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/170000--179999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/180000--189999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/190000--199999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/200000--209999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/210000--219999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/220000--229999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/230000--239999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/240000--249999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/250000--259999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/260000--269999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/270000--279999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/280000--289999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/290000--299999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/300000--309999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/310000--319999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/320000--329999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/330000--339999/CREATION_DATE/2026-05-03T00:00:00--2026-05-04T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json"
+      ],
+      "core_field_mutations": [],
+      "date": "2026-05-04",
+      "fresh_selected": 28118,
+      "observation_drift_count": 6,
+      "observation_drift_sample": [
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-05-05",
+          "gp_id": "321897754",
+          "norad_cat_id": "41213",
+          "recorded": null
+        },
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-05-03",
+          "gp_id": "321900779",
+          "norad_cat_id": "47487",
+          "recorded": null
+        },
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-05-02",
+          "gp_id": "321956724",
+          "norad_cat_id": "51657",
+          "recorded": null
+        },
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-05-03",
+          "gp_id": "321956906",
+          "norad_cat_id": "52389",
+          "recorded": null
+        },
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-05-04",
+          "gp_id": "321903553",
+          "norad_cat_id": "54940",
+          "recorded": null
+        },
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-05-03",
+          "gp_id": "321964744",
+          "norad_cat_id": "62447",
+          "recorded": null
+        }
+      ],
+      "raw_rows": 126879,
+      "recorded_updates": 28118,
+      "selection_drift": [
+        {
+          "gp_id": "321964712",
+          "kind": "recorded_elset_absent",
+          "norad_cat_id": "62377"
+        },
+        {
+          "fresh_gp_id": "321913326",
+          "kind": "selection_appeared",
+          "norad_cat_id": "66293"
+        }
+      ],
+      "window_end_utc": "2026-05-04T00:00:00Z",
+      "window_start_utc": "2026-05-03T00:00:00Z"
+    },
+    {
+      "api_query_paths": [
+        "/class/gp_history/NORAD_CAT_ID/0--9999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/10000--19999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/20000--29999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/30000--39999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/40000--49999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/50000--59999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/60000--69999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/70000--79999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/80000--89999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/90000--99999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/100000--109999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/110000--119999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/120000--129999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/130000--139999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/140000--149999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/150000--159999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/160000--169999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/170000--179999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/180000--189999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/190000--199999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/200000--209999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/210000--219999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/220000--229999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/230000--239999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/240000--249999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/250000--259999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/260000--269999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/270000--279999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/280000--289999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/290000--299999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/300000--309999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/310000--319999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/320000--329999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/330000--339999/CREATION_DATE/2026-05-29T00:00:00--2026-05-30T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json"
+      ],
+      "core_field_mutations": [],
+      "date": "2026-05-30",
+      "fresh_selected": 28123,
+      "observation_drift_count": 5,
+      "observation_drift_sample": [
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-05-25",
+          "gp_id": "325866313",
+          "norad_cat_id": "35272",
+          "recorded": null
+        },
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2024-01-30",
+          "gp_id": "325872622",
+          "norad_cat_id": "45981",
+          "recorded": null
+        },
+        {
+          "field": "TLE_LINE0",
+          "fresh": "0 CZ-7A R/B",
+          "gp_id": "325889244",
+          "norad_cat_id": "69236",
+          "recorded": "0 OBJECT B"
+        },
+        {
+          "field": "OBJECT_NAME",
+          "fresh": "CZ-7A R/B",
+          "gp_id": "325889244",
+          "norad_cat_id": "69236",
+          "recorded": "OBJECT B"
+        },
+        {
+          "field": "OBJECT_TYPE",
+          "fresh": "ROCKET BODY",
+          "gp_id": "325889244",
+          "norad_cat_id": "69236",
+          "recorded": "UNKNOWN"
+        }
+      ],
+      "raw_rows": 66043,
+      "recorded_updates": 28123,
+      "selection_drift": [
+        {
+          "gp_id": "325883115",
+          "kind": "recorded_elset_absent",
+          "norad_cat_id": "62377"
+        },
+        {
+          "fresh_gp_id": "325886940",
+          "kind": "selection_appeared",
+          "norad_cat_id": "66293"
+        }
+      ],
+      "window_end_utc": "2026-05-30T00:00:00Z",
+      "window_start_utc": "2026-05-29T00:00:00Z"
+    },
+    {
+      "api_query_paths": [
+        "/class/gp_history/NORAD_CAT_ID/0--9999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/10000--19999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/20000--29999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/30000--39999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/40000--49999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/50000--59999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/60000--69999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/70000--79999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/80000--89999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/90000--99999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/100000--109999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/110000--119999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/120000--129999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/130000--139999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/140000--149999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/150000--159999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/160000--169999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/170000--179999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/180000--189999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/190000--199999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/200000--209999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/210000--219999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/220000--229999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/230000--239999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/240000--249999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/250000--259999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/260000--269999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/270000--279999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/280000--289999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/290000--299999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/300000--309999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/310000--319999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/320000--329999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/330000--339999/CREATION_DATE/2026-06-28T00:00:00--2026-06-29T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json"
+      ],
+      "core_field_mutations": [],
+      "date": "2026-06-29",
+      "fresh_selected": 28862,
+      "observation_drift_count": 2,
+      "observation_drift_sample": [
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-06-27",
+          "gp_id": "332061536",
+          "norad_cat_id": "56962",
+          "recorded": null
+        },
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-06-28",
+          "gp_id": "332099731",
+          "norad_cat_id": "60794",
+          "recorded": null
+        }
+      ],
+      "raw_rows": 112550,
+      "recorded_updates": 28862,
+      "selection_drift": [
+        {
+          "gp_id": "332066232",
+          "kind": "recorded_elset_absent",
+          "norad_cat_id": "62377"
+        },
+        {
+          "fresh_gp_id": "332069553",
+          "kind": "selection_appeared",
+          "norad_cat_id": "66293"
+        }
+      ],
+      "window_end_utc": "2026-06-29T00:00:00Z",
+      "window_start_utc": "2026-06-28T00:00:00Z"
+    },
+    {
+      "api_query_paths": [
+        "/class/gp_history/NORAD_CAT_ID/0--9999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/10000--19999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/20000--29999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/30000--39999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/40000--49999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/50000--59999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/60000--69999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/70000--79999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/80000--89999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/90000--99999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/100000--109999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/110000--119999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/120000--129999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/130000--139999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/140000--149999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/150000--159999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/160000--169999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/170000--179999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/180000--189999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/190000--199999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/200000--209999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/210000--219999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/220000--229999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/230000--239999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/240000--249999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/250000--259999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/260000--269999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/270000--279999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/280000--289999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/290000--299999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/300000--309999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/310000--319999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/320000--329999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/330000--339999/CREATION_DATE/2026-07-01T00:00:00--2026-07-02T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json"
+      ],
+      "core_field_mutations": [],
+      "date": "2026-07-02",
+      "fresh_selected": 29429,
+      "observation_drift_count": 4,
+      "observation_drift_sample": [
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-06-29",
+          "gp_id": "332342281",
+          "norad_cat_id": "31090",
+          "recorded": null
+        },
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-06-29",
+          "gp_id": "332350770",
+          "norad_cat_id": "47430",
+          "recorded": null
+        },
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-06-29",
+          "gp_id": "332354961",
+          "norad_cat_id": "56226",
+          "recorded": null
+        },
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-07-02",
+          "gp_id": "332585304",
+          "norad_cat_id": "69635",
+          "recorded": null
+        }
+      ],
+      "raw_rows": 103630,
+      "recorded_updates": 29429,
+      "selection_drift": [
+        {
+          "gp_id": "332470322",
+          "kind": "recorded_elset_absent",
+          "norad_cat_id": "62377"
+        },
+        {
+          "fresh_gp_id": "332473643",
+          "kind": "selection_appeared",
+          "norad_cat_id": "66293"
+        }
+      ],
+      "window_end_utc": "2026-07-02T00:00:00Z",
+      "window_start_utc": "2026-07-01T00:00:00Z"
+    },
+    {
+      "api_query_paths": [
+        "/class/gp_history/NORAD_CAT_ID/0--9999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/10000--19999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/20000--29999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/30000--39999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/40000--49999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/50000--59999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/60000--69999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/70000--79999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/80000--89999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/90000--99999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/100000--109999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/110000--119999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/120000--129999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/130000--139999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/140000--149999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/150000--159999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/160000--169999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/170000--179999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/180000--189999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/190000--199999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/200000--209999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/210000--219999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/220000--229999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/230000--239999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/240000--249999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/250000--259999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/260000--269999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/270000--279999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/280000--289999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/290000--299999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/300000--309999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/310000--319999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/320000--329999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/330000--339999/CREATION_DATE/2026-07-13T00:00:00--2026-07-14T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json"
+      ],
+      "core_field_mutations": [],
+      "date": "2026-07-14",
+      "fresh_selected": 27250,
+      "observation_drift_count": 3,
+      "observation_drift_sample": [
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-07-12",
+          "gp_id": "335065590",
+          "norad_cat_id": "40237",
+          "recorded": null
+        },
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-07-13",
+          "gp_id": "335048877",
+          "norad_cat_id": "46156",
+          "recorded": null
+        },
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-07-10",
+          "gp_id": "335065562",
+          "norad_cat_id": "56218",
+          "recorded": null
+        }
+      ],
+      "raw_rows": 79536,
+      "recorded_updates": 27250,
+      "selection_drift": [
+        {
+          "gp_id": "335170904",
+          "kind": "recorded_elset_absent",
+          "norad_cat_id": "62377"
+        },
+        {
+          "fresh_gp_id": "335061620",
+          "kind": "selection_appeared",
+          "norad_cat_id": "66293"
+        }
+      ],
+      "window_end_utc": "2026-07-14T00:00:00Z",
+      "window_start_utc": "2026-07-13T00:00:00Z"
+    },
+    {
+      "api_query_paths": [
+        "/class/gp_history/NORAD_CAT_ID/0--9999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/10000--19999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/20000--29999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/30000--39999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/40000--49999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/50000--59999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/60000--69999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/70000--79999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/80000--89999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/90000--99999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/100000--109999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/110000--119999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/120000--129999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/130000--139999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/140000--149999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/150000--159999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/160000--169999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/170000--179999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/180000--189999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/190000--199999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/200000--209999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/210000--219999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/220000--229999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/230000--239999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/240000--249999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/250000--259999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/260000--269999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/270000--279999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/280000--289999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/290000--299999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/300000--309999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/310000--319999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/320000--329999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/330000--339999/CREATION_DATE/2026-07-14T00:00:00--2026-07-15T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json"
+      ],
+      "core_field_mutations": [],
+      "date": "2026-07-15",
+      "fresh_selected": 28307,
+      "observation_drift_count": 3,
+      "observation_drift_sample": [
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-07-10",
+          "gp_id": "335195791",
+          "norad_cat_id": "39927",
+          "recorded": null
+        },
+        {
+          "field": "DECAY_DATE",
+          "fresh": null,
+          "gp_id": "335351926",
+          "norad_cat_id": "58307",
+          "recorded": "2026-07-17"
+        },
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-07-14",
+          "gp_id": "335416693",
+          "norad_cat_id": "60938",
+          "recorded": null
+        }
+      ],
+      "raw_rows": 81435,
+      "recorded_updates": 28307,
+      "selection_drift": [
+        {
+          "gp_id": "335355604",
+          "kind": "recorded_elset_absent",
+          "norad_cat_id": "62377"
+        },
+        {
+          "fresh_gp_id": "335358925",
+          "kind": "selection_appeared",
+          "norad_cat_id": "66293"
+        }
+      ],
+      "window_end_utc": "2026-07-15T00:00:00Z",
+      "window_start_utc": "2026-07-14T00:00:00Z"
+    },
+    {
+      "api_query_paths": [
+        "/class/gp_history/NORAD_CAT_ID/0--9999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/10000--19999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/20000--29999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/30000--39999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/40000--49999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/50000--59999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/60000--69999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/70000--79999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/80000--89999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/90000--99999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/100000--109999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/110000--119999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/120000--129999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/130000--139999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/140000--149999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/150000--159999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/160000--169999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/170000--179999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/180000--189999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/190000--199999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/200000--209999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/210000--219999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/220000--229999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/230000--239999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/240000--249999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/250000--259999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/260000--269999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/270000--279999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/280000--289999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/290000--299999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/300000--309999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/310000--319999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/320000--329999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/330000--339999/CREATION_DATE/2026-07-15T00:00:00--2026-07-16T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json"
+      ],
+      "core_field_mutations": [],
+      "date": "2026-07-16",
+      "fresh_selected": 27701,
+      "observation_drift_count": 2,
+      "observation_drift_sample": [
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-07-15",
+          "gp_id": "335636378",
+          "norad_cat_id": "49403",
+          "recorded": null
+        },
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-07-15",
+          "gp_id": "335462281",
+          "norad_cat_id": "68757",
+          "recorded": null
+        }
+      ],
+      "raw_rows": 95064,
+      "recorded_updates": 27701,
+      "selection_drift": [],
+      "window_end_utc": "2026-07-16T00:00:00Z",
+      "window_start_utc": "2026-07-15T00:00:00Z"
+    },
+    {
+      "api_query_paths": [
+        "/class/gp_history/NORAD_CAT_ID/0--9999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/10000--19999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/20000--29999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/30000--39999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/40000--49999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/50000--59999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/60000--69999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/70000--79999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/80000--89999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/90000--99999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/100000--109999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/110000--119999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/120000--129999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/130000--139999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/140000--149999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/150000--159999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/160000--169999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/170000--179999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/180000--189999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/190000--199999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/200000--209999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/210000--219999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/220000--229999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/230000--239999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/240000--249999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/250000--259999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/260000--269999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/270000--279999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/280000--289999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/290000--299999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/300000--309999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/310000--319999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/320000--329999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/330000--339999/CREATION_DATE/2026-07-16T00:00:00--2026-07-17T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json"
+      ],
+      "core_field_mutations": [],
+      "date": "2026-07-17",
+      "fresh_selected": 27879,
+      "observation_drift_count": 2,
+      "observation_drift_sample": [
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-06-25",
+          "gp_id": "335721074",
+          "norad_cat_id": "37133",
+          "recorded": null
+        },
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-07-14",
+          "gp_id": "335772895",
+          "norad_cat_id": "46818",
+          "recorded": null
+        }
+      ],
+      "raw_rows": 79089,
+      "recorded_updates": 27879,
+      "selection_drift": [],
+      "window_end_utc": "2026-07-17T00:00:00Z",
+      "window_start_utc": "2026-07-16T00:00:00Z"
+    },
+    {
+      "api_query_paths": [
+        "/class/gp_history/NORAD_CAT_ID/0--9999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/10000--19999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/20000--29999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/30000--39999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/40000--49999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/50000--59999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/60000--69999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/70000--79999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/80000--89999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/90000--99999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/100000--109999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/110000--119999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/120000--129999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/130000--139999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/140000--149999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/150000--159999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/160000--169999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/170000--179999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/180000--189999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/190000--199999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/200000--209999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/210000--219999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/220000--229999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/230000--239999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/240000--249999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/250000--259999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/260000--269999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/270000--279999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/280000--289999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/290000--299999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/300000--309999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/310000--319999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/320000--329999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/330000--339999/CREATION_DATE/2026-07-17T00:00:00--2026-07-18T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json"
+      ],
+      "core_field_mutations": [],
+      "date": "2026-07-18",
+      "fresh_selected": 28755,
+      "observation_drift_count": 2,
+      "observation_drift_sample": [
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-07-17",
+          "gp_id": "336229061",
+          "norad_cat_id": "64137",
+          "recorded": null
+        },
+        {
+          "field": "DECAY_DATE",
+          "fresh": "2026-07-17",
+          "gp_id": "336078987",
+          "norad_cat_id": "100058",
+          "recorded": null
+        }
+      ],
+      "raw_rows": 111945,
+      "recorded_updates": 28755,
+      "selection_drift": [],
+      "window_end_utc": "2026-07-18T00:00:00Z",
+      "window_start_utc": "2026-07-17T00:00:00Z"
+    },
+    {
+      "api_query_paths": [
+        "/class/gp_history/NORAD_CAT_ID/0--9999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/10000--19999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/20000--29999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/30000--39999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/40000--49999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/50000--59999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/60000--69999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/70000--79999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/80000--89999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/90000--99999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/100000--109999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/110000--119999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/120000--129999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/130000--139999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/140000--149999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/150000--159999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/160000--169999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/170000--179999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/180000--189999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/190000--199999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/200000--209999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/210000--219999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/220000--229999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/230000--239999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/240000--249999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/250000--259999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/260000--269999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/270000--279999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/280000--289999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/290000--299999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/300000--309999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/310000--319999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/320000--329999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/330000--339999/CREATION_DATE/2026-07-18T00:00:00--2026-07-19T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json"
+      ],
+      "core_field_mutations": [],
+      "date": "2026-07-19",
+      "fresh_selected": 27838,
+      "observation_drift_count": 0,
+      "observation_drift_sample": [],
+      "raw_rows": 59895,
+      "recorded_updates": 27838,
+      "selection_drift": [],
+      "window_end_utc": "2026-07-19T00:00:00Z",
+      "window_start_utc": "2026-07-18T00:00:00Z"
+    },
+    {
+      "api_query_paths": [
+        "/class/gp_history/NORAD_CAT_ID/0--9999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/10000--19999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/20000--29999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/30000--39999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/40000--49999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/50000--59999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/60000--69999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/70000--79999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/80000--89999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/90000--99999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/100000--109999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/110000--119999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/120000--129999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/130000--139999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/140000--149999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/150000--159999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/160000--169999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/170000--179999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/180000--189999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/190000--199999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/200000--209999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/210000--219999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/220000--229999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/230000--239999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/240000--249999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/250000--259999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/260000--269999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/270000--279999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/280000--289999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/290000--299999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/300000--309999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/310000--319999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/320000--329999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json",
+        "/class/gp_history/NORAD_CAT_ID/330000--339999/CREATION_DATE/2026-07-19T00:00:00--2026-07-20T00:00:00/orderby/NORAD_CAT_ID%20asc,CREATION_DATE%20desc/format/json"
+      ],
+      "core_field_mutations": [],
+      "date": "2026-07-20",
+      "fresh_selected": 28692,
+      "observation_drift_count": 0,
+      "observation_drift_sample": [],
+      "raw_rows": 100653,
+      "recorded_updates": 28692,
+      "selection_drift": [],
+      "window_end_utc": "2026-07-20T00:00:00Z",
+      "window_start_utc": "2026-07-19T00:00:00Z"
+    }
+  ],
+  "schema": "rso-drift-audit-v1",
+  "windows_checked": 12,
+  "windows_skipped": []
+}
