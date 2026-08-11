@@ -2,51 +2,51 @@
   "branch": "node",
   "chunks": [
     {
-      "count": 113,
+      "count": 114,
       "first": "2026-04-20",
-      "last": "2026-08-10",
+      "last": "2026-08-11",
       "path": "index/2026.json",
-      "sha256": "192629ad5aba178a15909744b7e3584dd3d41150a5cfb02b0a1d1fe20ba6b581",
+      "sha256": "b91a32e023900115e872a76262d51b519de6dfd294bb97f867fdd7066cf6baa8",
       "year": "2026"
     }
   ],
-  "day_count": 113,
+  "day_count": 114,
   "first": "2026-04-20",
-  "generated_at_utc": "2026-08-10T02:37:50Z",
-  "latest": "2026-08-10",
+  "generated_at_utc": "2026-08-11T02:30:47Z",
+  "latest": "2026-08-11",
   "latestEntry": {
     "anno_summary": {
-      "decay_notices": 4,
-      "directory_changes": 55,
-      "tip_count": 17
+      "decay_notices": 7,
+      "directory_changes": 6,
+      "tip_count": 20
     },
     "band_counts": {
       "geo": 1846,
       "leo": 29731,
       "meo": 3694
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/08/10/catalog.json.gz",
+    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/08/11/catalog.json.gz",
     "catalog_url_kind": "catalog_gz",
-    "compressed_bytes": 11469874,
+    "compressed_bytes": 11464457,
     "content_schema": "rso-core-v1",
-    "content_sha256": "ef577b3e561f1c7b23334c81a6dbccf8d3b50c5e3e96cef97c21a87072ae59b3",
-    "date": "2026-08-10",
+    "content_sha256": "fa2901f54bbc740216626c5606731ba9e2b7805f00c21180c8fc214b1e49c422",
+    "date": "2026-08-11",
     "delta": {
       "decayed": 0,
       "new": 0,
-      "updated": 28794
+      "updated": 26646
     },
     "object_count": 68883,
     "on_orbit_count": 35271,
     "provenance": "rolling_gp_history_delta",
     "reentered_count": 33612,
-    "sha256": "024618817e7cf72b22d383aefcaaf447dd37d7033fcb23f7af6fb007e001370c",
+    "sha256": "fe7b7ac3b77307594b0393b76a4b424b2b309dd38d05cc9b9478d6a01b7aa8ff",
     "type_counts": {
       "debris": 12388,
-      "payload": 18767,
+      "payload": 18769,
       "rocket": 2260,
       "tba": 0,
-      "unknown": 1856
+      "unknown": 1854
     }
   },
   "repo": "OMPub/RSO",
