@@ -1,0 +1,119 @@
+{
+  "blockHash": "0x46ae9b5f5d345d7e3fe1a10b751b3dfe55cab894d35ab1c533fcdd6c1268512e",
+  "date": "2026-08-22",
+  "docRef": 20260822000000,
+  "node": {
+    "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
+    "nodeId": "github:ompub/rso",
+    "repository": "OMPub/RSO",
+    "workflowRunId": "32544516669"
+  },
+  "publishedForSweeperAt": "2026-08-22T01:53:43Z",
+  "schema": "rso-signed-attestation-v1",
+  "signed": {
+    "prepared": {
+      "attestation": {
+        "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
+        "deadline": 1787968423,
+        "docBlock": {
+          "contentHash": "0x45ff54693cb9ac97eeaadbe510c517d887434e909e858374da7077d0d3856c52",
+          "docChainId": "0x6011620b5a3faa23f8078c2af0bb1a87bb85a68f784abdf3dbae67939c399bea",
+          "docRef": 20260822000000,
+          "parentHash": "0xb496e2d76ea6c66bf067eb314341ea9a7734a0d0bdca50ffb14bf199e44c390b"
+        },
+        "onBehalfOf": "0x0000000000000000000000000000000000000000",
+        "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIwMzI2OWFhYmE1NGE5NjE4YzUyZmRhZWZiMTQyMGE2YzFjZmVlYTY3YjY3ZTZkYTU2MmE1NGJlOGY4YTMzOWI5IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wOC0yMi9yc28tYXJjaGl2ZS0yMDI2LTA4LTIyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0="
+      },
+      "chainId": 11155111,
+      "contract": "DocChain",
+      "contractAddress": "0x867fcc4f0339009043e9f6e554dd516bcf1bcaa9",
+      "network": "sepolia",
+      "preparedAt": "2026-08-22T01:53:43Z",
+      "schema": "doc-chain-prepared-attestation-v1",
+      "typedData": {
+        "domain": {
+          "chainId": 11155111,
+          "name": "Doc Chain",
+          "verifyingContract": "0x867fcc4f0339009043e9f6e554dd516bcf1bcaa9",
+          "version": "1"
+        },
+        "message": {
+          "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
+          "deadline": 1787968423,
+          "docBlock": {
+            "contentHash": "0x45ff54693cb9ac97eeaadbe510c517d887434e909e858374da7077d0d3856c52",
+            "docChainId": "0x6011620b5a3faa23f8078c2af0bb1a87bb85a68f784abdf3dbae67939c399bea",
+            "docRef": 20260822000000,
+            "parentHash": "0xb496e2d76ea6c66bf067eb314341ea9a7734a0d0bdca50ffb14bf199e44c390b"
+          },
+          "onBehalfOf": "0x0000000000000000000000000000000000000000",
+          "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIwMzI2OWFhYmE1NGE5NjE4YzUyZmRhZWZiMTQyMGE2YzFjZmVlYTY3YjY3ZTZkYTU2MmE1NGJlOGY4YTMzOWI5IiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wOC0yMi9yc28tYXJjaGl2ZS0yMDI2LTA4LTIyLnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0="
+        },
+        "primaryType": "DocAttestation",
+        "types": {
+          "DocAttestation": [
+            {
+              "name": "attester",
+              "type": "address"
+            },
+            {
+              "name": "onBehalfOf",
+              "type": "address"
+            },
+            {
+              "name": "docBlock",
+              "type": "DocBlock"
+            },
+            {
+              "name": "uri",
+              "type": "string"
+            },
+            {
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "DocBlock": [
+            {
+              "name": "docChainId",
+              "type": "bytes32"
+            },
+            {
+              "name": "docRef",
+              "type": "uint64"
+            },
+            {
+              "name": "parentHash",
+              "type": "bytes32"
+            },
+            {
+              "name": "contentHash",
+              "type": "bytes32"
+            }
+          ],
+          "EIP712Domain": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "name": "verifyingContract",
+              "type": "address"
+            }
+          ]
+        }
+      }
+    },
+    "schema": "doc-chain-signed-attestation-v1",
+    "signature": "0xb36cfb156f1f8c4b4967a7d34f4da2c85847db06e8c25d3f933bd9645f41b8a17076e16805d30d5d640c5705c426ae82339bbe6523c2e0a2e2457984159dc9ac1b",
+    "signedAt": "2026-08-22T01:53:43Z"
+  }
+}
