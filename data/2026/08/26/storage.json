@@ -1,0 +1,25 @@
+{
+  "asset_name": "rso-archive-2026-08-26.tar.gz",
+  "bundle_bytes": 11467686,
+  "bundle_sha256": "84ab4c5c039467c536846d2e8529a4cfb01f3415c6a990730b3ca6299d9d853e",
+  "catalog_sha256": "dec1f54e83650a1658ea039e5917b936d3d7ef305bea77ca2c49aaa58f93428b",
+  "date": "2026-08-26",
+  "destinations": {
+    "arweave": {
+      "bundle_sha256": "84ab4c5c039467c536846d2e8529a4cfb01f3415c6a990730b3ca6299d9d853e",
+      "error": "Arweave wallet 0M5DwTnTNoSMjNY-iphmO5Se-8acobq_hD4pRazNPms has 26765423793 winston, below required reward 128691326204",
+      "failed_at": "2026-08-26T02:01:38Z",
+      "status": "failed"
+    },
+    "github_release": {
+      "asset_name": "rso-archive-2026-08-26.tar.gz",
+      "asset_url": "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-08-26/rso-archive-2026-08-26.tar.gz",
+      "release_url": "https://github.com/OMPub/RSO/releases/tag/rso-archive-2026-08-26",
+      "repo": "OMPub/RSO",
+      "status": "created",
+      "tag": "rso-archive-2026-08-26"
+    }
+  },
+  "manifest_sha256": "1ffc73461e6d6806d6044bee234a3e037fff1a8d7863e7753d90e317b6c94e52",
+  "updated_at": "2026-08-26T02:01:38Z"
+}
