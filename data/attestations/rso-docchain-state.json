@@ -2735,26 +2735,44 @@
       "submissionStatus": "signed",
       "updatedAt": "2026-09-18T04:46:35Z",
       "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIyYjI5OTM0NmFjMjFlYmI5MmJiYjg1ZTU5ZmQzOTVlZDJlYjQyZDJhMTMzODczODY1NWFjYTQ3OWE0OTE5Y2MzIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wOS0xOC9yc28tYXJjaGl2ZS0yMDI2LTA5LTE4LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0="
+    },
+    {
+      "artifactId": "ae4d99a4bfc7ec185e61b813376d7200ac6fd1fd0779d741a7ed6f22f4ffabec",
+      "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
+      "blockHash": "0x8bb9600d3fabd5d91af2b8f553a44724c97f2e56929de3268e9c8979a1582adb",
+      "chainId": 11155111,
+      "contentHash": "0xe1030211d6675c71b3c84ace34dd0975f6766e2b923c5e85d9e7f0c28f083083",
+      "contractAddress": "0x867fcc4f0339009043e9f6e554dd516bcf1bcaa9",
+      "date": "2026-09-19",
+      "docRef": 20260919000000,
+      "latestSignedPath": "data/attestations/signed/2026-09-19.json",
+      "onBehalfOf": "0x0000000000000000000000000000000000000000",
+      "parentHash": "0x58d643777d2e45cc16152a8501710f91199b440793a25b7908b171244deabc71",
+      "signature": "0xfd9c6f80b64204032a95d935c627316851aa843416dc653e3ef20e13f7b97d8a07b537e2f4d0a6265224d47005c82acbfb6ec54c1074d6cd43ed613560305f921b",
+      "signedPath": "data/attestations/signed/2026-09-19/ae4d99a4bfc7ec185e61b813376d7200ac6fd1fd0779d741a7ed6f22f4ffabec.json",
+      "submissionStatus": "signed",
+      "updatedAt": "2026-09-19T04:40:39Z",
+      "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI1ZTE0MGY1NzNlNTI3MDVhNGUyYWIxMzQ0Mzc4MzBjOGRjNjYwOTdjNDZmNmRhYmU4YmVkM2NhMWU1NTAxNzYzIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wOS0xOS9yc28tYXJjaGl2ZS0yMDI2LTA5LTE5LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0="
     }
   ],
   "latest": {
-    "artifactId": "3787daedcd6de4a14854e14d40d9144ff71a66acdde86cd003b1669f9ed9d5ee",
+    "artifactId": "ae4d99a4bfc7ec185e61b813376d7200ac6fd1fd0779d741a7ed6f22f4ffabec",
     "attester": "0x226db9fe9ed3eb91baeccb081f4505a799e4e376",
-    "blockHash": "0x58d643777d2e45cc16152a8501710f91199b440793a25b7908b171244deabc71",
+    "blockHash": "0x8bb9600d3fabd5d91af2b8f553a44724c97f2e56929de3268e9c8979a1582adb",
     "chainId": 11155111,
-    "contentHash": "0x67dd1f6aed79e524f26d849c772fe50cc030387c09a601289ff4fbe3369daf26",
+    "contentHash": "0xe1030211d6675c71b3c84ace34dd0975f6766e2b923c5e85d9e7f0c28f083083",
     "contractAddress": "0x867fcc4f0339009043e9f6e554dd516bcf1bcaa9",
-    "date": "2026-09-18",
-    "docRef": 20260918000000,
-    "latestSignedPath": "data/attestations/signed/2026-09-18.json",
+    "date": "2026-09-19",
+    "docRef": 20260919000000,
+    "latestSignedPath": "data/attestations/signed/2026-09-19.json",
     "onBehalfOf": "0x0000000000000000000000000000000000000000",
-    "parentHash": "0xca02503f0847e7384a0cb0b67ac7fa53aaa831464072e8a14e1f8bb236ea785b",
-    "signature": "0x228a8287377065a01000f1dc9f88f54ff45d0e280152ddb141b814ff46a3361151bc5d453883cb8b40b0d90e926077131ebb9537f1572e2d3037175290415eae1c",
-    "signedPath": "data/attestations/signed/2026-09-18/3787daedcd6de4a14854e14d40d9144ff71a66acdde86cd003b1669f9ed9d5ee.json",
+    "parentHash": "0x58d643777d2e45cc16152a8501710f91199b440793a25b7908b171244deabc71",
+    "signature": "0xfd9c6f80b64204032a95d935c627316851aa843416dc653e3ef20e13f7b97d8a07b537e2f4d0a6265224d47005c82acbfb6ec54c1074d6cd43ed613560305f921b",
+    "signedPath": "data/attestations/signed/2026-09-19/ae4d99a4bfc7ec185e61b813376d7200ac6fd1fd0779d741a7ed6f22f4ffabec.json",
     "submissionStatus": "signed",
-    "updatedAt": "2026-09-18T04:46:35Z",
-    "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiIyYjI5OTM0NmFjMjFlYmI5MmJiYjg1ZTU5ZmQzOTVlZDJlYjQyZDJhMTMzODczODY1NWFjYTQ3OWE0OTE5Y2MzIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wOS0xOC9yc28tYXJjaGl2ZS0yMDI2LTA5LTE4LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0="
+    "updatedAt": "2026-09-19T04:40:39Z",
+    "uri": "data:application/vnd.ompub.rso.publication-locator.v1+json;base64,eyJidW5kbGVTaGEyNTYiOiI1ZTE0MGY1NzNlNTI3MDVhNGUyYWIxMzQ0Mzc4MzBjOGRjNjYwOTdjNDZmNmRhYmU4YmVkM2NhMWU1NTAxNzYzIiwibG9jYXRpb25zIjpbImh0dHBzOi8vZ2l0aHViLmNvbS9PTVB1Yi9SU08vcmVsZWFzZXMvZG93bmxvYWQvcnNvLWFyY2hpdmUtMjAyNi0wOS0xOS9yc28tYXJjaGl2ZS0yMDI2LTA5LTE5LnRhci5neiJdLCJub2RlSWQiOiJnaXRodWI6b21wdWIvcnNvIn0="
   },
   "schema": "rso-docchain-node-state-v1",
-  "updatedAt": "2026-09-18T04:46:35Z"
+  "updatedAt": "2026-09-19T04:40:39Z"
 }
