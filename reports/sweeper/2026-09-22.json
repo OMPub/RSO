@@ -1,7 +1,6 @@
 {
-  "date": "2026-09-21",
+  "date": "2026-09-22",
   "finishedAt": "2026-09-23T05:57:00Z",
-  "firstStartedAt": "2026-09-22T06:12:02Z",
   "operatorSource": "github-forks:OMPub/RSO",
   "operators": [],
   "schema": "rso-sweeper-date-report-v1",
