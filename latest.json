@@ -1,15 +1,15 @@
 {
-  "annotations_sha256": "22c119700d171a68e1aec9ba6fe29119cfb48e05c269f532bea24823bc4ed041",
-  "asset_name": "rso-archive-2026-10-07.tar.gz",
-  "asset_url": "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-10-07/rso-archive-2026-10-07.tar.gz",
-  "bundle_sha256": "bea1a00ef0141ee5e7b0c7f550a82ded41c2003729785ef012dceb5c28ed8337",
-  "conjunctions_sha256": "b7005a379770794816d6619d3f8a4e4ac4d1ce31b90e4b75ddc0ac9df2152802",
+  "annotations_sha256": "b96efed4190d960b1f1e3e4ff371569c28ba796958ab132eecacea32b29c3e4e",
+  "asset_name": "rso-archive-2026-10-08.tar.gz",
+  "asset_url": "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-10-08/rso-archive-2026-10-08.tar.gz",
+  "bundle_sha256": "61e30a89681a2ee3ee9ba46a73cd408e3fcf43db3dc38c0d52015f6c2ef570b7",
+  "conjunctions_sha256": "ddc58a477b4d181e4d228efc1bb78c5074f786ec47acc815bcde470100e2d787",
   "content_schema": "rso-core-v1",
-  "content_sha256": "e8b3a2b947f35a57e935f5811d6eea8bbb0c00c0c9124c78e06c6f2270ca09d9",
-  "date": "2026-10-07",
-  "generated_at_utc": "2026-10-07T06:01:54Z",
-  "object_count": 69465,
+  "content_sha256": "b6f7d4eec6bd4a38e34d196f179182c075ebef2c13794d75a59aa1ffd07abfd0",
+  "date": "2026-10-08",
+  "generated_at_utc": "2026-10-08T06:06:24Z",
+  "object_count": 69536,
   "schema": "rso-latest-v1",
-  "sha256": "78287e36f3a17841427eaf9ea7082f2fd351f1082745d6635c95b3230551981b",
-  "tag": "rso-archive-2026-10-07"
+  "sha256": "21d534e0b73d9326927b3e545929b71c372c1f90ddf90b10414388ec53cb4db2",
+  "tag": "rso-archive-2026-10-08"
 }
