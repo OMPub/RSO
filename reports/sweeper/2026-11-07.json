@@ -1,0 +1,9 @@
+{
+  "date": "2026-11-07",
+  "finishedAt": "2026-11-08T07:17:05Z",
+  "operatorSource": "github-forks:OMPub/RSO",
+  "operators": [],
+  "schema": "rso-sweeper-date-report-v1",
+  "startedAt": "2026-11-08T07:17:05Z",
+  "status": "missing_backing"
+}
