@@ -9274,6 +9274,7 @@
     },
     "annotations_sha256": "faa9d521ae5e186d625caea2de18d428378e0b8704902138a75d0b226e97b12a",
     "archived_at": "2026-11-18T07:29:38.408418+00:00",
+    "asset_url": "https://github.com/OMPub/RSO/releases/download/rso-archive-2026-11-18/rso-archive-2026-11-18.tar.gz",
     "band_counts": {
       "geo": 1862,
       "leo": 30605,
@@ -9281,6 +9282,7 @@
     },
     "base_snapshot_date": "2026-11-17",
     "base_snapshot_sha256": "349a81d0c15f30f5c380e73843df0ba46941837e1be34847ab5eadf88b38dd19",
+    "bundle_sha256": "bcaac71ddf1fc9521003d52bda6b156ef8aa0b48c8e3fe58490daee34ae385c5",
     "compressed_bytes": 11671689,
     "conjunctions_sha256": "3804c43a3a50ae5a1385dc28e30fc8d44e3ca1f4320a90ec78fcb9bbfad3c445",
     "content_schema": "rso-core-v1",
