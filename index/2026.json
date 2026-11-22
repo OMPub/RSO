@@ -7074,8 +7074,6 @@
       "leo": 30635,
       "meo": 3704
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/11/20/catalog.json.gz",
-    "catalog_url_kind": "catalog_gz",
     "compressed_bytes": 11670242,
     "content_schema": "rso-core-v1",
     "content_sha256": "15ee85ba94793a872335e4058f0e2d06f05ba3bbf7a93520f4f8d46dab5b203b",
@@ -7129,6 +7127,41 @@
       "debris": 12507,
       "payload": 20183,
       "rocket": 2292,
+      "tba": 0,
+      "unknown": 1219
+    }
+  },
+  {
+    "anno_summary": {
+      "decay_notices": 8,
+      "directory_changes": 37,
+      "tip_count": 25
+    },
+    "band_counts": {
+      "geo": 1862,
+      "leo": 30643,
+      "meo": 3704
+    },
+    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/11/22/catalog.json.gz",
+    "catalog_url_kind": "catalog_gz",
+    "compressed_bytes": 11687704,
+    "content_schema": "rso-core-v1",
+    "content_sha256": "2fdd1c203e1cc44e691e4d4e01315ee5e36779eb8074b9e18ae24ac7b20681e4",
+    "date": "2026-11-22",
+    "delta": {
+      "decayed": 0,
+      "new": 10,
+      "updated": 29738
+    },
+    "object_count": 69939,
+    "on_orbit_count": 36209,
+    "provenance": "rolling_gp_history_delta",
+    "reentered_count": 33730,
+    "sha256": "f3214fbc376b7347a8b14f1ebae459763efdc0d0f602855c808d4dd98d239de5",
+    "type_counts": {
+      "debris": 12507,
+      "payload": 20190,
+      "rocket": 2293,
       "tba": 0,
       "unknown": 1219
     }
