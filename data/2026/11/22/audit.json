@@ -1,0 +1,19 @@
+{
+  "api_class": "gp",
+  "api_query_base": "https://www.space-track.org/basicspacedata/query",
+  "api_query_paths": [
+    "/class/gp/orderby/NORAD_CAT_ID%20asc/format/json"
+  ],
+  "archive_object_count": 69939,
+  "current_gp_object_count": 69939,
+  "date": "2026-11-22",
+  "missing_from_current_gp": [],
+  "missing_from_current_gp_count": 0,
+  "observed_at_utc": "2026-11-22T06:49:03Z",
+  "present_ids_sha256": "f0ffee9851e8b472eb1f0e11ba7ee8d375906b3c3481cd4e4ef17e080bf9e6d2",
+  "present_in_current_gp_not_in_archive": [],
+  "present_in_current_gp_not_in_archive_count": 0,
+  "reappeared_in_current_gp": [],
+  "reappeared_in_current_gp_count": 0,
+  "source": "space-track.org"
+}
