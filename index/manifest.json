@@ -2,45 +2,45 @@
   "branch": "node",
   "chunks": [
     {
-      "count": 218,
+      "count": 219,
       "first": "2026-04-20",
-      "last": "2026-11-23",
+      "last": "2026-11-24",
       "path": "index/2026.json",
-      "sha256": "e308e9cd8c10ba156c8d211a7bb7173e095ff7f7849c3f001ee8037d53eec886",
+      "sha256": "2b622f471432224e3046774e4172dcc74baf6dc5dd95ef3d1cba565af7731ac6",
       "year": "2026"
     }
   ],
-  "day_count": 218,
+  "day_count": 219,
   "first": "2026-04-20",
-  "generated_at_utc": "2026-11-23T07:39:41Z",
-  "latest": "2026-11-23",
+  "generated_at_utc": "2026-11-24T09:56:32Z",
+  "latest": "2026-11-24",
   "latestEntry": {
     "anno_summary": {
-      "decay_notices": 10,
-      "directory_changes": 25,
-      "tip_count": 18
+      "decay_notices": 4,
+      "directory_changes": 4,
+      "tip_count": 11
     },
     "band_counts": {
       "geo": 1862,
       "leo": 30642,
       "meo": 3703
     },
-    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/11/23/catalog.json.gz",
+    "catalog_url": "https://raw.githubusercontent.com/OMPub/RSO/node/data/2026/11/24/catalog.json.gz",
     "catalog_url_kind": "catalog_gz",
-    "compressed_bytes": 11681586,
+    "compressed_bytes": 11682156,
     "content_schema": "rso-core-v1",
-    "content_sha256": "3c8f69e8d8595bd734d11328a7d7f85b549e3be05cf7ec52adfc1d8d9230819a",
-    "date": "2026-11-23",
+    "content_sha256": "6e0921cc5209e10e90502607f5ef495a48fe5bf2ecace9dd80fb384ef09633cf",
+    "date": "2026-11-24",
     "delta": {
       "decayed": 0,
       "new": 0,
-      "updated": 30232
+      "updated": 26827
     },
     "object_count": 69939,
     "on_orbit_count": 36207,
     "provenance": "rolling_gp_history_delta",
     "reentered_count": 33732,
-    "sha256": "b62c1f7f5f82cfb9a2d65e697e6a3479b15b0037cc2c497ad600e9078c6fb36c",
+    "sha256": "d6b77dc6edb2777e578b69ce6346ff09a39437e9dc4592a559542295a58d180a",
     "type_counts": {
       "debris": 12507,
       "payload": 20188,
