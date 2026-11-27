@@ -10744,8 +10744,8 @@
     }
   ],
   "fromBlock": 11026268,
-  "indexedAt": "2026-11-26T08:21:44Z",
-  "latestChainBlock": 12215285,
+  "indexedAt": "2026-11-27T08:35:37Z",
+  "latestChainBlock": 12222233,
   "network": "sepolia",
   "profileURI": "https://om.pub/rso/doc-chain",
   "schema": "rso-docchain-index-v1",
@@ -10754,5 +10754,5 @@
     "2026-06-07",
     "2026-06-08"
   ],
-  "toBlock": 12215273
+  "toBlock": 12222221
 }
